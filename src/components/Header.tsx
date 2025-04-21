@@ -2,10 +2,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Menu, X } from 'lucide-react';
+import { ShoppingCart, Menu, X, ChevronDown } from 'lucide-react';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [isProductMenuOpen, setIsProductMenuOpen] = React.useState(false);
   
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -21,9 +22,46 @@ export function Header() {
           <Link to="/" className="text-sm font-medium transition-colors hover:text-primary">
             Home
           </Link>
-          <Link to="/products" className="text-sm font-medium transition-colors hover:text-primary">
-            Products
-          </Link>
+          <div className="relative">
+            <button 
+              className="flex items-center text-sm font-medium transition-colors hover:text-primary"
+              onClick={() => setIsProductMenuOpen(!isProductMenuOpen)}
+            >
+              Products
+              <ChevronDown className="ml-1 h-4 w-4" />
+            </button>
+            
+            {isProductMenuOpen && (
+              <div className="absolute mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                <div className="py-1" role="menu" aria-orientation="vertical">
+                  <Link
+                    to="/products"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    role="menuitem"
+                    onClick={() => setIsProductMenuOpen(false)}
+                  >
+                    All Products
+                  </Link>
+                  <Link
+                    to="/products/total-essential"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    role="menuitem"
+                    onClick={() => setIsProductMenuOpen(false)}
+                  >
+                    Total Essential
+                  </Link>
+                  <Link
+                    to="/products/total-essential-plus"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    role="menuitem"
+                    onClick={() => setIsProductMenuOpen(false)}
+                  >
+                    Total Essential Plus
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
           <Link to="/benefits" className="text-sm font-medium transition-colors hover:text-primary">
             Benefits
           </Link>
@@ -78,13 +116,50 @@ export function Header() {
             >
               Home
             </Link>
-            <Link
-              to="/products"
-              className="block py-2 text-base font-medium"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Products
-            </Link>
+            <div>
+              <button
+                className="flex w-full items-center justify-between py-2 text-base font-medium"
+                onClick={() => setIsProductMenuOpen(!isProductMenuOpen)}
+              >
+                Products
+                <ChevronDown className="h-4 w-4" />
+              </button>
+              
+              {isProductMenuOpen && (
+                <div className="pl-4 space-y-1">
+                  <Link
+                    to="/products"
+                    className="block py-2 text-sm"
+                    onClick={() => {
+                      setIsProductMenuOpen(false);
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    All Products
+                  </Link>
+                  <Link
+                    to="/products/total-essential"
+                    className="block py-2 text-sm"
+                    onClick={() => {
+                      setIsProductMenuOpen(false);
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    Total Essential
+                  </Link>
+                  <Link
+                    to="/products/total-essential-plus"
+                    className="block py-2 text-sm"
+                    onClick={() => {
+                      setIsProductMenuOpen(false);
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    Total Essential Plus
+                  </Link>
+                </div>
+              )}
+            </div>
             <Link
               to="/benefits"
               className="block py-2 text-base font-medium"

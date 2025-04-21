@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Heading } from '@/components/ui/heading';
 import { ProductCard } from '@/components/ui/product-card';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 export function ProductShowcase() {
   return (
@@ -43,12 +44,16 @@ export function ProductShowcase() {
         </motion.div>
         
         <div className="flex justify-center gap-8 mt-8">
-          <Button variant="premium" size="lg">
-            Read More
-          </Button>
-          <Button variant="premium2" size="lg">
-            Read More
-          </Button>
+          <Link to="/products/total-essential">
+            <Button variant="premium" size="lg">
+              Read More
+            </Button>
+          </Link>
+          <Link to="/products/total-essential-plus">
+            <Button variant="premium2" size="lg">
+              Read More
+            </Button>
+          </Link>
         </div>
 
         <div className="mt-16 text-center">
@@ -188,4 +193,3 @@ export function ProductShowcase() {
 }
 
 export default ProductShowcase;
-
