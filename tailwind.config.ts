@@ -32,6 +32,28 @@ export default {
 					DEFAULT: 'hsl(var(--secondary))',
 					foreground: 'hsl(var(--secondary-foreground))'
 				},
+				green: {
+					100: '#F2FCE2',
+					200: '#E4F9C5',
+					300: '#D6F5A8',
+					400: '#C8F18B',
+					500: '#9ED458', // Brand green
+					600: '#7FB835',
+					700: '#5F9B18',
+					800: '#3F7F0B',
+					900: '#205303',
+				},
+				purple: {
+					100: '#F5E9F7',
+					200: '#EBD3EF',
+					300: '#DCADE3',
+					400: '#C889D0',
+					500: '#B075B3', // Brand purple
+					600: '#9A5B9E',
+					700: '#7E4782',
+					800: '#633366',
+					900: '#47204D',
+				},
 				destructive: {
 					DEFAULT: 'hsl(var(--destructive))',
 					foreground: 'hsl(var(--destructive-foreground))'
