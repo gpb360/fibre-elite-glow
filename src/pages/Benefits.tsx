@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Heart, Brain, Weight, BookCheck, Star, Award } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+
 const BenefitCard = ({
   title,
   description,
@@ -29,21 +30,25 @@ const BenefitCard = ({
       </div>
     </CardContent>
   </Card>;
-const BenefitsHero = () => <section className="relative overflow-hidden bg-white pt-20 pb-12 md:pt-32 md:pb-20">
-    <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#f0fdf4_1px,transparent_1px),linear-gradient(to_bottom,#f0fdf4_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_110%)]"></div>
+
+const BenefitsHero = () => (
+  <section className="relative overflow-hidden bg-white pt-20 pb-12 md:pt-32 md:pb-20">
+    <div 
+      className="absolute inset-0 z-0 bg-cover bg-center opacity-20" 
+      style={{ 
+        backgroundImage: `url('/public/lovable-uploads/09e3b94c-60cd-46ef-b590-27c16a2216a6.png')`,
+        width: '100%'
+      }}
+    />
     
-    <div className="container px-4 md:px-6">
+    <div className="container px-4 md:px-6 relative z-10">
       <div className="grid gap-6 lg:grid-cols-[1fr_600px] lg:gap-12 xl:grid-cols-[1fr_700px]">
         <div className="flex flex-col justify-center space-y-4">
-          <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.5
-        }}>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.5 }}
+          >
             <p className="text-green-500 font-semibold">Total Essential</p>
             <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
               Fiber Benefits<span className="text-green-500">.</span>
@@ -114,7 +119,9 @@ const BenefitsHero = () => <section className="relative overflow-hidden bg-white
         </motion.div>
       </div>
     </div>
-  </section>;
+  </section>
+);
+
 const Benefits = () => {
   const benefits = [{
     title: "Digestive Health",
@@ -186,4 +193,5 @@ const Benefits = () => {
       <Footer />
     </div>;
 };
+
 export default Benefits;
