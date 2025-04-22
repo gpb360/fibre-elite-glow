@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -44,8 +45,8 @@ const BenefitsHero = () => (
               Fiber Benefits<span className="text-green-500">.</span>
             </h1>
             <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400 mt-4">
-              Discover how our fiber supplements can transform your health, 
-              support digestive wellness, and improve your overall quality of life.
+              Discover the power of natural fiber supplements derived from whole foods, 
+              supporting your digestive health, energy, and overall wellness.
             </p>
           </motion.div>
           <motion.div 
@@ -90,9 +91,9 @@ const BenefitsHero = () => (
         >
           <div className="relative">
             <img
-              alt="Fiber Supplements Health Benefits"
+              alt="Fiber Supplements with Fresh Produce"
               className="aspect-square rounded-xl object-cover object-center"
-              src="public/lovable-uploads/c159fdf8-1fcc-418f-a95b-70543b77a5ae.png"
+              src="public/lovable-uploads/2b046ebf-59db-4ba4-9786-24cde3a6a5d4.png"
               width={600}
               height={600}
             />
