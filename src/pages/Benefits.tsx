@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -7,13 +6,17 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Heart, Brain, Weight, BookCheck, Star, Award } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-
-const BenefitCard = ({ title, description, icon: Icon }: {
+const BenefitCard = ({
+  title,
+  description,
+  icon: Icon
+}: {
   title: string;
   description: string;
-  icon: React.ComponentType<{ className?: string }>;
-}) => (
-  <Card className="hover:shadow-lg transition-shadow">
+  icon: React.ComponentType<{
+    className?: string;
+  }>;
+}) => <Card className="hover:shadow-lg transition-shadow">
     <CardContent className="p-6">
       <div className="flex items-start gap-4">
         <div className="rounded-full bg-green-100 p-3">
@@ -25,21 +28,22 @@ const BenefitCard = ({ title, description, icon: Icon }: {
         </div>
       </div>
     </CardContent>
-  </Card>
-);
-
-const BenefitsHero = () => (
-  <section className="relative overflow-hidden bg-white pt-20 pb-12 md:pt-32 md:pb-20">
+  </Card>;
+const BenefitsHero = () => <section className="relative overflow-hidden bg-white pt-20 pb-12 md:pt-32 md:pb-20">
     <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#f0fdf4_1px,transparent_1px),linear-gradient(to_bottom,#f0fdf4_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_110%)]"></div>
     
     <div className="container px-4 md:px-6">
       <div className="grid gap-6 lg:grid-cols-[1fr_600px] lg:gap-12 xl:grid-cols-[1fr_700px]">
         <div className="flex flex-col justify-center space-y-4">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
+          <motion.div initial={{
+          opacity: 0,
+          y: 20
+        }} animate={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.5
+        }}>
             <p className="text-green-500 font-semibold">Total Essential</p>
             <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
               Fiber Benefits<span className="text-green-500">.</span>
@@ -49,12 +53,16 @@ const BenefitsHero = () => (
               supporting your digestive health, energy, and overall wellness.
             </p>
           </motion.div>
-          <motion.div 
-            className="flex flex-col gap-2 min-[400px]:flex-row"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
+          <motion.div className="flex flex-col gap-2 min-[400px]:flex-row" initial={{
+          opacity: 0,
+          y: 20
+        }} animate={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.5,
+          delay: 0.2
+        }}>
             <Button size="xl" variant="premium">
               Shop Now
             </Button>
@@ -63,12 +71,14 @@ const BenefitsHero = () => (
             </Button>
           </motion.div>
           
-          <motion.div 
-            className="flex items-center space-x-4 text-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-          >
+          <motion.div className="flex items-center space-x-4 text-sm" initial={{
+          opacity: 0
+        }} animate={{
+          opacity: 1
+        }} transition={{
+          duration: 0.5,
+          delay: 0.4
+        }}>
             <div className="flex items-center">
               <Award className="h-4 w-4 text-green-500 mr-1" />
               <span>Evidence-Based</span>
@@ -83,20 +93,17 @@ const BenefitsHero = () => (
             </div>
           </motion.div>
         </div>
-        <motion.div 
-          className="mx-auto flex items-center justify-center"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.7 }}
-        >
+        <motion.div className="mx-auto flex items-center justify-center" initial={{
+        opacity: 0,
+        scale: 0.9
+      }} animate={{
+        opacity: 1,
+        scale: 1
+      }} transition={{
+        duration: 0.7
+      }}>
           <div className="relative">
-            <img
-              alt="Fiber Supplements with Fresh Produce"
-              className="aspect-square rounded-xl object-cover object-center"
-              src="public/lovable-uploads/2b046ebf-59db-4ba4-9786-24cde3a6a5d4.png"
-              width={600}
-              height={600}
-            />
+            
             
             <div className="absolute -right-4 -top-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-500 text-white shadow-lg">
               <div className="text-center text-sm font-bold">
@@ -107,56 +114,40 @@ const BenefitsHero = () => (
         </motion.div>
       </div>
     </div>
-  </section>
-);
-
+  </section>;
 const Benefits = () => {
-  const benefits = [
-    {
-      title: "Digestive Health",
-      description: "Normalizes bowel movements and helps maintain bowel health by increasing stool bulk and softness. May help prevent hemorrhoids and diverticular disease.",
-      icon: Heart
-    },
-    {
-      title: "Heart Health",
-      description: "Helps lower cholesterol levels, especially LDL (bad) cholesterol, while potentially reducing blood pressure and inflammation.",
-      icon: Award
-    },
-    {
-      title: "Blood Sugar Control",
-      description: "Slows the absorption of sugar and helps improve blood sugar levels, potentially reducing the risk of developing type 2 diabetes.",
-      icon: Brain
-    },
-    {
-      title: "Weight Management",
-      description: "High-fiber foods are more filling, helping you eat less and stay satisfied longer. They're typically lower in calories for the same volume.",
-      icon: Weight
-    },
-    {
-      title: "Skin Health",
-      description: "Helps remove toxins from your body that might otherwise be expelled through your skin, potentially reducing acne and other skin issues.",
-      icon: Star
-    },
-    {
-      title: "Overall Wellness",
-      description: "May help prevent gallstones, kidney stones, and provide relief from irritable bowel syndrome (IBS).",
-      icon: BookCheck
-    }
-  ];
-
-  return (
-    <div className="flex min-h-screen flex-col">
+  const benefits = [{
+    title: "Digestive Health",
+    description: "Normalizes bowel movements and helps maintain bowel health by increasing stool bulk and softness. May help prevent hemorrhoids and diverticular disease.",
+    icon: Heart
+  }, {
+    title: "Heart Health",
+    description: "Helps lower cholesterol levels, especially LDL (bad) cholesterol, while potentially reducing blood pressure and inflammation.",
+    icon: Award
+  }, {
+    title: "Blood Sugar Control",
+    description: "Slows the absorption of sugar and helps improve blood sugar levels, potentially reducing the risk of developing type 2 diabetes.",
+    icon: Brain
+  }, {
+    title: "Weight Management",
+    description: "High-fiber foods are more filling, helping you eat less and stay satisfied longer. They're typically lower in calories for the same volume.",
+    icon: Weight
+  }, {
+    title: "Skin Health",
+    description: "Helps remove toxins from your body that might otherwise be expelled through your skin, potentially reducing acne and other skin issues.",
+    icon: Star
+  }, {
+    title: "Overall Wellness",
+    description: "May help prevent gallstones, kidney stones, and provide relief from irritable bowel syndrome (IBS).",
+    icon: BookCheck
+  }];
+  return <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
         <BenefitsHero />
         <div className="container mx-auto px-4 py-12">
           <div className="max-w-3xl mx-auto mb-12">
-            <Heading 
-              title="Health Benefits of Fiber Supplements"
-              description="Discover how our natural fiber supplements can transform your health and well-being through these key benefits."
-              centered
-              className="mb-8"
-            />
+            <Heading title="Health Benefits of Fiber Supplements" description="Discover how our natural fiber supplements can transform your health and well-being through these key benefits." centered className="mb-8" />
             
             <div className="text-gray-600 space-y-4 mb-12">
               <p>
@@ -172,23 +163,11 @@ const Benefits = () => {
           </div>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {benefits.map((benefit) => (
-              <BenefitCard
-                key={benefit.title}
-                title={benefit.title}
-                description={benefit.description}
-                icon={benefit.icon}
-              />
-            ))}
+            {benefits.map(benefit => <BenefitCard key={benefit.title} title={benefit.title} description={benefit.description} icon={benefit.icon} />)}
           </div>
 
           <div className="mt-12 bg-green-50 rounded-lg p-8">
-            <Heading 
-              title="Scientific Evidence"
-              description="Our products are backed by extensive research and scientific studies demonstrating the importance of fiber in maintaining good health."
-              size="md"
-              className="mb-6"
-            />
+            <Heading title="Scientific Evidence" description="Our products are backed by extensive research and scientific studies demonstrating the importance of fiber in maintaining good health." size="md" className="mb-6" />
             <div className="text-gray-600 space-y-4">
               <p>
                 Research from prestigious institutions like the Mayo Clinic has shown that a high-fiber diet 
@@ -205,8 +184,6 @@ const Benefits = () => {
         </div>
       </main>
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default Benefits;
