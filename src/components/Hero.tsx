@@ -106,7 +106,7 @@ export function Hero() {
               <img
                 alt="Total Essential Product Box"
                 className="aspect-square rounded-xl object-cover object-center"
-                src="public/lovable-uploads/c159fdf8-1fcc-418f-a95b-70543b77a5ae.png"
+                src="https://lovable.dev/projects/e6373c46-ce78-4b9b-b301-ffeeae5ebf00"
                 width={600}
                 height={600}
               />
