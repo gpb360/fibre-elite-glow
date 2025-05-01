@@ -3,10 +3,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ShoppingCart, Menu, X, ChevronDown } from 'lucide-react';
+import SignIn from './SignIn';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isProductMenuOpen, setIsProductMenuOpen] = React.useState(false);
+  const [isSignInOpen, setIsSignInOpen] = React.useState(false);
   
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -96,7 +98,11 @@ export function Header() {
               0
             </span>
           </Link>
-          <Button variant="outline" size="sm">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => setIsSignInOpen(true)}
+          >
             Sign In
           </Button>
           <Button variant="premium" size="sm">
@@ -188,7 +194,14 @@ export function Header() {
                   0
                 </span>
               </Link>
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  setIsSignInOpen(true);
+                }}
+              >
                 Sign In
               </Button>
               <Button variant="premium" size="sm">
@@ -198,6 +211,12 @@ export function Header() {
           </div>
         </div>
       )}
+      
+      {/* Sign In Dialog */}
+      <SignIn 
+        isOpen={isSignInOpen} 
+        onClose={() => setIsSignInOpen(false)} 
+      />
     </header>
   );
 }
