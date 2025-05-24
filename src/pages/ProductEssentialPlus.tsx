@@ -1,15 +1,28 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { SplitSection } from '@/components/ui/split-section';
+import { PackageSelector } from '@/components/ui/package-selector';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import { usePackages, Package } from '@/hooks/usePackages';
 
 export function ProductEssentialPlus() {
+  const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
+  const { data: packages, isLoading } = usePackages('total_essential_plus');
+
+  // Set default package to the most popular one when data loads
+  React.useEffect(() => {
+    if (packages && !selectedPackage) {
+      const popularPackage = packages.find(pkg => pkg.is_popular) || packages[0];
+      setSelectedPackage(popularPackage);
+    }
+  }, [packages, selectedPackage]);
+
   return (
     <>
       <Header />
@@ -28,7 +41,16 @@ export function ProductEssentialPlus() {
                   <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
                     Total Essential Plus
                   </h1>
-                  <p className="text-purple-500 text-xl font-semibold">$60.00</p>
+                  {selectedPackage && (
+                    <p className="text-purple-500 text-xl font-semibold">
+                      ${selectedPackage.price}
+                      {selectedPackage.savings && selectedPackage.savings > 0 && (
+                        <span className="ml-2 text-sm text-gray-500 line-through">
+                          ${selectedPackage.original_price}
+                        </span>
+                      )}
+                    </p>
+                  )}
                   <div className="flex items-center">
                     {[...Array(5)].map((_, i) => (
                       <svg
@@ -47,9 +69,24 @@ export function ProductEssentialPlus() {
                     15 DAY FRUITS AND VEGETABLE FIBER DRINK
                   </p>
                 </div>
+                
+                {/* Package Selection */}
+                <div className="mt-6">
+                  {isLoading ? (
+                    <div className="animate-pulse bg-gray-200 h-32 rounded-lg"></div>
+                  ) : packages && (
+                    <PackageSelector
+                      packages={packages}
+                      selectedPackage={selectedPackage}
+                      onSelectPackage={setSelectedPackage}
+                      variant="purple"
+                    />
+                  )}
+                </div>
+                
                 <div className="flex flex-col sm:flex-row gap-4 mt-6">
-                  <Button variant="premium2" size="lg">
-                    Add to Cart
+                  <Button variant="premium2" size="lg" disabled={!selectedPackage}>
+                    Add to Cart - ${selectedPackage?.price || '0.00'}
                   </Button>
                   <Link to="/products">
                     <Button variant="outline" size="lg">
