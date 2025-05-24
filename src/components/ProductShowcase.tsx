@@ -114,10 +114,10 @@ export function ProductShowcase() {
                   </td>
                 </tr>
                 <tr className="border-b border-gray-100">
-                  <td className="p-3 text-left">Probiotics</td>
+                  <td className="p-3 text-left">Prebiotics (Oligosaccharides)</td>
                   <td className="p-3 text-center">
                     <svg
-                      className="h-5 w-5 mx-auto text-gray-400"
+                      className="h-5 w-5 mx-auto text-green-500"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -127,7 +127,7 @@ export function ProductShowcase() {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
+                        d="M5 13l4 4L19 7"
                       />
                     </svg>
                   </td>

@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { SplitSection } from '@/components/ui/split-section';
 import { PackageSelector } from '@/components/ui/package-selector';
+import { FaqSection } from '@/components/FaqSection';
 import { Link } from 'react-router-dom';
 import { ExternalLink } from 'lucide-react';
 import { Header } from '@/components/Header';
@@ -22,6 +22,29 @@ export function ProductEssentialPlus() {
       setSelectedPackage(popularPackage);
     }
   }, [packages, selectedPackage]);
+
+  const faqData = [
+    {
+      question: "What's the difference between prebiotics and probiotics?",
+      answer: "Prebiotics are food for the good bacteria in your gut, while probiotics are the actual live bacteria. Our Total Essential Plus contains oligosaccharides, which are prebiotics that help feed and nourish your existing beneficial gut bacteria, supporting a healthy digestive system naturally."
+    },
+    {
+      question: "How long should I take Total Essential Plus?",
+      answer: "Total Essential Plus is designed as a 15-day program. For best results, take one sachet daily for the full 15 days. Many customers repeat the program monthly or as needed for ongoing digestive health support."
+    },
+    {
+      question: "What makes Total Essential Plus different from the original?",
+      answer: "Total Essential Plus contains all the benefits of our original formula plus added superfruits (Acai berry, Strawberry, Cranberry, and Raspberry) that provide additional antioxidants for skin health and a more enjoyable berry flavor."
+    },
+    {
+      question: "Is Total Essential Plus safe for daily use?",
+      answer: "Yes, Total Essential Plus is made with 100% natural ingredients and is certified non-GMO and gluten-free. However, as with any supplement, we recommend consulting with your healthcare practitioner before starting any new health program."
+    },
+    {
+      question: "Can I take Total Essential Plus if I have dietary restrictions?",
+      answer: "Total Essential Plus is gluten-free and made with natural plant-based ingredients. If you have specific allergies or dietary restrictions, please review the ingredient list and consult with your healthcare provider."
+    }
+  ];
 
   return (
     <>
@@ -455,6 +478,9 @@ export function ProductEssentialPlus() {
             </div>
           </div>
         </section>
+
+        {/* FAQ Section */}
+        <FaqSection faqs={faqData} />
       </main>
       <Footer />
     </>
