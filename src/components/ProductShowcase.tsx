@@ -26,7 +26,7 @@ export function ProductShowcase() {
         >
           <ProductCard
             variant="green"
-            image="public/lovable-uploads/fb7a9d0d-db3d-4355-84f4-c2fe54d78968.png"
+            image="/lovable-uploads/27ca3fa0-24aa-479b-b075-3f11006467c5.png"
             title="Total Essential"
             price="Starting at $79.99"
             description={`15 DAY FRUITS AND VEGETABLE FIBER DRINK\n\nTotal Essential is formulated with 100% natural fruit and vegetable extracts mixed with oat bran and palm tree trunk fiber. This balanced blend of top-grade soluble and insoluble fiber helps normalize bowel movements, supports heart health, blood sugar control, aids in weight management, and more. Certified non-GMO and gluten-free, with ingredients like broccoli, spinach, apple fiber, oat bran fiber, carrot, celery, papaya, and aloe vera. Ideal for anyone seeking well-being with a convenient once-daily sachet.`}
@@ -35,7 +35,7 @@ export function ProductShowcase() {
           
           <ProductCard
             variant="purple"
-            image="public/lovable-uploads/655c5d55-e25f-4ffc-9457-0d10361ff0a9.png"
+            image="/lovable-uploads/5f8f72e3-397f-47a4-8bce-f15924c32a34.png"
             title="Total Essential Plus"
             price="Starting at $84.99"
             description={`15 DAY FRUITS AND VEGETABLE FIBER DRINK\n\nTotal Essential Plus features all the benefits of the original formula plus added Acai berry, Strawberry, Cranberry, and Raspberry to boost skin health and flavor. Combining powerful natural fibers—soluble and insoluble—from premium fruits and vegetables, PLUS is a great choice for those looking for improved skin, better digestion, and greater vitality. Certified non-GMO, gluten-free, and packed with nourishing plant-based ingredients for visible results.`}

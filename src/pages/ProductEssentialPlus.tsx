@@ -127,7 +127,7 @@ export function ProductEssentialPlus() {
                 <img
                   alt="Total Essential Plus Product"
                   className="aspect-square overflow-hidden rounded-xl object-cover object-center sm:w-full"
-                  src="public/lovable-uploads/655c5d55-e25f-4ffc-9457-0d10361ff0a9.png"
+                  src="/lovable-uploads/5f8f72e3-397f-47a4-8bce-f15924c32a34.png"
                   width={550}
                   height={550}
                 />
