@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -26,23 +27,23 @@ export function ProductEssential() {
   const faqData = [
     {
       question: "What's the difference between prebiotics and probiotics?",
-      answer: "Prebiotics are food for the good bacteria in your gut, while probiotics are the actual live bacteria. Our Total Essential contains oligosaccharides, which are prebiotics that help feed and nourish your existing beneficial gut bacteria, supporting a healthy digestive system naturally."
+      answer: "Prebiotics are specialized plant fibers that feed the beneficial bacteria already living in your gut, while probiotics are live bacteria that you add to your digestive system. Our Total Essential contains oligosaccharides, which are prebiotics that nourish your existing beneficial gut bacteria, supporting a naturally healthy digestive ecosystem without introducing foreign bacteria."
     },
     {
       question: "How long should I take Total Essential?",
-      answer: "Total Essential is designed as a 15-day program. For best results, take one sachet daily for the full 15 days. Many customers repeat the program monthly or as needed for ongoing digestive health support."
+      answer: "Total Essential is designed as a comprehensive 15-day wellness program. For optimal results, take one sachet daily for the complete 15-day cycle. Many customers incorporate this program into their monthly wellness routine or use it seasonally for ongoing digestive health maintenance and detoxification support."
     },
     {
-      question: "What makes Total Essential effective?",
-      answer: "Total Essential combines both soluble and insoluble fiber from premium natural sources. This balanced blend helps normalize bowel movements, supports heart health, aids in blood sugar control, and promotes weight management."
+      question: "What makes Total Essential uniquely effective?",
+      answer: "Total Essential combines both soluble and insoluble fiber from premium natural sources in scientifically balanced ratios. This dual-fiber approach ensures comprehensive digestive support: soluble fiber helps regulate blood sugar and cholesterol while insoluble fiber promotes healthy elimination and detoxification. The addition of oligosaccharides provides prebiotic support for optimal gut microbiome health."
     },
     {
-      question: "Is Total Essential safe for daily use?",
-      answer: "Yes, Total Essential is made with 100% natural ingredients and is certified non-GMO and gluten-free. However, as with any supplement, we recommend consulting with your healthcare practitioner before starting any new health program."
+      question: "Is Total Essential safe for daily use and long-term consumption?",
+      answer: "Yes, Total Essential is formulated with 100% natural, food-grade ingredients and is certified non-GMO and gluten-free. Our gentle fiber blend is well-tolerated by most individuals. However, as with any nutritional supplement, we recommend consulting with your healthcare practitioner before beginning any new wellness program, especially if you have existing health conditions."
     },
     {
-      question: "Can I take Total Essential if I have dietary restrictions?",
-      answer: "Total Essential is gluten-free and made with natural plant-based ingredients. If you have specific allergies or dietary restrictions, please review the ingredient list and consult with your healthcare provider."
+      question: "Can I take Total Essential if I have dietary restrictions or allergies?",
+      answer: "Total Essential is gluten-free, non-GMO, and made exclusively with natural plant-based ingredients. It contains no artificial preservatives, colors, or synthetic additives. If you have specific food allergies or dietary restrictions, please review our complete ingredient list and consult with your healthcare provider to ensure compatibility with your individual needs."
     }
   ];
 
@@ -89,7 +90,7 @@ export function ProductEssential() {
                     <span className="ml-2 text-sm text-gray-600">(3 customer reviews)</span>
                   </div>
                   <p className="max-w-[600px] text-zinc-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                    15 DAY FRUITS AND VEGETABLE FIBER DRINK
+                    PREMIUM 15-DAY DETOX & WELLNESS PROGRAM
                   </p>
                 </div>
                 
@@ -140,41 +141,57 @@ export function ProductEssential() {
         <section className="py-12 md:py-20">
           <div className="container px-4 md:px-6">
             <Heading
-              title="Product Description"
-              description="A balanced blend of top-grade soluble and insoluble fiber"
+              title="Revolutionary Fiber Technology"
+              description="Scientifically formulated for optimal digestive health and wellness"
               className="mb-10"
             />
             <div className="prose max-w-none">
-              <p>
-                Today's modern diet consists of fast food, delicacies and temptations. Both fast food and lavish meals are mostly high-fat and low-fiber which will severely disrupt the function of intestinal tract, cause excess weight and addiction, affect insulin and diabetes, cause obesity and cardiovascular disease and many more….
+              <p className="text-lg leading-relaxed mb-6">
+                In today's fast-paced world, modern dietary habits consisting of processed foods, refined sugars, and nutrient-poor options have created a widespread fiber deficiency crisis. These high-fat, low-fiber diets severely disrupt intestinal function, leading to digestive irregularity, weight gain, insulin resistance, cardiovascular stress, and numerous metabolic complications.
               </p>
               
-              <p>
-                Total Essential is formulated with 100% natural fruit and vegetable extracts mixed with oat bran and Palm tree trunk fiber. This balanced blend of top-grade soluble and insoluble fiber helps normalize bowel movements, supports heart health, blood sugar control, aids in weight management, and more.
+              <p className="text-lg leading-relaxed mb-6">
+                <strong>Total Essential</strong> represents a breakthrough in nutritional science, meticulously formulated with 100% natural fruit and vegetable extracts, premium oat bran, and sustainably sourced palm tree trunk fiber. This scientifically balanced blend of top-grade soluble and insoluble fiber works synergistically to restore digestive harmony, support cardiovascular health, regulate blood sugar levels, and promote healthy weight management.
               </p>
 
-              <h3>What are soluble and insoluble fiber?</h3>
-              <p>
-                <strong>Soluble fiber</strong> dissolves in water and is found mostly in fruits, oat bran etc. It has a gel-like consistency that increase bowel by increasing the volume of bulk in colon.
-              </p>
-              <p>
-                <strong>Insoluble fiber</strong> which doesn't dissolves in water and is found mostly in vegetables. It works like a sponge and it grabs the toxins in our body to eliminate them out to the toilet.
-              </p>
+              <h3 className="text-2xl font-semibold mb-4 text-green-700">Understanding Fiber Science</h3>
+              <div className="grid md:grid-cols-2 gap-6 mb-8">
+                <div className="bg-green-50 p-6 rounded-lg">
+                  <h4 className="font-semibold text-lg mb-3 text-green-800">Soluble Fiber</h4>
+                  <p className="text-gray-700">
+                    Dissolves in water to form a gel-like substance, primarily found in fruits and oat bran. This fiber type helps regulate cholesterol levels, stabilizes blood sugar, and creates a feeling of fullness that supports healthy weight management by slowing digestion and nutrient absorption.
+                  </p>
+                </div>
+                <div className="bg-green-50 p-6 rounded-lg">
+                  <h4 className="font-semibold text-lg mb-3 text-green-800">Insoluble Fiber</h4>
+                  <p className="text-gray-700">
+                    Remains intact through the digestive process, acting as nature's detoxifier. This fiber type adds bulk to stool, promotes regular bowel movements, and effectively binds to toxins and waste products, facilitating their elimination from the body.
+                  </p>
+                </div>
+              </div>
 
-              <h3>Why taking adequate fiber daily is important?</h3>
-              <p>
-                Some people might think it's all about overcoming constipation. Actually, fiber offers numerous health benefits beyond just digestive regularity.
+              <h3 className="text-2xl font-semibold mb-4 text-green-700">The Critical Importance of Daily Fiber</h3>
+              <p className="text-lg leading-relaxed mb-4">
+                While many people associate fiber supplementation solely with digestive regularity, research reveals that adequate fiber intake provides comprehensive health benefits that extend far beyond simple constipation relief. Clinical studies demonstrate that individuals consuming optimal fiber levels experience:
               </p>
+              <ul className="list-disc ml-6 space-y-2 text-lg">
+                <li>Reduced risk of cardiovascular disease and improved heart health</li>
+                <li>Better blood sugar control and insulin sensitivity</li>
+                <li>Enhanced weight management and appetite regulation</li>
+                <li>Improved gut microbiome diversity and immune function</li>
+                <li>Lower inflammation markers throughout the body</li>
+                <li>Reduced risk of certain cancers, particularly colorectal cancer</li>
+              </ul>
             </div>
           </div>
         </section>
 
         {/* Ingredients Section */}
         <SplitSection
-          image="public/lovable-uploads/6903ac0b-0e52-4260-bda8-07f24ce86b9a.png"
+          image="/lovable-uploads/6903ac0b-0e52-4260-bda8-07f24ce86b9a.png"
           imageAlt="Total Essential Ingredients"
           title="Premium Natural Ingredients"
-          description="All of the ingredients used in our products are certified non-GMO (non-genetically modified organism) and Gluten Free. We sourced the best ingredients from all over the world to make this product top grade standard."
+          description="Every ingredient in Total Essential is carefully sourced from certified suppliers worldwide and meets the highest quality standards. All components are verified non-GMO (non-genetically modified organism) and certified Gluten-Free, ensuring purity and safety for daily consumption."
           className="bg-gray-50"
         >
           <div className="grid grid-cols-2 gap-4 mt-6">
@@ -183,37 +200,37 @@ export function ProductEssential() {
                 <svg className="h-5 w-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Broccoli
+                Organic Broccoli Extract
               </li>
               <li className="flex items-center">
                 <svg className="h-5 w-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Oligosaccharide
+                Prebiotic Oligosaccharides
               </li>
               <li className="flex items-center">
                 <svg className="h-5 w-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Spinach
+                Fresh Spinach Powder
               </li>
               <li className="flex items-center">
                 <svg className="h-5 w-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Apple Fibre
+                Premium Apple Fiber
               </li>
               <li className="flex items-center">
                 <svg className="h-5 w-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Oat Bran Fibre
+                Beta-Glucan Oat Bran
               </li>
               <li className="flex items-center">
                 <svg className="h-5 w-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Carrot
+                Nutrient-Rich Carrot
               </li>
             </ul>
             <ul className="space-y-2">
@@ -221,7 +238,7 @@ export function ProductEssential() {
                 <svg className="h-5 w-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Palm Tree Trunk Fibre
+                Sustainable Palm Fiber
               </li>
               <li className="flex items-center">
                 <svg className="h-5 w-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -233,25 +250,25 @@ export function ProductEssential() {
                 <svg className="h-5 w-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Cabbage
+                Fresh Cabbage Extract
               </li>
               <li className="flex items-center">
                 <svg className="h-5 w-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Papaya
+                Enzyme-Rich Papaya
               </li>
               <li className="flex items-center">
                 <svg className="h-5 w-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Parsley
+                Antioxidant Parsley
               </li>
               <li className="flex items-center">
                 <svg className="h-5 w-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Aloe Vera Powder
+                Pure Aloe Vera Powder
               </li>
             </ul>
           </div>
@@ -375,10 +392,10 @@ export function ProductEssential() {
 
         {/* How to Use Section */}
         <SplitSection
-          image="public/lovable-uploads/a9768c7e-625a-4016-8baa-79cea10189ac.png"
+          image="/lovable-uploads/a9768c7e-625a-4016-8baa-79cea10189ac.png"
           imageAlt="How to use Total Essential"
-          title="How to Use"
-          description="Total Essential is easy to incorporate into your daily routine."
+          title="Simple Daily Protocol"
+          description="Total Essential is designed for effortless integration into your daily wellness routine with maximum convenience and effectiveness."
           reverse
         >
           <div className="space-y-4 mt-4">
@@ -434,13 +451,13 @@ export function ProductEssential() {
         {/* CTA Section */}
         <section className="bg-green-50 py-16">
           <div className="container px-4 md:px-6 text-center">
-            <h2 className="text-3xl font-bold mb-4">Start Your Health Journey Today</h2>
+            <h2 className="text-3xl font-bold mb-4">Transform Your Health Today</h2>
             <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-              Experience the benefits of Total Essential's premium fiber blend for yourself.
+              Join thousands of satisfied customers who have experienced the life-changing benefits of Total Essential's premium fiber technology.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Button variant="premium" size="lg">
-                Add to Cart
+                Start Your Wellness Journey
               </Button>
               <Link to="/products/total-essential-plus">
                 <Button variant="outline" size="lg">

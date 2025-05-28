@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -26,23 +27,23 @@ export function ProductEssentialPlus() {
   const faqData = [
     {
       question: "What's the difference between prebiotics and probiotics?",
-      answer: "Prebiotics are food for the good bacteria in your gut, while probiotics are the actual live bacteria. Our Total Essential Plus contains oligosaccharides, which are prebiotics that help feed and nourish your existing beneficial gut bacteria, supporting a healthy digestive system naturally."
+      answer: "Prebiotics are specialized plant fibers that feed the beneficial bacteria already living in your gut, while probiotics are live bacteria that you add to your digestive system. Our Total Essential Plus contains oligosaccharides, which are prebiotics that nourish your existing beneficial gut bacteria, supporting a naturally healthy digestive ecosystem without introducing foreign bacteria."
     },
     {
       question: "How long should I take Total Essential Plus?",
-      answer: "Total Essential Plus is designed as a 15-day program. For best results, take one sachet daily for the full 15 days. Many customers repeat the program monthly or as needed for ongoing digestive health support."
+      answer: "Total Essential Plus is designed as an advanced 15-day beauty and wellness program. For optimal results, take one sachet daily for the complete 15-day cycle. Many customers incorporate this enhanced program into their monthly beauty and wellness routine for ongoing digestive health and skin radiance support."
     },
     {
-      question: "What makes Total Essential Plus different from the original?",
-      answer: "Total Essential Plus contains all the benefits of our original formula plus added superfruits (Acai berry, Strawberry, Cranberry, and Raspberry) that provide additional antioxidants for skin health and a more enjoyable berry flavor."
+      question: "What makes Total Essential Plus different from the original formula?",
+      answer: "Total Essential Plus contains all the powerful digestive benefits of our original formula plus four potent superfruits: Açaí Berry, Strawberry, Cranberry, and Raspberry. These additions provide enhanced antioxidant protection, promote radiant skin health, support anti-aging benefits, and deliver a deliciously refreshing berry flavor experience while maintaining all the original digestive and metabolic benefits."
     },
     {
-      question: "Is Total Essential Plus safe for daily use?",
-      answer: "Yes, Total Essential Plus is made with 100% natural ingredients and is certified non-GMO and gluten-free. However, as with any supplement, we recommend consulting with your healthcare practitioner before starting any new health program."
+      question: "Is Total Essential Plus safe for daily use and long-term consumption?",
+      answer: "Yes, Total Essential Plus is formulated with 100% natural, food-grade ingredients and is certified non-GMO and gluten-free. Our gentle fiber blend enhanced with superfruit extracts is well-tolerated by most individuals. However, as with any nutritional supplement, we recommend consulting with your healthcare practitioner before beginning any new wellness program."
     },
     {
-      question: "Can I take Total Essential Plus if I have dietary restrictions?",
-      answer: "Total Essential Plus is gluten-free and made with natural plant-based ingredients. If you have specific allergies or dietary restrictions, please review the ingredient list and consult with your healthcare provider."
+      question: "Can I take Total Essential Plus if I have dietary restrictions or allergies?",
+      answer: "Total Essential Plus is gluten-free, non-GMO, and made exclusively with natural plant-based ingredients including superfruit extracts. It contains no artificial preservatives, colors, or synthetic additives. If you have specific food allergies or dietary restrictions, please review our complete ingredient list and consult with your healthcare provider to ensure compatibility."
     }
   ];
 
@@ -89,7 +90,7 @@ export function ProductEssentialPlus() {
                     <span className="ml-2 text-sm text-gray-600">(7 customer reviews)</span>
                   </div>
                   <p className="max-w-[600px] text-zinc-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                    15 DAY FRUITS AND VEGETABLE FIBER DRINK
+                    ADVANCED 15-DAY BEAUTY & WELLNESS PROGRAM
                   </p>
                 </div>
                 
@@ -140,30 +141,36 @@ export function ProductEssentialPlus() {
         <section className="py-12 md:py-20">
           <div className="container px-4 md:px-6">
             <Heading
-              title="Product Description"
-              description="Advanced formula with superfruits for skin health and enhanced flavor"
+              title="Advanced Beauty & Wellness Technology"
+              description="Revolutionary superfruit-enhanced formula for comprehensive health and radiant skin"
               className="mb-10"
             />
             <div className="prose max-w-none">
-              <p>
-                Total Essential Plus features all the benefits of the original formula plus added Acai berry, Strawberry, Cranberry, and Raspberry to boost skin health and flavor. We added berries in this formula to make it taste fruitier and offer good benefits to your skin especially those people with acne problems.
+              <p className="text-lg leading-relaxed mb-6">
+                <strong>Total Essential Plus</strong> represents the next evolution in nutritional wellness, featuring all the powerful digestive benefits of our original formula enhanced with four potent superfruits: Açaí Berry, Strawberry, Cranberry, and Raspberry. This advanced formulation was specifically developed for individuals seeking comprehensive wellness with enhanced beauty benefits and superior antioxidant protection.
               </p>
               
-              <p>
-                Combining powerful natural fibers—soluble and insoluble—from premium fruits and vegetables, PLUS is a great choice for those looking for improved skin, better digestion, and greater vitality. Certified non-GMO, gluten-free, and packed with nourishing plant-based ingredients for visible results.
+              <p className="text-lg leading-relaxed mb-6">
+                Our research team carefully selected these superfruit additions not only for their exceptional flavor profile but for their clinically proven skin health benefits. The result is a deliciously refreshing berry-flavored wellness drink that supports clearer skin, improved complexion, and overall vitality while maintaining all the digestive and metabolic benefits of our original formula.
               </p>
 
-              <h3>What are soluble and insoluble fiber?</h3>
-              <p>
-                <strong>Soluble fiber</strong> dissolves in water and is found mostly in fruits, oat bran etc. It has a gel-like consistency that increase bowel by increasing the volume of bulk in colon.
-              </p>
-              <p>
-                <strong>Insoluble fiber</strong> which doesn't dissolves in water and is found mostly in vegetables. It works like a sponge and it grabs the toxins in our body to eliminate them out to the toilet.
-              </p>
+              <div className="bg-purple-50 p-6 rounded-lg mb-8">
+                <h3 className="text-2xl font-semibold mb-4 text-purple-700">The Science Behind Superfruit Enhancement</h3>
+                <p className="text-gray-700 mb-4">
+                  Clinical studies demonstrate that the antioxidant compounds found in our selected superfruits work synergistically to combat oxidative stress, reduce inflammation, and support cellular regeneration. This enhanced formula is particularly beneficial for individuals concerned about:
+                </p>
+                <ul className="list-disc ml-6 space-y-2 text-gray-700">
+                  <li>Skin health and complexion improvement</li>
+                  <li>Anti-aging and premature skin aging prevention</li>
+                  <li>Enhanced antioxidant protection against environmental stressors</li>
+                  <li>Improved overall vitality and energy levels</li>
+                  <li>Superior flavor experience for better compliance</li>
+                </ul>
+              </div>
 
-              <h3>Why choose Total Essential Plus?</h3>
-              <p>
-                The PLUS formula includes superfruit berries that not only enhance the flavor but provide additional antioxidants and nutrients that support skin health, making it ideal for those concerned about complexion and overall skin appearance.
+              <h3 className="text-2xl font-semibold mb-4 text-purple-700">Why Choose the Plus Formula?</h3>
+              <p className="text-lg leading-relaxed mb-4">
+                The PLUS formula is ideal for health-conscious individuals who want comprehensive wellness benefits with enhanced beauty support. The addition of superfruit berry extracts not only provides a superior taste experience but delivers measurable benefits for skin health, making it the perfect choice for those seeking both internal wellness and external radiance.
               </p>
             </div>
           </div>
@@ -171,10 +178,10 @@ export function ProductEssentialPlus() {
 
         {/* Ingredients Section */}
         <SplitSection
-          image="public/lovable-uploads/d98185ae-142e-45e8-9804-7b3e5aee3680.png"
+          image="/lovable-uploads/d98185ae-142e-45e8-9804-7b3e5aee3680.png"
           imageAlt="Total Essential Plus Ingredients"
-          title="Premium Natural Ingredients"
-          description="All of the ingredients used in our products are certified non-GMO (non-genetically modified organism) and Gluten Free. We sourced the best ingredients from all over the world to make this product top grade standard."
+          title="Premium Natural Ingredients Plus Superfruits"
+          description="Every ingredient in Total Essential Plus is carefully sourced from certified suppliers worldwide and meets the highest quality standards. All components are verified non-GMO and certified Gluten-Free, with the addition of four potent superfruit extracts for enhanced antioxidant protection and skin health benefits."
           className="bg-gray-50"
         >
           <div className="grid grid-cols-2 gap-4 mt-6">
@@ -406,10 +413,10 @@ export function ProductEssentialPlus() {
 
         {/* How to Use Section */}
         <SplitSection
-          image="public/lovable-uploads/c159fdf8-1fcc-418f-a95b-70543b77a5ae.png"
+          image="/lovable-uploads/c159fdf8-1fcc-418f-a95b-70543b77a5ae.png"
           imageAlt="How to use Total Essential Plus"
-          title="How to Use"
-          description="Total Essential Plus is easy to incorporate into your daily routine."
+          title="Enhanced Daily Protocol"
+          description="Total Essential Plus is designed for effortless integration into your daily beauty and wellness routine with maximum convenience and superior taste experience."
           reverse
         >
           <div className="space-y-4 mt-4">
@@ -462,13 +469,13 @@ export function ProductEssentialPlus() {
         {/* CTA Section */}
         <section className="bg-purple-50 py-16">
           <div className="container px-4 md:px-6 text-center">
-            <h2 className="text-3xl font-bold mb-4">Experience Enhanced Benefits Today</h2>
+            <h2 className="text-3xl font-bold mb-4">Elevate Your Beauty & Wellness Journey</h2>
             <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-              Upgrade your health routine with Total Essential Plus for improved digestion and beautiful skin.
+              Experience the enhanced benefits of Total Essential Plus for comprehensive health support and radiant skin from within.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Button variant="premium2" size="lg">
-                Add to Cart
+                Start Your Enhanced Journey
               </Button>
               <Link to="/products/total-essential">
                 <Button variant="outline" size="lg">

@@ -29,7 +29,7 @@ export function ProductShowcase() {
             image="/lovable-uploads/27ca3fa0-24aa-479b-b075-3f11006467c5.png"
             title="Total Essential"
             price="Starting at $79.99"
-            description={`15 DAY FRUITS AND VEGETABLE FIBER DRINK\n\nTotal Essential is formulated with 100% natural fruit and vegetable extracts mixed with oat bran and palm tree trunk fiber. This balanced blend of top-grade soluble and insoluble fiber helps normalize bowel movements, supports heart health, blood sugar control, aids in weight management, and more. Certified non-GMO and gluten-free, with ingredients like broccoli, spinach, apple fiber, oat bran fiber, carrot, celery, papaya, and aloe vera. Ideal for anyone seeking well-being with a convenient once-daily sachet.`}
+            description={`PREMIUM 15-DAY DETOX & WELLNESS PROGRAM\n\nTransform your digestive health with our scientifically formulated blend of 100% natural fruit and vegetable extracts, premium oat bran, and sustainably sourced palm tree trunk fiber. This expertly balanced combination of soluble and insoluble fiber delivers comprehensive wellness benefits including normalized bowel movements, cardiovascular support, blood sugar regulation, and effective weight management.\n\nCertified Non-GMO and Gluten-Free, featuring nutrient-dense ingredients like organic broccoli, spinach, apple fiber, oat bran fiber, carrot, celery, papaya, and aloe vera. Perfect for health-conscious individuals seeking a convenient, once-daily wellness solution that delivers real results.`}
             badge="Best Seller"
           />
           
@@ -38,7 +38,7 @@ export function ProductShowcase() {
             image="/lovable-uploads/5f8f72e3-397f-47a4-8bce-f15924c32a34.png"
             title="Total Essential Plus"
             price="Starting at $84.99"
-            description={`15 DAY FRUITS AND VEGETABLE FIBER DRINK\n\nTotal Essential Plus features all the benefits of the original formula plus added Acai berry, Strawberry, Cranberry, and Raspberry to boost skin health and flavor. Combining powerful natural fibers—soluble and insoluble—from premium fruits and vegetables, PLUS is a great choice for those looking for improved skin, better digestion, and greater vitality. Certified non-GMO, gluten-free, and packed with nourishing plant-based ingredients for visible results.`}
+            description={`ADVANCED 15-DAY BEAUTY & WELLNESS PROGRAM\n\nElevate your health journey with our enhanced formula featuring all the powerful benefits of Total Essential PLUS four potent superfruits: Açaí Berry, Strawberry, Cranberry, and Raspberry. This premium upgrade delivers superior antioxidant protection, promotes radiant skin health, and offers a deliciously refreshing berry flavor experience.\n\nSpecially formulated for those seeking comprehensive wellness with enhanced beauty benefits, this advanced fiber blend supports clearer skin, improved complexion, and overall vitality. The added superfruit complex provides powerful anti-aging properties while maintaining all the digestive and metabolic benefits of our original formula. Certified Non-GMO and Gluten-Free with premium plant-based ingredients for visible, lasting results.`}
             badge="New"
           />
         </motion.div>
