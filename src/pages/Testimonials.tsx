@@ -229,7 +229,8 @@ const Testimonials = () => {
                         Verified
                       </Badge>
                     )}
-                    <Badge className="absolute top-2 left-2 bg-purple-600 text-white">
+                    {/* Product badge moved to bottom right */}
+                    <Badge className="absolute bottom-2 right-2 bg-purple-600 text-white">
                       {testimonial.product}
                     </Badge>
                   </div>

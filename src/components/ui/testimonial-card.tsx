@@ -24,7 +24,7 @@ export function TestimonialCard({
       "relative overflow-hidden rounded-xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-md",
       className
     )}>
-      {/* Rating stars */}
+      {/* Rating stars - positioned at top left */}
       {rating > 0 && (
         <div className="mb-4 flex">
           {[...Array(5)].map((_, i) => (
