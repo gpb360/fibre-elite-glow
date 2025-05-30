@@ -10,6 +10,7 @@ import ProductEssential from "./pages/ProductEssential";
 import ProductEssentialPlus from "./pages/ProductEssentialPlus";
 import Benefits from "./pages/Benefits";
 import Faq from "./pages/Faq";
+import Testimonials from "./pages/Testimonials";
 
 const queryClient = new QueryClient();
 
@@ -26,7 +27,7 @@ const App = () => (
           <Route path="/products/total-essential-plus" element={<ProductEssentialPlus />} />
           <Route path="/benefits" element={<Benefits />} />
           <Route path="/faq" element={<Faq />} />
-          <Route path="/testimonials" element={<Index />} />
+          <Route path="/testimonials" element={<Testimonials />} />
           <Route path="/about" element={<Index />} />
           <Route path="/contact" element={<Index />} />
           <Route path="/cart" element={<Index />} />
