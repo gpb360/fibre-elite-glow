@@ -8,7 +8,8 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import ProductEssential from "./pages/ProductEssential";
 import ProductEssentialPlus from "./pages/ProductEssentialPlus";
-import Benefits from "./pages/Benefits";  // Import the Benefits page
+import Benefits from "./pages/Benefits";
+import Faq from "./pages/Faq";
 
 const queryClient = new QueryClient();
 
@@ -23,9 +24,9 @@ const App = () => (
           <Route path="/products" element={<Index />} />
           <Route path="/products/total-essential" element={<ProductEssential />} />
           <Route path="/products/total-essential-plus" element={<ProductEssentialPlus />} />
-          <Route path="/benefits" element={<Benefits />} />  {/* Use the Benefits component */}
+          <Route path="/benefits" element={<Benefits />} />
+          <Route path="/faq" element={<Faq />} />
           <Route path="/testimonials" element={<Index />} />
-          <Route path="/faq" element={<Index />} />
           <Route path="/about" element={<Index />} />
           <Route path="/contact" element={<Index />} />
           <Route path="/cart" element={<Index />} />
