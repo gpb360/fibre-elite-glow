@@ -7,14 +7,18 @@ import { SplitSection } from '@/components/ui/split-section';
 import { PackageSelector } from '@/components/ui/package-selector';
 import { FaqSection } from '@/components/FaqSection';
 import { Link } from 'react-router-dom';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Loader2, Check } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { usePackages, Package } from '@/hooks/usePackages';
+import { useCart } from '@/contexts/CartContext';
 
 export function ProductEssential() {
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
   const { data: packages, isLoading } = usePackages('total_essential');
+  const { addToCart, isLoading: cartLoading } = useCart();
+  const [isAdding, setIsAdding] = useState(false);
+  const [justAdded, setJustAdded] = useState(false);
 
   // Set default package to the most popular one when data loads
   React.useEffect(() => {
@@ -23,6 +27,32 @@ export function ProductEssential() {
       setSelectedPackage(popularPackage);
     }
   }, [packages, selectedPackage]);
+
+  const handleAddToCart = async () => {
+    if (!selectedPackage) return;
+
+    setIsAdding(true);
+
+    try {
+      await addToCart({
+        id: selectedPackage.id,
+        productName: selectedPackage.product_name,
+        productType: selectedPackage.product_type,
+        price: selectedPackage.price,
+        originalPrice: selectedPackage.original_price || undefined,
+        savings: selectedPackage.savings || undefined,
+        image: '/lovable-uploads/27ca3fa0-24aa-479b-b075-3f11006467c5.png',
+        packageSize: `${selectedPackage.quantity} sachets`,
+      });
+
+      setJustAdded(true);
+      setTimeout(() => setJustAdded(false), 3000);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+    } finally {
+      setIsAdding(false);
+    }
+  };
 
   const faqData = [
     {
@@ -109,8 +139,25 @@ export function ProductEssential() {
                 </div>
                 
                 <div className="flex flex-col sm:flex-row gap-4 mt-6">
-                  <Button variant="premium" size="lg" disabled={!selectedPackage}>
-                    Add to Cart - ${selectedPackage?.price || '0.00'}
+                  <Button
+                    variant="premium"
+                    size="lg"
+                    disabled={!selectedPackage || isAdding || cartLoading}
+                    onClick={handleAddToCart}
+                  >
+                    {isAdding ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                        Adding to Cart...
+                      </>
+                    ) : justAdded ? (
+                      <>
+                        <Check className="h-4 w-4 mr-2" />
+                        Added to Cart!
+                      </>
+                    ) : (
+                      `Add to Cart - $${selectedPackage?.price || '0.00'}`
+                    )}
                   </Button>
                   <Link to="/products">
                     <Button variant="outline" size="lg">
@@ -456,8 +503,25 @@ export function ProductEssential() {
               Join thousands of satisfied customers who have experienced the life-changing benefits of Total Essential's premium fiber technology.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Button variant="premium" size="lg">
-                Start Your Wellness Journey
+              <Button
+                variant="premium"
+                size="lg"
+                onClick={handleAddToCart}
+                disabled={!selectedPackage || isAdding || cartLoading}
+              >
+                {isAdding ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    Adding to Cart...
+                  </>
+                ) : justAdded ? (
+                  <>
+                    <Check className="h-4 w-4 mr-2" />
+                    Added to Cart!
+                  </>
+                ) : (
+                  'Start Your Wellness Journey'
+                )}
               </Button>
               <Link to="/products/total-essential-plus">
                 <Button variant="outline" size="lg">
