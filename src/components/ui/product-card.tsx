@@ -2,6 +2,8 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useCart } from '@/contexts/CartContext';
+import { Loader2, Check } from 'lucide-react';
 
 interface ProductCardProps {
   className?: string;
@@ -11,6 +13,10 @@ interface ProductCardProps {
   description: string;
   variant: 'green' | 'purple';
   badge?: string;
+  productId: string;
+  productType: 'total_essential' | 'total_essential_plus';
+  originalPrice?: string;
+  savings?: number;
 }
 
 export function ProductCard({
@@ -21,7 +27,37 @@ export function ProductCard({
   description,
   variant = 'green',
   badge,
+  productId,
+  productType,
+  originalPrice,
+  savings,
 }: ProductCardProps) {
+  const { addToCart, isLoading } = useCart();
+  const [isAdding, setIsAdding] = React.useState(false);
+  const [justAdded, setJustAdded] = React.useState(false);
+
+  const handleAddToCart = async () => {
+    setIsAdding(true);
+
+    try {
+      await addToCart({
+        id: productId,
+        productName: title,
+        productType,
+        price: parseFloat(price.replace('$', '')),
+        originalPrice: originalPrice ? parseFloat(originalPrice.replace('$', '')) : undefined,
+        savings,
+        image,
+      });
+
+      setJustAdded(true);
+      setTimeout(() => setJustAdded(false), 2000);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+    } finally {
+      setIsAdding(false);
+    }
+  };
   return (
     <div className={cn(
       "group relative overflow-hidden rounded-xl border",
@@ -48,12 +84,31 @@ export function ProductCard({
         <h3 className="text-lg font-semibold">{title}</h3>
         <p className="mt-2 text-sm text-gray-500">{description}</p>
         <div className="mt-4 flex items-center justify-between">
-          <span className="text-lg font-bold">{price}</span>
-          <Button 
-            variant={variant === 'green' ? 'premium' : 'premium2'} 
+          <div className="flex flex-col">
+            <span className="text-lg font-bold">{price}</span>
+            {originalPrice && (
+              <span className="text-sm text-gray-500 line-through">{originalPrice}</span>
+            )}
+          </div>
+          <Button
+            variant={variant === 'green' ? 'premium' : 'premium2'}
             size="sm"
+            onClick={handleAddToCart}
+            disabled={isAdding || isLoading}
           >
-            Add to Cart
+            {isAdding ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                Adding...
+              </>
+            ) : justAdded ? (
+              <>
+                <Check className="h-4 w-4 mr-2" />
+                Added!
+              </>
+            ) : (
+              'Add to Cart'
+            )}
           </Button>
         </div>
       </div>

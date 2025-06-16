@@ -3,12 +3,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ShoppingCart, Menu, X, ChevronDown } from 'lucide-react';
+import { useCart } from '@/contexts/CartContext';
 import SignIn from './SignIn';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isProductMenuOpen, setIsProductMenuOpen] = React.useState(false);
   const [isSignInOpen, setIsSignInOpen] = React.useState(false);
+  const { cart } = useCart();
   
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -92,11 +94,13 @@ export function Header() {
         
         {/* Cart and action buttons */}
         <div className="hidden md:flex items-center gap-4">
-          <Link to="/cart" className="relative">
+          <Link to="/cart" className="relative hover:text-green-600 transition-colors">
             <ShoppingCart className="h-6 w-6" />
-            <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-green-500 text-xs text-white">
-              0
-            </span>
+            {cart.totalItems > 0 && (
+              <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-green-500 text-xs text-white font-medium">
+                {cart.totalItems > 99 ? '99+' : cart.totalItems}
+              </span>
+            )}
           </Link>
           <Button 
             variant="outline" 
@@ -188,11 +192,13 @@ export function Header() {
               FAQ
             </Link>
             <div className="mt-4 flex items-center gap-4">
-              <Link to="/cart" className="relative">
+              <Link to="/cart" className="relative hover:text-green-600 transition-colors">
                 <ShoppingCart className="h-6 w-6" />
-                <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-green-500 text-xs text-white">
-                  0
-                </span>
+                {cart.totalItems > 0 && (
+                  <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-green-500 text-xs text-white font-medium">
+                    {cart.totalItems > 99 ? '99+' : cart.totalItems}
+                  </span>
+                )}
               </Link>
               <Button 
                 variant="outline" 
