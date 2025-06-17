@@ -39,14 +39,19 @@ const calculateTotals = (items: CartItem[]): Omit<CartState, 'items'> => {
 
 // Cart reducer
 const cartReducer = (state: CartState, action: CartAction): CartState => {
+  console.log('🔄 Cart reducer called:', { action: action.type, state, payload: action });
+
   switch (action.type) {
     case 'ADD_TO_CART': {
       const { item, quantity } = action.payload;
+      console.log('➕ Adding to cart:', { item, quantity, currentState: state });
+
       const existingItemIndex = state.items.findIndex(cartItem => cartItem.id === item.id);
-      
+
       let newItems: CartItem[];
-      
+
       if (existingItemIndex >= 0) {
+        console.log('🔄 Updating existing item at index:', existingItemIndex);
         // Update existing item quantity
         newItems = state.items.map((cartItem, index) =>
           index === existingItemIndex
@@ -54,15 +59,19 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
             : cartItem
         );
       } else {
+        console.log('🆕 Adding new item to cart');
         // Add new item
         newItems = [...state.items, { ...item, quantity }];
       }
-      
+
       const totals = calculateTotals(newItems);
-      return {
+      const newState = {
         items: newItems,
         ...totals,
       };
+
+      console.log('✅ New cart state:', newState);
+      return newState;
     }
     
     case 'REMOVE_FROM_CART': {
@@ -149,43 +158,70 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Cart actions
   const addToCart = async (item: Omit<CartItem, 'quantity'>, quantity: number = 1) => {
     setIsLoading(true);
-    
+
     try {
+      console.log('🛒 Adding item to cart:', { item, quantity });
       dispatch({ type: 'ADD_TO_CART', payload: { item, quantity } });
-      
-      toast({
-        title: "Added to cart",
-        description: `${item.productName} has been added to your cart.`,
-      });
+      console.log('✅ Item added to cart successfully');
+
+      // Try to show toast, but don't fail if it doesn't work
+      try {
+        toast({
+          title: "Added to cart",
+          description: `${item.productName} has been added to your cart.`,
+        });
+      } catch (toastError) {
+        console.warn('⚠️ Toast notification failed:', toastError);
+      }
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to add item to cart. Please try again.",
-        variant: "destructive",
-      });
+      console.error('❌ Failed to add item to cart:', error);
+
+      // Try to show error toast, but don't fail if it doesn't work
+      try {
+        toast({
+          title: "Error",
+          description: "Failed to add item to cart. Please try again.",
+          variant: "destructive",
+        });
+      } catch (toastError) {
+        console.warn('⚠️ Error toast notification failed:', toastError);
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
   const removeFromCart = (itemId: string) => {
+    console.log('🗑️ Removing item from cart:', itemId);
     dispatch({ type: 'REMOVE_FROM_CART', payload: { itemId } });
-    toast({
-      title: "Item removed",
-      description: "Item has been removed from your cart.",
-    });
+
+    try {
+      toast({
+        title: "Item removed",
+        description: "Item has been removed from your cart.",
+      });
+    } catch (toastError) {
+      console.warn('⚠️ Remove toast notification failed:', toastError);
+    }
   };
 
   const updateQuantity = (itemId: string, quantity: number) => {
+    console.log('🔄 Updating quantity:', { itemId, quantity });
     dispatch({ type: 'UPDATE_QUANTITY', payload: { itemId, quantity } });
   };
 
   const clearCart = () => {
+    console.log('🧹 Clearing cart');
     dispatch({ type: 'CLEAR_CART' });
-    toast({
-      title: "Cart cleared",
-      description: "All items have been removed from your cart.",
-    });
+
+    try {
+      toast({
+        title: "Cart cleared",
+        description: "All items have been removed from your cart.",
+      });
+    } catch (toastError) {
+      console.warn('⚠️ Clear cart toast notification failed:', toastError);
+    }
   };
 
   const contextValue: CartContextType & { isLoading: boolean } = {

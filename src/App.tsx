@@ -13,6 +13,7 @@ import Benefits from "./pages/Benefits";
 import Faq from "./pages/Faq";
 import Testimonials from "./pages/Testimonials";
 import Cart from "./pages/Cart";
+import CartTest from "./pages/CartTest";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/about" element={<Index />} />
             <Route path="/contact" element={<Index />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/cart-test" element={<CartTest />} />
             <Route path="/blog" element={<Index />} />
             <Route path="/privacy" element={<Index />} />
             <Route path="/terms" element={<Index />} />
