@@ -13,6 +13,9 @@ import Benefits from "./pages/Benefits";
 import Faq from "./pages/Faq";
 import Testimonials from "./pages/Testimonials";
 import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
+import CheckoutSuccess from "./pages/CheckoutSuccess";
+import CheckoutError from "./pages/CheckoutError";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +37,9 @@ const App = () => (
             <Route path="/about" element={<Index />} />
             <Route path="/contact" element={<Index />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/checkout/success" element={<CheckoutSuccess />} />
+            <Route path="/checkout/error" element={<CheckoutError />} />
             <Route path="/blog" element={<Index />} />
             <Route path="/privacy" element={<Index />} />
             <Route path="/terms" element={<Index />} />

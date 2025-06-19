@@ -196,9 +196,11 @@ const Cart = () => {
                       <span>${cart.subtotal.toFixed(2)}</span>
                     </div>
                     
-                    <Button variant="premium" size="lg" className="w-full">
-                      Proceed to Checkout
-                    </Button>
+                    <Link to="/checkout" className="block">
+                      <Button variant="premium" size="lg" className="w-full" data-testid="checkout-button">
+                        Proceed to Checkout
+                      </Button>
+                    </Link>
                     
                     <Link to="/products" className="block">
                       <Button variant="outline" size="lg" className="w-full">
