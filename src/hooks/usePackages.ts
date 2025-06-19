@@ -1,5 +1,6 @@
 
 import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface Package {
   id: string;
@@ -82,16 +83,54 @@ export function usePackages(productType?: 'total_essential' | 'total_essential_p
   return useQuery({
     queryKey: ['packages', productType],
     queryFn: async () => {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
+      try {
+        console.log('🔍 Fetching packages from Supabase...');
 
-      // Filter packages by product type if specified
-      let filteredPackages = mockPackages;
-      if (productType) {
-        filteredPackages = mockPackages.filter(pkg => pkg.product_type === productType);
+        // Try to fetch from Supabase first
+        let query = supabase
+          .from('packages')
+          .select(`
+            *,
+            products (
+              name,
+              description,
+              short_description
+            )
+          `)
+          .eq('is_active', true)
+          .order('quantity', { ascending: true });
+
+        if (productType) {
+          query = query.eq('product_type', productType);
+        }
+
+        const { data, error } = await query;
+
+        if (error) {
+          console.warn('⚠️ Supabase query failed, falling back to mock data:', error);
+          throw error;
+        }
+
+        if (data && data.length > 0) {
+          console.log('✅ Successfully fetched packages from Supabase:', data.length);
+          return data as Package[];
+        } else {
+          console.warn('⚠️ No data returned from Supabase, using mock data');
+          throw new Error('No data returned');
+        }
+      } catch (error) {
+        console.warn('⚠️ Using mock data due to Supabase error:', error);
+
+        // Fallback to mock data
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        let filteredPackages = mockPackages;
+        if (productType) {
+          filteredPackages = mockPackages.filter(pkg => pkg.product_type === productType);
+        }
+
+        return filteredPackages;
       }
-
-      return filteredPackages;
     },
   });
 }
