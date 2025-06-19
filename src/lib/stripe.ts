@@ -1,14 +1,15 @@
+
 import Stripe from 'stripe';
 import { loadStripe } from '@stripe/stripe-js';
 
 // Check if we're in test mode
-const isTestMode = process.env.NODE_ENV === 'test' || process.env.STRIPE_TEST_MODE === 'true';
+const isTestMode = import.meta.env.MODE === 'development' || import.meta.env.VITE_STRIPE_TEST_MODE === 'true';
 
 // Get the appropriate Stripe keys based on environment
 const getStripeSecretKey = () => {
-  const key = process.env.STRIPE_SECRET_KEY;
+  const key = import.meta.env.VITE_STRIPE_SECRET_KEY;
   if (!key) {
-    throw new Error('STRIPE_SECRET_KEY is not defined in environment variables');
+    throw new Error('VITE_STRIPE_SECRET_KEY is not defined in environment variables');
   }
 
   // Validate that we're using test keys in test mode
@@ -20,9 +21,9 @@ const getStripeSecretKey = () => {
 };
 
 const getStripePublishableKey = () => {
-  const key = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+  const key = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
   if (!key) {
-    throw new Error('NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not defined in environment variables');
+    throw new Error('VITE_STRIPE_PUBLISHABLE_KEY is not defined in environment variables');
   }
 
   // Validate that we're using test keys in test mode
@@ -35,7 +36,7 @@ const getStripePublishableKey = () => {
 
 // Server-side Stripe instance
 export const stripe = new Stripe(getStripeSecretKey(), {
-  apiVersion: '2024-12-18.acacia',
+  apiVersion: '2025-05-28.basil',
   typescript: true,
 });
 
@@ -47,16 +48,16 @@ export const getStripe = () => {
 // Stripe configuration
 export const STRIPE_CONFIG = {
   currency: 'usd',
-  payment_method_types: ['card'],
+  payment_method_types: ['card'] as const,
   mode: 'payment' as const,
-  success_url: `${process.env.NEXT_PUBLIC_APP_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-  cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/cart`,
+  success_url: `${import.meta.env.VITE_APP_URL || 'http://localhost:5173'}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+  cancel_url: `${import.meta.env.VITE_APP_URL || 'http://localhost:5173'}/cart`,
 
   // Test mode configuration
   testMode: isTestMode,
 
   // Webhook configuration
-  webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+  webhookSecret: import.meta.env.VITE_STRIPE_WEBHOOK_SECRET,
 } as const;
 
 // Helper function to create a checkout session
@@ -77,7 +78,7 @@ export async function createCheckoutSession(params: {
 }) {
   try {
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: STRIPE_CONFIG.payment_method_types,
+      payment_method_types: [...STRIPE_CONFIG.payment_method_types],
       line_items: params.lineItems,
       mode: STRIPE_CONFIG.mode,
       success_url: STRIPE_CONFIG.success_url,

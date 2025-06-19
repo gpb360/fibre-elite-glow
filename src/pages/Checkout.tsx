@@ -13,8 +13,8 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Loader2, CreditCard, Lock } from 'lucide-react';
 
-// Initialize Stripe
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+// Initialize Stripe with Vite environment variable
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '');
 
 interface CheckoutFormData {
   email: string;
