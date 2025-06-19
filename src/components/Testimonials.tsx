@@ -53,16 +53,16 @@ export function Testimonials() {
   ];
 
   return (
-    <section className="py-12 md:py-20 bg-white">
-      <div className="container px-4 md:px-6">
+    <section className="py-16 md:py-24 bg-white">
+      <div className="container mx-auto px-4 md:px-6 max-w-7xl">
         <Heading
           title="What Our Customers Say"
           description="Join thousands of satisfied customers who have transformed their health with Total Essential."
           centered
-          className="mb-12"
+          className="mb-16"
         />
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4">
           {testimonials.map((testimonial, index) => (
             <motion.div
               key={index}
@@ -82,10 +82,10 @@ export function Testimonials() {
         </div>
 
         {/* Trust badges section */}
-        <div className="mt-16">
-          <h3 className="text-center text-xl font-semibold mb-8">Trusted By Health Experts Worldwide</h3>
+        <div className="mt-20">
+          <h3 className="text-center text-2xl font-bold mb-10 text-gray-900">Trusted By Health Experts Worldwide</h3>
 
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12 opacity-70 hover:opacity-100 transition-opacity">
             {/* These would normally be actual logos, using placeholders for now */}
             <div className="flex items-center justify-center h-12 w-32 text-gray-400 hover:text-gray-600 transition-colors">
               <svg className="h-8 w-auto" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

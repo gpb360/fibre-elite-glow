@@ -1,4 +1,6 @@
 
+"use client";
+
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -6,7 +8,7 @@ import { Heading } from '@/components/ui/heading';
 import { SplitSection } from '@/components/ui/split-section';
 import { PackageSelector } from '@/components/ui/package-selector';
 import { FaqSection } from '@/components/FaqSection';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { ExternalLink, Loader2, Check } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
@@ -159,7 +161,7 @@ export function ProductEssentialPlus() {
                       `Add to Cart - $${selectedPackage?.price || '0.00'}`
                     )}
                   </Button>
-                  <Link to="/products">
+                  <Link href="/products">
                     <Button variant="outline" size="lg">
                       Back to Products
                     </Button>
@@ -541,7 +543,7 @@ export function ProductEssentialPlus() {
                   'Start Your Enhanced Journey'
                 )}
               </Button>
-              <Link to="/products/total-essential">
+              <Link href="/products/total-essential">
                 <Button variant="outline" size="lg">
                   Explore Total Essential
                 </Button>

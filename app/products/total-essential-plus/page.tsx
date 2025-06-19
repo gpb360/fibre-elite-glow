@@ -1,4 +1,4 @@
-import ProductEssentialPlus from '@/pages/ProductEssentialPlus'
+import ProductEssentialPlus from '@/components/pages/ProductEssentialPlus'
 
 export default function TotalEssentialPlusPage() {
   return <ProductEssentialPlus />

@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -36,7 +38,7 @@ const BenefitsHero = () => (
     <div 
       className="absolute inset-0 z-0 bg-cover bg-center opacity-20" 
       style={{ 
-        backgroundImage: `url('/public/lovable-uploads/09e3b94c-60cd-46ef-b590-27c16a2216a6.png')`,
+        backgroundImage: `url('/lovable-uploads/d98185ae-142e-45e8-9804-7b3e5aee3680.png')`,
         width: '100%'
       }}
     />

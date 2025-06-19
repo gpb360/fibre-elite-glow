@@ -276,7 +276,7 @@ export function ProductManagement() {
               <Checkbox
                 id="popular"
                 checked={filterPopular}
-                onCheckedChange={setFilterPopular}
+                onCheckedChange={(checked) => setFilterPopular(checked === true)}
               />
               <label htmlFor="popular" className="text-sm font-medium">
                 Popular only

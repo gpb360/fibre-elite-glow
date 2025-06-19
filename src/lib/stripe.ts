@@ -35,7 +35,7 @@ const getStripePublishableKey = () => {
 
 // Server-side Stripe instance
 export const stripe = new Stripe(getStripeSecretKey(), {
-  apiVersion: '2024-12-18.acacia',
+  apiVersion: '2025-05-28.basil',
   typescript: true,
 });
 
@@ -47,7 +47,7 @@ export const getStripe = () => {
 // Stripe configuration
 export const STRIPE_CONFIG = {
   currency: 'usd',
-  payment_method_types: ['card'],
+  payment_method_types: ['card'] as Stripe.Checkout.SessionCreateParams.PaymentMethodType[],
   mode: 'payment' as const,
   success_url: `${process.env.NEXT_PUBLIC_APP_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
   cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/cart`,
@@ -57,7 +57,7 @@ export const STRIPE_CONFIG = {
 
   // Webhook configuration
   webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
-} as const;
+};
 
 // Helper function to create a checkout session
 export async function createCheckoutSession(params: {
