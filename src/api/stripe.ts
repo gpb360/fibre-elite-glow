@@ -64,7 +64,7 @@ export async function createCheckoutSession(
 
     // Create checkout session
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: STRIPE_CONFIG.payment_method_types,
+      payment_method_types: ['card'],
       line_items: lineItems,
       mode: STRIPE_CONFIG.mode,
       success_url: STRIPE_CONFIG.success_url,
@@ -91,24 +91,6 @@ export async function createCheckoutSession(
       // Phone number collection
       phone_number_collection: {
         enabled: true,
-      },
-      
-      // Custom fields for additional information
-      custom_fields: [
-        {
-          key: 'order_notes',
-          label: {
-            type: 'custom',
-            custom: 'Order Notes (Optional)',
-          },
-          type: 'text',
-          optional: true,
-        },
-      ],
-      
-      // Automatic tax calculation (if enabled in Stripe)
-      automatic_tax: {
-        enabled: false, // Set to true if you have tax calculation enabled
       },
       
       // Allow promotion codes

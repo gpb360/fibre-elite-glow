@@ -1,4 +1,3 @@
-
 import Stripe from 'stripe';
 import { loadStripe } from '@stripe/stripe-js';
 
@@ -36,7 +35,7 @@ const getStripePublishableKey = () => {
 
 // Server-side Stripe instance
 export const stripe = new Stripe(getStripeSecretKey(), {
-  apiVersion: '2025-05-28.basil',
+  apiVersion: '2024-12-18.acacia',
   typescript: true,
 });
 
@@ -48,7 +47,6 @@ export const getStripe = () => {
 // Stripe configuration
 export const STRIPE_CONFIG = {
   currency: 'usd',
-  payment_method_types: ['card'] as const,
   mode: 'payment' as const,
   success_url: `${import.meta.env.VITE_APP_URL || 'http://localhost:5173'}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
   cancel_url: `${import.meta.env.VITE_APP_URL || 'http://localhost:5173'}/cart`,
@@ -78,7 +76,7 @@ export async function createCheckoutSession(params: {
 }) {
   try {
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: [...STRIPE_CONFIG.payment_method_types],
+      payment_method_types: ['card'],
       line_items: params.lineItems,
       mode: STRIPE_CONFIG.mode,
       success_url: STRIPE_CONFIG.success_url,
