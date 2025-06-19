@@ -19,6 +19,7 @@ import CheckoutError from "./pages/CheckoutError";
 
 const queryClient = new QueryClient();
 
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <CartProvider>
