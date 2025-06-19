@@ -1,7 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loadStripe } from '@stripe/stripe-js';
-import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -30,10 +31,8 @@ interface CheckoutFormData {
 }
 
 const CheckoutForm: React.FC = () => {
-  const stripe = useStripe();
-  const elements = useElements();
   const navigate = useNavigate();
-  const { cart, clearCart } = useCart();
+  const { cart } = useCart();
   const { toast } = useToast();
   
   const [isProcessing, setIsProcessing] = useState(false);
@@ -72,15 +71,6 @@ const CheckoutForm: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!stripe || !elements) {
-      toast({
-        title: "Error",
-        description: "Stripe has not loaded yet. Please try again.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     if (cart.items.length === 0) {
       toast({
         title: "Error",
@@ -110,15 +100,13 @@ const CheckoutForm: React.FC = () => {
         throw new Error('Failed to create checkout session');
       }
 
-      const { sessionId } = await response.json();
+      const { url } = await response.json();
 
       // Redirect to Stripe Checkout
-      const { error } = await stripe.redirectToCheckout({
-        sessionId,
-      });
-
-      if (error) {
-        throw error;
+      if (url) {
+        window.location.href = url;
+      } else {
+        throw new Error('No checkout URL received');
       }
     } catch (error) {
       console.error('Checkout error:', error);
@@ -265,7 +253,7 @@ const CheckoutForm: React.FC = () => {
             <div className="border-t pt-2 mt-2">
               <div className="flex justify-between font-semibold">
                 <span>Total</span>
-                <span data-testid="order-total">${cart.totalAmount.toFixed(2)}</span>
+                <span data-testid="order-total">${cart.subtotal.toFixed(2)}</span>
               </div>
             </div>
           </div>
@@ -275,7 +263,7 @@ const CheckoutForm: React.FC = () => {
       {/* Submit Button */}
       <Button
         type="submit"
-        disabled={!stripe || isProcessing}
+        disabled={isProcessing}
         className="w-full"
         size="lg"
         data-testid="stripe-submit"
