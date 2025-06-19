@@ -1,3 +1,4 @@
+
 import Stripe from 'stripe';
 import { loadStripe } from '@stripe/stripe-js';
 
@@ -35,7 +36,7 @@ const getStripePublishableKey = () => {
 
 // Server-side Stripe instance
 export const stripe = new Stripe(getStripeSecretKey(), {
-  apiVersion: '2024-12-18.acacia',
+  apiVersion: '2025-05-28.basil',
   typescript: true,
 });
 
