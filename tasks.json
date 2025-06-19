@@ -1,0 +1,379 @@
+{
+  "tasks": [
+    {
+      "id": "85f6d8fe-696f-40de-b594-d7950108a8db",
+      "name": "Project Setup and Next.js Migration Foundation",
+      "description": "Migrate the existing Vite+React project to Next.js 14+ with App Router while preserving the current component structure and functionality. This includes setting up the new project structure, configuring TypeScript, and ensuring all existing pages render correctly in the new framework.",
+      "notes": "This is the foundation task that enables all subsequent development. Focus on maintaining existing functionality while establishing the new framework structure.",
+      "status": "in_progress",
+      "dependencies": [],
+      "createdAt": "2025-06-02T00:03:07.890Z",
+      "updatedAt": "2025-06-02T00:05:07.437Z",
+      "relatedFiles": [
+        {
+          "path": "package.json",
+          "type": "TO_MODIFY",
+          "description": "Update dependencies to Next.js 14+, remove Vite dependencies"
+        },
+        {
+          "path": "src/App.tsx",
+          "type": "REFERENCE",
+          "description": "Current routing structure to migrate"
+        },
+        {
+          "path": "vite.config.ts",
+          "type": "REFERENCE",
+          "description": "Current build configuration"
+        },
+        {
+          "path": "tsconfig.json",
+          "type": "TO_MODIFY",
+          "description": "Update for Next.js TypeScript configuration"
+        }
+      ],
+      "implementationGuide": "1. Create new Next.js 14+ project with App Router\n2. Configure TypeScript with strict settings and path aliases (@/*)\n3. Migrate existing pages to Next.js app directory structure:\n   - app/page.tsx (Index)\n   - app/products/total-essential/page.tsx\n   - app/products/total-essential-plus/page.tsx\n   - app/benefits/page.tsx\n   - app/faq/page.tsx\n   - app/testimonials/page.tsx\n4. Update routing from React Router to Next.js Link components\n5. Configure next.config.js for optimal performance\n6. Set up environment variables and Supabase integration\n7. Ensure all existing functionality works in Next.js environment",
+      "verificationCriteria": "All existing pages load correctly in Next.js environment, TypeScript compilation succeeds, routing works properly, Supabase connection maintained, no console errors, development server runs successfully",
+      "analysisResult": "Complete website redesign and development for La Belle Vie (lbve.ca) transforming from current Vite+React+Tailwind stack to Next.js 14+ with TypeScript, MUI 6, and Pigment CSS. The project implements comprehensive e-commerce functionality including shopping cart, Stripe payments, user authentication, and order management. Additionally, it establishes educational content management, SEO optimization, performance enhancement, and foundational infrastructure for future subscription and affiliate programs. The implementation follows a phased approach ensuring scalability, security, and compliance with modern web standards while maintaining the existing brand identity and user experience."
+    },
+    {
+      "id": "4708e356-ed3d-4309-9970-6ffbe5833be8",
+      "name": "MUI 6 and Pigment CSS Integration",
+      "description": "Replace the current Tailwind CSS styling system with MUI 6 and Pigment CSS while preserving the existing design aesthetic, brand colors (green/purple theme), and responsive behavior. This includes setting up the MUI theme system and migrating all UI components.",
+      "notes": "This task requires careful attention to maintaining the existing visual design while leveraging MUI's component system. Focus on creating reusable theme tokens.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "85f6d8fe-696f-40de-b594-d7950108a8db"
+        }
+      ],
+      "createdAt": "2025-06-02T00:03:07.890Z",
+      "updatedAt": "2025-06-02T00:03:07.890Z",
+      "relatedFiles": [
+        {
+          "path": "tailwind.config.ts",
+          "type": "REFERENCE",
+          "description": "Current theme configuration to migrate"
+        },
+        {
+          "path": "src/components/ui/",
+          "type": "TO_MODIFY",
+          "description": "All UI components need MUI migration"
+        },
+        {
+          "path": "src/index.css",
+          "type": "TO_MODIFY",
+          "description": "Global styles to update"
+        }
+      ],
+      "implementationGuide": "1. Install MUI 6, Pigment CSS, and related dependencies\n2. Remove Tailwind CSS dependencies and configuration\n3. Set up MUI theme with existing brand colors:\n   - Primary green: #9ED458\n   - Secondary purple: #B075B3\n   - Maintain existing color palette\n4. Configure Pigment CSS for runtime CSS-in-JS\n5. Create MUI theme provider and wrap application\n6. Migrate core UI components systematically:\n   - Button variants (premium, premium2)\n   - Typography system\n   - Layout components (Container, Grid)\n   - Form components\n7. Update all className usage to MUI sx prop or styled components\n8. Ensure responsive design is maintained\n9. Test component library functionality",
+      "verificationCriteria": "All components render with correct styling, brand colors preserved, responsive design maintained, no Tailwind classes remain, MUI theme system working, performance not degraded, accessibility maintained",
+      "analysisResult": "Complete website redesign and development for La Belle Vie (lbve.ca) transforming from current Vite+React+Tailwind stack to Next.js 14+ with TypeScript, MUI 6, and Pigment CSS. The project implements comprehensive e-commerce functionality including shopping cart, Stripe payments, user authentication, and order management. Additionally, it establishes educational content management, SEO optimization, performance enhancement, and foundational infrastructure for future subscription and affiliate programs. The implementation follows a phased approach ensuring scalability, security, and compliance with modern web standards while maintaining the existing brand identity and user experience."
+    },
+    {
+      "id": "65fa57d3-bf5c-4477-813b-19352e9101bd",
+      "name": "Shopping Cart System Implementation",
+      "description": "Implement a fully functional shopping cart system with persistent state management, quantity controls, and integration with the existing product catalog. The cart should support both products with their pricing tiers and maintain state across browser sessions.",
+      "notes": "Cart system is foundation for checkout process. Ensure it integrates seamlessly with existing product structure and Supabase packages table.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "4708e356-ed3d-4309-9970-6ffbe5833be8"
+        }
+      ],
+      "createdAt": "2025-06-02T00:03:07.890Z",
+      "updatedAt": "2025-06-02T00:03:07.890Z",
+      "relatedFiles": [
+        {
+          "path": "src/integrations/supabase/types.ts",
+          "type": "REFERENCE",
+          "description": "Package data structure"
+        },
+        {
+          "path": "src/components/Header.tsx",
+          "type": "TO_MODIFY",
+          "description": "Update cart icon and functionality"
+        },
+        {
+          "path": "src/pages/ProductEssential.tsx",
+          "type": "TO_MODIFY",
+          "description": "Add cart integration"
+        },
+        {
+          "path": "src/pages/ProductEssentialPlus.tsx",
+          "type": "TO_MODIFY",
+          "description": "Add cart integration"
+        }
+      ],
+      "implementationGuide": "1. Create cart context/state management system using Zustand or React Context\n2. Implement cart data structure:\n   - Product ID, name, price, quantity\n   - Package/tier selection\n   - Subtotal calculations\n3. Build cart UI components:\n   - Cart icon with item count in header\n   - Cart sidebar/drawer\n   - Cart page with full details\n   - Quantity controls (+/- buttons)\n   - Remove item functionality\n4. Integrate with existing product pages:\n   - Add to cart buttons\n   - Package selection integration\n   - Price tier handling\n5. Implement persistent storage (localStorage)\n6. Add cart calculations (subtotal, tax, shipping)\n7. Create cart validation and error handling\n8. Implement cart state synchronization",
+      "verificationCriteria": "Cart adds/removes items correctly, quantities update properly, pricing calculations accurate, state persists across sessions, cart icon shows correct count, responsive design maintained, no data loss on page refresh",
+      "analysisResult": "Complete website redesign and development for La Belle Vie (lbve.ca) transforming from current Vite+React+Tailwind stack to Next.js 14+ with TypeScript, MUI 6, and Pigment CSS. The project implements comprehensive e-commerce functionality including shopping cart, Stripe payments, user authentication, and order management. Additionally, it establishes educational content management, SEO optimization, performance enhancement, and foundational infrastructure for future subscription and affiliate programs. The implementation follows a phased approach ensuring scalability, security, and compliance with modern web standards while maintaining the existing brand identity and user experience."
+    },
+    {
+      "id": "f19defb6-428b-4f48-aa79-23ac67ba64b7",
+      "name": "Stripe Payment Integration and Checkout Flow",
+      "description": "Implement secure payment processing using Stripe API with a complete checkout flow including guest checkout, user registration, order confirmation, and email notifications. This includes both frontend payment forms and backend webhook handling.",
+      "notes": "Critical security considerations required. Ensure PCI compliance and proper error handling. Test with Stripe test mode extensively.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "65fa57d3-bf5c-4477-813b-19352e9101bd"
+        }
+      ],
+      "createdAt": "2025-06-02T00:03:07.890Z",
+      "updatedAt": "2025-06-02T00:03:07.890Z",
+      "relatedFiles": [
+        {
+          "path": "src/integrations/supabase/types.ts",
+          "type": "TO_MODIFY",
+          "description": "Add order data structures"
+        },
+        {
+          "path": "app/api/",
+          "type": "CREATE",
+          "description": "Stripe API endpoints"
+        },
+        {
+          "path": "app/checkout/",
+          "type": "CREATE",
+          "description": "Checkout page and flow"
+        }
+      ],
+      "implementationGuide": "1. Set up Stripe account and obtain API keys\n2. Install Stripe SDK and configure environment variables\n3. Create Stripe payment intent API endpoint\n4. Build checkout page with:\n   - Order summary\n   - Customer information form\n   - Payment form with Stripe Elements\n   - Guest checkout option\n   - Account creation option\n5. Implement payment processing:\n   - Client-side payment confirmation\n   - Server-side payment verification\n   - Error handling and validation\n6. Create order management system:\n   - Order data structure in Supabase\n   - Order confirmation page\n   - Order history for users\n7. Set up Stripe webhooks for payment events\n8. Implement email notifications (order confirmation)\n9. Add security measures and PCI compliance\n10. Test payment flow thoroughly",
+      "verificationCriteria": "Payments process successfully, webhooks handle events correctly, order data saved properly, email confirmations sent, error handling works, security measures in place, guest checkout functional, PCI compliance maintained",
+      "analysisResult": "Complete website redesign and development for La Belle Vie (lbve.ca) transforming from current Vite+React+Tailwind stack to Next.js 14+ with TypeScript, MUI 6, and Pigment CSS. The project implements comprehensive e-commerce functionality including shopping cart, Stripe payments, user authentication, and order management. Additionally, it establishes educational content management, SEO optimization, performance enhancement, and foundational infrastructure for future subscription and affiliate programs. The implementation follows a phased approach ensuring scalability, security, and compliance with modern web standards while maintaining the existing brand identity and user experience."
+    },
+    {
+      "id": "d4365896-5b88-428e-a7b6-c025feec144d",
+      "name": "User Authentication and Account Management",
+      "description": "Implement comprehensive user authentication system with registration, login, password reset, and user account management. This includes integration with Supabase Auth and creating user dashboards for order history and account settings.",
+      "notes": "Authentication system should integrate seamlessly with checkout flow and provide foundation for future subscription features.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "f19defb6-428b-4f48-aa79-23ac67ba64b7"
+        }
+      ],
+      "createdAt": "2025-06-02T00:03:07.890Z",
+      "updatedAt": "2025-06-02T00:03:07.890Z",
+      "relatedFiles": [
+        {
+          "path": "src/components/SignIn.tsx",
+          "type": "TO_MODIFY",
+          "description": "Expand to full authentication system"
+        },
+        {
+          "path": "src/integrations/supabase/",
+          "type": "TO_MODIFY",
+          "description": "Add auth configuration"
+        },
+        {
+          "path": "app/account/",
+          "type": "CREATE",
+          "description": "User account pages"
+        }
+      ],
+      "implementationGuide": "1. Configure Supabase Auth with email/password authentication\n2. Set up authentication context and state management\n3. Create authentication UI components:\n   - Login form\n   - Registration form\n   - Password reset form\n   - Email verification\n4. Implement protected routes and middleware\n5. Build user account dashboard:\n   - Profile management\n   - Order history\n   - Address book\n   - Password change\n6. Update existing SignIn component to full functionality\n7. Add authentication guards to checkout process\n8. Implement session management and token refresh\n9. Create user preferences and settings\n10. Add social login options (optional)\n11. Ensure proper error handling and validation",
+      "verificationCriteria": "Users can register and login successfully, password reset works, protected routes function correctly, user dashboard displays data, session management works, email verification functional, integration with checkout seamless",
+      "analysisResult": "Complete website redesign and development for La Belle Vie (lbve.ca) transforming from current Vite+React+Tailwind stack to Next.js 14+ with TypeScript, MUI 6, and Pigment CSS. The project implements comprehensive e-commerce functionality including shopping cart, Stripe payments, user authentication, and order management. Additionally, it establishes educational content management, SEO optimization, performance enhancement, and foundational infrastructure for future subscription and affiliate programs. The implementation follows a phased approach ensuring scalability, security, and compliance with modern web standards while maintaining the existing brand identity and user experience."
+    },
+    {
+      "id": "5b1e2a08-bb90-4601-8dfb-f14d5e96ee07",
+      "name": "Blog and Educational Content Management System",
+      "description": "Create a comprehensive content management system for blog posts, educational articles, and health-related content. This includes content creation, categorization, SEO optimization, and integration with the existing site navigation.",
+      "notes": "Content system should support gut health education goals from PRD. Focus on SEO optimization for organic traffic growth.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "d4365896-5b88-428e-a7b6-c025feec144d"
+        }
+      ],
+      "createdAt": "2025-06-02T00:03:07.890Z",
+      "updatedAt": "2025-06-02T00:03:07.890Z",
+      "relatedFiles": [
+        {
+          "path": "src/components/Footer.tsx",
+          "type": "REFERENCE",
+          "description": "Blog link already exists"
+        },
+        {
+          "path": "app/blog/",
+          "type": "CREATE",
+          "description": "Blog pages and functionality"
+        },
+        {
+          "path": "src/integrations/supabase/types.ts",
+          "type": "TO_MODIFY",
+          "description": "Add content data structures"
+        }
+      ],
+      "implementationGuide": "1. Design content data structure in Supabase:\n   - Articles table (title, content, excerpt, author, date, category)\n   - Categories table\n   - Tags system\n2. Create content management interface:\n   - Article creation/editing forms\n   - Rich text editor integration\n   - Image upload and management\n   - SEO fields (meta title, description)\n3. Build blog frontend:\n   - Blog listing page with pagination\n   - Individual article pages\n   - Category and tag filtering\n   - Search functionality\n4. Implement SEO optimization:\n   - Dynamic meta tags\n   - Schema markup for articles\n   - Sitemap generation\n   - Social media sharing\n5. Add content features:\n   - Related articles\n   - Reading time estimation\n   - Social sharing buttons\n6. Create content admin dashboard\n7. Implement content scheduling and drafts",
+      "verificationCriteria": "Blog posts display correctly, content creation works, SEO tags generated properly, search and filtering functional, responsive design maintained, admin interface usable, content scheduling works",
+      "analysisResult": "Complete website redesign and development for La Belle Vie (lbve.ca) transforming from current Vite+React+Tailwind stack to Next.js 14+ with TypeScript, MUI 6, and Pigment CSS. The project implements comprehensive e-commerce functionality including shopping cart, Stripe payments, user authentication, and order management. Additionally, it establishes educational content management, SEO optimization, performance enhancement, and foundational infrastructure for future subscription and affiliate programs. The implementation follows a phased approach ensuring scalability, security, and compliance with modern web standards while maintaining the existing brand identity and user experience."
+    },
+    {
+      "id": "037b7f97-0f12-4136-aeee-9a25a6ecf563",
+      "name": "SEO Optimization and Analytics Integration",
+      "description": "Implement comprehensive SEO optimization including meta tags, schema markup, sitemap generation, and integrate Google Analytics 4, Google Tag Manager, and other tracking tools for performance monitoring and conversion tracking.",
+      "notes": "SEO is critical for organic traffic growth goals. Ensure all tracking complies with privacy regulations.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "5b1e2a08-bb90-4601-8dfb-f14d5e96ee07"
+        }
+      ],
+      "createdAt": "2025-06-02T00:03:07.890Z",
+      "updatedAt": "2025-06-02T00:03:07.890Z",
+      "relatedFiles": [
+        {
+          "path": "app/layout.tsx",
+          "type": "TO_MODIFY",
+          "description": "Add global SEO configuration"
+        },
+        {
+          "path": "app/sitemap.xml",
+          "type": "CREATE",
+          "description": "Dynamic sitemap generation"
+        },
+        {
+          "path": "app/robots.txt",
+          "type": "CREATE",
+          "description": "SEO robots configuration"
+        }
+      ],
+      "implementationGuide": "1. Implement Next.js SEO features:\n   - Dynamic meta tags for all pages\n   - Open Graph and Twitter Card tags\n   - Canonical URLs\n   - Robots.txt optimization\n2. Add structured data (Schema.org):\n   - Product schema for e-commerce items\n   - Article schema for blog posts\n   - Organization schema\n   - Review schema for testimonials\n3. Generate XML sitemap automatically\n4. Set up Google Analytics 4:\n   - Install GA4 tracking code\n   - Configure e-commerce tracking\n   - Set up conversion goals\n5. Implement Google Tag Manager:\n   - Container setup\n   - Event tracking configuration\n   - Custom dimensions\n6. Add performance monitoring:\n   - Core Web Vitals tracking\n   - Page speed optimization\n   - Error tracking\n7. Implement Facebook Pixel for advertising\n8. Create SEO monitoring dashboard\n9. Set up search console integration",
+      "verificationCriteria": "Meta tags generate correctly, schema markup validates, sitemap updates automatically, GA4 tracks events properly, GTM fires correctly, Core Web Vitals meet targets, search console integration works",
+      "analysisResult": "Complete website redesign and development for La Belle Vie (lbve.ca) transforming from current Vite+React+Tailwind stack to Next.js 14+ with TypeScript, MUI 6, and Pigment CSS. The project implements comprehensive e-commerce functionality including shopping cart, Stripe payments, user authentication, and order management. Additionally, it establishes educational content management, SEO optimization, performance enhancement, and foundational infrastructure for future subscription and affiliate programs. The implementation follows a phased approach ensuring scalability, security, and compliance with modern web standards while maintaining the existing brand identity and user experience."
+    },
+    {
+      "id": "d1270575-b0a9-46d1-bc18-fb4d51c0a024",
+      "name": "Performance Optimization and Accessibility Compliance",
+      "description": "Optimize the website for Core Web Vitals performance targets and ensure WCAG 2.1 AA accessibility compliance. This includes image optimization, code splitting, caching strategies, and comprehensive accessibility testing.",
+      "notes": "Performance and accessibility are critical for user experience and SEO rankings. Target <2s page load times and WCAG 2.1 AA compliance.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "037b7f97-0f12-4136-aeee-9a25a6ecf563"
+        }
+      ],
+      "createdAt": "2025-06-02T00:03:07.890Z",
+      "updatedAt": "2025-06-02T00:03:07.890Z",
+      "relatedFiles": [
+        {
+          "path": "next.config.js",
+          "type": "TO_MODIFY",
+          "description": "Performance optimization configuration"
+        },
+        {
+          "path": "public/",
+          "type": "TO_MODIFY",
+          "description": "Optimize static assets"
+        }
+      ],
+      "implementationGuide": "1. Implement Core Web Vitals optimization:\n   - Image optimization with Next.js Image component\n   - Code splitting and lazy loading\n   - Font optimization and preloading\n   - Critical CSS inlining\n2. Set up caching strategies:\n   - Static asset caching\n   - API response caching\n   - CDN configuration\n3. Implement accessibility features:\n   - Semantic HTML structure\n   - ARIA labels and roles\n   - Keyboard navigation support\n   - Screen reader optimization\n   - Color contrast compliance\n4. Add accessibility testing:\n   - Automated accessibility testing\n   - Manual testing procedures\n   - Screen reader testing\n5. Optimize bundle size:\n   - Tree shaking\n   - Dynamic imports\n   - Bundle analysis\n6. Implement service worker for caching\n7. Add performance monitoring\n8. Create accessibility audit checklist",
+      "verificationCriteria": "Core Web Vitals meet Google's Good thresholds, WCAG 2.1 AA compliance verified, page load times <2 seconds, accessibility audit passes, bundle size optimized, caching working correctly",
+      "analysisResult": "Complete website redesign and development for La Belle Vie (lbve.ca) transforming from current Vite+React+Tailwind stack to Next.js 14+ with TypeScript, MUI 6, and Pigment CSS. The project implements comprehensive e-commerce functionality including shopping cart, Stripe payments, user authentication, and order management. Additionally, it establishes educational content management, SEO optimization, performance enhancement, and foundational infrastructure for future subscription and affiliate programs. The implementation follows a phased approach ensuring scalability, security, and compliance with modern web standards while maintaining the existing brand identity and user experience."
+    },
+    {
+      "id": "b6007e49-b901-4f17-b5f3-06a10f240563",
+      "name": "Subscription Management System Foundation",
+      "description": "Build the foundational infrastructure for subscription services including subscription plans, billing management, customer portal, and integration with Stripe Subscriptions. This prepares for Phase 2 subscription features outlined in the PRD.",
+      "notes": "This establishes the foundation for future subscription features. Focus on scalable architecture that can support various subscription models.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "d1270575-b0a9-46d1-bc18-fb4d51c0a024"
+        }
+      ],
+      "createdAt": "2025-06-02T00:03:07.890Z",
+      "updatedAt": "2025-06-02T00:03:07.890Z",
+      "relatedFiles": [
+        {
+          "path": "src/integrations/supabase/types.ts",
+          "type": "TO_MODIFY",
+          "description": "Add subscription data structures"
+        },
+        {
+          "path": "app/api/subscriptions/",
+          "type": "CREATE",
+          "description": "Subscription API endpoints"
+        },
+        {
+          "path": "app/subscriptions/",
+          "type": "CREATE",
+          "description": "Subscription management pages"
+        }
+      ],
+      "implementationGuide": "1. Design subscription data structure:\n   - Subscription plans table\n   - Customer subscriptions table\n   - Billing history\n   - Subscription status tracking\n2. Set up Stripe Subscriptions:\n   - Create subscription products in Stripe\n   - Configure billing intervals\n   - Set up subscription webhooks\n3. Build subscription management UI:\n   - Subscription plan selection\n   - Customer subscription dashboard\n   - Billing history view\n   - Subscription modification options\n4. Implement subscription logic:\n   - Plan creation and management\n   - Subscription lifecycle handling\n   - Billing cycle management\n   - Cancellation and pause functionality\n5. Create customer portal integration\n6. Add subscription-specific email notifications\n7. Implement subscription analytics\n8. Set up dunning management for failed payments",
+      "verificationCriteria": "Subscription plans can be created and managed, Stripe integration works correctly, customer portal functional, billing cycles process properly, webhooks handle events, subscription analytics track correctly",
+      "analysisResult": "Complete website redesign and development for La Belle Vie (lbve.ca) transforming from current Vite+React+Tailwind stack to Next.js 14+ with TypeScript, MUI 6, and Pigment CSS. The project implements comprehensive e-commerce functionality including shopping cart, Stripe payments, user authentication, and order management. Additionally, it establishes educational content management, SEO optimization, performance enhancement, and foundational infrastructure for future subscription and affiliate programs. The implementation follows a phased approach ensuring scalability, security, and compliance with modern web standards while maintaining the existing brand identity and user experience."
+    },
+    {
+      "id": "2b4db096-ae4f-4c8f-b595-5f0e7c1362c3",
+      "name": "Affiliate Program Infrastructure",
+      "description": "Develop a comprehensive affiliate program system with affiliate registration, link generation, commission tracking, payment processing, and affiliate dashboard. This includes both affiliate-facing and admin-facing interfaces.",
+      "notes": "Affiliate program should support the tiered commission structure outlined in PRD. Ensure accurate tracking and transparent reporting.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "b6007e49-b901-4f17-b5f3-06a10f240563"
+        }
+      ],
+      "createdAt": "2025-06-02T00:03:07.890Z",
+      "updatedAt": "2025-06-02T00:03:07.890Z",
+      "relatedFiles": [
+        {
+          "path": "src/integrations/supabase/types.ts",
+          "type": "TO_MODIFY",
+          "description": "Add affiliate data structures"
+        },
+        {
+          "path": "app/api/affiliates/",
+          "type": "CREATE",
+          "description": "Affiliate API endpoints"
+        },
+        {
+          "path": "app/affiliates/",
+          "type": "CREATE",
+          "description": "Affiliate program pages"
+        }
+      ],
+      "implementationGuide": "1. Design affiliate system data structure:\n   - Affiliates table (profile, commission rates, status)\n   - Affiliate links and tracking\n   - Commission tracking and calculations\n   - Payment history\n2. Build affiliate registration system:\n   - Application form and approval workflow\n   - Affiliate onboarding process\n   - Terms and conditions acceptance\n3. Implement tracking system:\n   - Unique affiliate link generation\n   - Click and conversion tracking\n   - Attribution modeling\n   - Cookie-based tracking\n4. Create affiliate dashboard:\n   - Performance metrics\n   - Commission reports\n   - Link generation tools\n   - Marketing materials access\n5. Build admin interface:\n   - Affiliate management\n   - Commission approval\n   - Payment processing\n   - Performance analytics\n6. Implement commission structure (20-40% tiered)\n7. Set up automated payment system\n8. Add affiliate marketing resources",
+      "verificationCriteria": "Affiliate registration works, link tracking accurate, commission calculations correct, dashboard displays proper metrics, payment processing functional, admin interface complete, marketing resources accessible",
+      "analysisResult": "Complete website redesign and development for La Belle Vie (lbve.ca) transforming from current Vite+React+Tailwind stack to Next.js 14+ with TypeScript, MUI 6, and Pigment CSS. The project implements comprehensive e-commerce functionality including shopping cart, Stripe payments, user authentication, and order management. Additionally, it establishes educational content management, SEO optimization, performance enhancement, and foundational infrastructure for future subscription and affiliate programs. The implementation follows a phased approach ensuring scalability, security, and compliance with modern web standards while maintaining the existing brand identity and user experience."
+    },
+    {
+      "id": "79c36351-4819-44b1-b5f3-a32f44c790af",
+      "name": "Testing, Quality Assurance, and Deployment Setup",
+      "description": "Implement comprehensive testing strategy, quality assurance processes, and production deployment pipeline. This includes unit tests, integration tests, e2e tests, security audits, and CI/CD setup for reliable deployments.",
+      "notes": "Comprehensive testing ensures reliability and security. Focus on critical e-commerce flows and payment security.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "2b4db096-ae4f-4c8f-b595-5f0e7c1362c3"
+        }
+      ],
+      "createdAt": "2025-06-02T00:03:07.890Z",
+      "updatedAt": "2025-06-02T00:03:07.890Z",
+      "relatedFiles": [
+        {
+          "path": "package.json",
+          "type": "TO_MODIFY",
+          "description": "Add testing dependencies and scripts"
+        },
+        {
+          "path": ".github/workflows/",
+          "type": "CREATE",
+          "description": "CI/CD pipeline configuration"
+        },
+        {
+          "path": "tests/",
+          "type": "CREATE",
+          "description": "Test suites and configurations"
+        }
+      ],
+      "implementationGuide": "1. Set up testing framework:\n   - Jest for unit testing\n   - React Testing Library for component tests\n   - Playwright for e2e testing\n   - Accessibility testing tools\n2. Write comprehensive test suites:\n   - Component unit tests\n   - API endpoint tests\n   - E-commerce flow tests\n   - Payment processing tests\n   - Authentication tests\n3. Implement CI/CD pipeline:\n   - GitHub Actions or similar\n   - Automated testing on PR\n   - Staging deployment\n   - Production deployment\n4. Set up monitoring and logging:\n   - Error tracking (Sentry)\n   - Performance monitoring\n   - Uptime monitoring\n   - Log aggregation\n5. Conduct security audit:\n   - Vulnerability scanning\n   - Penetration testing\n   - Code security review\n   - OWASP compliance check\n6. Performance testing:\n   - Load testing\n   - Stress testing\n   - Core Web Vitals validation\n7. Create deployment documentation\n8. Set up backup and disaster recovery",
+      "verificationCriteria": "All tests pass consistently, CI/CD pipeline deploys successfully, monitoring alerts work, security audit passes, performance tests meet targets, backup systems functional, documentation complete",
+      "analysisResult": "Complete website redesign and development for La Belle Vie (lbve.ca) transforming from current Vite+React+Tailwind stack to Next.js 14+ with TypeScript, MUI 6, and Pigment CSS. The project implements comprehensive e-commerce functionality including shopping cart, Stripe payments, user authentication, and order management. Additionally, it establishes educational content management, SEO optimization, performance enhancement, and foundational infrastructure for future subscription and affiliate programs. The implementation follows a phased approach ensuring scalability, security, and compliance with modern web standards while maintaining the existing brand identity and user experience."
+    }
+  ]
+}
