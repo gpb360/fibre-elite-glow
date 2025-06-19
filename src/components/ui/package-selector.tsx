@@ -52,9 +52,14 @@ export function PackageSelector({
             <div className="flex items-center justify-between">
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-medium text-lg">
-                    {pkg.quantity} Box{pkg.quantity > 1 ? 'es' : ''}
-                  </h4>
+                  <div>
+                    <h4 className="font-medium text-lg">
+                      {pkg.quantity} Box{pkg.quantity > 1 ? 'es' : ''}
+                    </h4>
+                    <p className="text-sm text-gray-600">
+                      {pkg.quantity * 15} sachets total
+                    </p>
+                  </div>
                   <div className="text-right">
                     <div className="text-2xl font-bold text-gray-900">
                       ${pkg.price}
@@ -66,7 +71,7 @@ export function PackageSelector({
                     )}
                   </div>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
                   <div className="text-sm text-gray-600">
                     ${(pkg.price / pkg.quantity).toFixed(2)} per box

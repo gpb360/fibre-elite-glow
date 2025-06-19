@@ -42,7 +42,7 @@ export function ProductEssential() {
         originalPrice: selectedPackage.original_price || undefined,
         savings: selectedPackage.savings || undefined,
         image: '/lovable-uploads/27ca3fa0-24aa-479b-b075-3f11006467c5.png',
-        packageSize: `${selectedPackage.quantity} sachets`,
+        packageSize: `${selectedPackage.quantity} box${selectedPackage.quantity > 1 ? 'es' : ''} (${selectedPackage.quantity * 15} sachets)`,
       });
 
       setJustAdded(true);
