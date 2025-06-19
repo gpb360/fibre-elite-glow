@@ -1,0 +1,46 @@
+{
+  "videos": [
+    {
+      "id": "generic-edit",
+      "title": "Main promotional video",
+      "src": "/videos/marketing/generic-edit.mp4",
+      "usage": "Hero section background/featured video",
+      "fileSize": "80.51 MB",
+      "originalName": "1b_Total Essential_Generic Edit (No Overlay).mp4"
+    },
+    {
+      "id": "happy-customers",
+      "title": "Customer testimonials",
+      "src": "/videos/marketing/happy-customers.mp4",
+      "usage": "Testimonials section",
+      "fileSize": "13.56 MB",
+      "originalName": "3b_Total Essential_Happy Customers Edit (no Overlay).mp4"
+    },
+    {
+      "id": "ingredients",
+      "title": "Product ingredients showcase",
+      "src": "/videos/marketing/ingredients.mp4",
+      "usage": "Product showcase section",
+      "fileSize": "19.7 MB",
+      "originalName": "4b_Total Essential_Ingredients Edit (no Overlay).mp4"
+    },
+    {
+      "id": "stylish-result",
+      "title": "Results demonstration",
+      "src": "/videos/marketing/stylish-result.mp4",
+      "usage": "Health section and product showcase",
+      "fileSize": "37.81 MB",
+      "originalName": "5b_Total Essential_Stylish Result Video (no Overlay).mp4"
+    },
+    {
+      "id": "open-box-vo",
+      "title": "Unboxing with voiceover",
+      "src": "/videos/marketing/open-box-vo.mp4",
+      "usage": "Product pages",
+      "fileSize": "53.51 MB",
+      "originalName": "6b_Total Essential_Open Box with VO (no Overlay).mp4"
+    }
+  ],
+  "downloadedAt": "2025-06-17T22:45:49.109Z",
+  "totalVideos": 5
+}
