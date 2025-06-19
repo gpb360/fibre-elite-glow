@@ -112,6 +112,11 @@ const Cart = () => {
                           <p className="text-sm text-gray-500 capitalize">
                             {item.productType.replace('_', ' ')}
                           </p>
+                          {item.packageSize && (
+                            <p className="text-sm text-gray-600">
+                              {item.packageSize}
+                            </p>
+                          )}
                           <div className="flex items-center gap-2 mt-1">
                             <span className="font-bold text-green-600">
                               ${item.price.toFixed(2)}

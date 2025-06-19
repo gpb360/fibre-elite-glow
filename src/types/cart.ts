@@ -8,6 +8,7 @@ export interface CartItem {
   savings?: number;
   image?: string;
   packageSize?: string;
+  description?: string;
 }
 
 export interface CartState {

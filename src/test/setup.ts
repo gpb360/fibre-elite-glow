@@ -1,3 +1,5 @@
+
+import { vi } from 'vitest'
 import '@testing-library/jest-dom'
 import 'intersection-observer'
 
@@ -22,7 +24,7 @@ global.ResizeObserver = class ResizeObserver {
   disconnect() {}
   observe() {}
   unobserve() {}
-}
+} as any;
 
 // Mock matchMedia
 Object.defineProperty(window, 'matchMedia', {
