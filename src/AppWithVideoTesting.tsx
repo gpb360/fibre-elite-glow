@@ -12,7 +12,6 @@ import Benefits from "./pages/Benefits";
 import Faq from "./pages/Faq";
 import Testimonials from "./pages/Testimonials";
 import Cart from "./pages/Cart";
-import CartTest from "./pages/CartTest";
 import VideoTesting from "./pages/VideoTesting";
 
 const queryClient = new QueryClient();

@@ -1,5 +1,7 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { Button } from '@/components/ui/button';
@@ -32,7 +34,7 @@ interface CheckoutFormData {
 const CheckoutForm: React.FC = () => {
   const stripe = useStripe();
   const elements = useElements();
-  const navigate = useNavigate();
+  const router = useRouter();
   const { cart, clearCart } = useCart();
   const { toast } = useToast();
   
@@ -87,7 +89,7 @@ const CheckoutForm: React.FC = () => {
         description: "Your cart is empty. Please add items before checking out.",
         variant: "destructive",
       });
-      navigate('/cart');
+      router.push('/cart');
       return;
     }
 
@@ -135,9 +137,9 @@ const CheckoutForm: React.FC = () => {
   // Redirect to cart if empty
   useEffect(() => {
     if (cart.items.length === 0) {
-      navigate('/cart');
+      router.push('/cart');
     }
-  }, [cart.items.length, navigate]);
+  }, [cart.items.length, router]);
 
   if (cart.items.length === 0) {
     return null; // Will redirect to cart
@@ -265,7 +267,7 @@ const CheckoutForm: React.FC = () => {
             <div className="border-t pt-2 mt-2">
               <div className="flex justify-between font-semibold">
                 <span>Total</span>
-                <span data-testid="order-total">${cart.totalAmount.toFixed(2)}</span>
+                <span data-testid="order-total">${cart.subtotal.toFixed(2)}</span>
               </div>
             </div>
           </div>

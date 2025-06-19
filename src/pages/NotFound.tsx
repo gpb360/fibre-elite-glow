@@ -1,21 +1,23 @@
 
+"use client";
+
 import React from 'react';
-import { useLocation } from "react-router-dom";
+import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 const NotFound = () => {
-  const location = useLocation();
+  const pathname = usePathname();
 
   useEffect(() => {
     console.error(
       "404 Error: User attempted to access non-existent route:",
-      location.pathname
+      pathname
     );
-  }, [location.pathname]);
+  }, [pathname]);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -28,7 +30,7 @@ const NotFound = () => {
             We couldn't find the page you're looking for. It might have been moved or deleted.
           </p>
           <Button variant="premium" asChild>
-            <Link to="/">Return to Home</Link>
+            <Link href="/">Return to Home</Link>
           </Button>
         </div>
       </main>

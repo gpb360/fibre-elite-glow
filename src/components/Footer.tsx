@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 export function Footer() {
   return (
@@ -38,22 +38,22 @@ export function Footer() {
             <h3 className="text-sm font-semibold text-gray-900 mb-4">Products</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/products" className="text-sm text-gray-600 hover:text-gray-900">
+                <Link href="/products" className="text-sm text-gray-600 hover:text-gray-900">
                   Total Essential
                 </Link>
               </li>
               <li>
-                <Link to="/products" className="text-sm text-gray-600 hover:text-gray-900">
+                <Link href="/products" className="text-sm text-gray-600 hover:text-gray-900">
                   Total Essentiel Plus
                 </Link>
               </li>
               <li>
-                <Link to="/products" className="text-sm text-gray-600 hover:text-gray-900">
+                <Link href="/products" className="text-sm text-gray-600 hover:text-gray-900">
                   Special Bundles
                 </Link>
               </li>
               <li>
-                <Link to="/products" className="text-sm text-gray-600 hover:text-gray-900">
+                <Link href="/products" className="text-sm text-gray-600 hover:text-gray-900">
                   Subscription Plans
                 </Link>
               </li>
@@ -64,22 +64,22 @@ export function Footer() {
             <h3 className="text-sm font-semibold text-gray-900 mb-4">Resources</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/about" className="text-sm text-gray-600 hover:text-gray-900">
+                <Link href="/about" className="text-sm text-gray-600 hover:text-gray-900">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link to="/blog" className="text-sm text-gray-600 hover:text-gray-900">
+                <Link href="/blog" className="text-sm text-gray-600 hover:text-gray-900">
                   Health Blog
                 </Link>
               </li>
               <li>
-                <Link to="/faq" className="text-sm text-gray-600 hover:text-gray-900">
+                <Link href="/faq" className="text-sm text-gray-600 hover:text-gray-900">
                   FAQ
                 </Link>
               </li>
               <li>
-                <Link to="/testimonials" className="text-sm text-gray-600 hover:text-gray-900">
+                <Link href="/testimonials" className="text-sm text-gray-600 hover:text-gray-900">
                   Testimonials
                 </Link>
               </li>
@@ -90,22 +90,22 @@ export function Footer() {
             <h3 className="text-sm font-semibold text-gray-900 mb-4">Company</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/contact" className="text-sm text-gray-600 hover:text-gray-900">
+                <Link href="/contact" className="text-sm text-gray-600 hover:text-gray-900">
                   Contact Us
                 </Link>
               </li>
               <li>
-                <Link to="/privacy" className="text-sm text-gray-600 hover:text-gray-900">
+                <Link href="/privacy" className="text-sm text-gray-600 hover:text-gray-900">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link to="/terms" className="text-sm text-gray-600 hover:text-gray-900">
+                <Link href="/terms" className="text-sm text-gray-600 hover:text-gray-900">
                   Terms of Service
                 </Link>
               </li>
               <li>
-                <Link to="/shipping" className="text-sm text-gray-600 hover:text-gray-900">
+                <Link href="/shipping" className="text-sm text-gray-600 hover:text-gray-900">
                   Shipping Information
                 </Link>
               </li>
@@ -120,13 +120,13 @@ export function Footer() {
             </p>
             
             <div className="flex items-center space-x-8">
-              <Link to="/privacy" className="text-sm text-gray-500 hover:text-gray-900">
+              <Link href="/privacy" className="text-sm text-gray-500 hover:text-gray-900">
                 Privacy Policy
               </Link>
-              <Link to="/terms" className="text-sm text-gray-500 hover:text-gray-900">
+              <Link href="/terms" className="text-sm text-gray-500 hover:text-gray-900">
                 Terms of Service
               </Link>
-              <Link to="/cookies" className="text-sm text-gray-500 hover:text-gray-900">
+              <Link href="/cookies" className="text-sm text-gray-500 hover:text-gray-900">
                 Cookie Policy
               </Link>
             </div>

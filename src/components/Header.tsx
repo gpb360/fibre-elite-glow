@@ -1,6 +1,8 @@
 
+"use client";
+
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ShoppingCart, Menu, X, ChevronDown } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
@@ -16,14 +18,14 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between px-4 md:px-6">
         <div className="flex items-center gap-2">
-          <Link to="/" className="flex items-center">
+          <Link href="/" className="flex items-center">
             <span className="text-xl font-bold text-green-500">La Belle Vie</span>
           </Link>
         </div>
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex gap-6">
-          <Link to="/" className="text-sm font-medium transition-colors hover:text-primary">
+          <Link href="/" className="text-sm font-medium transition-colors hover:text-primary">
             Home
           </Link>
           <div className="relative">
@@ -66,13 +68,13 @@ export function Header() {
               </div>
             )}
           </div>
-          <Link to="/benefits" className="text-sm font-medium transition-colors hover:text-primary">
+          <Link href="/benefits" className="text-sm font-medium transition-colors hover:text-primary">
             Benefits
           </Link>
-          <Link to="/testimonials" className="text-sm font-medium transition-colors hover:text-primary">
+          <Link href="/testimonials" className="text-sm font-medium transition-colors hover:text-primary">
             Testimonials
           </Link>
-          <Link to="/faq" className="text-sm font-medium transition-colors hover:text-primary">
+          <Link href="/faq" className="text-sm font-medium transition-colors hover:text-primary">
             FAQ
           </Link>
         </nav>
@@ -94,7 +96,7 @@ export function Header() {
         
         {/* Cart and action buttons */}
         <div className="hidden md:flex items-center gap-4">
-          <Link to="/cart" className="relative hover:text-green-600 transition-colors">
+          <Link href="/cart" className="relative hover:text-green-600 transition-colors">
             <ShoppingCart className="h-6 w-6" />
             {cart.totalItems > 0 && (
               <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-green-500 text-xs text-white font-medium">
@@ -192,7 +194,7 @@ export function Header() {
               FAQ
             </Link>
             <div className="mt-4 flex items-center gap-4">
-              <Link to="/cart" className="relative hover:text-green-600 transition-colors">
+              <Link href="/cart" className="relative hover:text-green-600 transition-colors">
                 <ShoppingCart className="h-6 w-6" />
                 {cart.totalItems > 0 && (
                   <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-green-500 text-xs text-white font-medium">

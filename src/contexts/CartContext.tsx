@@ -1,3 +1,5 @@
+"use client";
+
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { CartItem, CartState, CartContextType } from '@/types/cart';
 import { toast } from '@/hooks/use-toast';

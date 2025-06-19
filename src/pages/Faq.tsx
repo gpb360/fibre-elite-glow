@@ -6,7 +6,7 @@ import { Footer } from '@/components/Footer';
 import { FaqSection } from '@/components/FaqSection';
 import { Heading } from '@/components/ui/heading';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Lightbulb, Heart, Shield, Zap } from 'lucide-react';
 
 export function Faq() {
@@ -265,17 +265,17 @@ export function Faq() {
                 Get personalized guidance and start your transformation today.
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
-                <Link to="/products/total-essential">
+                <Link href="/products/total-essential">
                   <Button variant="premium" size="lg">
                     Shop Total Essential
                   </Button>
                 </Link>
-                <Link to="/products/total-essential-plus">
+                <Link href="/products/total-essential-plus">
                   <Button variant="premium2" size="lg">
                     Shop Total Essential Plus
                   </Button>
                 </Link>
-                <Link to="/contact">
+                <Link href="/contact">
                   <Button variant="outline" size="lg">
                     Contact Our Team
                   </Button>

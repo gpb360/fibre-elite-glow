@@ -11,8 +11,7 @@ const nextConfig = {
     removeConsole: process.env.NODE_ENV === 'production'
   },
   poweredByHeader: false,
-  reactStrictMode: true,
-  swcMinify: true
+  reactStrictMode: true
 }
 
 module.exports = nextConfig

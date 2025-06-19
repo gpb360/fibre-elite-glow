@@ -1,5 +1,7 @@
+"use client";
+
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -34,12 +36,12 @@ const Cart = () => {
         Looks like you haven't added any items to your cart yet. Start shopping to fill it up!
       </p>
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
-        <Link to="/products">
+        <Link href="/products">
           <Button variant="premium" size="lg">
             Browse Products
           </Button>
         </Link>
-        <Link to="/">
+        <Link href="/">
           <Button variant="outline" size="lg">
             Back to Home
           </Button>
@@ -55,7 +57,7 @@ const Cart = () => {
         <div className="container px-4 md:px-6 py-8">
           {/* Header */}
           <div className="mb-8">
-            <Link to="/" className="inline-flex items-center text-green-600 hover:text-green-800 mb-4">
+            <Link href="/" className="inline-flex items-center text-green-600 hover:text-green-800 mb-4">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Continue Shopping
             </Link>
@@ -196,13 +198,13 @@ const Cart = () => {
                       <span>${cart.subtotal.toFixed(2)}</span>
                     </div>
                     
-                    <Link to="/checkout" className="block">
+                    <Link href="/checkout" className="block">
                       <Button variant="premium" size="lg" className="w-full" data-testid="checkout-button">
                         Proceed to Checkout
                       </Button>
                     </Link>
-                    
-                    <Link to="/products" className="block">
+
+                    <Link href="/products" className="block">
                       <Button variant="outline" size="lg" className="w-full">
                         Continue Shopping
                       </Button>
