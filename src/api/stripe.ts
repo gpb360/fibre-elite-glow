@@ -51,7 +51,7 @@ export async function createCheckoutSession(
         currency: STRIPE_CONFIG.currency,
         product_data: {
           name: item.productName,
-          description: item.description || `${item.productName} - Premium gut health supplement`,
+          description: `${item.productName} - Premium gut health supplement`,
           images: item.image ? [item.image] : [],
         },
         unit_amount: Math.round(item.price * 100), // Convert to cents

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -111,6 +112,10 @@ export function AdminLayout({ children, title, subtitle }: AdminLayoutProps) {
     window.location.href = '/';
   };
 
+  const handleNavigation = (href: string) => {
+    window.location.href = href;
+  };
+
   const filteredNavItems = navigationItems.filter(item => 
     !item.permission || hasPermission(item.permission) || isSuperAdmin()
   );
@@ -162,11 +167,11 @@ export function AdminLayout({ children, title, subtitle }: AdminLayoutProps) {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem onClick={() => window.location.href = '/'}>
+                <DropdownMenuItem onClick={() => handleNavigation('/')}>
                   <Home className="w-4 h-4 mr-2" />
                   View Website
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => window.location.href = '/profile'}>
+                <DropdownMenuItem onClick={() => handleNavigation('/profile')}>
                   <User className="w-4 h-4 mr-2" />
                   My Profile
                 </DropdownMenuItem>
@@ -206,13 +211,13 @@ export function AdminLayout({ children, title, subtitle }: AdminLayoutProps) {
                 const isActive = window.location.pathname === item.href;
                 
                 return (
-                  <a
+                  <Link
                     key={item.href}
                     href={item.href}
                     className={`
                       flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors
-                      ${isActive 
-                        ? 'bg-green-100 text-green-700' 
+                      ${isActive
+                        ? 'bg-green-100 text-green-700'
                         : 'text-gray-700 hover:bg-gray-100'
                       }
                     `}
@@ -226,7 +231,7 @@ export function AdminLayout({ children, title, subtitle }: AdminLayoutProps) {
                         {item.badge}
                       </Badge>
                     )}
-                  </a>
+                  </Link>
                 );
               })}
             </nav>

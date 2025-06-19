@@ -1,4 +1,6 @@
 
+"use client";
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Heart, ShieldCheck, Zap, Star, Award } from 'lucide-react';

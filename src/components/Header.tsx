@@ -1,6 +1,8 @@
 
+"use client";
+
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ShoppingCart, Menu, X, ChevronDown } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
@@ -13,22 +15,22 @@ export function Header() {
   const { cart } = useCart();
   
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between px-4 md:px-6">
+    <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/90 shadow-sm">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6 max-w-7xl">
         <div className="flex items-center gap-2">
-          <Link to="/" className="flex items-center">
-            <span className="text-xl font-bold text-green-500">La Belle Vie</span>
+          <Link href="/" className="flex items-center">
+            <span className="text-xl font-bold text-green-600 hover:text-green-700 transition-colors">La Belle Vie</span>
           </Link>
         </div>
         
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex gap-6">
-          <Link to="/" className="text-sm font-medium transition-colors hover:text-primary">
+        <nav className="hidden md:flex gap-8">
+          <Link href="/" className="text-sm font-semibold text-gray-700 transition-colors hover:text-green-600">
             Home
           </Link>
           <div className="relative">
-            <button 
-              className="flex items-center text-sm font-medium transition-colors hover:text-primary"
+            <button
+              className="flex items-center text-sm font-semibold text-gray-700 transition-colors hover:text-green-600"
               onClick={() => setIsProductMenuOpen(!isProductMenuOpen)}
             >
               Products
@@ -39,7 +41,7 @@ export function Header() {
               <div className="absolute mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                 <div className="py-1" role="menu" aria-orientation="vertical">
                   <Link
-                    to="/products"
+                    href="/products"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     role="menuitem"
                     onClick={() => setIsProductMenuOpen(false)}
@@ -47,7 +49,7 @@ export function Header() {
                     All Products
                   </Link>
                   <Link
-                    to="/products/total-essential"
+                    href="/products/total-essential"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     role="menuitem"
                     onClick={() => setIsProductMenuOpen(false)}
@@ -55,7 +57,7 @@ export function Header() {
                     Total Essential
                   </Link>
                   <Link
-                    to="/products/total-essential-plus"
+                    href="/products/total-essential-plus"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     role="menuitem"
                     onClick={() => setIsProductMenuOpen(false)}
@@ -66,13 +68,13 @@ export function Header() {
               </div>
             )}
           </div>
-          <Link to="/benefits" className="text-sm font-medium transition-colors hover:text-primary">
+          <Link href="/benefits" className="text-sm font-semibold text-gray-700 transition-colors hover:text-green-600">
             Benefits
           </Link>
-          <Link to="/testimonials" className="text-sm font-medium transition-colors hover:text-primary">
+          <Link href="/testimonials" className="text-sm font-semibold text-gray-700 transition-colors hover:text-green-600">
             Testimonials
           </Link>
-          <Link to="/faq" className="text-sm font-medium transition-colors hover:text-primary">
+          <Link href="/faq" className="text-sm font-semibold text-gray-700 transition-colors hover:text-green-600">
             FAQ
           </Link>
         </nav>
@@ -94,7 +96,7 @@ export function Header() {
         
         {/* Cart and action buttons */}
         <div className="hidden md:flex items-center gap-4">
-          <Link to="/cart" className="relative hover:text-green-600 transition-colors">
+          <Link href="/cart" className="relative text-gray-700 hover:text-green-600 transition-colors">
             <ShoppingCart className="h-6 w-6" />
             {cart.totalItems > 0 && (
               <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-green-500 text-xs text-white font-medium">
@@ -102,14 +104,15 @@ export function Header() {
               </span>
             )}
           </Link>
-          <Button 
-            variant="outline" 
-            size="sm" 
+          <Button
+            variant="outline"
+            size="sm"
+            className="border-gray-300 text-gray-700 hover:border-green-500 hover:text-green-600"
             onClick={() => setIsSignInOpen(true)}
           >
             Sign In
           </Button>
-          <Button variant="premium" size="sm">
+          <Button variant="premium" size="sm" className="px-6">
             Shop Now
           </Button>
         </div>
@@ -120,7 +123,7 @@ export function Header() {
         <div className="md:hidden">
           <div className="space-y-1 px-4 py-3">
             <Link
-              to="/"
+              href="/"
               className="block py-2 text-base font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
@@ -138,7 +141,7 @@ export function Header() {
               {isProductMenuOpen && (
                 <div className="pl-4 space-y-1">
                   <Link
-                    to="/products"
+                    href="/products"
                     className="block py-2 text-sm"
                     onClick={() => {
                       setIsProductMenuOpen(false);
@@ -148,7 +151,7 @@ export function Header() {
                     All Products
                   </Link>
                   <Link
-                    to="/products/total-essential"
+                    href="/products/total-essential"
                     className="block py-2 text-sm"
                     onClick={() => {
                       setIsProductMenuOpen(false);
@@ -158,7 +161,7 @@ export function Header() {
                     Total Essential
                   </Link>
                   <Link
-                    to="/products/total-essential-plus"
+                    href="/products/total-essential-plus"
                     className="block py-2 text-sm"
                     onClick={() => {
                       setIsProductMenuOpen(false);
@@ -171,28 +174,28 @@ export function Header() {
               )}
             </div>
             <Link
-              to="/benefits"
+              href="/benefits"
               className="block py-2 text-base font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
               Benefits
             </Link>
             <Link
-              to="/testimonials"
+              href="/testimonials"
               className="block py-2 text-base font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
               Testimonials
             </Link>
             <Link
-              to="/faq"
+              href="/faq"
               className="block py-2 text-base font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
               FAQ
             </Link>
             <div className="mt-4 flex items-center gap-4">
-              <Link to="/cart" className="relative hover:text-green-600 transition-colors">
+              <Link href="/cart" className="relative hover:text-green-600 transition-colors">
                 <ShoppingCart className="h-6 w-6" />
                 {cart.totalItems > 0 && (
                   <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-green-500 text-xs text-white font-medium">

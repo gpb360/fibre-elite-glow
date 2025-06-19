@@ -1,4 +1,4 @@
-import Faq from '@/pages/Faq'
+import Faq from '@/components/pages/Faq'
 
 export default function FaqPage() {
   return <Faq />

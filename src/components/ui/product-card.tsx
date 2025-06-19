@@ -60,9 +60,9 @@ export function ProductCard({
   };
   return (
     <div className={cn(
-      "group relative overflow-hidden rounded-xl border",
-      variant === 'green' ? "border-green-200" : "border-purple-200",
-      "bg-white transition-all hover:shadow-lg",
+      "group relative overflow-hidden rounded-xl border shadow-premium hover-lift",
+      variant === 'green' ? "border-green-200 hover:shadow-glow-green" : "border-purple-200 hover:shadow-glow-purple",
+      "bg-white transition-all duration-300 hover:shadow-premium-lg",
       className
     )}>
       {badge && (
