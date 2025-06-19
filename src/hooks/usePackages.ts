@@ -17,30 +17,30 @@ export interface Package {
 const mockPackages: Package[] = [
   // Total Essential packages
   {
-    id: 'total-essential-15',
-    product_name: 'Total Essential - 15 Day Supply',
+    id: 'total-essential-1-box',
+    product_name: 'Total Essential - 1 Box',
     product_type: 'total_essential',
-    quantity: 15,
+    quantity: 1, // Number of boxes
     price: 79.99,
     original_price: 89.99,
     savings: 10.00,
     is_popular: false,
   },
   {
-    id: 'total-essential-30',
-    product_name: 'Total Essential - 30 Day Supply',
+    id: 'total-essential-2-boxes',
+    product_name: 'Total Essential - 2 Boxes',
     product_type: 'total_essential',
-    quantity: 30,
+    quantity: 2, // Number of boxes
     price: 149.99,
     original_price: 179.98,
     savings: 29.99,
     is_popular: true,
   },
   {
-    id: 'total-essential-60',
-    product_name: 'Total Essential - 60 Day Supply',
+    id: 'total-essential-4-boxes',
+    product_name: 'Total Essential - 4 Boxes',
     product_type: 'total_essential',
-    quantity: 60,
+    quantity: 4, // Number of boxes
     price: 279.99,
     original_price: 359.96,
     savings: 79.97,
@@ -48,30 +48,30 @@ const mockPackages: Package[] = [
   },
   // Total Essential Plus packages
   {
-    id: 'total-essential-plus-15',
-    product_name: 'Total Essential Plus - 15 Day Supply',
+    id: 'total-essential-plus-1-box',
+    product_name: 'Total Essential Plus - 1 Box',
     product_type: 'total_essential_plus',
-    quantity: 15,
+    quantity: 1, // Number of boxes
     price: 84.99,
     original_price: 94.99,
     savings: 10.00,
     is_popular: false,
   },
   {
-    id: 'total-essential-plus-30',
-    product_name: 'Total Essential Plus - 30 Day Supply',
+    id: 'total-essential-plus-2-boxes',
+    product_name: 'Total Essential Plus - 2 Boxes',
     product_type: 'total_essential_plus',
-    quantity: 30,
+    quantity: 2, // Number of boxes
     price: 159.99,
     original_price: 189.98,
     savings: 29.99,
     is_popular: true,
   },
   {
-    id: 'total-essential-plus-60',
-    product_name: 'Total Essential Plus - 60 Day Supply',
+    id: 'total-essential-plus-4-boxes',
+    product_name: 'Total Essential Plus - 4 Boxes',
     product_type: 'total_essential_plus',
-    quantity: 60,
+    quantity: 4, // Number of boxes
     price: 299.99,
     original_price: 379.96,
     savings: 79.97,
