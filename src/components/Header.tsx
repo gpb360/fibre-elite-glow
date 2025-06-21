@@ -19,7 +19,7 @@ export function Header() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6 max-w-7xl">
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center">
-            <span className="text-xl font-bold text-green-600 hover:text-green-700 transition-colors">La Belle Vie</span>
+              <img src="/lovable-uploads/logo-labellvie-nb.png" alt="La Belle Vie Logo" className="h-10" />
           </Link>
         </div>
         
