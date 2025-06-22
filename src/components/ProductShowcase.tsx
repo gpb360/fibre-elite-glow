@@ -13,8 +13,8 @@ export function ProductShowcase() {
     <section className="py-16 md:py-24 bg-gray-50">
       <div className="container mx-auto px-4 md:px-6 max-w-7xl">
         <Heading
-          title="Our Premium Products"
-          description="Choose the perfect fiber supplement for your health needs."
+          title="Our Fiber Blend Collection"
+          description="Choose the perfect natural fiber blend for your daily wellness routine"
           centered
           className="mb-16"
         />
@@ -31,7 +31,7 @@ export function ProductShowcase() {
             image="/lovable-uploads/27ca3fa0-24aa-479b-b075-3f11006467c5.png"
             title="Total Essential"
             price="$79.99"
-            description="PREMIUM 1-BOX DETOX & WELLNESS PROGRAM - Transform your digestive health with our scientifically formulated blend of 100% natural ingredients. 15 sachets per box."
+            description="PREMIUM DAILY FIBER BLEND – Crafted from 100% fruit & vegetable fibers for gentle, natural regularity. 15 sachets per box."
             badge="Best Seller"
             productId="total-essential-base"
             productType="total_essential"
@@ -44,7 +44,7 @@ export function ProductShowcase() {
             image="/lovable-uploads/5f8f72e3-397f-47a4-8bce-f15924c32a34.png"
             title="Total Essential Plus"
             price="$84.99"
-            description="ADVANCED 1-BOX BEAUTY & WELLNESS PROGRAM - Enhanced formula with superfruits for superior antioxidant protection and radiant skin health. 15 sachets per box."
+            description="ADVANCED DAILY FIBER BLEND – Enhanced with super-fruits for added antioxidants and a vibrant glow. 15 sachets per box."
             badge="New"
             productId="total-essential-plus-base"
             productType="total_essential_plus"
