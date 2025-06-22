@@ -7,7 +7,7 @@ import { Heading } from '@/components/ui/heading';
 import { SplitSection } from '@/components/ui/split-section';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
-import { Heart, Shield, Award, ArrowRight, Microscope, Leaf, BarChart3, Droplets, Brain, Check, Activity } from 'lucide-react';
+import { Heart, Shield, Award, ArrowRight, Microscope, Leaf, BarChart3, Droplets, Brain, Check } from 'lucide-react';
 import Link from 'next/link';
 import Head from 'next/head';
 
@@ -16,16 +16,15 @@ const IngredientSchema = () => {
   const schemaData = {
     "@context": "https://schema.org",
     "@type": "MedicalSubstance",
-    "name": "Beta-Glucan Oat Bran",
-    "description": "A powerful soluble fiber extracted from oat bran that helps lower cholesterol levels, regulate blood sugar, and promote heart health.",
+    "name": "Oil Palm Fibre",
+    "description": "A natural dietary fiber extracted from oil palm trunk, rich in lignin and beneficial for digestive health, cholesterol reduction, and blood sugar regulation.",
     "medicineSystem": "Natural supplement",
     "relevantSpecialty": [
-      "Cardiology",
-      "Endocrinology",
+      "Gastroenterology",
       "Nutrition"
     ],
-    "activeIngredient": "Beta-glucan soluble fiber",
-    "mechanismOfAction": "Forms a gel-like substance that binds to cholesterol; slows glucose absorption; promotes heart health through multiple pathways"
+    "activeIngredient": "Lignin-rich dietary fiber",
+    "mechanismOfAction": "Binds to cholesterol, toxins, and bile salts; increases stool bulk; normalizes gut bacteria balance"
   };
 
   return (
@@ -36,12 +35,12 @@ const IngredientSchema = () => {
   );
 };
 
-const BetaGlucanHero = () => (
+const OilPalmFibreHero = () => (
   <section className="relative overflow-hidden bg-white pt-20 pb-12 md:pt-32 md:pb-20">
     <div 
       className="absolute inset-0 z-0 bg-cover bg-center opacity-20" 
       style={{ 
-        backgroundImage: `url('/lovable-uploads/oat-field-bg.jpg')`,
+        backgroundImage: `url('/lovable-uploads/palm-trees-bg.jpg')`,
         width: '100%'
       }}
     />
@@ -56,10 +55,10 @@ const BetaGlucanHero = () => (
           >
             <p className="text-green-500 font-semibold">Premium Ingredient</p>
             <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-              Beta-Glucan Oat Bran<span className="text-green-500">.</span>
+              Oil Palm Fibre<span className="text-green-500">.</span>
             </h1>
             <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400 mt-4">
-              A powerful soluble fiber that helps lower cholesterol levels, regulate blood sugar, and promote heart health. Our premium oat bran is carefully processed to preserve maximum nutritional benefits.
+              A revolutionary dietary fiber source with exceptional health benefits, extracted from sustainable oil palm trunks.
             </p>
           </motion.div>
           <motion.div 
@@ -87,16 +86,16 @@ const BetaGlucanHero = () => (
             transition={{ duration: 0.5, delay: 0.4 }}
           >
             <div className="flex items-center">
-              <Heart className="h-4 w-4 text-green-500 mr-1" />
-              <span>Heart Healthy</span>
-            </div>
-            <div className="flex items-center">
               <Shield className="h-4 w-4 text-green-500 mr-1" />
-              <span>Clinically Proven</span>
+              <span>High in Lignin</span>
             </div>
             <div className="flex items-center">
-              <Activity className="h-4 w-4 text-green-500 mr-1" />
-              <span>FDA Approved Claims</span>
+              <Award className="h-4 w-4 text-green-500 mr-1" />
+              <span>100% Natural</span>
+            </div>
+            <div className="flex items-center">
+              <Microscope className="h-4 w-4 text-green-500 mr-1" />
+              <span>Scientifically Proven</span>
             </div>
           </motion.div>
         </div>
@@ -107,8 +106,8 @@ const BetaGlucanHero = () => (
           transition={{ duration: 0.7 }}
         >
           <img 
-            src="/lovable-uploads/oat-bran-hero.jpg" 
-            alt="Beta-Glucan Oat Bran" 
+            src="/lovable-uploads/oil-palm-fibre-hero.jpg" 
+            alt="Oil Palm Fibre" 
             className="rounded-lg shadow-xl"
             width={600}
             height={400}
@@ -144,36 +143,36 @@ const BenefitCard = ({
   </motion.div>
 );
 
-const BetaGlucanOatBran = () => {
+const OilPalmFibre = () => {
   const benefits = [
     {
-      title: "Lowers Cholesterol",
-      description: "Beta-glucan forms a gel-like substance that binds to cholesterol-rich bile acids in the intestines, preventing their reabsorption and lowering blood cholesterol levels.",
+      title: "Prevents Constipation",
+      description: "Oil Palm Fibre increases stool bulk by retaining moisture, softening fecal matter and stimulating intestinal movement for easier passage.",
+      icon: Droplets
+    },
+    {
+      title: "Healthy Digestive System",
+      description: "Maintains optimal digestive function by promoting regular bowel movements and preventing the accumulation of toxins in the colon.",
       icon: Heart
     },
     {
-      title: "Regulates Blood Sugar",
-      description: "The soluble fiber in beta-glucan slows the absorption of glucose into the bloodstream, helping to maintain stable blood sugar levels and improve insulin sensitivity.",
-      icon: BarChart3
-    },
-    {
-      title: "Promotes Heart Health",
-      description: "Regular consumption of beta-glucan has been shown to reduce the risk of heart disease through multiple mechanisms, including cholesterol reduction and improved vascular function.",
-      icon: Activity
-    },
-    {
-      title: "Supports Digestive Health",
-      description: "Beta-glucan promotes the growth of beneficial gut bacteria, enhances digestive function, and helps maintain regular bowel movements.",
-      icon: Shield
-    },
-    {
-      title: "Enhances Immune Function",
-      description: "Research shows that beta-glucan can modulate immune response, enhancing the body's ability to fight infections and reduce inflammation.",
+      title: "Normalizes Gut Bacteria",
+      description: "Creates a balanced microbiome by supporting beneficial bacteria while suppressing pathological bacteria in the colon.",
       icon: Microscope
     },
     {
-      title: "Promotes Satiety",
-      description: "The viscous nature of beta-glucan slows digestion and helps you feel fuller longer, supporting healthy weight management and reducing calorie intake.",
+      title: "Blood Sugar Regulation",
+      description: "Slows the release of sugar into the bloodstream, preventing insulin spikes and helping to maintain healthy blood glucose levels.",
+      icon: BarChart3
+    },
+    {
+      title: "Lowers Cholesterol",
+      description: "Binds to cholesterol and bile salts, facilitating their removal from the body and reducing overall blood cholesterol levels.",
+      icon: Shield
+    },
+    {
+      title: "Cancer Prevention",
+      description: "Rich in lignin which helps prevent colon cancer and reduces breast cancer risk by binding to toxins and regulating hormone levels.",
       icon: Brain
     }
   ];
@@ -185,45 +184,43 @@ const BetaGlucanOatBran = () => {
       </Head>
       <Header />
       <main className="flex-1">
-        <BetaGlucanHero />
+        <OilPalmFibreHero />
         
-        {/* What is Beta-Glucan Oat Bran */}
+        {/* What is Oil Palm Fibre */}
         <SplitSection
-          image="/lovable-uploads/oat-bran-closeup.jpg"
-          imageAlt="Beta-Glucan Oat Bran Close-up"
-          title="What is Beta-Glucan Oat Bran?"
-          description="A powerful soluble fiber with exceptional health benefits, backed by extensive scientific research."
+          image="/lovable-uploads/oil-palm-trunk.jpg"
+          imageAlt="Oil Palm Trunk Cross Section"
+          title="What is Oil Palm Fibre?"
+          description="A revolutionary dietary fiber source extracted from the trunks of mature oil palm trees."
           className="bg-white"
         >
           <div className="space-y-4 text-gray-600">
             <p>
-              Beta-glucan is a soluble fiber found in the cell walls of oats, barley, and certain fungi. 
-              Oat bran is particularly rich in beta-glucan, containing the highest concentration of this 
-              beneficial fiber. Beta-glucan is classified as a polysaccharide—a large molecule made up of 
-              multiple sugar units linked together in a specific structure that gives it unique properties.
+              Oil Palm Fibre (OPF) is a premium dietary fiber extracted from fiber-enriched oil palm trunks. 
+              For many years, scientists and researchers were aware that oil palm trunks contained substantial 
+              amounts of dietary fiber, but extraction was challenging due to the complex structure of 
+              parenchyma cells, dietary fiber, and vascular bundles within the trunk.
             </p>
             <p>
-              What makes beta-glucan especially valuable is its ability to form a viscous, gel-like substance 
-              when mixed with liquids. This gel-forming property is responsible for many of its health benefits, 
-              particularly its cholesterol-lowering and blood sugar-regulating effects. The viscosity slows 
-              digestion and the absorption of nutrients, helping to control blood sugar levels and bind to 
-              cholesterol in the digestive tract.
+              After 12 years of intensive research and development, scientists successfully developed an 
+              advanced technology for extracting this valuable fiber. Analysis has confirmed that oil palm 
+              trunks contain more than 70% dietary fiber, making it an exceptionally rich source of this 
+              essential nutrient.
             </p>
             <p>
-              Beta-glucan from oats is so well-researched and effective that it has received approval from 
-              health authorities worldwide for health claims related to cholesterol reduction and heart health. 
-              The FDA allows foods containing oat beta-glucan to carry the claim that they may reduce the risk 
-              of heart disease when consumed as part of a diet low in saturated fat and cholesterol.
+              What makes Oil Palm Fibre truly special is its high lignin content. Lignin is a component of 
+              fiber that undergoes minimal changes in the body and is particularly valuable for its binding 
+              ability – effectively binding cholesterol, bile salts, fats, carbohydrates, and toxins.
             </p>
           </div>
         </SplitSection>
         
-        {/* Processing Method */}
+        {/* Extraction Process */}
         <section className="py-16 bg-green-50">
           <div className="container mx-auto px-4">
             <Heading 
-              title="Premium Processing Method" 
-              description="How we extract and preserve beta-glucan from premium oat bran" 
+              title="Sustainable Extraction Process" 
+              description="How we transform oil palm trunks into premium dietary fiber" 
               centered 
               className="mb-12" 
             />
@@ -234,9 +231,9 @@ const BetaGlucanOatBran = () => {
                   <div className="rounded-full bg-green-100 h-16 w-16 flex items-center justify-center mx-auto mb-4">
                     <span className="text-green-600 text-2xl font-bold">1</span>
                   </div>
-                  <h3 className="font-semibold mb-3">Selective Sourcing</h3>
+                  <h3 className="font-semibold mb-3">Sustainable Sourcing</h3>
                   <p className="text-gray-600">
-                    We source only high-quality, non-GMO oats with naturally high beta-glucan content from sustainable farms.
+                    We only use oil palm trunks from trees that are over 20 years old and would otherwise be discarded, making this a highly sustainable ingredient.
                   </p>
                 </div>
                 
@@ -244,9 +241,9 @@ const BetaGlucanOatBran = () => {
                   <div className="rounded-full bg-green-100 h-16 w-16 flex items-center justify-center mx-auto mb-4">
                     <span className="text-green-600 text-2xl font-bold">2</span>
                   </div>
-                  <h3 className="font-semibold mb-3">Gentle Extraction</h3>
+                  <h3 className="font-semibold mb-3">Advanced Extraction</h3>
                   <p className="text-gray-600">
-                    Using a proprietary low-temperature process that preserves the molecular structure and functional properties of beta-glucan.
+                    Using proprietary technology, we carefully separate the fiber from other components of the trunk, preserving its nutritional integrity.
                   </p>
                 </div>
                 
@@ -254,19 +251,18 @@ const BetaGlucanOatBran = () => {
                   <div className="rounded-full bg-green-100 h-16 w-16 flex items-center justify-center mx-auto mb-4">
                     <span className="text-green-600 text-2xl font-bold">3</span>
                   </div>
-                  <h3 className="font-semibold mb-3">Quality Verification</h3>
+                  <h3 className="font-semibold mb-3">Quality Processing</h3>
                   <p className="text-gray-600">
-                    Each batch is tested to ensure optimal beta-glucan content, molecular weight, and viscosity for maximum health benefits.
+                    The extracted fiber undergoes rigorous quality control to ensure purity, potency, and consistency in every batch.
                   </p>
                 </div>
               </div>
               
               <div className="mt-12 text-center">
                 <p className="text-gray-600 max-w-2xl mx-auto">
-                  Our careful processing ensures that our Beta-Glucan Oat Bran retains its full functional properties 
-                  and health benefits. Unlike heavily processed oat products that may lose their effectiveness, 
-                  our premium oat bran delivers the clinically proven benefits that have been documented in 
-                  scientific research.
+                  This innovative extraction process allows us to harness the powerful health benefits of oil palm fiber 
+                  while supporting sustainable agricultural practices. By utilizing parts of the plant that would otherwise 
+                  be discarded, we're creating value from agricultural byproducts and reducing waste.
                 </p>
               </div>
             </div>
@@ -277,8 +273,8 @@ const BetaGlucanOatBran = () => {
         <section id="benefits" className="py-16 bg-white">
           <div className="container mx-auto px-4">
             <Heading 
-              title="Health Benefits of Beta-Glucan Oat Bran" 
-              description="Discover the powerful ways Beta-Glucan Oat Bran supports your health and wellness" 
+              title="Health Benefits of Oil Palm Fibre" 
+              description="Discover the powerful ways Oil Palm Fibre supports your health and wellness" 
               centered 
               className="mb-12" 
             />
@@ -298,10 +294,10 @@ const BetaGlucanOatBran = () => {
         
         {/* How It Works */}
         <SplitSection
-          image="/lovable-uploads/cholesterol-diagram.jpg"
-          imageAlt="Beta-Glucan Cholesterol Reduction Mechanism"
-          title="How Beta-Glucan Works"
-          description="The science behind this powerful soluble fiber"
+          image="/lovable-uploads/digestive-system.jpg"
+          imageAlt="Digestive System Illustration"
+          title="How Oil Palm Fibre Works"
+          description="The science behind this powerful natural fiber supplement"
           reverse
           className="bg-green-50"
         >
@@ -311,11 +307,10 @@ const BetaGlucanOatBran = () => {
                 <Check className="h-3 w-3 text-green-600" />
               </div>
               <div>
-                <h4 className="font-medium text-green-800">Cholesterol Reduction</h4>
+                <h4 className="font-medium text-green-800">Increases Bulk and Softness</h4>
                 <p className="text-gray-600">
-                  Beta-glucan forms a viscous gel in the digestive tract that binds to cholesterol-rich bile acids, 
-                  preventing their reabsorption and promoting their excretion. This forces the liver to use more 
-                  cholesterol to produce new bile acids, effectively lowering blood cholesterol levels.
+                  Oil Palm Fibre increases the bulk and softness of feces, reducing pressure on the colon wall 
+                  and making elimination easier and more comfortable.
                 </p>
               </div>
             </div>
@@ -325,11 +320,10 @@ const BetaGlucanOatBran = () => {
                 <Check className="h-3 w-3 text-green-600" />
               </div>
               <div>
-                <h4 className="font-medium text-green-800">Blood Sugar Control</h4>
+                <h4 className="font-medium text-green-800">Decreases Transit Time</h4>
                 <p className="text-gray-600">
-                  The viscous gel formed by beta-glucan slows the emptying of the stomach and creates a barrier 
-                  between digestive enzymes and food, slowing the absorption of glucose into the bloodstream 
-                  and preventing rapid spikes in blood sugar levels.
+                  By promoting regular bowel movements, Oil Palm Fibre reduces the time waste spends in the colon, 
+                  preventing the absorption of toxins and harmful substances.
                 </p>
               </div>
             </div>
@@ -339,11 +333,10 @@ const BetaGlucanOatBran = () => {
                 <Check className="h-3 w-3 text-green-600" />
               </div>
               <div>
-                <h4 className="font-medium text-green-800">Gut Microbiome Support</h4>
+                <h4 className="font-medium text-green-800">Binds Bile Acids and Cholesterol</h4>
                 <p className="text-gray-600">
-                  Beta-glucan serves as a prebiotic, providing food for beneficial gut bacteria. These bacteria 
-                  ferment beta-glucan to produce short-chain fatty acids that nourish colon cells and provide 
-                  various health benefits.
+                  The high lignin content in Oil Palm Fibre effectively binds to bile acids and cholesterol, 
+                  facilitating their removal from the body and helping to maintain healthy cholesterol levels.
                 </p>
               </div>
             </div>
@@ -353,11 +346,10 @@ const BetaGlucanOatBran = () => {
                 <Check className="h-3 w-3 text-green-600" />
               </div>
               <div>
-                <h4 className="font-medium text-green-800">Immune Modulation</h4>
+                <h4 className="font-medium text-green-800">Binds Toxic Chemicals</h4>
                 <p className="text-gray-600">
-                  Beta-glucan interacts with immune cells like macrophages and neutrophils, enhancing their 
-                  function and helping to regulate immune response. This can improve the body's ability to 
-                  fight infections while reducing inappropriate inflammation.
+                  Oil Palm Fibre acts as a natural detoxifier, binding to toxic chemicals and preventing 
+                  their absorption into the bloodstream.
                 </p>
               </div>
             </div>
@@ -367,10 +359,10 @@ const BetaGlucanOatBran = () => {
                 <Check className="h-3 w-3 text-green-600" />
               </div>
               <div>
-                <h4 className="font-medium text-green-800">Satiety Promotion</h4>
+                <h4 className="font-medium text-green-800">Promotes Beneficial Bacteria</h4>
                 <p className="text-gray-600">
-                  The viscous nature of beta-glucan increases the volume and thickness of food in the digestive 
-                  tract, creating a feeling of fullness that helps control appetite and reduce overall calorie intake.
+                  By creating an optimal environment in the colon, Oil Palm Fibre helps beneficial bacteria 
+                  flourish while inhibiting the growth of harmful bacteria.
                 </p>
               </div>
             </div>
@@ -383,16 +375,16 @@ const BetaGlucanOatBran = () => {
             <div className="max-w-3xl mx-auto">
               <Heading 
                 title="Scientific Evidence" 
-                description="Research supporting the benefits of Beta-Glucan Oat Bran" 
+                description="Research supporting the benefits of Oil Palm Fibre" 
                 centered 
                 className="mb-8" 
               />
               
               <div className="bg-green-50 rounded-lg p-8">
                 <p className="text-gray-600 mb-4">
-                  Beta-glucan from oats is one of the most extensively researched dietary fibers, with numerous 
-                  clinical studies demonstrating its health benefits. The evidence is so compelling that health 
-                  authorities worldwide have approved specific health claims for beta-glucan:
+                  Scientific research has consistently demonstrated the significant health benefits of dietary fiber, 
+                  particularly fiber sources rich in lignin like Oil Palm Fibre. Studies show that sufficient intake 
+                  of lignin-rich fiber can help reduce the risk of various health conditions:
                 </p>
                 
                 <ul className="space-y-3 mb-6">
@@ -403,7 +395,7 @@ const BetaGlucanOatBran = () => {
                       </svg>
                     </div>
                     <span className="text-gray-600">
-                      <strong>Cholesterol Reduction:</strong> A meta-analysis of 28 clinical trials published in the American Journal of Clinical Nutrition found that consuming 3 grams of oat beta-glucan daily reduced total cholesterol by 5-7% and LDL ("bad") cholesterol by 7-10%.
+                      <strong>Digestive Health:</strong> Clinical studies have shown that fiber supplements can significantly reduce constipation symptoms and improve overall bowel function.
                     </span>
                   </li>
                   <li className="flex items-start">
@@ -413,7 +405,7 @@ const BetaGlucanOatBran = () => {
                       </svg>
                     </div>
                     <span className="text-gray-600">
-                      <strong>Blood Sugar Control:</strong> Multiple clinical studies have shown that beta-glucan can reduce post-meal blood glucose and insulin responses by 20-30% and improve insulin sensitivity in both healthy individuals and those with type 2 diabetes.
+                      <strong>Cholesterol Management:</strong> Research demonstrates that lignin-rich fiber can bind to cholesterol in the digestive tract, reducing its absorption and lowering blood cholesterol levels.
                     </span>
                   </li>
                   <li className="flex items-start">
@@ -423,7 +415,7 @@ const BetaGlucanOatBran = () => {
                       </svg>
                     </div>
                     <span className="text-gray-600">
-                      <strong>Heart Disease Risk:</strong> The FDA has approved the health claim that consuming at least 3 grams of beta-glucan daily, as part of a diet low in saturated fat and cholesterol, may reduce the risk of heart disease.
+                      <strong>Cancer Prevention:</strong> Studies indicate that individuals with higher fiber intake have lower rates of colon cancer. Breast cancer patients typically excrete fewer lignans (produced from lignin) than healthy individuals.
                     </span>
                   </li>
                   <li className="flex items-start">
@@ -433,14 +425,14 @@ const BetaGlucanOatBran = () => {
                       </svg>
                     </div>
                     <span className="text-gray-600">
-                      <strong>Weight Management:</strong> Research published in the Journal of Nutrition found that beta-glucan increased satiety hormones and reduced hunger, leading to lower calorie intake in subsequent meals.
+                      <strong>Blood Sugar Control:</strong> Clinical research shows that fiber slows the absorption of sugar, helping to maintain healthy blood glucose levels.
                     </span>
                   </li>
                 </ul>
                 
                 <p className="text-gray-600 text-sm italic">
                   Note: While these statements are supported by scientific research, individual results may vary. 
-                  Beta-Glucan Oat Bran is not intended to diagnose, treat, cure, or prevent any disease.
+                  Oil Palm Fibre is not intended to diagnose, treat, cure, or prevent any disease.
                 </p>
               </div>
             </div>
@@ -452,7 +444,7 @@ const BetaGlucanOatBran = () => {
           <div className="container mx-auto px-4">
             <Heading 
               title="Nutritional Composition" 
-              description="Understanding the unique profile of Beta-Glucan Oat Bran" 
+              description="Understanding the unique profile of Oil Palm Fibre" 
               centered 
               className="mb-12" 
             />
@@ -470,7 +462,7 @@ const BetaGlucanOatBran = () => {
                           </svg>
                         </div>
                         <span className="text-gray-600">
-                          <strong>Beta-Glucan:</strong> High concentration of this soluble fiber (minimum 5%)
+                          <strong>High Dietary Fiber:</strong> Contains more than 70% dietary fiber
                         </span>
                       </li>
                       <li className="flex items-start">
@@ -480,7 +472,7 @@ const BetaGlucanOatBran = () => {
                           </svg>
                         </div>
                         <span className="text-gray-600">
-                          <strong>Total Dietary Fiber:</strong> Approximately 15-18% by weight
+                          <strong>Rich in Lignin:</strong> A powerful fiber component that binds to toxins and cholesterol
                         </span>
                       </li>
                       <li className="flex items-start">
@@ -490,7 +482,7 @@ const BetaGlucanOatBran = () => {
                           </svg>
                         </div>
                         <span className="text-gray-600">
-                          <strong>Protein:</strong> Contains high-quality plant protein (approximately 15-20%)
+                          <strong>Balanced Fiber Ratio:</strong> Contains both soluble and insoluble fiber
                         </span>
                       </li>
                       <li className="flex items-start">
@@ -500,14 +492,14 @@ const BetaGlucanOatBran = () => {
                           </svg>
                         </div>
                         <span className="text-gray-600">
-                          <strong>Healthy Fats:</strong> Rich in unsaturated fats, including omega-3 fatty acids
+                          <strong>100% Natural:</strong> No additives or synthetic compounds
                         </span>
                       </li>
                     </ul>
                   </div>
                   
                   <div className="p-6">
-                    <h3 className="text-xl font-semibold mb-4 text-green-700">Vitamins & Minerals</h3>
+                    <h3 className="text-xl font-semibold mb-4 text-green-700">Mineral Content</h3>
                     <ul className="space-y-3">
                       <li className="flex items-start">
                         <div className="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-green-100 mr-3 mt-1">
@@ -516,7 +508,7 @@ const BetaGlucanOatBran = () => {
                           </svg>
                         </div>
                         <span className="text-gray-600">
-                          <strong>B Vitamins:</strong> Including thiamin, riboflavin, niacin, and folate
+                          <strong>High Potassium:</strong> Essential for fluid balance and nerve function
                         </span>
                       </li>
                       <li className="flex items-start">
@@ -526,7 +518,7 @@ const BetaGlucanOatBran = () => {
                           </svg>
                         </div>
                         <span className="text-gray-600">
-                          <strong>Vitamin E:</strong> A powerful antioxidant that protects cells from damage
+                          <strong>Balanced Sodium:</strong> Lower sodium content helps maintain healthy blood pressure
                         </span>
                       </li>
                       <li className="flex items-start">
@@ -536,7 +528,7 @@ const BetaGlucanOatBran = () => {
                           </svg>
                         </div>
                         <span className="text-gray-600">
-                          <strong>Minerals:</strong> Including magnesium, phosphorus, potassium, zinc, and iron
+                          <strong>Calcium:</strong> Important for bone health and cellular signaling
                         </span>
                       </li>
                       <li className="flex items-start">
@@ -546,7 +538,7 @@ const BetaGlucanOatBran = () => {
                           </svg>
                         </div>
                         <span className="text-gray-600">
-                          <strong>Antioxidants:</strong> Contains various phenolic compounds with antioxidant properties
+                          <strong>Magnesium:</strong> Essential for energy production and muscle function
                         </span>
                       </li>
                     </ul>
@@ -562,7 +554,7 @@ const BetaGlucanOatBran = () => {
           <div className="container mx-auto px-4">
             <Heading 
               title="Frequently Asked Questions" 
-              description="Common questions about Beta-Glucan Oat Bran" 
+              description="Common questions about Oil Palm Fibre" 
               centered 
               className="mb-12" 
             />
@@ -570,37 +562,37 @@ const BetaGlucanOatBran = () => {
             <div className="max-w-3xl mx-auto">
               <div className="space-y-6">
                 <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold mb-2">How much beta-glucan do I need to consume for health benefits?</h3>
+                  <h3 className="text-lg font-semibold mb-2">What makes Oil Palm Fibre different from other fiber supplements?</h3>
                   <p className="text-gray-600">
-                    Clinical research indicates that consuming 3-5 grams of beta-glucan daily provides significant cholesterol-lowering benefits. For blood sugar management, 4-6 grams per day has been shown to be effective. Our Total Essential products provide an optimal dose of beta-glucan as part of a comprehensive fiber blend.
+                    Oil Palm Fibre is uniquely high in lignin, a component of fiber that undergoes minimal changes in the body and is particularly valuable for binding cholesterol, bile salts, fats, carbohydrates, and toxins. Many other fiber supplements lack this important component.
                   </p>
                 </div>
                 
                 <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold mb-2">Is beta-glucan oat bran gluten-free?</h3>
+                  <h3 className="text-lg font-semibold mb-2">How is Oil Palm Fibre sustainably sourced?</h3>
                   <p className="text-gray-600">
-                    Oats are naturally gluten-free, but they can sometimes be contaminated with gluten during growing or processing. Our beta-glucan oat bran is sourced from certified gluten-free facilities and tested to ensure it contains less than 20 parts per million of gluten, making it safe for most people with celiac disease or gluten sensitivity.
+                    We only use oil palm trunks from trees that are more than 20 years old and would otherwise be discarded. This sustainable approach reduces waste and creates value from agricultural byproducts.
                   </p>
                 </div>
                 
                 <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold mb-2">How quickly will I see results from taking beta-glucan?</h3>
+                  <h3 className="text-lg font-semibold mb-2">How much fiber does Oil Palm Fibre contain?</h3>
                   <p className="text-gray-600">
-                    Studies show that cholesterol-lowering effects typically begin within 2-4 weeks of regular consumption, with maximum benefits often seen after 8-12 weeks. Blood sugar benefits can be observed more quickly, often within days of starting supplementation. For optimal results, consistent daily consumption is recommended.
+                    Oil palm trunks contain more than 70% dietary fiber, making Oil Palm Fibre an exceptionally rich source of this essential nutrient.
                   </p>
                 </div>
                 
                 <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold mb-2">How is beta-glucan oat bran different from regular oatmeal?</h3>
+                  <h3 className="text-lg font-semibold mb-2">Can Oil Palm Fibre help with weight management?</h3>
                   <p className="text-gray-600">
-                    Beta-glucan oat bran contains a much higher concentration of beta-glucan than regular oatmeal. While whole oats contain approximately 2-3% beta-glucan, our premium oat bran contains a minimum of 5% beta-glucan. Additionally, our processing methods preserve the molecular weight and viscosity of beta-glucan, which are critical for its health benefits.
+                    Yes, Oil Palm Fibre can aid in weight management by increasing feelings of fullness, slowing digestion, and binding to fats in the digestive tract, potentially reducing their absorption.
                   </p>
                 </div>
                 
                 <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold mb-2">Can I take beta-glucan oat bran with medications?</h3>
+                  <h3 className="text-lg font-semibold mb-2">Is Oil Palm Fibre suitable for everyone?</h3>
                   <p className="text-gray-600">
-                    Beta-glucan may affect the absorption of certain medications due to its gel-forming properties. As a general rule, it's advisable to take medications at least one hour before or two hours after consuming beta-glucan supplements. If you're taking prescription medications, please consult with your healthcare provider about the optimal timing.
+                    Oil Palm Fibre is a natural ingredient suitable for most people. However, as with any supplement, individuals with specific health conditions or those taking medications should consult with their healthcare provider before use.
                   </p>
                 </div>
               </div>
@@ -611,9 +603,9 @@ const BetaGlucanOatBran = () => {
         {/* CTA Section */}
         <section className="bg-green-50 py-16">
           <div className="container px-4 md:px-6 text-center">
-            <h2 className="text-3xl font-bold mb-4">Experience the Benefits of Beta-Glucan Oat Bran</h2>
+            <h2 className="text-3xl font-bold mb-4">Experience the Benefits of Oil Palm Fibre</h2>
             <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-              Our premium supplements harness the power of Beta-Glucan Oat Bran to support your heart health, blood sugar control, and overall wellness.
+              Our premium supplements harness the power of Oil Palm Fibre to support your digestive health and overall wellness.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link href="/products/total-essential">
@@ -635,4 +627,4 @@ const BetaGlucanOatBran = () => {
   );
 };
 
-export default BetaGlucanOatBran;
+export default OilPalmFibre;

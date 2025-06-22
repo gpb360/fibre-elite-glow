@@ -19,8 +19,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Beta-Glucan Oat Bran | Natural Cholesterol & Heart Health Support',
-    description: 'A powerful soluble fiber that helps lower cholesterol levels, regulate blood sugar, and promote heart health.',
-    images: ['/lovable-uploads/oat-bran.jpg'],
+    title: 'Beta-Glucan Oat Bran | Heart Health & Cholesterol Support',
+    description: 'A powerful soluble fiber that helps lower cholesterol levels, regulate blood sugar, and promote heart health. Our premium oat bran is carefully processed to preserve maximum nutritional benefits.',
+    images: ['/lovable-uploads/oat-bran-hero.jpg'],
   }
 }
