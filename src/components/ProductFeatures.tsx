@@ -10,32 +10,32 @@ import { Heading } from '@/components/ui/heading';
 const features = [
   {
     title: "Natural Ingredients",
-    description: "Made with 100% natural fruits and vegetables for optimal nutrition and health benefits.",
+    description: "Whole-fruit and vegetable fibers in every sachet",
     icon: <ShieldCheck className="h-6 w-6 text-green-500" />,
   },
   {
-    title: "Digestive Health",
-    description: "Supports healthy digestion and helps maintain a balanced gut microbiome.",
+    title: "Gentle Regularity",
+    description: "Promotes comfortable, predictable digestion.",
     icon: <Heart className="h-6 w-6 text-green-500" />,
   },
   {
-    title: "Energy & Vitality",
-    description: "Provides natural energy without crashes, supporting sustained vitality throughout the day.",
+    title: "Sustained Vitality",
+    description: "Feel lighter and energized throughout your day.",
     icon: <Zap className="h-6 w-6 text-green-500" />,
   },
   {
-    title: "Immunity Support",
-    description: "Rich in antioxidants and essential nutrients that help strengthen your immune system.",
+    title: "Everyday Defense",
+    description: "Antioxidant-rich fibers to support overall wellness.",
     icon: <ShieldCheck className="h-6 w-6 text-green-500" />,
   },
   {
-    title: "Weight Management",
-    description: "High fiber content helps you feel fuller longer, supporting healthy weight management.",
+    title: "Satisfying Fullness",
+    description: "Fiber helps curb cravings between meals",
     icon: <Award className="h-6 w-6 text-green-500" />,
   },
   {
-    title: "Daily Convenience",
-    description: "Easy-to-use sachets perfect for busy lifestyles. Just mix with water and enjoy.",
+    title: "Effortless Routine",
+    description: "Single-serve sachets fit seamlessly into busy mornings",
     icon: <Star className="h-6 w-6 text-green-500" />,
   },
 ];
@@ -45,8 +45,8 @@ export function ProductFeatures() {
     <section className="py-12 md:py-20 bg-white">
       <div className="container px-4 md:px-6">
         <Heading
-          title="The Benefits of Total Essential"
-          description="Our premium fiber drink delivers multiple health benefits with every serving."
+          title="Natural Balance for Daily Wellness"
+          description="Our plant-based fiber blend supports your body's natural rhythm"
           centered
           className="mb-10"
         />
@@ -62,9 +62,7 @@ export function ProductFeatures() {
             transition={{ duration: 0.5 }}
           >
             <p className="text-center text-green-800 font-medium italic">
-              "Total Essential is formulated by nutritional experts to deliver maximum health benefits
-              while maintaining delicious taste. Each ingredient is carefully selected for its nutritional
-              profile and natural properties."
+              "Crafted to harmonize with your body, our blend delivers nourishment you can feel—naturally."
             </p>
           </motion.div>
         </div>
