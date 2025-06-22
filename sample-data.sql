@@ -46,84 +46,84 @@ INSERT INTO product_images (product_id, image_url, alt_text, sort_order, is_prim
 -- Insert packages for Total Essential
 INSERT INTO packages (id, product_id, product_name, product_type, quantity, price, original_price, savings, is_popular, sku, stock_quantity) VALUES
 (
-    'total-essential-15',
+    'total-essential-1-box',
     '550e8400-e29b-41d4-a716-446655440010',
-    'Total Essential - 15 Day Supply',
+    'Total Essential - 1 Box',
     'total_essential',
-    15,
+    1,
     79.99,
     89.99,
     10.00,
     false,
-    'TE-15',
+    'TE-1BOX',
     100
 ),
 (
-    'total-essential-30',
+    'total-essential-2-boxes',
     '550e8400-e29b-41d4-a716-446655440010',
-    'Total Essential - 30 Day Supply',
+    'Total Essential - 2 Boxes',
     'total_essential',
-    30,
+    2,
     149.99,
     179.98,
     29.99,
     true,
-    'TE-30',
+    'TE-2BOX',
     100
 ),
 (
-    'total-essential-60',
+    'total-essential-4-boxes',
     '550e8400-e29b-41d4-a716-446655440010',
-    'Total Essential - 60 Day Supply',
+    'Total Essential - 4 Boxes',
     'total_essential',
-    60,
+    4,
     279.99,
     359.96,
     79.97,
     false,
-    'TE-60',
+    'TE-4BOX',
     100
 );
 
 -- Insert packages for Total Essential Plus
 INSERT INTO packages (id, product_id, product_name, product_type, quantity, price, original_price, savings, is_popular, sku, stock_quantity) VALUES
 (
-    'total-essential-plus-15',
+    'total-essential-plus-1-box',
     '550e8400-e29b-41d4-a716-446655440020',
-    'Total Essential Plus - 15 Day Supply',
+    'Total Essential Plus - 1 Box',
     'total_essential_plus',
-    15,
+    1,
     84.99,
     94.99,
     10.00,
     false,
-    'TEP-15',
+    'TEP-1BOX',
     100
 ),
 (
-    'total-essential-plus-30',
+    'total-essential-plus-2-boxes',
     '550e8400-e29b-41d4-a716-446655440020',
-    'Total Essential Plus - 30 Day Supply',
+    'Total Essential Plus - 2 Boxes',
     'total_essential_plus',
-    30,
+    2,
     159.99,
     189.98,
     29.99,
     true,
-    'TEP-30',
+    'TEP-2BOX',
     100
 ),
 (
-    'total-essential-plus-60',
+    'total-essential-plus-4-boxes',
     '550e8400-e29b-41d4-a716-446655440020',
-    'Total Essential Plus - 60 Day Supply',
+    'Total Essential Plus - 4 Boxes',
     'total_essential_plus',
-    60,
+    4,
     299.99,
     379.96,
     79.97,
     false,
-    'TEP-60',
+    'TEP-4BOX',
     100
 );
 
