@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -7,8 +6,13 @@ import { motion } from 'framer-motion';
 
 export function Hero() {
   return (
-    <section className="relative bg-white pt-20 pb-20 md:pt-32 md:pb-32">
-      {/* Clean white background to match original */}
+    <section className="relative bg-white pt-20 pb-20 md:pt-32 md:pb-32 overflow-hidden">
+      {/* Background image for high-end feel */}
+      <img
+        src="/images/fruit-veg-bottle.jpg"
+        alt="Assorted fruits and vegetables in a glass bottle"
+        className="absolute inset-0 -z-10 h-full w-full object-cover opacity-20"
+      />
 
       <div className="container mx-auto px-4 md:px-6 max-w-6xl">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-20 items-center min-h-[500px]">
@@ -21,11 +25,10 @@ export function Hero() {
               >
                 <p className="text-green-500 font-medium text-base mb-2">La Belle Vie</p>
                 <h1 className="text-5xl font-bold tracking-tight text-gray-900 mb-4">
-                  Total Essential
+                  Restore&nbsp;Your&nbsp;Body's&nbsp;Natural&nbsp;Rhythm
                 </h1>
                 <p className="text-lg text-gray-600 leading-relaxed max-w-md">
-                  Premium fiber drink with 15 days of fruit and vegetable essentials.<br />
-                  Transform your health with each sip.
+                  Pure plant fiber for natural daily wellness
                 </p>
               </motion.div>
             </div>
