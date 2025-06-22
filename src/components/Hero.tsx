@@ -9,9 +9,9 @@ export function Hero() {
     <section className="relative bg-white pt-20 pb-20 md:pt-32 md:pb-32 overflow-hidden">
       {/* Background image for high-end feel */}
       <img
-        src="/images/fruit-veg-bottle.jpg"
+        src="/lovable-uploads/fruit-veg-bottle.png"
         alt="Assorted fruits and vegetables in a glass bottle"
-        className="absolute inset-0 -z-10 h-full w-full object-cover opacity-20"
+        className="absolute inset-0 -z-100 h-full w-full object-cover opacity-20"
       />
 
       <div className="container mx-auto px-4 md:px-6 max-w-6xl">
@@ -91,21 +91,7 @@ export function Hero() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="relative">
-              {/* Main product image */}
-              <img
-                alt="Total Essential Product Box"
-                className="w-full h-auto max-w-md object-contain"
-                src="/lovable-uploads/27ca3fa0-24aa-479b-b075-3f11006467c5.png"
-                width={400}
-                height={400}
-              />
-
-              {/* NEW badge positioned like in original */}
-              <div className="absolute top-4 right-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-500 text-white shadow-lg">
-                <span className="text-xs font-bold">NEW</span>
-              </div>
-            </div>
+           
           </motion.div>
         </div>
       </div>
