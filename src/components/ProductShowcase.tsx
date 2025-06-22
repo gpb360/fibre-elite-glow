@@ -1,24 +1,26 @@
 
+"use client";
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Heading } from '@/components/ui/heading';
 import { ProductCard } from '@/components/ui/product-card';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 export function ProductShowcase() {
   return (
-    <section className="py-12 md:py-20 bg-white">
-      <div className="container px-4 md:px-6">
+    <section className="py-16 md:py-24 bg-gray-50">
+      <div className="container mx-auto px-4 md:px-6 max-w-7xl">
         <Heading
           title="Our Premium Products"
           description="Choose the perfect fiber supplement for your health needs."
           centered
-          className="mb-12"
+          className="mb-16"
         />
 
-        <motion.div 
-          className="grid gap-6 sm:grid-cols-2 lg:gap-12"
+        <motion.div
+          className="grid gap-8 md:grid-cols-2 lg:gap-12 max-w-5xl mx-auto"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -50,45 +52,45 @@ export function ProductShowcase() {
             savings={10}
           />
         </motion.div>
-        
-        <div className="flex justify-center gap-8 mt-8">
-          <Link to="/products/total-essential">
-            <Button variant="premium" size="lg">
+
+        <div className="flex flex-col sm:flex-row justify-center gap-6 mt-12">
+          <Link href="/products/total-essential">
+            <Button variant="premium" size="lg" className="w-full sm:w-auto px-8">
               View Packages
             </Button>
           </Link>
-          <Link to="/products/total-essential-plus">
-            <Button variant="premium2" size="lg">
+          <Link href="/products/total-essential-plus">
+            <Button variant="premium2" size="lg" className="w-full sm:w-auto px-8">
               View Packages
             </Button>
           </Link>
         </div>
 
-        <div className="mt-16 text-center">
-          <h3 className="text-2xl font-bold mb-6">Compare Our Products</h3>
-          <div className="overflow-x-auto">
+        <div className="mt-20 text-center">
+          <h3 className="text-2xl font-bold mb-8 text-gray-900">Compare Our Products</h3>
+          <div className="overflow-x-auto bg-white rounded-xl shadow-lg">
             <table className="w-full border-collapse">
-              <thead>
+              <thead className="bg-gray-50">
                 <tr>
-                  <th className="p-3 text-left font-medium text-gray-700">Feature</th>
-                  <th className="p-3 text-center font-medium text-green-700">Total Essential</th>
-                  <th className="p-3 text-center font-medium text-purple-700">Total Essential Plus</th>
+                  <th className="p-4 text-left font-semibold text-gray-700 border-b">Feature</th>
+                  <th className="p-4 text-center font-semibold text-green-700 border-b">Total Essential</th>
+                  <th className="p-4 text-center font-semibold text-purple-700 border-b">Total Essential Plus</th>
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-b border-gray-100">
-                  <td className="p-3 text-left">Servings per Box</td>
-                  <td className="p-3 text-center">15 sachets</td>
-                  <td className="p-3 text-center">15 sachets</td>
+                <tr className="border-b border-gray-100 hover:bg-gray-50">
+                  <td className="p-4 text-left font-medium">Servings</td>
+                  <td className="p-4 text-center">15 sachets</td>
+                  <td className="p-4 text-center">15 sachets</td>
                 </tr>
-                <tr className="border-b border-gray-100">
-                  <td className="p-3 text-left">Fruits & Vegetables</td>
-                  <td className="p-3 text-center">12 varieties</td>
-                  <td className="p-3 text-center">18 varieties (plus berries)</td>
+                <tr className="border-b border-gray-100 hover:bg-gray-50">
+                  <td className="p-4 text-left font-medium">Fruits & Vegetables</td>
+                  <td className="p-4 text-center">12 varieties</td>
+                  <td className="p-4 text-center">18 varieties (plus berries)</td>
                 </tr>
-                <tr className="border-b border-gray-100">
-                  <td className="p-3 text-left">Superfruits (Acai, Strawberry, etc.)</td>
-                  <td className="p-3 text-center">
+                <tr className="border-b border-gray-100 hover:bg-gray-50">
+                  <td className="p-4 text-left font-medium">Superfruits (Acai, Strawberry, etc.)</td>
+                  <td className="p-4 text-center">
                     <svg
                       className="h-5 w-5 mx-auto text-gray-400"
                       fill="none"
@@ -104,7 +106,7 @@ export function ProductShowcase() {
                       />
                     </svg>
                   </td>
-                  <td className="p-3 text-center">
+                  <td className="p-4 text-center">
                     <svg
                       className="h-5 w-5 mx-auto text-green-500"
                       fill="none"
@@ -121,9 +123,9 @@ export function ProductShowcase() {
                     </svg>
                   </td>
                 </tr>
-                <tr className="border-b border-gray-100">
-                  <td className="p-3 text-left">Prebiotics (Oligosaccharides)</td>
-                  <td className="p-3 text-center">
+                <tr className="border-b border-gray-100 hover:bg-gray-50">
+                  <td className="p-4 text-left font-medium">Prebiotics (Oligosaccharides)</td>
+                  <td className="p-4 text-center">
                     <svg
                       className="h-5 w-5 mx-auto text-green-500"
                       fill="none"
@@ -139,7 +141,7 @@ export function ProductShowcase() {
                       />
                     </svg>
                   </td>
-                  <td className="p-3 text-center">
+                  <td className="p-4 text-center">
                     <svg
                       className="h-5 w-5 mx-auto text-green-500"
                       fill="none"
@@ -156,9 +158,9 @@ export function ProductShowcase() {
                     </svg>
                   </td>
                 </tr>
-                <tr className="border-b border-gray-100">
-                  <td className="p-3 text-left">Gluten Free</td>
-                  <td className="p-3 text-center">
+                <tr className="hover:bg-gray-50">
+                  <td className="p-4 text-left font-medium">Gluten Free</td>
+                  <td className="p-4 text-center">
                     <svg
                       className="h-5 w-5 mx-auto text-green-500"
                       fill="none"
@@ -174,7 +176,7 @@ export function ProductShowcase() {
                       />
                     </svg>
                   </td>
-                  <td className="p-3 text-center">
+                  <td className="p-4 text-center">
                     <svg
                       className="h-5 w-5 mx-auto text-green-500"
                       fill="none"

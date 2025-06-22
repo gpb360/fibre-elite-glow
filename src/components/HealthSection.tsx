@@ -9,7 +9,7 @@ export function HealthSection() {
       <SplitSection
         title="Transform Your Health with Natural Fiber"
         description="Our premium vegetable and fruit fiber drink is designed to support your digestive health, boost your immunity, and help you maintain optimal wellness."
-        image="public/lovable-uploads/d98185ae-142e-45e8-9804-7b3e5aee3680.png"
+        image="/lovable-uploads/d98185ae-142e-45e8-9804-7b3e5aee3680.png"
         imageAlt="Bottle with fruits and vegetables"
       >
         <ul className="mt-6 space-y-2 text-gray-600">
@@ -94,7 +94,7 @@ export function HealthSection() {
         reverse
         title="Perfect for the Whole Family"
         description="From children to adults, our delicious fiber drink is suitable for everyone. Easy to prepare and enjoy daily for ongoing health benefits."
-        image="public/lovable-uploads/6903ac0b-0e52-4260-bda8-07f24ce86b9a.png"
+        image="/lovable-uploads/6903ac0b-0e52-4260-bda8-07f24ce86b9a.png"
         imageAlt="Child drinking healthy juice"
         className="mt-20"
       >
@@ -179,7 +179,7 @@ export function HealthSection() {
       <SplitSection
         title="Your Wellness Journey Starts Here"
         description="Integrate our premium fiber supplement into your wellness routine for long-term health benefits. Just one serving daily makes a remarkable difference."
-        image="public/lovable-uploads/a9768c7e-625a-4016-8baa-79cea10189ac.png"
+        image="/lovable-uploads/a9768c7e-625a-4016-8baa-79cea10189ac.png"
         imageAlt="Woman in yoga pose with product"
         className="mt-20"
       >

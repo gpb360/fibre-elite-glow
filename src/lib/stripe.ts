@@ -48,6 +48,7 @@ export const getStripe = () => {
 // Stripe configuration
 export const STRIPE_CONFIG = {
   currency: 'usd',
+  payment_method_types: ['card'] as Stripe.Checkout.SessionCreateParams.PaymentMethodType[],
   mode: 'payment' as const,
   success_url: `${import.meta.env.VITE_APP_URL || 'http://localhost:5173'}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
   cancel_url: `${import.meta.env.VITE_APP_URL || 'http://localhost:5173'}/cart`,
@@ -56,8 +57,8 @@ export const STRIPE_CONFIG = {
   testMode: isTestMode,
 
   // Webhook configuration
-  webhookSecret: import.meta.env.VITE_STRIPE_WEBHOOK_SECRET,
-} as const;
+  webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+};
 
 // Helper function to create a checkout session
 export async function createCheckoutSession(params: {

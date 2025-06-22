@@ -1,4 +1,4 @@
-import Benefits from '@/pages/Benefits'
+import Benefits from '@/components/pages/Benefits'
 
 export default function BenefitsPage() {
   return <Benefits />

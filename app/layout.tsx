@@ -3,8 +3,10 @@ import { Inter } from 'next/font/google'
 import { Toaster } from "@/components/ui/toaster"
 import { Toaster as Sonner } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { ReactQueryProvider } from './providers'
-import '../src/index.css'
+import { Providers } from './providers'
+import { CartProvider } from '@/contexts/CartContext'
+import { ClientBodyWrapper } from './components/ClientBodyWrapper'
+import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -19,15 +21,19 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <ReactQueryProvider>
-          <TooltipProvider>
-            {children}
-            <Toaster />
-            <Sonner />
-          </TooltipProvider>
-        </ReactQueryProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body suppressHydrationWarning>
+        <ClientBodyWrapper fontClassName={inter.className}>
+          <Providers>
+            <CartProvider>
+              <TooltipProvider>
+                {children}
+                <Toaster />
+                <Sonner />
+              </TooltipProvider>
+            </CartProvider>
+          </Providers>
+        </ClientBodyWrapper>
       </body>
     </html>
   )

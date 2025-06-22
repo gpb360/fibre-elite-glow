@@ -5,16 +5,18 @@ import 'intersection-observer'
 
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
-  root = null;
-  rootMargin = '';
-  thresholds = [];
-  
+  root: Element | null = null;
+  rootMargin: string = '0px';
+  thresholds: ReadonlyArray<number> = [];
+
   constructor() {}
   disconnect() {}
   observe() {}
   unobserve() {}
-  takeRecords() { return []; }
-} as any;
+  takeRecords(): IntersectionObserverEntry[] {
+    return [];
+  }
+}
 
 // Mock ResizeObserver
 global.ResizeObserver = class ResizeObserver {

@@ -221,7 +221,7 @@ export class VideoTester {
       controls: 'controls' in video,
       textTracks: 'textTracks' in video,
       tabIndex: video.tabIndex !== undefined,
-      ariaLabel: video.setAttribute && video.getAttribute
+      ariaLabel: video.getAttribute('aria-label') !== null
     };
 
     const supportedFeatures = Object.entries(features)

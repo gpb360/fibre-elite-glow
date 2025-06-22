@@ -1,24 +1,26 @@
 
+"use client";
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 
 export function CtaSection() {
   return (
-    <section className="py-12 md:py-20 bg-gradient-to-r from-green-500/10 to-green-600/10">
-      <div className="container px-4 md:px-6">
-        <div className="flex flex-col items-center justify-center space-y-4 text-center">
+    <section className="py-16 md:py-24 bg-gradient-to-br from-green-50 via-white to-green-50">
+      <div className="container mx-auto px-4 md:px-6 max-w-7xl">
+        <div className="flex flex-col items-center justify-center space-y-6 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="space-y-2"
+            className="space-y-4"
           >
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl text-gray-900">
               Transform Your Health Today
             </h2>
-            <p className="mx-auto max-w-[700px] text-gray-600 md:text-xl">
+            <p className="mx-auto max-w-[700px] text-gray-600 md:text-xl leading-relaxed">
               Join thousands of satisfied customers who have discovered the power of Total Essential.
             </p>
           </motion.div>
@@ -28,17 +30,17 @@ export function CtaSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="w-full max-w-sm space-y-2"
+            className="w-full max-w-md space-y-4"
           >
-            <div className="flex flex-col sm:flex-row gap-2 justify-center">
-              <Button size="lg" variant="premium">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" variant="premium" className="px-8">
                 Shop Now
               </Button>
-              <Button size="lg" variant="outline">
+              <Button size="lg" variant="outline" className="px-8 border-gray-300 text-gray-700 hover:border-green-500 hover:text-green-600">
                 Learn More
               </Button>
             </div>
-            <p className="text-xs text-gray-500">
+            <p className="text-sm text-gray-500 font-medium">
               *Free shipping on orders over $50. 30-day money-back guarantee.
             </p>
           </motion.div>
