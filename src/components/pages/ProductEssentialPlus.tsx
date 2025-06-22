@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -122,7 +121,7 @@ export function ProductEssentialPlus() {
                     <span className="ml-2 text-sm text-gray-600">(7 customer reviews)</span>
                   </div>
                   <p className="max-w-[600px] text-zinc-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                    ADVANCED 15-DAY BEAUTY & WELLNESS PROGRAM
+                    ADVANCED DAILY FIBER BLEND - 15 SACHETS PER BOX
                   </p>
                 </div>
                 
@@ -138,6 +137,13 @@ export function ProductEssentialPlus() {
                       variant="purple"
                     />
                   )}
+                </div>
+                
+                {/* Serving Information */}
+                <div className="mt-4 text-gray-700 text-sm leading-6">
+                  <p><strong>1 Box</strong> = 15 Sachets</p>
+                  <p><strong>1 Sachet</strong> = 1 Serving</p>
+                  <p>15-Day Supply per Box</p>
                 </div>
                 
                 <div className="flex flex-col sm:flex-row gap-4 mt-6">
@@ -504,8 +510,8 @@ export function ProductEssentialPlus() {
                 <span className="font-bold text-purple-600">4</span>
               </div>
               <div>
-                <h4 className="font-medium">Continue for 15 Days</h4>
-                <p className="text-gray-600">For best results, use daily for the full 15-day program.</p>
+                <h4 className="font-medium">Complete Your 15-Day Supply</h4>
+                <p className="text-gray-600">For optimal results, use one sachet daily until you've completed your box (15 servings).</p>
               </div>
             </div>
             
