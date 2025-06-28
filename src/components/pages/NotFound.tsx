@@ -4,13 +4,17 @@
 import React from 'react';
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { useState } from "react";
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { useRouter } from "next/navigation";
 
 const NotFound = () => {
   const pathname = usePathname();
+  const router = useRouter();
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     console.error(
@@ -32,6 +36,49 @@ const NotFound = () => {
           <Button variant="premium" asChild>
             <Link href="/">Return to Home</Link>
           </Button>
+
+          {/* Quick links to popular pages */}
+          <div className="mt-10 flex flex-wrap justify-center gap-4">
+            {[
+              { href: "/products", label: "Shop Products" },
+              { href: "/benefits", label: "Product Benefits" },
+              { href: "/faq", label: "FAQ" },
+              { href: "/testimonials", label: "Testimonials" },
+            ].map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-sm font-medium text-green-600 underline-offset-4 hover:underline"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+
+          {/* Simple search helper */}
+          <form
+            className="mt-12 flex max-w-md mx-auto gap-2"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (!query.trim()) return;
+              // Prefer internal search route if implemented, otherwise fall back to Google site search
+              const internalSearchUrl = `/search?query=${encodeURIComponent(
+                query.trim()
+              )}`;
+              router.push(internalSearchUrl);
+            }}
+          >
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search our site..."
+              className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-green-500 focus:outline-none"
+            />
+            <Button type="submit" size="sm" variant="outline">
+              Search
+            </Button>
+          </form>
         </div>
       </main>
       <Footer />
