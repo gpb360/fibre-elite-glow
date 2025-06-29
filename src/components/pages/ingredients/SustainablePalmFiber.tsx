@@ -40,7 +40,7 @@ const SustainablePalmFiberHero = () => (
     <div
       className="absolute inset-0 z-0 bg-cover bg-center opacity-20"
       style={{
-        backgroundImage: `url('/lovable-uploads/palm-trees-bg.jpg')`,
+        backgroundImage: `url('/assets/16x9_a_photorealistic_palme-oil.png')`,
         width: '100%'
       }}
     />
@@ -106,11 +106,9 @@ const SustainablePalmFiberHero = () => (
           transition={{ duration: 0.7 }}
         >
           <img
-            src="/lovable-uploads/oil-palm-fibre-hero.jpg"
+            src="/assets/16x9_a_photorealistic_palme-oil.png"
             alt="Sustainable Palm Fiber"
             className="rounded-lg shadow-xl"
-            width={600}
-            height={400}
           />
         </motion.div>
       </div>
@@ -260,7 +258,7 @@ const SustainablePalmFiber = () => {
               
               <div className="mt-12 text-center">
                 <p className="text-gray-600 max-w-2xl mx-auto">
-                  This innovative extraction process allows us to harness the powerful health benefits of oil palm fiber 
+                  Our innovative extraction process allows us to harness the powerful health benefits of oil palm fiber 
                   while supporting sustainable agricultural practices. By utilizing parts of the plant that would otherwise 
                   be discarded, we're creating value from agricultural byproducts and reducing waste.
                 </p>
@@ -499,7 +497,7 @@ const SustainablePalmFiber = () => {
                   </div>
                   
                   <div className="p-6">
-                    <h3 className="text-xl font-semibold mb-4 text-green-700">Mineral Content</h3>
+                    <h3 className="text-xl font-semibold mb-4 text-green-700">Health Impact</h3>
                     <ul className="space-y-3">
                       <li className="flex items-start">
                         <div className="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-green-100 mr-3 mt-1">
@@ -508,7 +506,7 @@ const SustainablePalmFiber = () => {
                           </svg>
                         </div>
                         <span className="text-gray-600">
-                          <strong>High Potassium:</strong> Essential for fluid balance and nerve function
+                          Supports digestive regularity and prevents constipation
                         </span>
                       </li>
                       <li className="flex items-start">
@@ -518,7 +516,7 @@ const SustainablePalmFiber = () => {
                           </svg>
                         </div>
                         <span className="text-gray-600">
-                          <strong>Balanced Sodium:</strong> Lower sodium content helps maintain healthy blood pressure
+                          Helps lower cholesterol and regulate blood sugar
                         </span>
                       </li>
                       <li className="flex items-start">
@@ -528,17 +526,7 @@ const SustainablePalmFiber = () => {
                           </svg>
                         </div>
                         <span className="text-gray-600">
-                          <strong>Calcium:</strong> Important for bone health and cellular signaling
-                        </span>
-                      </li>
-                      <li className="flex items-start">
-                        <div className="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-green-100 mr-3 mt-1">
-                          <svg className="h-3 w-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                        </div>
-                        <span className="text-gray-600">
-                          <strong>Magnesium:</strong> Essential for energy production and muscle function
+                          Aids in detoxification and supports a healthy gut microbiome
                         </span>
                       </li>
                     </ul>
@@ -549,72 +537,24 @@ const SustainablePalmFiber = () => {
           </div>
         </section>
         
-        {/* FAQ Section */}
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-4">
-            <Heading 
-              title="Frequently Asked Questions" 
-              description="Common questions about Oil Palm Fibre" 
-              centered 
-              className="mb-12" 
-            />
-            
-            <div className="max-w-3xl mx-auto">
-              <div className="space-y-6">
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold mb-2">What makes Oil Palm Fibre different from other fiber supplements?</h3>
-                  <p className="text-gray-600">
-                    Oil Palm Fibre is uniquely high in lignin, a component of fiber that undergoes minimal changes in the body and is particularly valuable for binding cholesterol, bile salts, fats, carbohydrates, and toxins. Many other fiber supplements lack this important component.
-                  </p>
-                </div>
-                
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold mb-2">How is Oil Palm Fibre sustainably sourced?</h3>
-                  <p className="text-gray-600">
-                    We only use oil palm trunks from trees that are more than 20 years old and would otherwise be discarded. This sustainable approach reduces waste and creates value from agricultural byproducts.
-                  </p>
-                </div>
-                
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold mb-2">How much fiber does Oil Palm Fibre contain?</h3>
-                  <p className="text-gray-600">
-                    Oil palm trunks contain more than 70% dietary fiber, making Oil Palm Fibre an exceptionally rich source of this essential nutrient.
-                  </p>
-                </div>
-                
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold mb-2">Can Oil Palm Fibre help with weight management?</h3>
-                  <p className="text-gray-600">
-                    Yes, Oil Palm Fibre can aid in weight management by increasing feelings of fullness, slowing digestion, and binding to fats in the digestive tract, potentially reducing their absorption.
-                  </p>
-                </div>
-                
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold mb-2">Is Oil Palm Fibre suitable for everyone?</h3>
-                  <p className="text-gray-600">
-                    Oil Palm Fibre is a natural ingredient suitable for most people. However, as with any supplement, individuals with specific health conditions or those taking medications should consult with their healthcare provider before use.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        
-        {/* CTA Section */}
+        {/* Call to Action */}
         <section className="bg-green-50 py-16">
-          <div className="container px-4 md:px-6 text-center">
-            <h2 className="text-3xl font-bold mb-4">Experience the Benefits of Oil Palm Fibre</h2>
-            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-              Our premium supplements harness the power of Oil Palm Fibre to support your digestive health and overall wellness.
-            </p>
+          <div className="container mx-auto px-4 text-center">
+            <Heading 
+              title="Embrace Sustainable Wellness" 
+              description="Incorporate the power of Sustainable Palm Fiber into your daily routine for optimal digestive health." 
+              centered 
+              className="mb-8" 
+            />
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link href="/products/total-essential">
-                <Button variant="premium" size="lg">
-                  Shop Total Essential
+                <Button size="xl" variant="premium">
+                  Shop Now
+                  <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
               <Link href="/products/total-essential-plus">
-                <Button variant="outline" size="lg">
+                <Button size="xl" variant="outline">
                   Explore Total Essential Plus
                 </Button>
               </Link>

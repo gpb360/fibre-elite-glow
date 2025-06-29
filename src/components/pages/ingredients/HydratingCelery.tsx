@@ -41,7 +41,7 @@ const HydratingCeleryHero = () => (
     <div 
       className="absolute inset-0 z-0 bg-cover bg-center opacity-20" 
       style={{ 
-        backgroundImage: `url('/lovable-uploads/celery-bg.jpg')`,
+        backgroundImage: `url('/assets/16x9_a_celery_plant_with_vibrant_gree.png')`,
         width: '100%'
       }}
     />
@@ -107,11 +107,9 @@ const HydratingCeleryHero = () => (
           transition={{ duration: 0.7 }}
         >
           <img 
-            src="/lovable-uploads/celery-extract.jpg" 
+            src="/assets/16x9_a_celery_plant_with_vibrant_gree.png" 
             alt="Hydrating Celery" 
             className="rounded-lg shadow-xl"
-            width={600}
-            height={400}
           />
         </motion.div>
       </div>

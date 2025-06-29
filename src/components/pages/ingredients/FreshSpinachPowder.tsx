@@ -35,7 +35,7 @@ const IngredientSchema = () => {
   );
 };
 
-const SpinachPowderHero = () => (
+const FreshSpinachPowderHero = () => (
   <section className="relative overflow-hidden bg-white pt-20 pb-12 md:pt-32 md:pb-20">
     <div 
       className="absolute inset-0 z-0 bg-cover bg-center opacity-20" 
@@ -184,7 +184,7 @@ const FreshSpinachPowder = () => {
       </Head>
       <Header />
       <main className="flex-1">
-        <SpinachPowderHero />
+        <FreshSpinachPowderHero />
         
         {/* What is Fresh Spinach Powder */}
         <SplitSection

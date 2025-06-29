@@ -73,6 +73,31 @@ function CheckoutErrorContent() {
             'Contact your bank if you need assistance',
           ],
         };
+      // Additional common Stripe error codes
+      case 'incomplete_payment':
+      case 'requires_payment_method':
+        return {
+          title: 'Payment Incomplete',
+          description:
+            'Your payment could not be completed. Please verify your details or try a different method.',
+          icon: <XCircle className="w-8 h-8 text-red-600" />,
+          suggestions: [
+            'Verify your card details',
+            'Try a different payment method',
+            'Ensure your bank hasn’t blocked the transaction',
+          ],
+        };
+      case 'session_expired':
+        return {
+          title: 'Session Expired',
+          description:
+            'Your payment session has expired. Please restart the checkout process.',
+          icon: <XCircle className="w-8 h-8 text-red-600" />,
+          suggestions: [
+            'Return to your cart and begin checkout again',
+            'If the issue persists, contact our support team',
+          ],
+        };
       default:
         return {
           title: 'Payment Error',
@@ -171,7 +196,7 @@ function CheckoutErrorContent() {
             <Link href="/cart">
               <Button variant="default" size="lg" className="w-full sm:w-auto">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Return to Cart
+                Back to Cart
               </Button>
             </Link>
 
@@ -199,6 +224,20 @@ function CheckoutErrorContent() {
                     Live Chat
                   </Button>
                 </div>
+                <p className="text-xs text-gray-500 mt-4">
+                  Email&nbsp;
+                  <a
+                    href="mailto:support@fibreeliteglow.com"
+                    className="underline text-blue-600"
+                  >
+                    support@fibreeliteglow.com
+                  </a>
+                  &nbsp;or call&nbsp;
+                  <a href="tel:+18005551234" className="underline text-blue-600">
+                    +1&nbsp;(800)&nbsp;555-1234
+                  </a>
+                  &nbsp;for immediate assistance.
+                </p>
               </CardContent>
             </Card>
           </div>

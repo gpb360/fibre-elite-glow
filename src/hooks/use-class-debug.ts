@@ -7,8 +7,8 @@ import { classInspector } from '@/utils/dev-class-inspector'
  * Hook to debug Tailwind classes in development
  * Automatically adds data attributes and console logging for easier debugging
  */
-export function useClassDebug(classes: string, debugName?: string) {
-  const elementRef = useRef<HTMLElement>(null)
+export function useClassDebug<T extends HTMLElement = HTMLElement>(classes: string, debugName?: string) {
+  const elementRef = useRef<T>(null)
 
   useEffect(() => {
     if (process.env.NODE_ENV !== 'development') return

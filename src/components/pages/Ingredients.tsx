@@ -101,46 +101,13 @@ const IngredientsHero = () => (
   </section>
 );
 
-const Ingredients = () => {
-  const ingredientsList = [
-    {
-      title: "Prebiotic Oligosaccharides",
-      description: "Specialized plant fibers that feed the beneficial bacteria already living in your gut, supporting a naturally healthy digestive ecosystem without introducing foreign bacteria.",
-      image: "/lovable-uploads/prebiotics.jpg",
-      slug: "prebiotic-oligosaccharides"
-    },
-    {
-      title: "Beta-Glucan Oat Bran",
-      description: "A powerful soluble fiber that helps lower cholesterol levels, regulate blood sugar, and promote heart health. Our premium oat bran is carefully processed to preserve maximum nutritional benefits.",
-      image: "/lovable-uploads/oat-bran-hero.jpg",
-      slug: "beta-glucan-oat-bran"
-    },
-    {
-      title: "Organic Broccoli Extract",
-      description: "Rich in sulforaphane and fiber, our broccoli extract supports detoxification pathways and provides essential nutrients for digestive and overall health.",
-      image: "/lovable-uploads/broccoli-extract-hero.jpg",
-      slug: "organic-broccoli-extract"
-    },
-    {
-      title: "Fresh Spinach Powder",
-      description: "Packed with essential vitamins, minerals, and fiber, spinach powder supports digestive health while providing nutritional benefits for overall wellness.",
-      image: "/lovable-uploads/spinach-powder-hero.jpg",
-      slug: "fresh-spinach-powder"
-    },
-    {
-      title: "Premium Apple Fiber",
-      description: "A gentle yet effective source of both soluble and insoluble fiber, supporting digestive health while providing essential nutrients for overall wellness.",
-      image: "/lovable-uploads/apple-fiber-hero.jpg",
-      slug: "premium-apple-fiber"
-    },
-    {
-      title: "Oil Palm Fibre",
-      description: "A revolutionary dietary fiber source with exceptional health benefits, extracted from sustainable oil palm trunks. Rich in lignin, it binds toxins and cholesterol, and promotes healthy digestion.",
-      image: "/lovable-uploads/oil-palm-fibre-hero.jpg",
-      slug: "oil-palm-fibre"
-    }
-  ];
+interface Ingredient {
+  name: string;
+  path: string;
+  image: string;
+}
 
+const Ingredients = ({ ingredients }: { ingredients: Ingredient[] }) => {
   return (
     <div className="flex min-h-screen flex-col">
       <Head>
@@ -153,21 +120,21 @@ const Ingredients = () => {
         {/* Ingredients Grid */}
         <section className="py-16 bg-white">
           <div className="container px-4 md:px-6 mx-auto">
-            <Heading 
-              title="Our Quality Ingredients" 
-              description="Each ingredient is carefully selected for its specific health benefits and synergistic effects" 
-              centered 
-              className="mb-12" 
+            <Heading
+              title="Our Quality Ingredients"
+              description="Each ingredient is carefully selected for its specific health benefits and synergistic effects"
+              centered
+              className="mb-12"
             />
             
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {ingredientsList.map((ingredient) => (
-                <IngredientCard 
-                  key={ingredient.slug}
-                  title={ingredient.title}
-                  description={ingredient.description}
+              {ingredients.map((ingredient) => (
+                <IngredientCard
+                  key={ingredient.path}
+                  title={ingredient.name}
+                  description={`Learn more about the benefits of ${ingredient.name}.`}
                   image={ingredient.image}
-                  slug={ingredient.slug}
+                  slug={ingredient.path.replace('/ingredients/', '')}
                 />
               ))}
             </div>
@@ -178,11 +145,11 @@ const Ingredients = () => {
         <section className="py-16 bg-green-50">
           <div className="container px-4 md:px-6 mx-auto">
             <div className="max-w-3xl mx-auto text-center">
-              <Heading 
-                title="Our Quality Standards" 
-                description="We're committed to sourcing only the highest quality ingredients for our products" 
-                centered 
-                className="mb-8" 
+              <Heading
+                title="Our Quality Standards"
+                description="We're committed to sourcing only the highest quality ingredients for our products"
+                centered
+                className="mb-8"
               />
               
               <div className="space-y-6 text-left">
@@ -237,7 +204,7 @@ const Ingredients = () => {
                   <div>
                     <h3 className="text-lg font-semibold mb-2">Synergistic Formulations</h3>
                     <p className="text-gray-600">
-                      Our ingredients are carefully combined to work synergistically, enhancing each other's benefits and providing comprehensive support for your digestive health and overall wellness.
+                      Our ingredients are carefully combined to work synergistically, enhancing each other's benefits and and providing comprehensive support for your digestive health and overall wellness.
                     </p>
                   </div>
                 </div>

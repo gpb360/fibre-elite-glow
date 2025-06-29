@@ -41,7 +41,7 @@ const StrawberryHero = () => (
     <div 
       className="absolute inset-0 z-0 bg-cover bg-center opacity-20" 
       style={{ 
-        backgroundImage: `url('/lovable-uploads/strawberry-bg.jpg')`,
+        backgroundImage: `url('/assets/16x9_three_ripe_strawberries_with_bri.png')`,
         width: '100%'
       }}
     />
@@ -107,11 +107,9 @@ const StrawberryHero = () => (
           transition={{ duration: 0.7 }}
         >
           <img 
-            src="/lovable-uploads/strawberry-hero.jpg" 
+            src="/assets/16x9_three_ripe_strawberries_with_bri.png" 
             alt="Strawberry" 
             className="rounded-lg shadow-xl"
-            width={600}
-            height={400}
           />
         </motion.div>
       </div>

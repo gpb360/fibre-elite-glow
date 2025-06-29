@@ -40,7 +40,7 @@ const EnzymeRichPapayaHero = () => (
     <div 
       className="absolute inset-0 z-0 bg-cover bg-center opacity-20" 
       style={{ 
-        backgroundImage: `url('/lovable-uploads/papaya-bg.jpg')`,
+        backgroundImage: `url('/assets/16x9_a_close_up_shot_of_a_papaya_frui.png')`,
         width: '100%'
       }}
     />
@@ -106,11 +106,9 @@ const EnzymeRichPapayaHero = () => (
           transition={{ duration: 0.7 }}
         >
           <img 
-            src="/lovable-uploads/papaya-extract.jpg" 
+            src="/assets/16x9_a_close_up_shot_of_a_papaya_frui.png" 
             alt="Enzyme-Rich Papaya" 
             className="rounded-lg shadow-xl"
-            width={600}
-            height={400}
           />
         </motion.div>
       </div>

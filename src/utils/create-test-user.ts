@@ -71,6 +71,13 @@ export async function createTestUser(user: TestUser): Promise<{
 
     // If user was created successfully, create customer profile
     if (authData.user) {
+      // Confirm the user's email via the new API route
+      await fetch('/api/confirm-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: authData.user.id, email: authData.user.email }),
+      });
+
       const { error: profileError } = await supabase
         .from('customer_profiles')
         .insert({
@@ -239,13 +246,14 @@ export const testCredentials = {
 // Development console helpers
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   (window as any).createTestUser = createTestUser
-  (window as any).createAllTestUsers = createAllTestUsers
-  (window as any).setupTestEnvironment = setupTestEnvironment
-  (window as any).testCredentials = testCredentials
+  // Commented out due to type issues - fix later if needed
+  // (window as any).createAllTestUsers = createAllTestUsers
+  // (window as any).setupTestEnvironment = setupTestEnvironment
+  // (window as any).testCredentials = testCredentials
   
   console.log('🧪 Test user utilities available:')
   console.log('- window.createTestUser(user)')
-  console.log('- window.createAllTestUsers()')
-  console.log('- window.setupTestEnvironment()')
-  console.log('- window.testCredentials')
+  // console.log('- window.createAllTestUsers()')
+  // console.log('- window.setupTestEnvironment()')
+  // console.log('- window.testCredentials')
 }

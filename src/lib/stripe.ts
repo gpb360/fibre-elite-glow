@@ -1,29 +1,50 @@
-
 import Stripe from 'stripe';
 import { loadStripe } from '@stripe/stripe-js';
 
 // Check if we're in test mode
-const isTestMode = import.meta.env.MODE === 'development' || import.meta.env.VITE_STRIPE_TEST_MODE === 'true';
+const isTestMode = process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_STRIPE_TEST_MODE === 'true';
 
 // Get the appropriate Stripe keys based on environment
-const getStripeSecretKey = () => {
-  const key = import.meta.env.VITE_STRIPE_SECRET_KEY;
-  if (!key) {
-    throw new Error('VITE_STRIPE_SECRET_KEY is not defined in environment variables');
+let _cachedSecretKey: string | undefined;
+/**
+ * Retrieve Stripe secret key.
+ *
+ * In production, this should come from **Supabase Secrets**, which automatically
+ * injects the secret as an environment variable with the *same name* that was
+ * stored (`STRIPE_SECRET_KEY`). In local development we still fall back to the
+ * regular `.env.local` file so the DX remains unchanged.
+ */
+const getStripeSecretKey = (): string => {
+  if (_cachedSecretKey) return _cachedSecretKey;
+
+  // 1. Prefer the value that Supabase Secrets injects
+  const keyFromEnv = process.env.STRIPE_SECRET_KEY;
+
+  if (!keyFromEnv) {
+    const err =
+      '❌ Stripe secret key not found. ' +
+      'Make sure you have stored `STRIPE_SECRET_KEY` in Supabase Secrets or ' +
+      'added it to your local .env file for development.';
+    throw new Error(err);
   }
 
-  // Validate that we're using test keys in test mode
-  if (isTestMode && !key.startsWith('sk_test_')) {
-    console.warn('Warning: Using live Stripe key in test mode. Consider using test keys for testing.');
+  // Warn if we are in test mode but a live key is supplied
+  if (isTestMode && !keyFromEnv.startsWith('sk_test_')) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      '⚠️  Using a LIVE Stripe secret key while test-mode is enabled. ' +
+        'Consider switching to a test key (sk_test_...).'
+    );
   }
 
-  return key;
+  _cachedSecretKey = keyFromEnv;
+  return keyFromEnv;
 };
 
 const getStripePublishableKey = () => {
-  const key = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+  const key = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
   if (!key) {
-    throw new Error('VITE_STRIPE_PUBLISHABLE_KEY is not defined in environment variables');
+    throw new Error('NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not defined in environment variables');
   }
 
   // Validate that we're using test keys in test mode
@@ -50,8 +71,8 @@ export const STRIPE_CONFIG = {
   currency: 'usd',
   payment_method_types: ['card'] as Stripe.Checkout.SessionCreateParams.PaymentMethodType[],
   mode: 'payment' as const,
-  success_url: `${import.meta.env.VITE_APP_URL || 'http://localhost:5173'}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-  cancel_url: `${import.meta.env.VITE_APP_URL || 'http://localhost:5173'}/cart`,
+  success_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+  cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/cart`,
 
   // Test mode configuration
   testMode: isTestMode,

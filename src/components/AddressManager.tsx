@@ -132,7 +132,7 @@ export function AddressManager({ type = 'both', onAddressSelect, selectedAddress
         postalCode: address.postal_code,
         country: address.country,
         phone: address.phone || "",
-        isDefault: address.is_default,
+        isDefault: address.is_default ?? false,
       });
     } else {
       setEditingAddress(null);

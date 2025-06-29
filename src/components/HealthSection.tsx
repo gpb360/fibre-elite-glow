@@ -2,6 +2,7 @@
 import React from 'react';
 import { SplitSection } from '@/components/ui/split-section';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 export function HealthSection() {
   return (
@@ -84,9 +85,11 @@ export function HealthSection() {
         </ul>
         
         <div className="mt-8">
-          <Button variant="premium">
-            Explore Products
-          </Button>
+          <Link href="/products">
+            <Button variant="premium">
+              Explore Products
+            </Button>
+          </Link>
         </div>
       </SplitSection>
       
@@ -170,9 +173,11 @@ export function HealthSection() {
         </ul>
         
         <div className="mt-8">
-          <Button variant="premium">
-            View Testimonials
-          </Button>
+          <Link href="/testimonials">
+            <Button variant="premium">
+              View Testimonials
+            </Button>
+          </Link>
         </div>
       </SplitSection>
       
@@ -255,9 +260,11 @@ export function HealthSection() {
         </ul>
         
         <div className="mt-8">
-          <Button variant="premium">
-            Start Your Journey
-          </Button>
+          <Link href="/products">
+            <Button variant="premium">
+              Start Your Journey
+            </Button>
+          </Link>
         </div>
       </SplitSection>
     </div>
