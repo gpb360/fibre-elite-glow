@@ -12,6 +12,17 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
   Form,
   FormControl,
   FormField,
@@ -65,6 +76,8 @@ export function ProductManagement() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterPopular, setFilterPopular] = useState(false);
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<Package | null>(null);
 
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
@@ -185,15 +198,19 @@ export function ProductManagement() {
     }
   };
 
-  const deleteProduct = async (productId: string) => {
-    const confirmed = window.confirm("Are you sure you want to delete this product?");
-    if (!confirmed) return;
+  const handleDeleteConfirmation = (product: Package) => {
+    setProductToDelete(product);
+    setIsDeleteConfirmationOpen(true);
+  };
+
+  const deleteProduct = async () => {
+    if (!productToDelete) return;
 
     try {
       const { error } = await supabase
         .from('packages')
         .delete()
-        .eq('id', productId);
+        .eq('id', productToDelete.id);
 
       if (error) throw error;
 
@@ -210,6 +227,9 @@ export function ProductManagement() {
         description: error.message || "Failed to delete product. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsDeleteConfirmationOpen(false);
+      setProductToDelete(null);
     }
   };
 
@@ -371,7 +391,7 @@ export function ProductManagement() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => deleteProduct(product.id)}
+                    onClick={() => handleDeleteConfirmation(product)}
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>

@@ -4,7 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-const ImageManager: React.FC = () => {
+interface ImageManagerProps {
+  packageId?: string;
+  isAdmin?: boolean;
+}
+
+const ImageManager: React.FC<ImageManagerProps> = ({ packageId, isAdmin }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {

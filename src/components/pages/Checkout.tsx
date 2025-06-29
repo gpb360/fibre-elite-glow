@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { loadStripe } from '@stripe/stripe-js';
+import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,8 +14,26 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Loader2, CreditCard, Lock } from 'lucide-react';
 
-// Initialize Stripe with Vite environment variable
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '');
+/**
+ * Initialise Stripe with the *publishable* key.
+ * We do an explicit check so that in development a missing env var
+ * fails fast instead of silently resulting in runtime errors.
+ */
+const stripePromise: Promise<Stripe | null> | null = (() => {
+  const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+
+  if (!publishableKey) {
+    /* eslint-disable no-console */
+    console.error(
+      '❌  Environment variable "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" is missing. ' +
+        'Stripe checkout will be disabled until this key is provided.'
+    );
+    /* eslint-enable no-console */
+    return null;
+  }
+
+  return loadStripe(publishableKey);
+})();
 
 interface CheckoutFormData {
   email: string;
@@ -32,8 +50,12 @@ interface CheckoutFormData {
 }
 
 const CheckoutForm: React.FC = () => {
-  const stripe = useStripe();
-  const elements = useElements();
+  // NOTE: stripe / elements hooks are not currently used,
+  // but we keep them here in case card elements are added later.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const stripe = null;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const elements = null;
   const router = useRouter();
   const { cart, clearCart } = useCart();
   const { toast } = useToast();
@@ -74,6 +96,17 @@ const CheckoutForm: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    // Extra guard in case Stripe is not initialised due to missing key
+    if (!stripePromise) {
+      toast({
+        title: 'Configuration Error',
+        description:
+          'Stripe is not configured correctly. Please contact support or try again later.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     if (cart.items.length === 0) {
       toast({
         title: "Error",
@@ -107,7 +140,7 @@ const CheckoutForm: React.FC = () => {
 
       // Redirect to Stripe Checkout
       if (url) {
-        window.location.href = url;
+        router.push(url);
       } else {
         throw new Error('No checkout URL received');
       }
@@ -256,7 +289,7 @@ const CheckoutForm: React.FC = () => {
             <div className="border-t pt-2 mt-2">
               <div className="flex justify-between font-semibold">
                 <span>Total</span>
-                <span data-testid="order-total">${cart.totalAmount.toFixed(2)}</span>
+                <span data-testid="order-total">${cart.subtotal.toFixed(2)}</span>
               </div>
             </div>
           </div>

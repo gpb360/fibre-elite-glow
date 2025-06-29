@@ -1,5 +1,7 @@
-import FreshSpinachPowder from '@/components/pages/ingredients/FreshSpinachPowder'
+'use client';
 
-export default function FreshSpinachPowderPage() {
-  return <FreshSpinachPowder />
+import FreshSpinachPowder from '@/components/pages/ingredients/FreshSpinachPowder';
+
+export default function Page() {
+  return <FreshSpinachPowder />;
 }

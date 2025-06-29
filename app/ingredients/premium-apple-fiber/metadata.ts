@@ -1,12 +1,12 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Premium Apple Fiber | Natural Gut Health | Fibre Elite Glow',
-  description: 'Discover the benefits of Premium Apple Fiber, a gentle yet effective source of both soluble and insoluble fiber that supports digestive health, helps maintain healthy cholesterol levels, and promotes overall wellness.',
-  keywords: 'premium apple fiber, apple pomace, gut health, digestive health, soluble fiber, insoluble fiber, pectin, cholesterol management, blood sugar regulation, natural fiber, gentle fiber supplement, prebiotic, weight management',
+  title: 'Dual-Action Apple Fiber | Gut & Heart Health | Fibre Elite Glow',
+  description: 'Experience the benefits of our Dual-Action Apple Fiber. This premium blend of soluble and insoluble fiber supports digestive health, promotes heart health, and aids in weight management.',
+  keywords: 'dual-action apple fiber, soluble and insoluble fiber, gut health, heart health support, pectin fiber, cholesterol support, digestive regularity, weight management fiber, natural apple fiber',
   openGraph: {
-    title: 'Premium Apple Fiber | Natural Digestive Health Support',
-    description: 'A gentle yet effective source of both soluble and insoluble fiber, supporting digestive health while providing essential nutrients for overall wellness.',
+    title: 'Dual-Action Apple Fiber | For a Healthy Gut & Heart',
+    description: 'Support your digestive and cardiovascular health with our premium apple fiber, a perfect blend of soluble and insoluble fibers.',
     images: [
       {
         url: '/lovable-uploads/apple-fiber-hero.jpg',
@@ -19,8 +19,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Premium Apple Fiber | Natural Digestive Health Support',
-    description: 'A gentle yet effective source of both soluble and insoluble fiber, supporting digestive health while providing essential nutrients for overall wellness.',
+    title: 'Dual-Action Apple Fiber | For a Healthy Gut & Heart',
+    description: 'Support your digestive and cardiovascular health with our premium apple fiber, a perfect blend of soluble and insoluble fibers.',
     images: ['/lovable-uploads/apple-fiber-hero.jpg'],
   }
 }

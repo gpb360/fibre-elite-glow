@@ -20,6 +20,17 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, User, Settings, Bell, Shield } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const profileSchema = z.object({
@@ -40,6 +51,7 @@ export function CustomerProfile() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const form = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
@@ -125,27 +137,13 @@ export function CustomerProfile() {
   async function handleDeleteAccount() {
     if (!user) return;
 
-    const confirmed = window.confirm(
-      "Are you sure you want to delete your account? This action cannot be undone."
-    );
-
-    if (!confirmed) return;
-
     setIsLoading(true);
-    
     try {
-      // Delete profile first
       const { error: profileError } = await supabase
         .from('customer_profiles')
         .delete()
         .eq('user_id', user.id);
-
-      if (profileError) {
-        throw profileError;
-      }
-
-      // Note: In a production app, you'd want to handle this server-side
-      // as users cannot delete their own auth.users record directly
+      if (profileError) throw profileError;
       toast({
         title: "Account deletion requested",
         description: "Please contact support to complete account deletion.",
@@ -159,6 +157,7 @@ export function CustomerProfile() {
       });
     } finally {
       setIsLoading(false);
+      setIsDeleteDialogOpen(false);
     }
   }
 
@@ -455,21 +454,28 @@ export function CustomerProfile() {
                       <p className="text-sm text-gray-600 mb-3">
                         Permanently delete your account and all associated data. This action cannot be undone.
                       </p>
-                      <Button 
-                        variant="destructive" 
-                        size="sm"
-                        onClick={handleDeleteAccount}
-                        disabled={isLoading}
-                      >
-                        {isLoading ? (
-                          <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Processing...
-                          </>
-                        ) : (
-                          "Delete Account"
-                        )}
-                      </Button>
+                      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="destructive" size="sm">
+                            Delete Account
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will permanently delete your
+                              account and remove your data from our servers.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={handleDeleteAccount} disabled={isLoading}>
+                              {isLoading ? 'Deleting...' : 'Delete'}
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </div>
                 </CardContent>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -14,6 +15,7 @@ interface AdminRouteProps {
 export function AdminRoute({ children, requiredPermission, fallback }: AdminRouteProps) {
   const { user, loading: authLoading } = useAuth();
   const { isAdmin, isLoading: adminLoading, hasPermission } = useAdminAuth();
+  const router = useRouter();
 
   // Show loading state while checking authentication and admin status
   if (authLoading || adminLoading) {
@@ -40,7 +42,7 @@ export function AdminRoute({ children, requiredPermission, fallback }: AdminRout
           <p className="text-gray-600 text-center mb-4">
             You must be signed in to access this area.
           </p>
-          <Button onClick={() => window.location.href = '/auth'}>
+          <Button onClick={() => router.push('/auth')}>
             Sign In
           </Button>
         </CardContent>
@@ -58,7 +60,7 @@ export function AdminRoute({ children, requiredPermission, fallback }: AdminRout
           <p className="text-gray-600 text-center mb-4">
             You don't have permission to access this admin area.
           </p>
-          <Button variant="outline" onClick={() => window.location.href = '/'}>
+          <Button variant="outline" onClick={() => router.push('/')}>
             Return to Home
           </Button>
         </CardContent>
@@ -76,7 +78,7 @@ export function AdminRoute({ children, requiredPermission, fallback }: AdminRout
           <p className="text-gray-600 text-center mb-4">
             You don't have the required permission: <code className="bg-gray-100 px-2 py-1 rounded">{requiredPermission}</code>
           </p>
-          <Button variant="outline" onClick={() => window.location.href = '/admin'}>
+          <Button variant="outline" onClick={() => router.push('/admin')}>
             Return to Admin Dashboard
           </Button>
         </CardContent>

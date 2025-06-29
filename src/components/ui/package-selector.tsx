@@ -21,10 +21,11 @@ export function PackageSelector({
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold mb-4">Choose Your Package</h3>
-      <div className="grid gap-4">
-        {packages.map((pkg) => (
+      <div className="grid gap-4" data-testid="package-selector">
+        {packages.map((pkg, index) => (
           <motion.div
             key={pkg.id}
+            data-testid={`package-option-${index}`}
             className={cn(
               "relative border-2 rounded-lg p-4 cursor-pointer transition-all",
               selectedPackage?.id === pkg.id

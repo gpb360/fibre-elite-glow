@@ -44,7 +44,7 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/products" className="text-sm text-gray-600 hover:text-green-600 transition-colors">
-                  Total Essentiel Plus
+                  Total Essential Plus
                 </Link>
               </li>
               <li>
@@ -63,7 +63,8 @@ export function Footer() {
           <div>
             <h3 className="text-sm font-semibold text-gray-900 mb-4">Resources</h3>
             <ul className="space-y-3">
-              <li>
+              {/* TODO: Create pages for /about and /blog before re-enabling these links */}
+              {/* <li>
                 <Link href="/about" className="text-sm text-gray-600 hover:text-green-600 transition-colors">
                   About Us
                 </Link>
@@ -72,7 +73,7 @@ export function Footer() {
                 <Link href="/blog" className="text-sm text-gray-600 hover:text-green-600 transition-colors">
                   Health Blog
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link href="/faq" className="text-sm text-gray-600 hover:text-green-600 transition-colors">
                   FAQ
@@ -89,7 +90,8 @@ export function Footer() {
           <div>
             <h3 className="text-sm font-semibold text-gray-900 mb-4">Company</h3>
             <ul className="space-y-3">
-              <li>
+              {/* TODO: Create pages for contact, privacy, terms, shipping before re-enabling */}
+              {/* <li>
                 <Link href="/contact" className="text-sm text-gray-600 hover:text-green-600 transition-colors">
                   Contact Us
                 </Link>
@@ -108,7 +110,7 @@ export function Footer() {
                 <Link href="/shipping" className="text-sm text-gray-600 hover:text-green-600 transition-colors">
                   Shipping Information
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>
@@ -120,7 +122,8 @@ export function Footer() {
             </p>
 
             <div className="flex items-center space-x-8">
-              <Link href="/privacy" className="text-sm text-gray-500 hover:text-green-600 transition-colors">
+              {/* TODO: Re-enable legal links once pages exist */}
+              {/* <Link href="/privacy" className="text-sm text-gray-500 hover:text-green-600 transition-colors">
                 Privacy Policy
               </Link>
               <Link href="/terms" className="text-sm text-gray-500 hover:text-green-600 transition-colors">
@@ -128,7 +131,7 @@ export function Footer() {
               </Link>
               <Link href="/cookies" className="text-sm text-gray-500 hover:text-green-600 transition-colors">
                 Cookie Policy
-              </Link>
+              </Link> */}
             </div>
           </div>
         </div>

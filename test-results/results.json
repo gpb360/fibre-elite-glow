@@ -1,7 +1,7 @@
 {
   "config": {
-    "configFile": "D:\\Lovable-Lebelle-v\\fibre-elite-glow\\playwright.config.ts",
-    "rootDir": "D:/Lovable-Lebelle-v/fibre-elite-glow/tests",
+    "configFile": "C:\\Users\\garyp\\Lovable-Lebelle-v\\fibre-elite-glow\\playwright.config.ts",
+    "rootDir": "C:/Users/garyp/Lovable-Lebelle-v/fibre-elite-glow/tests",
     "forbidOnly": false,
     "fullyParallel": true,
     "globalSetup": null,
@@ -37,13 +37,13 @@
     "quiet": false,
     "projects": [
       {
-        "outputDir": "D:/Lovable-Lebelle-v/fibre-elite-glow/test-results",
+        "outputDir": "C:/Users/garyp/Lovable-Lebelle-v/fibre-elite-glow/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "chromium",
         "name": "chromium",
-        "testDir": "D:/Lovable-Lebelle-v/fibre-elite-glow/tests",
+        "testDir": "C:/Users/garyp/Lovable-Lebelle-v/fibre-elite-glow/tests",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -51,13 +51,13 @@
         "timeout": 30000
       },
       {
-        "outputDir": "D:/Lovable-Lebelle-v/fibre-elite-glow/test-results",
+        "outputDir": "C:/Users/garyp/Lovable-Lebelle-v/fibre-elite-glow/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "firefox",
         "name": "firefox",
-        "testDir": "D:/Lovable-Lebelle-v/fibre-elite-glow/tests",
+        "testDir": "C:/Users/garyp/Lovable-Lebelle-v/fibre-elite-glow/tests",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -65,13 +65,13 @@
         "timeout": 30000
       },
       {
-        "outputDir": "D:/Lovable-Lebelle-v/fibre-elite-glow/test-results",
+        "outputDir": "C:/Users/garyp/Lovable-Lebelle-v/fibre-elite-glow/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "webkit",
         "name": "webkit",
-        "testDir": "D:/Lovable-Lebelle-v/fibre-elite-glow/tests",
+        "testDir": "C:/Users/garyp/Lovable-Lebelle-v/fibre-elite-glow/tests",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -79,13 +79,13 @@
         "timeout": 30000
       },
       {
-        "outputDir": "D:/Lovable-Lebelle-v/fibre-elite-glow/test-results",
+        "outputDir": "C:/Users/garyp/Lovable-Lebelle-v/fibre-elite-glow/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Mobile Chrome",
         "name": "Mobile Chrome",
-        "testDir": "D:/Lovable-Lebelle-v/fibre-elite-glow/tests",
+        "testDir": "C:/Users/garyp/Lovable-Lebelle-v/fibre-elite-glow/tests",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -93,13 +93,13 @@
         "timeout": 30000
       },
       {
-        "outputDir": "D:/Lovable-Lebelle-v/fibre-elite-glow/test-results",
+        "outputDir": "C:/Users/garyp/Lovable-Lebelle-v/fibre-elite-glow/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {},
         "id": "Mobile Safari",
         "name": "Mobile Safari",
-        "testDir": "D:/Lovable-Lebelle-v/fibre-elite-glow/tests",
+        "testDir": "C:/Users/garyp/Lovable-Lebelle-v/fibre-elite-glow/tests",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -127,8 +127,8 @@
     }
   ],
   "stats": {
-    "startTime": "2025-06-19T05:14:56.151Z",
-    "duration": 120672.792,
+    "startTime": "2025-06-22T14:41:52.779Z",
+    "duration": 120676.85999999999,
     "expected": 0,
     "skipped": 0,
     "unexpected": 0,

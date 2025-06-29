@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { supabase } from '@/integrations/supabase/client'
 import { authDebugger } from '@/utils/auth-debug'
 import { useAuthErrorHandler } from '@/hooks/use-auth-error-handler'
+import { testCredentials } from '@/utils/create-test-user'
 import { Loader2, CheckCircle, XCircle, AlertCircle, User, Mail, Key } from 'lucide-react'
 
 /**
@@ -16,8 +17,8 @@ import { Loader2, CheckCircle, XCircle, AlertCircle, User, Mail, Key } from 'luc
  * Only renders in development mode
  */
 export function AuthTester() {
-  const [testEmail, setTestEmail] = useState('test@example.com')
-  const [testPassword, setTestPassword] = useState('testpassword123')
+  const [testEmail, setTestEmail] = useState(testCredentials.user.email)
+  const [testPassword, setTestPassword] = useState(testCredentials.user.password)
   const [isLoading, setIsLoading] = useState(false)
   const [testResults, setTestResults] = useState<any[]>([])
   const { errorState, handleAuthError, handleAuthSuccess } = useAuthErrorHandler()
@@ -49,7 +50,7 @@ export function AuthTester() {
       setTestResults(prev => [...prev, {
         name: testName,
         success: false,
-        error: error.message,
+        error: error instanceof Error ? error.message : String(error),
         duration,
         timestamp: new Date().toISOString()
       }])
@@ -167,7 +168,7 @@ export function AuthTester() {
                 type="email"
                 value={testEmail}
                 onChange={(e) => setTestEmail(e.target.value)}
-                placeholder="test@example.com"
+                placeholder={testCredentials.user.email}
               />
             </div>
             <div>
@@ -176,7 +177,7 @@ export function AuthTester() {
                 type="password"
                 value={testPassword}
                 onChange={(e) => setTestPassword(e.target.value)}
-                placeholder="testpassword123"
+                placeholder={testCredentials.user.password}
               />
             </div>
           </div>

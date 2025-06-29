@@ -13,6 +13,17 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
   Form,
   FormControl,
   FormField,
@@ -61,6 +72,8 @@ export function AddressManager({ type = 'both', onAddressSelect, selectedAddress
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState<Address | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
+  const [addressToDelete, setAddressToDelete] = useState<Address | null>(null);
 
   const form = useForm<z.infer<typeof addressSchema>>({
     resolver: zodResolver(addressSchema),
@@ -132,7 +145,7 @@ export function AddressManager({ type = 'both', onAddressSelect, selectedAddress
         postalCode: address.postal_code,
         country: address.country,
         phone: address.phone || "",
-        isDefault: address.is_default,
+        isDefault: address.is_default ?? false,
       });
     } else {
       setEditingAddress(null);
@@ -221,15 +234,19 @@ export function AddressManager({ type = 'both', onAddressSelect, selectedAddress
     }
   };
 
-  const deleteAddress = async (addressId: string) => {
-    const confirmed = window.confirm("Are you sure you want to delete this address?");
-    if (!confirmed) return;
+  const handleDeleteConfirmation = (address: Address) => {
+    setAddressToDelete(address);
+    setIsDeleteConfirmationOpen(true);
+  };
+
+  const deleteAddress = async () => {
+    if (!addressToDelete) return;
 
     try {
       const { error } = await supabase
         .from('addresses')
         .delete()
-        .eq('id', addressId);
+        .eq('id', addressToDelete.id);
 
       if (error) throw error;
 
@@ -246,6 +263,9 @@ export function AddressManager({ type = 'both', onAddressSelect, selectedAddress
         description: error.message || "Failed to delete address. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsDeleteConfirmationOpen(false);
+      setAddressToDelete(null);
     }
   };
 
@@ -379,7 +399,7 @@ export function AddressManager({ type = 'both', onAddressSelect, selectedAddress
                       size="sm"
                       onClick={(e) => {
                         e.stopPropagation();
-                        deleteAddress(address.id);
+                        handleDeleteConfirmation(address);
                       }}
                     >
                       <Trash2 className="w-4 h-4" />
