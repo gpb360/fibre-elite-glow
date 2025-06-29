@@ -41,7 +41,7 @@ const AppleFiberHero = () => (
     <div 
       className="absolute inset-0 z-0 bg-cover bg-center opacity-20" 
       style={{ 
-        backgroundImage: `url('/lovable-uploads/apple-orchard-bg.jpg')`,
+        backgroundImage: `url('/assets/16x9_apple_fibre.png')`,
         width: '100%'
       }}
     />
@@ -107,11 +107,9 @@ const AppleFiberHero = () => (
           transition={{ duration: 0.7 }}
         >
           <img 
-            src="/lovable-uploads/apple-fiber.jpg" 
+            src="/assets/16x9_apple_fibre.png" 
             alt="Premium Apple Fiber" 
             className="rounded-lg shadow-xl"
-            width={600}
-            height={400}
           />
         </motion.div>
       </div>
@@ -498,7 +496,7 @@ const AppleFiber = () => {
                           </svg>
                         </div>
                         <span className="text-gray-600">
-                          <strong>Soluble Fiber:</strong> 20-25% of total fiber, primarily pectin
+                          <strong>Soluble Fiber (Pectin):</strong> Approximately 20-30% of total fiber
                         </span>
                       </li>
                       <li className="flex items-start">
@@ -508,24 +506,14 @@ const AppleFiber = () => {
                           </svg>
                         </div>
                         <span className="text-gray-600">
-                          <strong>Insoluble Fiber:</strong> 75-80% of total fiber, including cellulose and hemicellulose
-                        </span>
-                      </li>
-                      <li className="flex items-start">
-                        <div className="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-green-100 mr-3 mt-1">
-                          <svg className="h-3 w-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                        </div>
-                        <span className="text-gray-600">
-                          <strong>Low Caloric Value:</strong> Approximately 2-3 calories per gram
+                          <strong>Insoluble Fiber (Cellulose):</strong> Approximately 70-80% of total fiber
                         </span>
                       </li>
                     </ul>
                   </div>
                   
                   <div className="p-6">
-                    <h3 className="text-xl font-semibold mb-4 text-green-700">Additional Nutrients</h3>
+                    <h3 className="text-xl font-semibold mb-4 text-green-700">Other Nutrients</h3>
                     <ul className="space-y-3">
                       <li className="flex items-start">
                         <div className="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-green-100 mr-3 mt-1">
@@ -534,7 +522,7 @@ const AppleFiber = () => {
                           </svg>
                         </div>
                         <span className="text-gray-600">
-                          <strong>Polyphenols:</strong> Natural antioxidants that support cellular health
+                          <strong>Antioxidants:</strong> Rich in polyphenols and flavonoids
                         </span>
                       </li>
                       <li className="flex items-start">
@@ -544,27 +532,7 @@ const AppleFiber = () => {
                           </svg>
                         </div>
                         <span className="text-gray-600">
-                          <strong>Potassium:</strong> Supports healthy blood pressure and fluid balance
-                        </span>
-                      </li>
-                      <li className="flex items-start">
-                        <div className="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-green-100 mr-3 mt-1">
-                          <svg className="h-3 w-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                        </div>
-                        <span className="text-gray-600">
-                          <strong>Vitamin C:</strong> Trace amounts that contribute to antioxidant activity
-                        </span>
-                      </li>
-                      <li className="flex items-start">
-                        <div className="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-green-100 mr-3 mt-1">
-                          <svg className="h-3 w-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                        </div>
-                        <span className="text-gray-600">
-                          <strong>Quercetin:</strong> A flavonoid with anti-inflammatory properties
+                          <strong>Vitamins & Minerals:</strong> Contains trace amounts of Vitamin C, potassium, and other essential nutrients
                         </span>
                       </li>
                     </ul>
@@ -575,92 +543,24 @@ const AppleFiber = () => {
           </div>
         </section>
         
-        {/* FAQ Section */}
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-4">
-            <Heading 
-              title="Frequently Asked Questions" 
-              description="Common questions about Premium Apple Fiber" 
-              centered 
-              className="mb-12" 
-            />
-            
-            <div className="max-w-3xl mx-auto">
-              <div className="space-y-6">
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold mb-2">How is apple fiber different from other fiber supplements?</h3>
-                  <p className="text-gray-600">
-                    Apple fiber offers a unique advantage by providing a natural balance of both soluble and insoluble 
-                    fiber in one ingredient. Unlike some fiber supplements that contain only one type of fiber, 
-                    apple fiber delivers the benefits of both: soluble fiber (primarily pectin) for cholesterol 
-                    management and blood sugar regulation, and insoluble fiber for digestive regularity. Additionally, 
-                    apple fiber is generally gentler on the digestive system than some other fiber sources, making it 
-                    suitable for sensitive individuals.
-                  </p>
-                </div>
-                
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold mb-2">How much apple fiber should I consume daily?</h3>
-                  <p className="text-gray-600">
-                    For general digestive health, most adults benefit from 3-5 grams of apple fiber daily. For 
-                    cholesterol management, research suggests that 6-10 grams daily may be more effective. It's 
-                    best to start with a lower amount and gradually increase to allow your digestive system to 
-                    adjust. Our Total Essential products contain an optimal dose of apple fiber as part of a 
-                    comprehensive fiber blend designed for digestive wellness and heart health.
-                  </p>
-                </div>
-                
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold mb-2">Can apple fiber cause digestive discomfort?</h3>
-                  <p className="text-gray-600">
-                    Apple fiber is generally well-tolerated and gentler than many other fiber sources. However, 
-                    as with any fiber supplement, some individuals may experience mild gas or bloating when first 
-                    introducing it, particularly if they're not accustomed to a fiber-rich diet. Starting with a 
-                    smaller amount and gradually increasing intake allows your digestive system to adapt. It's also 
-                    important to drink plenty of water when consuming fiber supplements to help them work effectively.
-                  </p>
-                </div>
-                
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold mb-2">How quickly will I notice benefits from taking apple fiber?</h3>
-                  <p className="text-gray-600">
-                    The timeframe for experiencing benefits varies depending on the specific benefit and individual factors. 
-                    Many people notice improvements in digestive regularity within a few days of consistent use. 
-                    Cholesterol-lowering effects typically take 4-8 weeks of regular consumption to become measurable. 
-                    For optimal results, apple fiber should be taken daily as part of a balanced diet and healthy lifestyle.
-                  </p>
-                </div>
-                
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold mb-2">Can apple fiber interact with medications?</h3>
-                  <p className="text-gray-600">
-                    Fiber supplements, including apple fiber, may affect the absorption of certain medications by binding 
-                    to them or slowing their absorption in the digestive tract. To minimize potential interactions, it's 
-                    generally recommended to take medications at least 1-2 hours before or after consuming fiber supplements. 
-                    If you're taking prescription medications, especially those for diabetes, cholesterol, or thyroid conditions, 
-                    consult with your healthcare provider before adding apple fiber to your regimen.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        
-        {/* CTA Section */}
+        {/* Call to Action */}
         <section className="bg-green-50 py-16">
-          <div className="container px-4 md:px-6 text-center">
-            <h2 className="text-3xl font-bold mb-4">Experience the Benefits of Premium Apple Fiber</h2>
-            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-              Our premium supplements harness the power of apple fiber to support your digestive health, cholesterol management, and overall wellness.
-            </p>
+          <div className="container mx-auto px-4 text-center">
+            <Heading 
+              title="Experience the Gentle Power of Apple Fiber" 
+              description="Incorporate the balanced benefits of Premium Apple Fiber into your daily routine for improved digestive health and overall wellness." 
+              centered 
+              className="mb-8" 
+            />
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link href="/products/total-essential">
-                <Button variant="premium" size="lg">
-                  Shop Total Essential
+                <Button size="xl" variant="premium">
+                  Shop Now
+                  <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
               <Link href="/products/total-essential-plus">
-                <Button variant="outline" size="lg">
+                <Button size="xl" variant="outline">
                   Explore Total Essential Plus
                 </Button>
               </Link>

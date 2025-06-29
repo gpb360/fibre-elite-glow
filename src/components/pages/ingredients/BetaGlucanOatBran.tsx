@@ -41,7 +41,7 @@ const BetaGlucanHero = () => (
     <div 
       className="absolute inset-0 z-0 bg-cover bg-center opacity-20" 
       style={{ 
-        backgroundImage: `url('/lovable-uploads/oat-field-bg.jpg')`,
+        backgroundImage: `url('/assets/16x9_a_pile_of_oats_and_oat_straws_ar.png')`,
         width: '100%'
       }}
     />
@@ -107,11 +107,9 @@ const BetaGlucanHero = () => (
           transition={{ duration: 0.7 }}
         >
           <img 
-            src="/lovable-uploads/oat-bran-hero.jpg" 
+            src="/assets/16x9_a_pile_of_oats_and_oat_straws_ar.png" 
             alt="Beta-Glucan Oat Bran" 
             className="rounded-lg shadow-xl"
-            width={600}
-            height={400}
           />
         </motion.div>
       </div>
@@ -500,14 +498,14 @@ const BetaGlucanOatBran = () => {
                           </svg>
                         </div>
                         <span className="text-gray-600">
-                          <strong>Healthy Fats:</strong> Rich in unsaturated fats, including omega-3 fatty acids
+                          <strong>Vitamins & Minerals:</strong> Good source of B-vitamins, iron, magnesium, and zinc
                         </span>
                       </li>
                     </ul>
                   </div>
                   
                   <div className="p-6">
-                    <h3 className="text-xl font-semibold mb-4 text-green-700">Vitamins & Minerals</h3>
+                    <h3 className="text-xl font-semibold mb-4 text-green-700">Health Impact</h3>
                     <ul className="space-y-3">
                       <li className="flex items-start">
                         <div className="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-green-100 mr-3 mt-1">
@@ -516,7 +514,7 @@ const BetaGlucanOatBran = () => {
                           </svg>
                         </div>
                         <span className="text-gray-600">
-                          <strong>B Vitamins:</strong> Including thiamin, riboflavin, niacin, and folate
+                          Clinically proven to lower cholesterol and reduce the risk of heart disease
                         </span>
                       </li>
                       <li className="flex items-start">
@@ -526,7 +524,7 @@ const BetaGlucanOatBran = () => {
                           </svg>
                         </div>
                         <span className="text-gray-600">
-                          <strong>Vitamin E:</strong> A powerful antioxidant that protects cells from damage
+                          Helps regulate blood sugar levels and improve insulin sensitivity
                         </span>
                       </li>
                       <li className="flex items-start">
@@ -536,17 +534,7 @@ const BetaGlucanOatBran = () => {
                           </svg>
                         </div>
                         <span className="text-gray-600">
-                          <strong>Minerals:</strong> Including magnesium, phosphorus, potassium, zinc, and iron
-                        </span>
-                      </li>
-                      <li className="flex items-start">
-                        <div className="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-green-100 mr-3 mt-1">
-                          <svg className="h-3 w-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                        </div>
-                        <span className="text-gray-600">
-                          <strong>Antioxidants:</strong> Contains various phenolic compounds with antioxidant properties
+                          Supports a healthy gut microbiome and promotes digestive regularity
                         </span>
                       </li>
                     </ul>
@@ -557,72 +545,24 @@ const BetaGlucanOatBran = () => {
           </div>
         </section>
         
-        {/* FAQ Section */}
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-4">
-            <Heading 
-              title="Frequently Asked Questions" 
-              description="Common questions about Beta-Glucan Oat Bran" 
-              centered 
-              className="mb-12" 
-            />
-            
-            <div className="max-w-3xl mx-auto">
-              <div className="space-y-6">
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold mb-2">How much beta-glucan do I need to consume for health benefits?</h3>
-                  <p className="text-gray-600">
-                    Clinical research indicates that consuming 3-5 grams of beta-glucan daily provides significant cholesterol-lowering benefits. For blood sugar management, 4-6 grams per day has been shown to be effective. Our Total Essential products provide an optimal dose of beta-glucan as part of a comprehensive fiber blend.
-                  </p>
-                </div>
-                
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold mb-2">Is beta-glucan oat bran gluten-free?</h3>
-                  <p className="text-gray-600">
-                    Oats are naturally gluten-free, but they can sometimes be contaminated with gluten during growing or processing. Our beta-glucan oat bran is sourced from certified gluten-free facilities and tested to ensure it contains less than 20 parts per million of gluten, making it safe for most people with celiac disease or gluten sensitivity.
-                  </p>
-                </div>
-                
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold mb-2">How quickly will I see results from taking beta-glucan?</h3>
-                  <p className="text-gray-600">
-                    Studies show that cholesterol-lowering effects typically begin within 2-4 weeks of regular consumption, with maximum benefits often seen after 8-12 weeks. Blood sugar benefits can be observed more quickly, often within days of starting supplementation. For optimal results, consistent daily consumption is recommended.
-                  </p>
-                </div>
-                
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold mb-2">How is beta-glucan oat bran different from regular oatmeal?</h3>
-                  <p className="text-gray-600">
-                    Beta-glucan oat bran contains a much higher concentration of beta-glucan than regular oatmeal. While whole oats contain approximately 2-3% beta-glucan, our premium oat bran contains a minimum of 5% beta-glucan. Additionally, our processing methods preserve the molecular weight and viscosity of beta-glucan, which are critical for its health benefits.
-                  </p>
-                </div>
-                
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold mb-2">Can I take beta-glucan oat bran with medications?</h3>
-                  <p className="text-gray-600">
-                    Beta-glucan may affect the absorption of certain medications due to its gel-forming properties. As a general rule, it's advisable to take medications at least one hour before or two hours after consuming beta-glucan supplements. If you're taking prescription medications, please consult with your healthcare provider about the optimal timing.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        
-        {/* CTA Section */}
+        {/* Call to Action */}
         <section className="bg-green-50 py-16">
-          <div className="container px-4 md:px-6 text-center">
-            <h2 className="text-3xl font-bold mb-4">Experience the Benefits of Beta-Glucan Oat Bran</h2>
-            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-              Our premium supplements harness the power of Beta-Glucan Oat Bran to support your heart health, blood sugar control, and overall wellness.
-            </p>
+          <div className="container mx-auto px-4 text-center">
+            <Heading 
+              title="Harness the Power of Beta-Glucan" 
+              description="Incorporate the clinically proven benefits of Beta-Glucan Oat Bran into your daily routine for a healthier heart and improved wellness." 
+              centered 
+              className="mb-8" 
+            />
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link href="/products/total-essential">
-                <Button variant="premium" size="lg">
-                  Shop Total Essential
+                <Button size="xl" variant="premium">
+                  Shop Now
+                  <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
               <Link href="/products/total-essential-plus">
-                <Button variant="outline" size="lg">
+                <Button size="xl" variant="outline">
                   Explore Total Essential Plus
                 </Button>
               </Link>

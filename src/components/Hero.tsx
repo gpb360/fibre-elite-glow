@@ -3,6 +3,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 export function Hero() {
   return (
@@ -38,19 +39,23 @@ export function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <Button
-                size="lg"
-                className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-md font-medium"
-              >
-                Shop Now
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-gray-300 text-gray-700 hover:border-gray-400 px-6 py-3 rounded-md font-medium"
-              >
-                Learn More
-              </Button>
+              <Link href="/products">
+                <Button
+                  size="lg"
+                  className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-md font-medium"
+                >
+                  Shop Now
+                </Button>
+              </Link>
+              <Link href="/benefits">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-gray-300 text-gray-700 hover:border-gray-400 px-6 py-3 rounded-md font-medium"
+                >
+                  Learn More
+                </Button>
+              </Link>
             </motion.div>
 
             <motion.div

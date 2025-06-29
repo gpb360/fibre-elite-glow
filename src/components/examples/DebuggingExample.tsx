@@ -8,7 +8,7 @@ import { ClassInspector, DebugDiv } from '@/components/dev/ClassInspector'
  * Only visible in development mode
  */
 export function DebuggingExample() {
-  const heroRef = useClassDebug(
+  const heroRef = useClassDebug<HTMLDivElement>(
     'bg-gradient-to-b from-green-50 to-white py-16 md:py-24',
     'hero-section'
   )

@@ -179,6 +179,16 @@ CREATE TABLE discount_codes (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Checkout sessions table to link Stripe sessions with users
+CREATE TABLE checkout_sessions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    session_id VARCHAR(255) UNIQUE NOT NULL,
+    user_id UUID, -- References auth.users(id)
+    metadata JSONB,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- Create indexes for better performance
 CREATE INDEX idx_products_product_type ON products(product_type);
 CREATE INDEX idx_products_category_id ON products(category_id);
@@ -192,6 +202,8 @@ CREATE INDEX idx_orders_status ON orders(status);
 CREATE INDEX idx_orders_created_at ON orders(created_at);
 CREATE INDEX idx_order_items_order_id ON order_items(order_id);
 CREATE INDEX idx_customer_addresses_customer_id ON customer_addresses(customer_id);
+CREATE INDEX idx_checkout_sessions_session_id ON checkout_sessions(session_id);
+CREATE INDEX idx_checkout_sessions_user_id ON checkout_sessions(user_id);
 
 -- Create updated_at triggers
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -209,3 +221,4 @@ CREATE TRIGGER update_customers_updated_at BEFORE UPDATE ON customers FOR EACH R
 CREATE TRIGGER update_customer_addresses_updated_at BEFORE UPDATE ON customer_addresses FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_orders_updated_at BEFORE UPDATE ON orders FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_discount_codes_updated_at BEFORE UPDATE ON discount_codes FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_checkout_sessions_updated_at BEFORE UPDATE ON checkout_sessions FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();

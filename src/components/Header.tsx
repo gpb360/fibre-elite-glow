@@ -112,9 +112,11 @@ export function Header() {
           >
             Sign In
           </Button>
-          <Button variant="premium" size="sm" className="px-6">
-            Shop Now
-          </Button>
+          <Link href="/products">
+            <Button variant="premium" size="sm" className="px-6">
+              Shop Now
+            </Button>
+          </Link>
         </div>
       </div>
       
@@ -213,9 +215,11 @@ export function Header() {
               >
                 Sign In
               </Button>
-              <Button variant="premium" size="sm">
-                Shop Now
-              </Button>
+              <Link href="/products">
+                <Button variant="premium" size="sm">
+                  Shop Now
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

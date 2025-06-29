@@ -29,7 +29,6 @@ export function Providers({
       defaultTheme="light"
       enableSystem={false}
       disableTransitionOnChange
-      suppressHydrationWarning
     >
       <ReactQueryProvider>
         {children}

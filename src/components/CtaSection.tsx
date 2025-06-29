@@ -4,6 +4,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 export function CtaSection() {
   return (
@@ -33,12 +34,16 @@ export function CtaSection() {
             className="w-full max-w-md space-y-4"
           >
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" variant="premium" className="px-8">
-                Shop Now
-              </Button>
-              <Button size="lg" variant="outline" className="px-8 border-gray-300 text-gray-700 hover:border-green-500 hover:text-green-600">
-                Learn More
-              </Button>
+              <Link href="/products">
+                <Button size="lg" variant="premium" className="px-8">
+                  Shop Now
+                </Button>
+              </Link>
+              <Link href="/benefits">
+                <Button size="lg" variant="outline" className="px-8 border-gray-300 text-gray-700 hover:border-green-500 hover:text-green-600">
+                  Learn More
+                </Button>
+              </Link>
             </div>
             <p className="text-sm text-gray-500 font-medium">
               *Free shipping on orders over $50. 30-day money-back guarantee.
