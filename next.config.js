@@ -9,7 +9,7 @@
  */
 const nextConfig = {
   // Enable `"export"` mode only when STATIC_EXPORT=true is set at build time.
-  ...(process.env.STATIC_EXPORT === 'true' ? { output: 'export' } : {}),
+
   experimental: {
     optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react']
   },
