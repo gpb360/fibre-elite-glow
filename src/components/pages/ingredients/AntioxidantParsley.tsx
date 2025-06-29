@@ -41,7 +41,7 @@ const AntioxidantParsleyHero = () => (
     <div 
       className="absolute inset-0 z-0 bg-cover bg-center opacity-20" 
       style={{ 
-        backgroundImage: `url('/assets/16x9_a_vibrant_cluster_of_fresh_parsl.png')`,
+        backgroundImage: `url('/assets/16x9_A_vibrant_cluster_of_fresh_parsl.png')`,
         width: '100%'
       }}
     />
@@ -107,7 +107,7 @@ const AntioxidantParsleyHero = () => (
           transition={{ duration: 0.7 }}
         >
           <img 
-            src="/assets/16x9_a_vibrant_cluster_of_fresh_parsl.png" 
+            src="/assets/16x9_A_vibrant_cluster_of_fresh_parsl.png" 
             alt="Antioxidant Parsley" 
             className="rounded-lg shadow-xl"
           />

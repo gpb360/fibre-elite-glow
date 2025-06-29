@@ -40,7 +40,7 @@ const DigestiveAidGuarGumHero = () => (
     <div 
       className="absolute inset-0 z-0 bg-cover bg-center opacity-20" 
       style={{ 
-        backgroundImage: `url('/lovable-uploads/guar-gum-bg.jpg')`,
+        backgroundImage: `url('/assets/16x9_A_close_up_shot_of_guar_gum.png')`,
         width: '100%'
       }}
     />
@@ -106,7 +106,7 @@ const DigestiveAidGuarGumHero = () => (
           transition={{ duration: 0.7 }}
         >
           <img 
-            src="/lovable-uploads/guar-gum-extract.jpg" 
+            src="/assets/16x9_A_close_up_shot_of_guar_gum.png" 
             alt="Digestive-Aid Guar Gum" 
             className="rounded-lg shadow-xl"
             width={600}

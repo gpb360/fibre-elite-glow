@@ -40,7 +40,7 @@ const SustainablePalmFiberHero = () => (
     <div
       className="absolute inset-0 z-0 bg-cover bg-center opacity-20"
       style={{
-        backgroundImage: `url('/assets/16x9_a_photorealistic_palme-oil.png')`,
+        backgroundImage: `url('/assets/16x9_A_photorealistic_palme-oil.png')`,
         width: '100%'
       }}
     />
@@ -106,7 +106,7 @@ const SustainablePalmFiberHero = () => (
           transition={{ duration: 0.7 }}
         >
           <img
-            src="/assets/16x9_a_photorealistic_palme-oil.png"
+            src="/assets/16x9_A_photorealistic_palme-oil.png"
             alt="Sustainable Palm Fiber"
             className="rounded-lg shadow-xl"
           />

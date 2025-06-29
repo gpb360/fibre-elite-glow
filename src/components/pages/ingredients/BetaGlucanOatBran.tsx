@@ -41,7 +41,7 @@ const BetaGlucanHero = () => (
     <div 
       className="absolute inset-0 z-0 bg-cover bg-center opacity-20" 
       style={{ 
-        backgroundImage: `url('/assets/16x9_a_pile_of_oats_and_oat_straws_ar.png')`,
+        backgroundImage: `url('/assets/16x9_A_pile_of_oats_and_oat_straws_ar.png')`,
         width: '100%'
       }}
     />
@@ -107,7 +107,7 @@ const BetaGlucanHero = () => (
           transition={{ duration: 0.7 }}
         >
           <img 
-            src="/assets/16x9_a_pile_of_oats_and_oat_straws_ar.png" 
+            src="/assets/16x9_A_pile_of_oats_and_oat_straws_ar.png" 
             alt="Beta-Glucan Oat Bran" 
             className="rounded-lg shadow-xl"
           />
