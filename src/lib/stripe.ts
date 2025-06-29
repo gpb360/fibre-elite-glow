@@ -17,24 +17,16 @@ let _cachedSecretKey: string | undefined;
 const getStripeSecretKey = (): string => {
   if (_cachedSecretKey) return _cachedSecretKey;
 
-  // eslint-disable-next-line no-console
-  console.log(`Attempting to retrieve Stripe secret key in environment: '${process.env.NODE_ENV}'`);
-
   // 1. Prefer the value that Supabase Secrets injects
   const keyFromEnv = process.env.STRIPE_SECRET_KEY;
 
   if (!keyFromEnv) {
-    // eslint-disable-next-line no-console
-    console.error('Could not find `STRIPE_SECRET_KEY` in environment variables.');
     const err =
       '❌ Stripe secret key not found. ' +
       'Make sure you have stored `STRIPE_SECRET_KEY` in Supabase Secrets or ' +
       'added it to your local .env file for development.';
     throw new Error(err);
   }
-
-  // eslint-disable-next-line no-console
-  console.log('Successfully found `STRIPE_SECRET_KEY`.');
 
   // Warn if we are in test mode but a live key is supplied
   if (isTestMode && !keyFromEnv.startsWith('sk_test_')) {
