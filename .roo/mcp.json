@@ -15,7 +15,10 @@
       ],
       "env": {
         "DEFAULT_MINIMUM_TOKENS": ""
-      }
+      },
+      "alwaysAllow": [
+        "get-library-docs"
+      ]
     },
     "filesystem": {
       "command": "npx",
