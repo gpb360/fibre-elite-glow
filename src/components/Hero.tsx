@@ -1,19 +1,22 @@
 "use client";
 
 import React from 'react';
-import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
 export function Hero() {
   return (
-    <section className="relative bg-white pt-20 pb-20 md:pt-32 md:pb-32 overflow-hidden">
+    <section className="relative bg-green-50 pt-10 pb-10 md:pt-20 md:pb-20 overflow-hidden">
       {/* Background image for high-end feel */}
-      <img
-        src="/lovable-uploads/fruit-veg-bottle.png"
-        alt="Assorted fruits and vegetables in a glass bottle"
-        className="absolute inset-0 -z-100 h-full w-full object-cover opacity-20"
-      />
-
+      <div
+      className="absolute inset-0 z-0 bg-cover bg-center opacity-20"
+      style={{
+        backgroundImage: `url('/lovable-uploads/fruit-veg-bottle.png')`,
+        width: '100%'
+      }}
+    />
       <div className="container mx-auto px-4 md:px-6 max-w-6xl">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-20 items-center min-h-[500px]">
           <div className="flex flex-col justify-center space-y-8 text-left">
@@ -23,12 +26,12 @@ export function Hero() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <p className="text-green-500 font-medium text-base mb-2">La Belle Vie</p>
+                <p className="text-green-500 font-medium text-base mb-2">Natural Balance for Daily Wellness</p>
                 <h1 className="text-5xl font-bold tracking-tight text-gray-900 mb-4">
                   Restore&nbsp;Your&nbsp;Body's&nbsp;Natural&nbsp;Rhythm
                 </h1>
                 <p className="text-lg text-gray-600 leading-relaxed max-w-md">
-                  Pure plant fiber for natural daily wellness
+                  Our plant-based fiber blend supports your body's natural rhythm
                 </p>
               </motion.div>
             </div>
@@ -38,19 +41,18 @@ export function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <Button
-                size="lg"
-                className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-md font-medium"
+              <Link
+                href="/products/total-essential"
+                className={cn(buttonVariants({ size: "lg" }), "bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-md font-medium z-20")}
               >
-                Shop Now
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-gray-300 text-gray-700 hover:border-gray-400 px-6 py-3 rounded-md font-medium"
+                Total Essential
+              </Link>
+              <Link
+                href="/products/total-essential-plus"
+                className={cn(buttonVariants({ size: "lg", variant: "premium2" }),"z-10")}
               >
-                Learn More
-              </Button>
+                Total Essential Plus
+              </Link>
             </motion.div>
 
             <motion.div

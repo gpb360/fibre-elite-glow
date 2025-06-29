@@ -1,7 +1,10 @@
 "use client";
 
 import React, { useState } from 'react';
+import Link from 'next/link';
+import { buttonVariants } from '@/components/ui/button';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { VideoPlayer } from '@/components/ui/video-player';
 import { useMarketingVideos } from '@/hooks/useMarketingVideos';
@@ -50,12 +53,18 @@ export function HeroWithVideo() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <Button size="xl" variant="premium">
-                Shop Now
-              </Button>
-              <Button size="xl" variant="outline">
-                Learn More
-              </Button>
+              <Link
+                href="/products/total-essential"
+                className={cn(buttonVariants({ size: "xl", variant: "premium" }))}
+              >
+                Total Essential
+              </Link>
+              <Link
+                href="/products/total-essential-plus"
+                className={cn(buttonVariants({ size: "xl", variant: "premium2" }))}
+              >
+                Total Essential Plus
+              </Link>
             </motion.div>
 
             {/* Video Control Button */}

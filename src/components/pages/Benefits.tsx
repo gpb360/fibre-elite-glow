@@ -2,12 +2,14 @@
 
 import React from 'react';
 import Header from '@/components/Header';
+import Link from 'next/link';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import Footer from '@/components/Footer';
 import { Heading } from '@/components/ui/heading';
 import { Card, CardContent } from '@/components/ui/card';
 import { Heart, Brain, Weight, BookCheck, Star, Award } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
 
 const BenefitCard = ({
   title,
@@ -70,12 +72,18 @@ const BenefitsHero = () => (
           duration: 0.5,
           delay: 0.2
         }}>
-            <Button size="xl" variant="premium">
-              Shop Now
-            </Button>
-            <Button size="xl" variant="outline">
-              Learn More
-            </Button>
+            <Link
+              href="/products/total-essential"
+              className={cn(buttonVariants({ size: "xl", variant: "premium" }))}
+            >
+              Total Essential
+            </Link>
+            <Link
+              href="/products/total-essential-plus"
+              className={cn(buttonVariants({ size: "xl", variant: "premium2" }))}
+            >
+              Total Essential Plus
+            </Link>
           </motion.div>
           
           <motion.div className="flex items-center space-x-4 text-sm" initial={{
