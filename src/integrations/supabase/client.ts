@@ -1,6 +1,6 @@
 // Enhanced Supabase client with better error handling and debugging
 import { createClient } from '@supabase/supabase-js';
-import type { Database } from './types';
+import type { Database } from '@/types/supabase';
 
 // Use environment variables with fallbacks for development
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://lyynavswxtzhsmwetgtn.supabase.co";

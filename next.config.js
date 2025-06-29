@@ -14,7 +14,7 @@ const nextConfig = {
     optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react']
   },
   images: {
-    domains: ['localhost'],
+    domains: ['venomappdevelopment.com'],
     formats: ['image/webp', 'image/avif']
   },
   compiler: {

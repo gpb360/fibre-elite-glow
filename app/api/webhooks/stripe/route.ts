@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { headers } from 'next/headers';
 import { stripe, STRIPE_CONFIG } from '@/lib/stripe';
 import { supabaseAdmin } from '@/integrations/supabase/client';
 import Stripe from 'stripe';
@@ -8,22 +7,24 @@ import Stripe from 'stripe';
 async function getWebhookSecret(): Promise<string> {
   try {
     // Try to get the webhook secret from Supabase secrets
-    const { data, error } = await supabaseAdmin
-      .from('secrets')
-      .select('value')
-      .eq('key', 'STRIPE_WEBHOOK_SECRET')
-      .single();
+    if (supabaseAdmin) {
+      const { data, error } = await supabaseAdmin
+        .from('secrets')
+        .select('value')
+        .eq('key', 'STRIPE_WEBHOOK_SECRET')
+        .single();
 
-    if (error || !data) {
-      // Fall back to environment variable if Supabase secret not available
-      const envSecret = process.env.STRIPE_WEBHOOK_SECRET;
-      if (!envSecret) {
-        throw new Error('Stripe webhook secret not found in Supabase secrets or environment variables');
+      if (!error && data) {
+        return data.value;
       }
-      return envSecret;
     }
 
-    return data.value;
+    // Fall back to environment variable if Supabase secret not available
+    const envSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    if (!envSecret) {
+      throw new Error('Stripe webhook secret not found in Supabase secrets or environment variables');
+    }
+    return envSecret;
   } catch (error) {
     console.error('Error retrieving webhook secret:', error);
     // Fall back to environment variable
@@ -38,7 +39,7 @@ async function getWebhookSecret(): Promise<string> {
 export async function POST(request: Request) {
   try {
     const body = await request.text();
-    const signature = headers().get('stripe-signature');
+    const signature = request.headers.get('stripe-signature');
 
     if (!signature) {
       return NextResponse.json(
@@ -85,6 +86,14 @@ export async function POST(request: Request) {
           console.error('Error parsing session metadata:', parseError);
         }
 
+        if (!supabaseAdmin) {
+          console.error('Supabase admin client not available - cannot process checkout session completion');
+          return NextResponse.json(
+            { error: 'Database unavailable' },
+            { status: 500 }
+          );
+        }
+
         // Update checkout session status in database
         const { error: sessionUpdateError } = await supabaseAdmin
           .from('checkout_sessions')
@@ -111,7 +120,7 @@ export async function POST(request: Request) {
             status: 'confirmed',
             payment_intent: session.payment_intent as string,
             test_mode: STRIPE_CONFIG.testMode,
-          })
+          } as any)
           .select('id')
           .single();
 
@@ -130,6 +139,11 @@ export async function POST(request: Request) {
       case 'checkout.session.expired': {
         const session = event.data.object as Stripe.Checkout.Session;
         
+        if (!supabaseAdmin) {
+          console.warn('Supabase admin client not available - cannot update expired session');
+          break;
+        }
+
         // Update checkout session status in database
         const { error: sessionUpdateError } = await supabaseAdmin
           .from('checkout_sessions')
@@ -148,6 +162,11 @@ export async function POST(request: Request) {
       case 'payment_intent.payment_failed': {
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
         
+        if (!supabaseAdmin) {
+          console.warn('Supabase admin client not available - cannot update failed payment');
+          break;
+        }
+
         // Find associated checkout session
         const { data: sessionData } = await supabaseAdmin
           .from('checkout_sessions')

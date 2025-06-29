@@ -29,9 +29,9 @@ interface OrderDetailsResponse {
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { sessionId: string } }
-): Promise<NextResponse> {
-  const { sessionId } = params;
+  { params }: { params: Promise<{ sessionId: string }> }
+) {
+  const { sessionId } = await params;
 
   // Validate session ID
   if (!sessionId || typeof sessionId !== 'string') {
@@ -68,7 +68,7 @@ export async function GET(
       .eq('session_id', sessionId)
       .single() || { data: null, error: new Error('Supabase admin client not available') };
 
-    if (sessionError && sessionError.code !== 'PGRST116') { // Not found is not a critical error
+    if (sessionError && 'code' in sessionError && sessionError.code !== 'PGRST116') { // Not found is not a critical error
       console.error('Error retrieving checkout session from database:', sessionError);
     }
 

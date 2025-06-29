@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { 
-  stripe, 
-  createCheckoutSession, 
+  stripe,
+  createCheckoutSession,
   formatAmountForStripe,
-  STRIPE_CONFIG
+  STRIPE_CONFIG 
 } from '@/lib/stripe';
 import { supabaseAdmin } from '@/integrations/supabase/client';
 
@@ -90,20 +90,24 @@ export async function POST(request: Request) {
 
     // Try to store checkout session info in Supabase if available
     try {
-      const { error } = await supabaseAdmin
-        .from('checkout_sessions')
-        .insert({
-          session_id: session.id,
-          customer_email: body.customerInfo.email,
-          amount_total: session.amount_total,
-          metadata: metadata,
-          status: session.status,
-          created_at: new Date().toISOString(),
-        });
-      
-      if (error) {
-        console.error('Error storing checkout session in Supabase:', error);
-        // Continue with checkout even if storage fails
+      if (supabaseAdmin) {
+        const { error } = await supabaseAdmin
+          .from('checkout_sessions')
+          .insert({
+            session_id: session.id,
+            customer_email: body.customerInfo.email,
+            amount_total: session.amount_total,
+            metadata: metadata,
+            status: session.status,
+            created_at: new Date().toISOString(),
+          });
+        
+        if (error) {
+          console.error('Error storing checkout session in Supabase:', error);
+          // Continue with checkout even if storage fails
+        }
+      } else {
+        console.warn('Supabase admin client not available - skipping session storage');
       }
     } catch (dbError) {
       // Log but don't fail the checkout if database storage fails
