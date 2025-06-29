@@ -1,5 +1,7 @@
-import PrebioticPowerhouse from '@/components/pages/ingredients/PrebioticPowerhouse'
+'use client';
 
-export default function PrebioticPowerhousePage() {
-  return <PrebioticPowerhouse />
+import PrebioticPowerhouse from '@/components/pages/ingredients/PrebioticPowerhouse';
+
+export default function Page() {
+  return <PrebioticPowerhouse />;
 }

@@ -7,7 +7,7 @@ import { Heading } from '@/components/ui/heading';
 import { SplitSection } from '@/components/ui/split-section';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
-import { Heart, Shield, Smile, ArrowRight, Microscope, Leaf, BarChart3, Droplets, Brain, Check, Zap, Flame } from 'lucide-react';
+import { Heart, Shield, Leaf, ArrowRight, Microscope, BarChart3, Droplets, Brain, Check, Zap, Flame } from 'lucide-react';
 import Link from 'next/link';
 import Head from 'next/head';
 
@@ -17,15 +17,15 @@ const IngredientSchema = () => {
     "@context": "https://schema.org",
     "@type": "MedicalSubstance",
     "name": "Soluble Corn Fiber",
-    "description": "A high-quality prebiotic fiber that supports digestive health, promotes satiety, and helps maintain healthy blood sugar levels.",
+    "description": "A prebiotic fiber that supports digestive health by promoting the growth of beneficial gut bacteria, aiding in regularity, and supporting mineral absorption.",
     "medicineSystem": "Natural supplement",
     "relevantSpecialty": [
       "Gastroenterology",
       "Nutrition",
       "Endocrinology"
     ],
-    "activeIngredient": "Soluble gluco-oligosaccharides",
-    "mechanismOfAction": "Acts as a prebiotic to nourish beneficial gut bacteria; slows digestion to increase satiety and support blood sugar control; supports calcium absorption."
+    "activeIngredient": "Soluble Corn Fiber (SCF)",
+    "mechanismOfAction": "Acts as a prebiotic to nourish beneficial gut bacteria; increases fecal bulk to promote regularity; slows glucose absorption; enhances calcium absorption."
   };
 
   return (
@@ -41,7 +41,7 @@ const SolubleCornFiberHero = () => (
     <div 
       className="absolute inset-0 z-0 bg-cover bg-center opacity-20" 
       style={{ 
-        backgroundImage: `url('/lovable-uploads/corn-fiber-bg.jpg')`,
+        backgroundImage: `url('/assets/16x9_A_close_up_of_a_corn_plant_with_.png')`,
         width: '100%'
       }}
     />
@@ -59,7 +59,7 @@ const SolubleCornFiberHero = () => (
               Soluble Corn Fiber<span className="text-yellow-500">.</span>
             </h1>
             <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400 mt-4">
-              A gentle, effective prebiotic fiber for superior digestive health, blood sugar support, and enhanced satiety.
+              A gentle, effective prebiotic fiber that nourishes your gut microbiome and supports digestive wellness.
             </p>
           </motion.div>
           <motion.div 
@@ -68,7 +68,7 @@ const SolubleCornFiberHero = () => (
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <Link href="/products/total-essential-plus">
+            <Link href="/products/total-essential">
               <Button size="xl" variant="premium">
                 View Products
               </Button>
@@ -87,16 +87,16 @@ const SolubleCornFiberHero = () => (
             transition={{ duration: 0.5, delay: 0.4 }}
           >
             <div className="flex items-center">
-              <Heart className="h-4 w-4 text-yellow-500 mr-1" />
-              <span>Gut Health</span>
+              <Leaf className="h-4 w-4 text-yellow-500 mr-1" />
+              <span>Prebiotic Power</span>
             </div>
             <div className="flex items-center">
               <BarChart3 className="h-4 w-4 text-yellow-500 mr-1" />
               <span>Blood Sugar Support</span>
             </div>
             <div className="flex items-center">
-              <Microscope className="h-4 w-4 text-yellow-500 mr-1" />
-              <span>Scientifically Proven</span>
+              <Check className="h-4 w-4 text-yellow-500 mr-1" />
+              <span>Well-Tolerated</span>
             </div>
           </motion.div>
         </div>
@@ -107,7 +107,7 @@ const SolubleCornFiberHero = () => (
           transition={{ duration: 0.7 }}
         >
           <img 
-            src="/lovable-uploads/soluble-corn-fiber.jpg" 
+            src="/assets/16x9_A_close_up_of_a_corn_plant_with_.png"
             alt="Soluble Corn Fiber" 
             className="rounded-lg shadow-xl"
             width={600}
@@ -147,34 +147,34 @@ const BenefitCard = ({
 const SolubleCornFiber = () => {
   const benefits = [
     {
-      title: "Excellent Prebiotic Source",
-      description: "Nourishes beneficial gut bacteria, promoting a healthy and balanced microbiome for improved digestive wellness.",
-      icon: Heart
+      title: "Nourishes Gut Bacteria",
+      description: "As a prebiotic, it feeds beneficial bacteria like Bifidobacteria, helping them thrive and support a healthy gut microbiome.",
+      icon: Leaf
     },
     {
-      title: "Supports Healthy Blood Sugar",
-      description: "Helps lower the glycemic response of foods, supporting stable blood sugar levels after meals.",
+      title: "Promotes Regularity",
+      description: "Increases stool bulk and moisture, leading to more regular and comfortable bowel movements without harsh effects.",
+      icon: Droplets
+    },
+    {
+      title: "Supports Blood Sugar",
+      description: "Has a low glycemic response, meaning it doesn't cause sharp spikes in blood sugar levels, making it suitable for metabolic health.",
       icon: BarChart3
     },
     {
-      title: "Promotes Satiety",
-      description: "Increases feelings of fullness, which can help with weight management by reducing overall calorie intake.",
-      icon: Smile
-    },
-    {
-      title: "Well-Tolerated Fiber",
-      description: "Known for its high digestive tolerance, making it a comfortable choice for individuals sensitive to other fibers.",
+      title: "Enhances Calcium Absorption",
+      description: "Studies show that soluble corn fiber can increase the absorption of calcium, which is vital for bone density and health.",
       icon: Shield
     },
     {
-      title: "Enhances Calcium Absorption",
-      description: "Studies show that soluble corn fiber can increase the absorption of calcium, supporting bone health.",
+      title: "Well-Tolerated Fiber",
+      description: "Known for its high digestive tolerance, it is less likely to cause gas and bloating compared to other prebiotic fibers like inulin.",
       icon: Check
     },
     {
-      title: "Low Calorie & Sugar-Free",
-      description: "An ideal ingredient for health-conscious individuals, providing the benefits of fiber without added sugars or calories.",
-      icon: Leaf
+      title: "Supports Satiety",
+      description: "As a dietary fiber, it can help you feel fuller for longer, which may aid in weight management efforts.",
+      icon: Heart
     }
   ];
 
@@ -188,18 +188,18 @@ const SolubleCornFiber = () => {
         <SolubleCornFiberHero />
         
         <SplitSection
-          image="/lovable-uploads/corn-closeup.jpg"
-          imageAlt="Corn Close-up"
+          image="/lovable-uploads/corn-field.jpg"
+          imageAlt="Corn Field"
           title="What is Soluble Corn Fiber?"
-          description="A versatile and functional fiber derived from corn with significant health benefits."
+          description="A versatile and well-tolerated prebiotic fiber derived from corn."
           className="bg-white"
         >
           <div className="space-y-4 text-gray-600">
             <p>
-              Soluble Corn Fiber is a type of dietary fiber created from the enzymatic hydrolysis of corn starch. It is a high-quality, well-tolerated prebiotic fiber that is easily incorporated into a variety of foods and supplements. Unlike traditional corn syrup, it is not sweet and does not raise blood sugar levels.
+              Soluble Corn Fiber (SCF), also known as resistant maltodextrin, is a dietary fiber made from the enzymatic hydrolysis of cornstarch. Unlike regular cornstarch, it resists digestion in the small intestine and passes into the large intestine, where it functions as a prebiotic.
             </p>
             <p>
-              Its unique structure allows it to resist digestion in the small intestine, reaching the large intestine where it is fermented by beneficial gut bacteria. This process is key to its prebiotic effects and its role in supporting overall digestive health.
+              This process makes it a valuable ingredient for supporting gut health. It provides the benefits of dietary fiber—such as promoting regularity and feeding beneficial gut bacteria—while being exceptionally well-tolerated, often causing less gas or bloating than other fiber sources.
             </p>
           </div>
         </SplitSection>
@@ -208,7 +208,7 @@ const SolubleCornFiber = () => {
           <div className="container mx-auto px-4">
             <Heading 
               title="Health Benefits of Soluble Corn Fiber" 
-              description="Explore the science-backed benefits of this powerful prebiotic fiber" 
+              description="Explore the diverse ways this gentle fiber supports your digestive and overall health" 
               centered 
               className="mb-12" 
             />
@@ -225,24 +225,6 @@ const SolubleCornFiber = () => {
             </div>
           </div>
         </section>
-        
-        <SplitSection
-          image="/lovable-uploads/gut-health-illustration.jpg"
-          imageAlt="Gut Health Illustration"
-          title="A Superior Choice for Gut Health"
-          description="Why Soluble Corn Fiber is an excellent prebiotic for a happy gut"
-          reverse
-          className="bg-white"
-        >
-          <div className="space-y-4 text-gray-600">
-            <p>
-              Soluble Corn Fiber is highly valued for its excellent digestive tolerance. Many individuals who experience gas or bloating with other prebiotic fibers like inulin find soluble corn fiber to be a much more comfortable alternative.
-            </p>
-            <p>
-              By selectively feeding beneficial bacteria such as Bifidobacteria, it helps to create a healthier gut environment. A balanced microbiome is crucial for proper digestion, nutrient absorption, and a strong immune system. This makes soluble corn fiber a cornerstone ingredient for foundational digestive health.
-            </p>
-          </div>
-        </SplitSection>
 
       </main>
       <Footer />

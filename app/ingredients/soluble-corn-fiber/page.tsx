@@ -1,5 +1,7 @@
-import SolubleCornFiber from '@/components/pages/ingredients/SolubleCornFiber'
+'use client';
 
-export default function SolubleCornFiberPage() {
-  return <SolubleCornFiber />
+import SolubleCornFiber from '@/components/pages/ingredients/SolubleCornFiber';
+
+export default function Page() {
+  return <SolubleCornFiber />;
 }

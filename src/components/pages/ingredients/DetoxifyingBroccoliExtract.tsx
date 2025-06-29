@@ -41,7 +41,7 @@ const DetoxifyingBroccoliExtractHero = () => (
     <div 
       className="absolute inset-0 z-0 bg-cover bg-center opacity-20" 
       style={{ 
-        backgroundImage: `url('/lovable-uploads/broccoli-bg.jpg')`,
+        backgroundImage: `url('/assets/16x9_broccoli_extract.png')`,
         width: '100%'
       }}
     />
@@ -107,11 +107,9 @@ const DetoxifyingBroccoliExtractHero = () => (
           transition={{ duration: 0.7 }}
         >
           <img 
-            src="/lovable-uploads/broccoli-extract.jpg" 
+            src="/assets/16x9_broccoli_extract.png" 
             alt="Detoxifying Broccoli Extract"
             className="rounded-lg shadow-xl"
-            width={600}
-            height={400}
           />
         </motion.div>
       </div>
@@ -506,16 +504,6 @@ const DetoxifyingBroccoliExtract = () => {
                           </svg>
                         </div>
                         <span className="text-gray-600">
-                          <strong>Glucosinolates:</strong> Precursors to sulforaphane with additional health benefits
-                        </span>
-                      </li>
-                      <li className="flex items-start">
-                        <div className="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-green-100 mr-3 mt-1">
-                          <svg className="h-3 w-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                        </div>
-                        <span className="text-gray-600">
                           <strong>Dietary Fiber:</strong> Supports digestive health and regularity
                         </span>
                       </li>
@@ -526,14 +514,14 @@ const DetoxifyingBroccoliExtract = () => {
                           </svg>
                         </div>
                         <span className="text-gray-600">
-                          <strong>Indole-3-carbinol:</strong> Supports hormone balance and cellular health
+                          <strong>Vitamins & Minerals:</strong> Rich in Vitamin C, Vitamin K, and other essential nutrients
                         </span>
                       </li>
                     </ul>
                   </div>
                   
                   <div className="p-6">
-                    <h3 className="text-xl font-semibold mb-4 text-green-700">Vitamins & Minerals</h3>
+                    <h3 className="text-xl font-semibold mb-4 text-green-700">Health Impact</h3>
                     <ul className="space-y-3">
                       <li className="flex items-start">
                         <div className="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-green-100 mr-3 mt-1">
@@ -542,7 +530,7 @@ const DetoxifyingBroccoliExtract = () => {
                           </svg>
                         </div>
                         <span className="text-gray-600">
-                          <strong>Vitamin C:</strong> Powerful antioxidant supporting immune function
+                          Activates the body's natural detoxification pathways
                         </span>
                       </li>
                       <li className="flex items-start">
@@ -552,7 +540,7 @@ const DetoxifyingBroccoliExtract = () => {
                           </svg>
                         </div>
                         <span className="text-gray-600">
-                          <strong>Vitamin K:</strong> Essential for blood clotting and bone health
+                          Protects against oxidative stress and inflammation
                         </span>
                       </li>
                       <li className="flex items-start">
@@ -562,17 +550,7 @@ const DetoxifyingBroccoliExtract = () => {
                           </svg>
                         </div>
                         <span className="text-gray-600">
-                          <strong>Chromium:</strong> Supports blood sugar regulation and metabolism
-                        </span>
-                      </li>
-                      <li className="flex items-start">
-                        <div className="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-green-100 mr-3 mt-1">
-                          <svg className="h-3 w-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                        </div>
-                        <span className="text-gray-600">
-                          <strong>Potassium:</strong> Essential for fluid balance and nerve function
+                          Supports a healthy gut microbiome and digestive regularity
                         </span>
                       </li>
                     </ul>
@@ -583,91 +561,24 @@ const DetoxifyingBroccoliExtract = () => {
           </div>
         </section>
         
-        {/* FAQ Section */}
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-4">
-            <Heading 
-              title="Frequently Asked Questions" 
-              description="Common questions about Organic Broccoli Extract" 
-              centered 
-              className="mb-12" 
-            />
-            
-            <div className="max-w-3xl mx-auto">
-              <div className="space-y-6">
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold mb-2">How is broccoli extract different from eating raw broccoli?</h3>
-                  <p className="text-gray-600">
-                    While raw broccoli is certainly nutritious, our organic broccoli extract contains a significantly 
-                    higher concentration of sulforaphane and other beneficial compounds. The extraction process 
-                    maximizes the bioavailability of these compounds, making them more easily absorbed and utilized 
-                    by the body. Additionally, the extract eliminates the variability in sulforaphane content that 
-                    can occur in raw broccoli due to growing conditions, storage, and preparation methods.
-                  </p>
-                </div>
-                
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold mb-2">How quickly will I notice benefits from taking broccoli extract?</h3>
-                  <p className="text-gray-600">
-                    The timeframe for experiencing benefits varies from person to person. Some individuals notice 
-                    improvements in digestive comfort and regularity within a few days, while the detoxification 
-                    and long-term health benefits may take several weeks of consistent use to become apparent. 
-                    For optimal results, we recommend taking broccoli extract daily as part of your regular 
-                    wellness routine.
-                  </p>
-                </div>
-                
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold mb-2">Are there any side effects associated with broccoli extract?</h3>
-                  <p className="text-gray-600">
-                    Organic broccoli extract is generally well-tolerated by most people. Some individuals may 
-                    experience mild digestive symptoms like gas when first introducing it into their diet, which 
-                    typically subsides as the body adjusts. Those with thyroid conditions should consult with a 
-                    healthcare provider before use, as cruciferous vegetables contain compounds that can affect 
-                    thyroid function when consumed in very large amounts. However, the amounts in our supplement 
-                    are unlikely to cause issues for most people.
-                  </p>
-                </div>
-                
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold mb-2">Can broccoli extract interact with medications?</h3>
-                  <p className="text-gray-600">
-                    Broccoli extract may interact with blood-thinning medications like warfarin due to its vitamin K 
-                    content. Additionally, because it affects detoxification pathways, it could potentially influence 
-                    the metabolism of certain medications. If you are taking prescription medications, particularly 
-                    blood thinners or medications metabolized by the liver, consult with your healthcare provider 
-                    before adding broccoli extract to your regimen.
-                  </p>
-                </div>
-                
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold mb-2">Is your broccoli extract suitable for all diets?</h3>
-                  <p className="text-gray-600">
-                    Yes, our organic broccoli extract is vegan, gluten-free, non-GMO, and contains no artificial 
-                    additives or preservatives. It's suitable for most dietary preferences and restrictions. The 
-                    extract is carefully processed to maintain its natural integrity while ensuring purity and potency.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        
-        {/* CTA Section */}
+        {/* Call to Action */}
         <section className="bg-green-50 py-16">
-          <div className="container px-4 md:px-6 text-center">
-            <h2 className="text-3xl font-bold mb-4">Experience the Benefits of Organic Broccoli Extract</h2>
-            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-              Our premium supplements harness the power of sulforaphane to support your digestive health, detoxification, and overall wellness.
-            </p>
+          <div className="container mx-auto px-4 text-center">
+            <Heading 
+              title="Unlock Your Body's Natural Detox Power" 
+              description="Incorporate the potent benefits of Detoxifying Broccoli Extract into your daily routine for enhanced digestive health and overall wellness." 
+              centered 
+              className="mb-8" 
+            />
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link href="/products/total-essential">
-                <Button variant="premium" size="lg">
-                  Shop Total Essential
+                <Button size="xl" variant="premium">
+                  Shop Now
+                  <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
               <Link href="/products/total-essential-plus">
-                <Button variant="outline" size="lg">
+                <Button size="xl" variant="outline">
                   Explore Total Essential Plus
                 </Button>
               </Link>

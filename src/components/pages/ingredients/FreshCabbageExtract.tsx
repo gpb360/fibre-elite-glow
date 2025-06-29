@@ -41,7 +41,7 @@ const FreshCabbageExtractHero = () => (
     <div 
       className="absolute inset-0 z-0 bg-cover bg-center opacity-20" 
       style={{ 
-        backgroundImage: `url('/lovable-uploads/cabbage-bg.jpg')`,
+        backgroundImage: `url('/assets/16x9_a_close_up_shot_of_cabbage.png')`,
         width: '100%'
       }}
     />
@@ -107,7 +107,7 @@ const FreshCabbageExtractHero = () => (
           transition={{ duration: 0.7 }}
         >
           <img 
-            src="/lovable-uploads/cabbage-extract.jpg" 
+            src="/assets/16x9_a_close_up_shot_of_cabbage.png"
             alt="Fresh Cabbage Extract" 
             className="rounded-lg shadow-xl"
             width={600}

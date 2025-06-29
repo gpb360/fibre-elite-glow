@@ -1,5 +1,7 @@
-import FreshCabbageExtract from '@/components/pages/ingredients/FreshCabbageExtract'
+'use client';
 
-export default function FreshCabbageExtractPage() {
-  return <FreshCabbageExtract />
+import FreshCabbageExtract from '@/components/pages/ingredients/FreshCabbageExtract';
+
+export default function Page() {
+  return <FreshCabbageExtract />;
 }
