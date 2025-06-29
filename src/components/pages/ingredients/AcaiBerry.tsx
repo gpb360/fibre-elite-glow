@@ -41,7 +41,7 @@ const AcaiBerryHero = () => (
     <div 
       className="absolute inset-0 z-0 bg-cover bg-center opacity-20" 
       style={{ 
-        backgroundImage: `url('/assets/16x9_a_cluster_of_dark_acai.png')`,
+        backgroundImage: `url('/assets/16x9_A_cluster_of_acai_berries.png')`,
         width: '100%'
       }}
     />
@@ -107,7 +107,7 @@ const AcaiBerryHero = () => (
           transition={{ duration: 0.7 }}
         >
           <img 
-            src="/assets/16x9_a_cluster_of_dark_acai.png" 
+            src="/assets/16x9_A_cluster_of_acai_berries.png"
             alt="Acai Berry" 
             className="rounded-lg shadow-xl"
           />

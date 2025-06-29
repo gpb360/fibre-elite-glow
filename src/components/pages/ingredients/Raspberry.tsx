@@ -41,7 +41,7 @@ const RaspberryHero = () => (
     <div 
       className="absolute inset-0 z-0 bg-cover bg-center opacity-20" 
       style={{ 
-        backgroundImage: `url('/lovable-uploads/raspberry-bg.jpg')`,
+        backgroundImage: `url('/assets/16x9_A_close_up_shot_of_a_cluster_of_.png')`,
         width: '100%'
       }}
     />
@@ -107,7 +107,7 @@ const RaspberryHero = () => (
           transition={{ duration: 0.7 }}
         >
           <img 
-            src="/lovable-uploads/raspberry-hero.jpg" 
+            src="/assets/16x9_A_close_up_shot_of_a_cluster_of_.png"
             alt="Raspberry" 
             className="rounded-lg shadow-xl"
             width={600}
