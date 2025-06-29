@@ -56,10 +56,34 @@ const getStripePublishableKey = () => {
 };
 
 // Server-side Stripe instance
-export const stripe = new Stripe(getStripeSecretKey(), {
-  apiVersion: '2025-05-28.basil',
-  typescript: true,
-});
+let _stripe: Stripe | undefined;
+
+function getStripeInstance(): Stripe {
+  if (_stripe) {
+    return _stripe;
+  }
+
+  const secretKey = getStripeSecretKey();
+
+  try {
+    const stripeInstance = new Stripe(secretKey, {
+      apiVersion: '2025-05-28.basil',
+      typescript: true,
+    });
+    _stripe = stripeInstance;
+    return stripeInstance;
+  } catch (error: any) {
+    // eslint-disable-next-line no-console
+    console.error('❌ Failed to initialize Stripe SDK.');
+    // eslint-disable-next-line no-console
+    console.error('The secret key provided might be invalid or malformed.');
+    // eslint-disable-next-line no-console
+    console.error('Error details:', error.message);
+    throw new Error('Could not create Stripe client. Please check your STRIPE_SECRET_KEY.');
+  }
+}
+
+export const stripe = getStripeInstance();
 
 // Client-side Stripe instance
 export const getStripe = () => {

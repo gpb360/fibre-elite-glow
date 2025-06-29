@@ -168,7 +168,7 @@ export function SignIn({ isOpen, onClose, onSwitchToSignUp }: SignInProps) {
       }
 
       const { error } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
-        redirectTo: `${window.location.origin}/reset-password`,
+        redirectTo: `/reset-password`,
       });
 
       if (error) {
