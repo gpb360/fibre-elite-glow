@@ -140,7 +140,7 @@ const CheckoutForm: React.FC = () => {
 
       // Redirect to Stripe Checkout
       if (url) {
-        window.location.href = url;
+        router.push(url);
       } else {
         throw new Error('No checkout URL received');
       }

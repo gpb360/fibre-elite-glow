@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -106,14 +107,16 @@ export function AdminLayout({ children, title, subtitle }: AdminLayoutProps) {
   const { user, signOut } = useAuth();
   const { isAdmin, adminRole, hasPermission, isSuperAdmin } = useAdminAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
 
   const handleSignOut = async () => {
     await signOut();
-    window.location.href = '/';
+    router.push('/');
   };
 
   const handleNavigation = (href: string) => {
-    window.location.href = href;
+    router.push(href);
   };
 
   const filteredNavItems = navigationItems.filter(item => 
@@ -208,7 +211,7 @@ export function AdminLayout({ children, title, subtitle }: AdminLayoutProps) {
             <nav className="flex-1 px-4 py-4 space-y-2">
               {filteredNavItems.map((item) => {
                 const Icon = item.icon;
-                const isActive = window.location.pathname === item.href;
+                const isActive = pathname === item.href;
                 
                 return (
                   <Link
