@@ -10,7 +10,8 @@
     "test": "npx playwright test",
     "test:headed": "npx playwright test --headed",
     "api": "node server/api.js",
-    "setup:secrets": "node scripts/setup-supabase-secrets.js"
+    "setup:secrets": "node scripts/setup-supabase-secrets.js",
+    "validate:env": "node scripts/validate-environment.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
