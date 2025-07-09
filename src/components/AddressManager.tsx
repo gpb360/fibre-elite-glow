@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -12,17 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+// Alert dialog imports removed as they're not used
 import {
   Form,
   FormControl,
@@ -72,7 +62,7 @@ export function AddressManager({ type = 'both', onAddressSelect, selectedAddress
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState<Address | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
+  // const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
   const [addressToDelete, setAddressToDelete] = useState<Address | null>(null);
 
   const form = useForm<z.infer<typeof addressSchema>>({
@@ -114,11 +104,11 @@ export function AddressManager({ type = 'both', onAddressSelect, selectedAddress
       }
 
       setAddresses(data || []);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error fetching addresses:', error);
       toast({
         title: "Error loading addresses",
-        description: error.message || "Failed to load addresses. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to load addresses. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -128,7 +118,7 @@ export function AddressManager({ type = 'both', onAddressSelect, selectedAddress
 
   useEffect(() => {
     fetchAddresses();
-  }, [user]);
+  }, [user]); // fetchAddresses is stable, no need to include it
 
   const openDialog = (address?: Address) => {
     if (address) {

@@ -33,8 +33,11 @@ export async function GET(
 ) {
   const { sessionId } = await params;
 
+  console.log('🔍 Checkout session API called:', { sessionId });
+
   // Validate session ID
   if (!sessionId || typeof sessionId !== 'string') {
+    console.error('❌ Invalid session ID:', sessionId);
     return NextResponse.json(
       { error: 'Invalid session ID' },
       { status: 400 }
@@ -48,13 +51,24 @@ export async function GET(
       await supabase.auth.getSession() : null;
     const userId = userSession?.data?.session?.user?.id;
 
+    console.log('🔐 User session:', { userId, hasAuth: !!authHeader });
+
     // Retrieve checkout session from Stripe
+    console.log('🔄 Retrieving Stripe session...');
     const stripeSession = await stripe.checkout.sessions.retrieve(
       sessionId,
       { expand: ['payment_intent', 'line_items'] }
     );
 
+    console.log('✅ Stripe session retrieved:', { 
+      id: stripeSession.id, 
+      status: stripeSession.status,
+      amount_total: stripeSession.amount_total,
+      customer_email: stripeSession.customer_details?.email
+    });
+
     if (!stripeSession) {
+      console.error('❌ Checkout session not found in Stripe');
       return NextResponse.json(
         { error: 'Checkout session not found' },
         { status: 404 }
@@ -62,6 +76,7 @@ export async function GET(
     }
 
     // Check if we have a record of this session in our database
+    console.log('🔄 Checking Supabase database for session...');
     const { data: checkoutSession, error: sessionError } = await supabaseAdmin
       ?.from('checkout_sessions')
       .select('*')
@@ -69,7 +84,11 @@ export async function GET(
       .single() || { data: null, error: new Error('Supabase admin client not available') };
 
     if (sessionError && 'code' in sessionError && sessionError.code !== 'PGRST116') { // Not found is not a critical error
-      console.error('Error retrieving checkout session from database:', sessionError);
+      console.error('❌ Error retrieving checkout session from database:', sessionError);
+    } else if (checkoutSession) {
+      console.log('✅ Found checkout session in database:', { id: checkoutSession.id, created_at: checkoutSession.created_at });
+    } else {
+      console.log('⚠️ No checkout session found in database (this is normal for some flows)');
     }
 
     // If user is authenticated, verify they own this session
@@ -93,7 +112,7 @@ export async function GET(
 
     // Parse metadata from Stripe session
     let orderItems: OrderItem[] = [];
-    let customerEmail = stripeSession.customer_details?.email || '';
+    const customerEmail = stripeSession.customer_details?.email || '';
 
     try {
       if (stripeSession.metadata?.order_items) {
@@ -123,6 +142,14 @@ export async function GET(
       items: orderItems,
       createdAt: orderData?.created_at || new Date(stripeSession.created * 1000).toISOString()
     };
+
+    console.log('✅ Returning order details:', { 
+      id: orderDetails.id,
+      orderNumber: orderDetails.orderNumber,
+      amount: orderDetails.amount,
+      itemCount: orderDetails.items.length,
+      customerEmail: orderDetails.customerEmail
+    });
 
     return NextResponse.json(orderDetails);
   } catch (error) {

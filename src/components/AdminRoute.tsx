@@ -58,7 +58,7 @@ export function AdminRoute({ children, requiredPermission, fallback }: AdminRout
           <Shield className="w-12 h-12 text-red-400 mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">Access Denied</h3>
           <p className="text-gray-600 text-center mb-4">
-            You don't have permission to access this admin area.
+            You don&apos;t have permission to access this admin area.
           </p>
           <Button variant="outline" onClick={() => router.push('/')}>
             Return to Home
@@ -76,7 +76,7 @@ export function AdminRoute({ children, requiredPermission, fallback }: AdminRout
           <AlertTriangle className="w-12 h-12 text-yellow-400 mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">Insufficient Permissions</h3>
           <p className="text-gray-600 text-center mb-4">
-            You don't have the required permission: <code className="bg-gray-100 px-2 py-1 rounded">{requiredPermission}</code>
+            You don&apos;t have the required permission: <code className="bg-gray-100 px-2 py-1 rounded">{requiredPermission}</code>
           </p>
           <Button variant="outline" onClick={() => router.push('/admin')}>
             Return to Admin Dashboard

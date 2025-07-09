@@ -28,10 +28,10 @@ export function Hero() {
               >
                 <p className="text-green-500 font-medium text-base mb-2">Natural Balance for Daily Wellness</p>
                 <h1 className="text-5xl font-bold tracking-tight text-gray-900 mb-4">
-                  Restore&nbsp;Your&nbsp;Body's&nbsp;Natural&nbsp;Rhythm
+                  Restore&nbsp;Your&nbsp;Body&apos;s&nbsp;Natural&nbsp;Rhythm
                 </h1>
                 <p className="text-lg text-gray-600 leading-relaxed max-w-md">
-                  Our plant-based fiber blend supports your body's natural rhythm
+                  Our plant-based fiber blend supports your body&apos;s natural rhythm
                 </p>
               </motion.div>
             </div>

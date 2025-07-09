@@ -63,11 +63,11 @@ export class StorageService {
         url: urlData.publicUrl,
         path: data.path,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Upload error:', error);
       return {
         success: false,
-        error: error.message || 'Upload failed'
+        error: error instanceof Error ? error.message : 'Upload failed'
       };
     }
   }
@@ -86,11 +86,11 @@ export class StorageService {
       }
 
       return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Delete error:', error);
       return {
         success: false,
-        error: error.message || 'Delete failed'
+        error: error instanceof Error ? error.message : 'Delete failed'
       };
     }
   }
@@ -120,11 +120,11 @@ export class StorageService {
       }
 
       return { success: true, files: data };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('List files error:', error);
       return {
         success: false,
-        error: error.message || 'Failed to list files'
+        error: error instanceof Error ? error.message : 'Failed to list files'
       };
     }
   }

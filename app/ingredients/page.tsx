@@ -26,7 +26,7 @@ async function getIngredients() {
         try {
           const metadataModule = await import(`./${dir}/metadata`);
           name = metadataModule.metadata.title || name;
-        } catch (error) {
+        } catch {
           // It's okay if metadata doesn't exist, we'll use the directory name.
         }
 
@@ -40,7 +40,7 @@ async function getIngredients() {
               await fs.access(imgPath);
               image = `/lovable-uploads/${dir}-${imgName}.${ext}`;
               break;
-            } catch (e) {
+            } catch {
               // File doesn't exist, continue checking
             }
           }

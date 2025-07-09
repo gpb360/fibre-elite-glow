@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { 
-  stripe,
   createCheckoutSession,
   formatAmountForStripe,
   STRIPE_CONFIG 
@@ -69,15 +68,21 @@ export async function POST(request: Request) {
       quantity: item.quantity,
     }));
 
+    // Generate order number
+    const orderNumber = `FEG-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+
     // Create metadata for the order
     const metadata = {
+      order_number: orderNumber,
       customer_name: `${body.customerInfo.firstName} ${body.customerInfo.lastName}`,
+      customer_email: body.customerInfo.email,
       shipping_address: JSON.stringify(body.customerInfo.address),
       order_items: JSON.stringify(body.items.map(item => ({
         id: item.id,
         name: item.productName,
         quantity: item.quantity,
-        price: item.price
+        price: item.price,
+        product_type: item.productName.toLowerCase().includes('plus') ? 'total_essential_plus' : 'total_essential'
       }))),
     };
 
@@ -96,15 +101,22 @@ export async function POST(request: Request) {
           .insert({
             session_id: session.id,
             customer_email: body.customerInfo.email,
-            amount_total: session.amount_total,
+            amount_total: session.amount_total ? session.amount_total / 100 : 0, // Convert from cents
+            currency: session.currency || 'USD',
+            payment_intent: session.payment_intent as string,
             metadata: metadata,
             status: session.status,
+            payment_status: 'pending',
+            test_mode: session.livemode === false,
+            expires_at: session.expires_at ? new Date(session.expires_at * 1000).toISOString() : null,
             created_at: new Date().toISOString(),
           });
         
         if (error) {
           console.error('Error storing checkout session in Supabase:', error);
           // Continue with checkout even if storage fails
+        } else {
+          console.log(`Checkout session stored: ${session.id}`);
         }
       } else {
         console.warn('Supabase admin client not available - skipping session storage');

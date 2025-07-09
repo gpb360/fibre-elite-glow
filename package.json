@@ -75,6 +75,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@playwright/mcp": "^0.0.29",
     "@playwright/test": "^1.53.1",
     "@supabase/mcp-server-supabase": "^0.4.5",
     "@tailwindcss/typography": "^0.5.15",

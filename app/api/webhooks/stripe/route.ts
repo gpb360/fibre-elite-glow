@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { stripe, STRIPE_CONFIG } from '@/lib/stripe';
 import { supabaseAdmin } from '@/integrations/supabase/client';
+import { emailService } from '@/lib/email-service';
 import Stripe from 'stripe';
 
 // Helper to get Stripe webhook secret from Supabase secrets
@@ -36,6 +37,58 @@ async function getWebhookSecret(): Promise<string> {
   }
 }
 
+// Helper to ensure customer exists in database
+async function ensureCustomerExists(email: string, name?: string): Promise<string | null> {
+  if (!supabaseAdmin) return null;
+
+  try {
+    // First, try to find existing customer
+    const { data: existingCustomer, error: findError } = await supabaseAdmin
+      .from('customers')
+      .select('id')
+      .eq('email', email)
+      .single();
+
+    if (findError && findError.code !== 'PGRST116') { // PGRST116 is "not found"
+      console.error('Error finding customer:', findError);
+      return null;
+    }
+
+    if (existingCustomer) {
+      return existingCustomer.id;
+    }
+
+    // Create new customer if not found
+    const [firstName, lastName] = name ? name.split(' ') : ['', ''];
+    const { data: newCustomer, error: createError } = await supabaseAdmin
+      .from('customers')
+      .insert({
+        email,
+        first_name: firstName || '',
+        last_name: lastName || '',
+      })
+      .select('id')
+      .single();
+
+    if (createError) {
+      console.error('Error creating customer:', createError);
+      return null;
+    }
+
+    return newCustomer.id;
+  } catch (error) {
+    console.error('Error ensuring customer exists:', error);
+    return null;
+  }
+}
+
+// Helper to generate unique order number
+function generateOrderNumber(): string {
+  const timestamp = Date.now().toString();
+  const random = Math.random().toString(36).substring(2, 8).toUpperCase();
+  return `FEG-${timestamp}-${random}`;
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.text();
@@ -69,10 +122,25 @@ export async function POST(request: Request) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session;
         
-        // Extract metadata
+        // Extract metadata and parse JSON fields safely
         const metadata = session.metadata || {};
-        let orderItems: any[] = [];
-        let shippingAddress: any = {};
+        let orderItems: Array<{
+          id: string;
+          name: string;
+          quantity: number;
+          price: number;
+          product_type?: string;
+        }> = [];
+        let shippingAddress: {
+          first_name?: string;
+          last_name?: string;
+          line1?: string;
+          line2?: string;
+          city?: string;
+          state?: string;
+          postal_code?: string;
+          country?: string;
+        } = {};
         
         try {
           if (metadata.order_items) {
@@ -94,34 +162,68 @@ export async function POST(request: Request) {
           );
         }
 
+        // Ensure customer exists in database
+        const customerEmail = session.customer_details?.email || metadata.customer_email || '';
+        const customerName = metadata.customer_name || session.customer_details?.name || undefined;
+        const customerId = await ensureCustomerExists(customerEmail, customerName);
+
         // Update checkout session status in database
         const { error: sessionUpdateError } = await supabaseAdmin
           .from('checkout_sessions')
-          .update({ status: session.status, updated_at: new Date().toISOString() })
+          .update({ 
+            status: session.status, 
+            payment_status: session.payment_status,
+            updated_at: new Date().toISOString() 
+          })
           .eq('session_id', session.id);
 
         if (sessionUpdateError) {
           console.error('Error updating checkout session:', sessionUpdateError);
         }
 
-        // Create order record
-        const { data: orderData, error: orderError } = await supabaseAdmin
+        // Generate order number if not present in metadata
+        const orderNumber = metadata.order_number || generateOrderNumber();
+
+        // Create comprehensive order record
+        const orderData = {
+          order_number: orderNumber,
+          session_id: session.id,
+          customer_id: customerId,
+          email: customerEmail,
+          status: 'pending' as const,
+          payment_status: session.payment_status === 'paid' ? 'paid' as const : 'pending' as const,
+          subtotal: session.amount_subtotal ? session.amount_subtotal / 100 : 0,
+          total_amount: session.amount_total ? session.amount_total / 100 : 0,
+          currency: session.currency?.toUpperCase() || 'USD',
+          payment_intent: session.payment_intent as string,
+          metadata: metadata,
+          test_mode: STRIPE_CONFIG.testMode,
+          
+          // Shipping address from metadata
+          shipping_first_name: shippingAddress.first_name || '',
+          shipping_last_name: shippingAddress.last_name || '',
+          shipping_address_line_1: shippingAddress.line1 || '',
+          shipping_address_line_2: shippingAddress.line2 || '',
+          shipping_city: shippingAddress.city || '',
+          shipping_state_province: shippingAddress.state || '',
+          shipping_postal_code: shippingAddress.postal_code || '',
+          shipping_country: shippingAddress.country || 'US',
+          
+          // Billing address (same as shipping for now)
+          billing_first_name: shippingAddress.first_name || '',
+          billing_last_name: shippingAddress.last_name || '',
+          billing_address_line_1: shippingAddress.line1 || '',
+          billing_address_line_2: shippingAddress.line2 || '',
+          billing_city: shippingAddress.city || '',
+          billing_state_province: shippingAddress.state || '',
+          billing_postal_code: shippingAddress.postal_code || '',
+          billing_country: shippingAddress.country || 'US',
+        };
+
+        const { data: order, error: orderError } = await supabaseAdmin
           .from('orders')
-          .insert({
-            session_id: session.id,
-            customer_email: session.customer_details?.email || metadata.customer_email,
-            customer_name: metadata.customer_name || `${session.customer_details?.name || 'Unknown'}`,
-            amount_total: session.amount_total ? session.amount_total / 100 : 0, // Convert from cents
-            currency: session.currency || 'usd',
-            payment_status: session.payment_status,
-            shipping_address: shippingAddress,
-            items: orderItems,
-            metadata: metadata,
-            status: 'confirmed',
-            payment_intent: session.payment_intent as string,
-            test_mode: STRIPE_CONFIG.testMode,
-          } as any)
-          .select('id')
+          .insert(orderData)
+          .select('id, order_number')
           .single();
 
         if (orderError) {
@@ -132,7 +234,52 @@ export async function POST(request: Request) {
           );
         }
 
-        console.log(`Order created successfully: ${orderData?.id}`);
+        // Create order items
+        if (orderItems.length > 0 && order) {
+          const orderItemsData = orderItems.map(item => ({
+            order_id: order.id,
+            product_name: item.name,
+            product_type: item.product_type || 'total_essential',
+            quantity: item.quantity,
+            unit_price: item.price,
+            total_price: item.price * item.quantity,
+          }));
+
+          const { error: itemsError } = await supabaseAdmin
+            .from('order_items')
+            .insert(orderItemsData);
+
+          if (itemsError) {
+            console.error('Error creating order items:', itemsError);
+          }
+        }
+
+        console.log(`Order created successfully: ${order?.id} (${order?.order_number})`);
+
+        // Send order confirmation email
+        if (order && customerEmail) {
+          try {
+            await emailService.sendOrderConfirmation({
+              id: order.id,
+              orderNumber: order.order_number,
+              amount: session.amount_total || 0,
+              currency: session.currency || 'usd',
+              status: 'confirmed',
+              customerEmail,
+              items: orderItems.map(item => ({
+                name: item.name,
+                quantity: item.quantity,
+                price: item.price
+              })),
+              createdAt: new Date().toISOString(),
+            });
+            console.log(`Order confirmation email sent to ${customerEmail}`);
+          } catch (emailError) {
+            console.error('Failed to send order confirmation email:', emailError);
+            // Don't fail the webhook if email fails
+          }
+        }
+        
         break;
       }
 
