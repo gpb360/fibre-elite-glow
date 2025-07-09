@@ -34,7 +34,7 @@ function CheckoutSuccessContent() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const sessionId = searchParams.get('session_id');
+    const sessionId = searchParams?.get('session_id');
     
     console.log('🔄 CheckoutSuccessContent useEffect triggered');
     console.log('📋 Session ID from search params:', sessionId);
@@ -97,7 +97,7 @@ function CheckoutSuccessContent() {
   }
 
   if (error || !orderDetails) {
-    const sessionId = searchParams.get('session_id');
+    const sessionId = searchParams?.get('session_id');
     return (
       <div className="flex min-h-screen flex-col">
         <Header />

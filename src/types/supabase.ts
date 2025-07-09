@@ -117,24 +117,51 @@ export type Database = {
         Row: {
           id: string
           session_id: string
-          user_id: string | null
+          customer_email: string
+          amount_total: number | null
+          currency: string | null
+          payment_intent: string | null
           metadata: Json | null
+          status: string | null
+          payment_status: string | null
+          test_mode: boolean | null
+          expires_at: string | null
+          failure_reason: string | null
+          user_id: string | null
           created_at: string
           updated_at: string
         }
         Insert: {
           id?: string
           session_id: string
-          user_id?: string | null
+          customer_email: string
+          amount_total?: number | null
+          currency?: string | null
+          payment_intent?: string | null
           metadata?: Json | null
+          status?: string | null
+          payment_status?: string | null
+          test_mode?: boolean | null
+          expires_at?: string | null
+          failure_reason?: string | null
+          user_id?: string | null
           created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
           session_id?: string
-          user_id?: string | null
+          customer_email?: string
+          amount_total?: number | null
+          currency?: string | null
+          payment_intent?: string | null
           metadata?: Json | null
+          status?: string | null
+          payment_status?: string | null
+          test_mode?: boolean | null
+          expires_at?: string | null
+          failure_reason?: string | null
+          user_id?: string | null
           created_at?: string
           updated_at?: string
         }

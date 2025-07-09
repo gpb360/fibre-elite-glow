@@ -62,7 +62,7 @@ export function AddressManager({ type = 'both', onAddressSelect, selectedAddress
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState<Address | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  // const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
   const [addressToDelete, setAddressToDelete] = useState<Address | null>(null);
 
   const form = useForm<z.infer<typeof addressSchema>>({

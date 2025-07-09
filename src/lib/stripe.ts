@@ -67,7 +67,7 @@ function getStripeInstance(): Stripe {
 
   try {
     const stripeInstance = new Stripe(secretKey, {
-      apiVersion: '2024-11-20.acacia',
+      apiVersion: '2025-06-30.basil',
       typescript: true,
     });
     _stripe = stripeInstance;

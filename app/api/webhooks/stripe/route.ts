@@ -239,7 +239,7 @@ export async function POST(request: Request) {
           const orderItemsData = orderItems.map(item => ({
             order_id: order.id,
             product_name: item.name,
-            product_type: item.product_type || 'total_essential',
+            product_type: (item.product_type || 'total_essential') as 'total_essential' | 'total_essential_plus',
             quantity: item.quantity,
             unit_price: item.price,
             total_price: item.price * item.quantity,

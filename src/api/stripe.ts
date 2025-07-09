@@ -1,5 +1,6 @@
 import { stripe, STRIPE_CONFIG } from '@/lib/stripe';
 import type { CartItem } from '@/types/cart';
+import type Stripe from 'stripe';
 
 export interface CheckoutSessionRequest {
   items: CartItem[];
