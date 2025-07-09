@@ -11,7 +11,9 @@
     "test:headed": "npx playwright test --headed",
     "api": "node server/api.js",
     "setup:secrets": "node scripts/setup-supabase-secrets.js",
-    "validate:env": "node scripts/validate-environment.js"
+    "validate:env": "node scripts/validate-environment.js",
+    "verify:db": "node scripts/verify-database-schema.js",
+    "db:migrate": "node scripts/migrate-database.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
