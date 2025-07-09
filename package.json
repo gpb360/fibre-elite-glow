@@ -13,7 +13,8 @@
     "setup:secrets": "node scripts/setup-supabase-secrets.js",
     "validate:env": "node scripts/validate-environment.js",
     "verify:db": "node scripts/verify-database-schema.js",
-    "db:migrate": "node scripts/migrate-database.js"
+    "db:migrate": "node scripts/migrate-database.js",
+    "validate:test-data": "node scripts/validate-test-data.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
