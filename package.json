@@ -10,7 +10,11 @@
     "test": "npx playwright test",
     "test:headed": "npx playwright test --headed",
     "api": "node server/api.js",
-    "setup:secrets": "node scripts/setup-supabase-secrets.js"
+    "setup:secrets": "node scripts/setup-supabase-secrets.js",
+    "validate:env": "node scripts/validate-environment.js",
+    "verify:db": "node scripts/verify-database-schema.js",
+    "db:migrate": "node scripts/migrate-database.js",
+    "validate:test-data": "node scripts/validate-test-data.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -43,7 +47,7 @@
     "@radix-ui/react-tooltip": "^1.1.4",
     "@stripe/react-stripe-js": "^3.7.0",
     "@stripe/stripe-js": "^7.3.1",
-    "@supabase/supabase-js": "^2.49.8",
+    "@supabase/supabase-js": "^2.50.4",
     "@tanstack/react-query": "^5.56.2",
     "@testing-library/dom": "^10.4.0",
     "chalk": "^4.1.2",
@@ -75,6 +79,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@playwright/mcp": "^0.0.29",
     "@playwright/test": "^1.53.1",
     "@supabase/mcp-server-supabase": "^0.4.5",
     "@tailwindcss/typography": "^0.5.15",

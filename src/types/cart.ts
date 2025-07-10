@@ -24,5 +24,4 @@ export interface CartContextType {
   removeFromCart: (itemId: string) => void;
   updateQuantity: (itemId: string, quantity: number) => void;
   clearCart: () => void;
-  isLoading: boolean;
 }

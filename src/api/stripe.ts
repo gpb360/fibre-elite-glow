@@ -1,5 +1,6 @@
 import { stripe, STRIPE_CONFIG } from '@/lib/stripe';
 import type { CartItem } from '@/types/cart';
+import type Stripe from 'stripe';
 
 export interface CheckoutSessionRequest {
   items: CartItem[];
@@ -166,7 +167,7 @@ export async function getCheckoutSession(sessionId: string): Promise<OrderDetail
 export async function handleWebhook(
   body: string,
   signature: string
-): Promise<{ received: boolean; event?: any }> {
+): Promise<{ received: boolean; event?: Stripe.Event }> {
   try {
     if (!STRIPE_CONFIG.webhookSecret) {
       throw new Error('Webhook secret not configured');
@@ -207,7 +208,7 @@ export async function handleWebhook(
 /**
  * Handle successful checkout session
  */
-async function handleCheckoutSessionCompleted(session: any) {
+async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
   console.log('Checkout session completed:', session.id);
   
   // Here you would typically:
@@ -229,7 +230,7 @@ async function handleCheckoutSessionCompleted(session: any) {
 /**
  * Handle successful payment
  */
-async function handlePaymentIntentSucceeded(paymentIntent: any) {
+async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent) {
   console.log('Payment succeeded:', paymentIntent.id);
   
   // Update order status to paid
@@ -239,7 +240,7 @@ async function handlePaymentIntentSucceeded(paymentIntent: any) {
 /**
  * Handle failed payment
  */
-async function handlePaymentIntentFailed(paymentIntent: any) {
+async function handlePaymentIntentFailed(paymentIntent: Stripe.PaymentIntent) {
   console.log('Payment failed:', paymentIntent.id);
   
   // Update order status to failed

@@ -67,18 +67,18 @@ function getStripeInstance(): Stripe {
 
   try {
     const stripeInstance = new Stripe(secretKey, {
-      apiVersion: '2025-05-28.basil',
+      apiVersion: '2025-06-30.basil',
       typescript: true,
     });
     _stripe = stripeInstance;
     return stripeInstance;
-  } catch (error: any) {
+  } catch (error: unknown) {
     // eslint-disable-next-line no-console
     console.error('❌ Failed to initialize Stripe SDK.');
     // eslint-disable-next-line no-console
     console.error('The secret key provided might be invalid or malformed.');
     // eslint-disable-next-line no-console
-    console.error('Error details:', error.message);
+    console.error('Error details:', error instanceof Error ? error.message : String(error));
     throw new Error('Could not create Stripe client. Please check your STRIPE_SECRET_KEY.');
   }
 }

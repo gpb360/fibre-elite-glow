@@ -33,38 +33,53 @@ function CheckoutSuccessContent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const sessionId = searchParams?.get('session_id');
-
   useEffect(() => {
+    const sessionId = searchParams?.get('session_id');
+    
+    console.log('🔄 CheckoutSuccessContent useEffect triggered');
+    console.log('📋 Session ID from search params:', sessionId);
+    
     const fetchOrderDetails = async () => {
       if (!sessionId) {
+        console.error('❌ No session ID provided');
         setError('No session ID provided');
         setLoading(false);
         return;
       }
 
+      console.log('🔄 Fetching order details for session:', sessionId);
+
       try {
         const response = await fetch(`/api/checkout-session/${sessionId}`);
 
+        console.log('📡 API Response:', { 
+          status: response.status, 
+          statusText: response.statusText,
+          ok: response.ok 
+        });
+
         if (!response.ok) {
-          throw new Error('Failed to fetch order details');
+          const errorText = await response.text();
+          console.error('❌ API Error Response:', errorText);
+          throw new Error(`API Error: ${response.status} - ${errorText}`);
         }
 
         const data = await response.json();
+        console.log('✅ Order details received:', data);
         setOrderDetails(data);
 
         // Clear the cart after successful payment
         clearCart();
       } catch (err) {
-        console.error('Error fetching order details:', err);
-        setError('Failed to load order details');
+        console.error('❌ Error fetching order details:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load order details');
       } finally {
         setLoading(false);
       }
     };
 
     fetchOrderDetails();
-  }, [sessionId, clearCart]);
+  }, [searchParams, clearCart]);
 
   if (loading) {
     return (
@@ -82,6 +97,7 @@ function CheckoutSuccessContent() {
   }
 
   if (error || !orderDetails) {
+    const sessionId = searchParams?.get('session_id');
     return (
       <div className="flex min-h-screen flex-col">
         <Header />
@@ -95,9 +111,22 @@ function CheckoutSuccessContent() {
               </div>
               <h2 className="text-xl font-semibold mb-2">Order Not Found</h2>
               <p className="text-gray-600 mb-4">{error || 'We could not find your order details.'}</p>
-              <Link href="/">
-                <Button>Return to Home</Button>
-              </Link>
+              {sessionId && (
+                <p className="text-xs text-gray-500 mb-4 font-mono">
+                  Session ID: {sessionId}
+                </p>
+              )}
+              <div className="space-y-2">
+                <Link href="/">
+                  <Button>Return to Home</Button>
+                </Link>
+                <button 
+                  onClick={() => window.location.reload()} 
+                  className="block w-full text-sm text-blue-600 hover:text-blue-800"
+                >
+                  Try Again
+                </button>
+              </div>
             </CardContent>
           </Card>
         </main>
@@ -208,7 +237,7 @@ function CheckoutSuccessContent() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Mail className="h-5 w-5" />
-                What's Next?
+                What&apos;s Next?
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -220,7 +249,7 @@ function CheckoutSuccessContent() {
                   <div>
                     <h3 className="font-medium">Confirmation Email</h3>
                     <p className="text-sm text-gray-600">
-                      We've sent a confirmation email to {orderDetails.customerEmail} with your order details.
+                      We&apos;ve sent a confirmation email to {orderDetails.customerEmail} with your order details.
                     </p>
                   </div>
                 </div>
@@ -244,7 +273,7 @@ function CheckoutSuccessContent() {
                   <div>
                     <h3 className="font-medium">Tracking Information</h3>
                     <p className="text-sm text-gray-600">
-                      You'll receive tracking information once your order ships.
+                      You&apos;ll receive tracking information once your order ships.
                     </p>
                   </div>
                 </div>
