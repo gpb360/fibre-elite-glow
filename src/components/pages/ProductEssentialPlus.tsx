@@ -517,7 +517,7 @@ export function ProductEssentialPlus() {
               </div>
               <div>
                 <h4 className="font-medium">Mix with Water</h4>
-                <p className="text-gray-600">Take one sachet daily. Empty the contents into a glass of water (at least 350ml).</p>
+                <p className="text-gray-600">Take one sachet daily. Empty the contents into a glass of water (at least 200ml).</p>
               </div>
             </div>
             
@@ -537,7 +537,7 @@ export function ProductEssentialPlus() {
               </div>
               <div>
                 <h4 className="font-medium">Drink Immediately</h4>
-                <p className="text-gray-600">Consume immediately. Best taken before bedtime or first thing in the morning.</p>
+                <p className="text-gray-600">Consume immediately. Best taken before bedtime, as our product will need 6 to 10 hours to work.</p>
               </div>
             </div>
             
