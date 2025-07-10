@@ -85,8 +85,8 @@ export function ProductShowcase() {
                 </tr>
                 <tr className="border-b border-gray-100 hover:bg-gray-50">
                   <td className="p-4 text-left font-medium">Fruits & Vegetables</td>
-                  <td className="p-4 text-center">12 varieties</td>
-                  <td className="p-4 text-center">18 varieties (plus berries)</td>
+                  <td className="p-4 text-center">14 varieties</td>
+                  <td className="p-4 text-center">18 varieties</td>
                 </tr>
                 <tr className="border-b border-gray-100 hover:bg-gray-50">
                   <td className="p-4 text-left font-medium">Superfruits (Acai, Strawberry, etc.)</td>

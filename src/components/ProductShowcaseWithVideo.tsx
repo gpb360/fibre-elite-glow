@@ -172,8 +172,8 @@ export function ProductShowcaseWithVideo() {
                 </tr>
                 <tr className="border-b border-gray-100">
                   <td className="p-3 text-left">Fruits & Vegetables</td>
-                  <td className="p-3 text-center">12 varieties</td>
-                  <td className="p-3 text-center">18 varieties (plus berries)</td>
+                  <td className="p-3 text-center">14 varieties</td>
+                  <td className="p-3 text-center">18 varieties</td>
                 </tr>
                 <tr className="border-b border-gray-100">
                   <td className="p-3 text-left">Superfruits (Acai, Strawberry, etc.)</td>
