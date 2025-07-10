@@ -36,6 +36,41 @@ interface CheckoutRequestBody {
 
 export async function POST(request: Request) {
   try {
+    // Debug environment variables in production (only log presence, not values)
+    const debugInfo = {
+      hasStripeSecret: !!process.env.STRIPE_SECRET_KEY,
+      hasStripePublishable: !!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+      hasWebhookSecret: !!process.env.STRIPE_WEBHOOK_SECRET,
+      hasSupabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+      hasBaseUrl: !!process.env.NEXT_PUBLIC_BASE_URL,
+      nodeEnv: process.env.NODE_ENV,
+    };
+    
+    console.log('Environment check:', debugInfo);
+    
+    // Check for required Stripe configuration
+    if (!process.env.STRIPE_SECRET_KEY) {
+      console.error('❌ STRIPE_SECRET_KEY environment variable is missing');
+      return NextResponse.json(
+        { 
+          error: 'Server configuration error: Stripe secret key not configured',
+          debug: debugInfo 
+        },
+        { status: 500 }
+      );
+    }
+
+    if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
+      console.error('❌ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY environment variable is missing');
+      return NextResponse.json(
+        { 
+          error: 'Server configuration error: Stripe publishable key not configured',
+          debug: debugInfo 
+        },
+        { status: 500 }
+      );
+    }
+    
     // Parse request body
     const body: CheckoutRequestBody = await request.json();
     
@@ -134,8 +169,30 @@ export async function POST(request: Request) {
     
   } catch (error) {
     console.error('Error creating checkout session:', error);
+    
+    // Provide more specific error information
+    let errorMessage = 'Failed to create checkout session';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+      
+      // Check for specific Stripe errors
+      if (error.message.includes('No such plan') || error.message.includes('No such price')) {
+        errorMessage = 'Invalid product configuration. Please contact support.';
+      } else if (error.message.includes('Invalid API key')) {
+        errorMessage = 'Server configuration error: Invalid Stripe API key';
+      } else if (error.message.includes('Could not create Stripe client')) {
+        errorMessage = 'Server configuration error: Stripe client initialization failed';
+      }
+    }
+    
     return NextResponse.json(
-      { error: 'Failed to create checkout session' },
+      { 
+        error: errorMessage,
+        type: error instanceof Error ? error.constructor.name : 'Unknown',
+        ...(process.env.NODE_ENV === 'development' && {
+          stack: error instanceof Error ? error.stack : undefined
+        })
+      },
       { status: 500 }
     );
   }
