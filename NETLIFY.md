@@ -71,15 +71,34 @@ The project includes a `netlify.toml` file with optimized build settings:
 ### Testing the Deployment
 
 After deploying:
-1. Check the browser console for any Stripe-related errors
-2. Test the checkout flow end-to-end
-3. Verify webhook events are being received (check Stripe dashboard)
-4. Ensure redirects work properly after payment
+1. **Health Check**: Visit `https://your-site.netlify.app/api/health` to verify environment variables are loaded
+2. Check the browser console for any Stripe-related errors
+3. Test the checkout flow end-to-end
+4. Verify webhook events are being received (check Stripe dashboard)
+5. Ensure redirects work properly after payment
 
 ### Troubleshooting
 
 If you're still seeing Stripe configuration errors:
-1. Check the Netlify build logs for environment variable loading
-2. Verify all environment variables are set correctly (no typos)
-3. Check the browser developer tools Network tab for failed API calls
-4. Ensure your Stripe account is properly activated
+
+#### 1. Environment Variable Issues
+- **Check Health Endpoint**: Visit `/api/health` to see which environment variables are missing
+- **Verify Netlify Settings**: Go to Site settings → Environment variables and ensure all variables are set
+- **Check Variable Names**: Ensure exact spelling (case-sensitive)
+- **No Quotes**: Don't wrap values in quotes in the Netlify dashboard
+
+#### 2. Build and Deploy Issues
+- **Check Build Logs**: Look for environment variable loading errors in Netlify build logs
+- **Clear Deploy Cache**: In Netlify, go to Site settings → Build & deploy → Clear cache and deploy
+- **Check Function Logs**: Monitor Netlify function logs for runtime errors
+
+#### 3. Stripe Configuration
+- **API Key Format**: Ensure keys start with `pk_test_` or `pk_live_` (publishable) and `sk_test_` or `sk_live_` (secret)
+- **Test Mode**: Set `NEXT_PUBLIC_STRIPE_TEST_MODE=true` for testing
+- **Webhook Secret**: Generate from Stripe Dashboard → Webhooks → Your endpoint → Signing secret
+
+#### 4. Common Error Messages
+- **"Server configuration error: Stripe secret key not configured"**: `STRIPE_SECRET_KEY` is missing
+- **"Server configuration error: Stripe publishable key not configured"**: `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` is missing
+- **"Could not create Stripe client"**: Invalid `STRIPE_SECRET_KEY` format
+- **"Failed to create checkout session"**: Check function logs for specific Stripe API errors
