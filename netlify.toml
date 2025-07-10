@@ -1,10 +1,6 @@
 [build]
-  command = "rm -rf .next node_modules/.cache && pnpm install && pnpm build"
+  command = "rm -rf .next && pnpm build"
 
 [build.environment]
   NEXT_TELEMETRY_DISABLED = "1"
-  # Force cache busting
-  BUILD_ID = "force-fresh-build-$(date +%s)"
-
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
+  NODE_ENV = "production"

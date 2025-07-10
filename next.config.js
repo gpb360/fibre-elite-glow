@@ -9,6 +9,9 @@
  */
 const nextConfig = {
   // Enable `"export"` mode only when STATIC_EXPORT=true is set at build time.
+  
+  // Temporarily disable static generation to isolate build issues
+  output: process.env.STATIC_EXPORT === 'true' ? 'export' : undefined,
 
   experimental: {
     optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react']
