@@ -28,6 +28,16 @@ const stripePromise: Promise<Stripe | null> | null = (() => {
       '❌  Environment variable "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" is missing. ' +
         'Stripe checkout will be disabled until this key is provided.'
     );
+    console.error('For Netlify deployment, ensure this variable is set in Site Settings > Environment Variables');
+    console.error('Expected format: pk_test_... (for test mode) or pk_live_... (for production)');
+    /* eslint-enable no-console */
+    return null;
+  }
+
+  // Validate key format
+  if (!publishableKey.startsWith('pk_test_') && !publishableKey.startsWith('pk_live_')) {
+    /* eslint-disable no-console */
+    console.error('❌  Invalid Stripe publishable key format. Expected pk_test_... or pk_live_...');
     /* eslint-enable no-console */
     return null;
   }
@@ -101,9 +111,12 @@ const CheckoutForm: React.FC = () => {
       toast({
         title: 'Configuration Error',
         description:
-          'Stripe is not configured correctly. Please contact support or try again later.',
+          'Stripe is not configured correctly. Please check the browser console for details or contact support.',
         variant: 'destructive',
       });
+      /* eslint-disable no-console */
+      console.error('Stripe checkout attempted but stripePromise is null. Check NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY environment variable.');
+      /* eslint-enable no-console */
       return;
     }
 
