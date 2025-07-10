@@ -1,17 +1,11 @@
 [build]
-  publish = ".next"
   command = "pnpm build"
 
 [build.environment]
   NEXT_TELEMETRY_DISABLED = "1"
-  NETLIFY_NEXT_PLUGIN_SKIP = "true"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-
-[functions]
-  directory = ".netlify/functions"
-  included_files = ["scripts/**", "src/**"]
 
 # Headers for security and performance
 [[headers]]
@@ -21,13 +15,6 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-
-# Redirects for SPA behavior
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-  conditions = {Role = ["admin"]}
 
 # Environment variable documentation
 # Required environment variables for Netlify deployment:
