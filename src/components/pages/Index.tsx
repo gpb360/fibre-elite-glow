@@ -19,11 +19,11 @@ const faqItems = [
   },
   {
     question: "How do I use Total Essential?",
-    answer: "Simply mix one sachet with 8-10 oz of water, stir well, and drink immediately. For best results, consume one sachet daily, preferably in the morning with breakfast."
+    answer: "Simply mix one sachet with 200ml of water, stir well, and drink immediately. For best results, consume one sachet daily, preferably before bedtime, as our product will need 6 to 10 hours to work."
   },
   {
     question: "What's the difference between Total Essential and Total Essentiel Plus?",
-    answer: "Total Essentiel Plus contains our advanced formula with additional superfruits, probiotics, and enhanced nutritional profile. It's designed for those looking for maximum health benefits and targeted digestive support."
+    answer: "Total Essentiel Plus contains our advanced formula with additional superfruits, prebiotics, and enhanced nutritional profile. It's designed for those looking for maximum health benefits and targeted digestive support."
   },
   {
     question: "Is Total Essential suitable for children?",
@@ -31,7 +31,7 @@ const faqItems = [
   },
   {
     question: "Are there any side effects?",
-    answer: "Total Essential is made from 100% natural ingredients and is generally well-tolerated. Some individuals may experience mild digestive adjustments when first starting, such as minor bloating or gas, which typically resolves within a few days as your body adjusts."
+    answer: "Total Essential is made from 100% natural ingredients and is generally well-tolerated."
   },
   {
     question: "How quickly will I see results?",
