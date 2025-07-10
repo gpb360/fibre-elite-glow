@@ -15,11 +15,11 @@ export function Faq() {
   const generalFaqData = [
     {
       question: "What makes Total Essential different from other fiber supplements?",
-      answer: "Total Essential stands apart with its scientifically formulated blend of both soluble and insoluble fiber from 100% natural sources. Unlike synthetic fiber supplements, our formula includes premium oat bran, sustainably sourced palm tree trunk fiber, and 12 varieties of fruits and vegetables. The addition of oligosaccharides provides prebiotic support, nourishing your existing beneficial gut bacteria naturally. This comprehensive approach delivers superior digestive health benefits while supporting cardiovascular wellness, blood sugar regulation, and healthy weight management."
+      answer: "Total Essential stands apart with its scientifically formulated blend of both soluble and insoluble fiber from 100% natural sources. Unlike synthetic fiber supplements, our formula includes premium oat bran, sustainably sourced palm tree trunk fiber, and 14 varieties of fruits and vegetables. The addition of oligosaccharides provides prebiotic support, nourishing your existing beneficial gut bacteria naturally. This comprehensive approach delivers superior digestive health benefits while supporting cardiovascular wellness, blood sugar regulation, and healthy weight management."
     },
     {
       question: "How quickly will I see results with Total Essential?",
-      answer: "Most customers begin experiencing improved digestive regularity within 3-5 days of consistent use. Complete wellness benefits, including enhanced energy levels, better appetite control, and improved overall well-being, typically develop over the full 15-day program. Individual results may vary based on current fiber intake, diet, and overall health status. For optimal results, maintain consistency with daily usage and adequate water intake throughout the program."
+      answer: "Most customers have immediate relief of constipation the next morning after taking the first sachet, some customers improved digestive regularity within 3-5 days of consistent use. Complete wellness benefits, including enhanced energy levels, better appetite control, and improved overall well-being, typically develop over the full 15-day program. Individual results may vary based on current fiber intake, diet, and overall health status. For optimal results, maintain consistency with daily usage and adequate water intake throughout the program."
     },
     {
       question: "Is Total Essential safe for long-term use?",
@@ -31,7 +31,7 @@ export function Faq() {
     },
     {
       question: "What's the difference between Total Essential and Total Essential Plus?",
-      answer: "Total Essential provides comprehensive digestive wellness with 12 varieties of fruits and vegetables in a premium fiber blend. Total Essential Plus enhances this formula with four additional superfruits: Açaí Berry, Strawberry, Cranberry, and Raspberry. These superfruits provide powerful antioxidant protection, promote radiant skin health, and offer enhanced beauty benefits while maintaining all the digestive and metabolic advantages of the original formula. Plus also features a delicious berry flavor profile."
+      answer: "Total Essential provides comprehensive digestive wellness with 14 varieties of fruits and vegetables in a premium fiber blend. Total Essential Plus enhances this formula with four additional superfruits: Açaí Berry, Strawberry, Cranberry, and Raspberry for a total of 18 varieties. These superfruits provide powerful antioxidant protection, promote radiant skin health, and offer enhanced beauty benefits while maintaining all the digestive and metabolic advantages of the original formula. Plus also features a delicious berry flavor profile."
     }
   ];
 
@@ -65,19 +65,23 @@ export function Faq() {
     },
     {
       question: "How much water should I drink with Total Essential?",
-      answer: "Always mix Total Essential with at least 350ml (12 oz) of water and drink immediately. It's also important to maintain adequate hydration throughout the day when increasing fiber intake. We recommend drinking an additional 2-3 glasses of water daily during your Total Essential program. Proper hydration ensures the fiber can work effectively and prevents any digestive discomfort."
+      answer: "Always mix Total Essential with at least 200ml of water and drink immediately. It's also important to maintain adequate hydration throughout the day when increasing fiber intake. We recommend drinking an additional 2-3 glasses of water daily during your Total Essential program. Proper hydration ensures the fiber can work effectively and prevents any digestive discomfort."
     },
     {
       question: "Can I mix Total Essential with other beverages besides water?",
-      answer: "While water is recommended for optimal dissolution and effectiveness, Total Essential can be mixed with other beverages like herbal tea, coconut water, or fresh juice. Avoid mixing with caffeinated beverages, alcohol, or very hot liquids as these may affect the fiber's beneficial properties. Cold or room temperature beverages work best. Always ensure you're consuming adequate total fluid intake regardless of your beverage choice."
+      answer: "While water is recommended for optimal dissolution and effectiveness, Total Essential can be mixed with other beverages like fresh juice & water, flavoured water, or you can use a sachet of powder to blend with your favourite fruit and ice/ice water to make a great smoothie. Avoid using hot or warm liquids as these may affect the fiber's beneficial properties. Prevent mixing with highly sweetened concentrated juice, as too much sugar is not good for your gut and overall health."
     },
     {
       question: "What should I expect during my first few days of using Total Essential?",
-      answer: "By days 3-5, most people notice improved regularity and increased energy. Some customers report better sleep quality and reduced cravings within the first week. If you experience any persistent discomfort, try reducing to half a sachet for a few days before returning to the full dose."
+      answer: "By days 3-5, most people notice improved regularity and increased energy. Some customers report better sleep quality and reduced cravings within the first week. During the first few days, you may notice increased bowel movements throughout the day. By day 5 and beyond, this may naturally decrease to 2–3 times per day, especially for those who consume a meat-heavy diet. If you experience any persistent discomfort, try reducing to half a sachet for a few days before returning to the full dose."
     },
     {
       question: "Can I continue taking Total Essential after the 15-day program?",
       answer: "Total Essential is designed as a comprehensive 15-day wellness program that can be repeated monthly or seasonally based on your health goals. Many customers incorporate this program into their regular wellness routine every 4-6 weeks for ongoing digestive maintenance and detoxification support. For continuous daily fiber supplementation, consult with your healthcare provider to determine the best long-term approach for your individual needs."
+    },
+    {
+      question: "When is the best time to plan my bathroom time?",
+      answer: "Since our product works within 6 to 10 hours, you can take it whenever it's most convenient for you to plan your bathroom time. Moreover, this product isn't meant to replace meals, so make sure to keep up with your normal eating routine."
     }
   ];
 
