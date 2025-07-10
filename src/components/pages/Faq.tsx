@@ -73,7 +73,7 @@ export function Faq() {
     },
     {
       question: "What should I expect during my first few days of using Total Essential?",
-      answer: "During the first 2-3 days, your digestive system is adjusting to the increased fiber intake. You may experience mild bloating or gas as your gut microbiome adapts - this is completely normal and typically resolves quickly. By days 3-5, most people notice improved regularity and increased energy. Some customers report better sleep quality and reduced cravings within the first week. If you experience any persistent discomfort, try reducing to half a sachet for a few days before returning to the full dose."
+      answer: "By days 3-5, most people notice improved regularity and increased energy. Some customers report better sleep quality and reduced cravings within the first week. If you experience any persistent discomfort, try reducing to half a sachet for a few days before returning to the full dose."
     },
     {
       question: "Can I continue taking Total Essential after the 15-day program?",
@@ -84,7 +84,7 @@ export function Faq() {
   const safetyFaqData = [
     {
       question: "Are there any side effects or contraindications with Total Essential?",
-      answer: "Total Essential is made from natural, food-grade ingredients and is generally well-tolerated. Some people may experience mild, temporary digestive adjustments (bloating or gas) during the first few days as their system adapts to increased fiber intake. This typically resolves within 3-5 days. Individuals with severe digestive conditions, food allergies, or those taking multiple medications should consult their healthcare provider before starting. Pregnant or nursing women should seek medical advice before use."
+      answer: "Total Essential is made from natural, food-grade ingredients and is generally well-tolerated. Individuals with severe digestive conditions, food allergies, or those taking multiple medications should consult their healthcare provider before starting. Pregnant or nursing women should seek medical advice before use."
     },
     {
       question: "Is Total Essential suitable for people with dietary restrictions?",
