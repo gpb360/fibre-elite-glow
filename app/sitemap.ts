@@ -4,7 +4,7 @@ import path from 'path';
 
 export const dynamic = 'force-static';
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://www.venomappdevelopmnent.com';
+  const baseUrl = 'https://lbve.ca';
 
   // Static pages
   const staticRoutes = [

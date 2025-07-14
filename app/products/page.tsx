@@ -1,6 +1,30 @@
-'use client';
-
 import React from 'react';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Premium Fiber Supplements | Total Essential Collection | Fibre Elite Glow',
+  description: 'Discover our premium fiber blend collection: Total Essential and Total Essential Plus. Natural fruit & vegetable fiber supplements for optimal digestive health and daily wellness.',
+  keywords: 'fiber supplements, digestive health, natural fiber, Total Essential, fruit fiber, vegetable fiber, gut health, daily wellness, fiber blend',
+  openGraph: {
+    title: 'Premium Fiber Supplements | Total Essential Collection',
+    description: 'Choose the perfect natural fiber blend for your daily wellness routine. Premium supplements crafted from 100% fruit & vegetable fibers.',
+    type: 'website',
+    images: [
+      {
+        url: '/lovable-uploads/27ca3fa0-24aa-479b-b075-3f11006467c5.png',
+        width: 1200,
+        height: 630,
+        alt: 'Total Essential Premium Fiber Collection'
+      }
+    ]
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Premium Fiber Supplements | Total Essential Collection',
+    description: 'Choose the perfect natural fiber blend for your daily wellness routine.',
+    images: ['/lovable-uploads/27ca3fa0-24aa-479b-b075-3f11006467c5.png']
+  }
+};
 import { ProductCard } from '@/components/ui/product-card';
 import { Heading } from '@/components/ui/heading';
 import Link from 'next/link';
