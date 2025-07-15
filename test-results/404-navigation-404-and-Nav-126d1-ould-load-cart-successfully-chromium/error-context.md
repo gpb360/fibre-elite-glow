@@ -1,0 +1,75 @@
+# Page snapshot
+
+```yaml
+- banner:
+  - link "La Belle Vie":
+    - /url: /
+  - navigation:
+    - link "Home":
+      - /url: /
+    - button "Products":
+      - text: Products
+      - img
+    - link "Benefits":
+      - /url: /benefits
+    - link "Testimonials":
+      - /url: /testimonials
+    - link "FAQ":
+      - /url: /faq
+  - button "Open main menu"
+  - link:
+    - /url: /cart
+    - img
+- main:
+  - link "Continue Shopping":
+    - /url: /
+    - img
+    - text: Continue Shopping
+  - heading "Shopping Cart" [level=2]
+  - paragraph: Your cart is currently empty
+  - img
+  - heading "Your cart is empty" [level=2]
+  - paragraph: Looks like you haven't added any items to your cart yet. Start shopping to fill it up!
+  - link "Browse Products":
+    - /url: /products
+    - button "Browse Products"
+  - link "Back to Home":
+    - /url: /
+    - button "Back to Home"
+- contentinfo:
+  - heading "La Belle Vie" [level=3]
+  - paragraph: Premium fiber supplements for optimal health and wellness.
+  - link "Facebook":
+    - /url: "#"
+  - link "Instagram":
+    - /url: "#"
+  - link "Twitter":
+    - /url: "#"
+  - heading "Products" [level=3]
+  - list:
+    - listitem:
+      - link "Total Essential":
+        - /url: /products
+    - listitem:
+      - link "Total Essential Plus":
+        - /url: /products
+    - listitem:
+      - link "Special Bundles":
+        - /url: /products
+    - listitem:
+      - link "Subscription Plans":
+        - /url: /products
+  - heading "Resources" [level=3]
+  - list:
+    - listitem:
+      - link "FAQ":
+        - /url: /faq
+    - listitem:
+      - link "Testimonials":
+        - /url: /testimonials
+  - heading "Company" [level=3]
+  - list
+  - paragraph: © 2025 La Belle Vie. All rights reserved.
+- region "Notifications (F8)":
+  - list
+```

@@ -90,13 +90,13 @@ export function Footer() {
           <div>
             <h3 className="text-sm font-semibold text-gray-900 mb-4">Company</h3>
             <ul className="space-y-3">
-              {/* TODO: Create pages for contact, privacy, terms, shipping before re-enabling */}
-              {/* <li>
+              <li>
                 <Link href="/contact" className="text-sm text-gray-600 hover:text-green-600 transition-colors">
                   Contact Us
                 </Link>
               </li>
-              <li>
+              {/* TODO: Create pages for privacy, terms, shipping before re-enabling */}
+              {/* <li>
                 <Link href="/privacy" className="text-sm text-gray-600 hover:text-green-600 transition-colors">
                   Privacy Policy
                 </Link>

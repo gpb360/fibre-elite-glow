@@ -1,0 +1,179 @@
+# Page snapshot
+
+```yaml
+- banner:
+  - link "La Belle Vie":
+    - /url: /
+  - navigation:
+    - link "Home":
+      - /url: /
+    - button "Products":
+      - text: Products
+      - img
+    - link "Benefits":
+      - /url: /benefits
+    - link "Testimonials":
+      - /url: /testimonials
+    - link "FAQ":
+      - /url: /faq
+  - button "Open main menu"
+  - link:
+    - /url: /cart
+    - img
+- main:
+  - paragraph: Premium Superfood
+  - heading "Acai Berry." [level=1]
+  - paragraph: A potent superfood packed with antioxidants to support cellular health, boost energy, and promote radiant skin. Our premium Acai Berry is sustainably sourced and carefully processed.
+  - link "View Products":
+    - /url: /products/total-essential-plus
+    - button "View Products"
+  - link "Explore Benefits":
+    - /url: "#benefits"
+    - button "Explore Benefits"
+  - img
+  - text: Antioxidant Rich
+  - img
+  - text: Cellular Health
+  - img
+  - text: Skin Vitality
+  - img "Acai Berry"
+  - heading "What is Acai Berry?" [level=2]
+  - paragraph: A deep purple superfood from the Amazon rainforest, celebrated for its exceptional antioxidant content.
+  - paragraph: Acai Berry is a small, dark purple fruit that grows on the acai palm tree in the Amazon rainforest. For centuries, it has been a staple food for indigenous communities, prized for its ability to provide energy and vitality. Today, acai is recognized globally as a superfood due to its incredible concentration of antioxidants, particularly anthocyanins, which give the berry its deep color.
+  - paragraph: These powerful antioxidants help combat oxidative stress, a key factor in aging and various health issues. In addition to antioxidants, acai berries are a good source of fiber, healthy fats, and essential nutrients, making them a valuable addition to a healthy diet.
+  - paragraph: Our Acai Berry is sustainably harvested and freeze-dried to preserve its potent nutritional profile, ensuring you receive the maximum benefits this remarkable superfood has to offer.
+  - img "Acai Berry Close-up"
+  - heading "Premium Processing Method" [level=2]
+  - paragraph: How we capture the full power of Acai Berry
+  - text: "1"
+  - heading "Sustainable Harvesting" [level=3]
+  - paragraph: We partner with local communities in the Amazon to sustainably harvest ripe acai berries, ensuring environmental protection.
+  - text: "2"
+  - heading "Freeze-Drying" [level=3]
+  - paragraph: The berries are immediately freeze-dried to lock in their potent antioxidants, nutrients, and vibrant color without using high heat.
+  - text: "3"
+  - heading "Purity Testing" [level=3]
+  - paragraph: Each batch is rigorously tested for purity and potency, ensuring you receive a high-quality product free from contaminants.
+  - paragraph: Our advanced processing ensures that our Acai Berry powder delivers the full spectrum of benefits found in the fresh fruit, providing a convenient and potent source of antioxidants.
+  - heading "Health Benefits of Acai Berry" [level=2]
+  - paragraph: Discover the powerful ways Acai Berry supports your health and wellness
+  - img
+  - heading "Powerful Antioxidant" [level=3]
+  - paragraph: Acai berries are loaded with anthocyanins, which neutralize free radicals and protect cells from oxidative damage.
+  - img
+  - heading "Boosts Energy Levels" [level=3]
+  - paragraph: The unique nutritional profile of acai helps increase stamina and combat fatigue, providing a natural energy boost.
+  - img
+  - heading "Promotes Skin Health" [level=3]
+  - paragraph: The antioxidants in acai help protect the skin from environmental stressors, promoting a youthful and radiant complexion.
+  - img
+  - heading "Supports Brain Function" [level=3]
+  - paragraph: Acai's anti-inflammatory properties may protect brain cells from damage, supporting cognitive function and memory.
+  - img
+  - heading "Enhances Heart Health" [level=3]
+  - paragraph: The anthocyanins in acai may help lower cholesterol levels and support overall cardiovascular health.
+  - img
+  - heading "Aids in Digestion" [level=3]
+  - paragraph: Acai berries contain natural fiber that supports a healthy digestive system and promotes regular bowel movements.
+  - heading "How Acai Berry Works" [level=2]
+  - paragraph: The science behind this potent superfood
+  - img
+  - heading "Neutralizing Free Radicals" [level=4]
+  - paragraph: Acai's anthocyanins and other antioxidants donate electrons to unstable free radicals, neutralizing them before they can cause cellular damage and contribute to aging.
+  - img
+  - heading "Reducing Inflammation" [level=4]
+  - paragraph: The polyphenols in acai help modulate inflammatory pathways in the body, reducing chronic inflammation that is linked to various health conditions.
+  - img
+  - heading "Supporting Cellular Repair" [level=4]
+  - paragraph: By reducing oxidative stress, acai helps create a healthier environment for cells to repair and regenerate, which is crucial for maintaining healthy tissues and organs.
+  - img "Acai Berry Antioxidant Mechanism"
+  - heading "Scientific Evidence" [level=2]
+  - paragraph: Research supporting the benefits of Acai Berry
+  - paragraph: "Acai Berry has been the subject of numerous studies investigating its antioxidant capacity and health benefits. Research highlights its potential in several key areas:"
+  - list:
+    - listitem:
+      - img
+      - strong: "High Antioxidant Capacity:"
+      - text: Studies published in the Journal of Agricultural and Food Chemistry have shown that acai has a higher antioxidant capacity than many other fruits, effectively increasing antioxidant levels in the blood after consumption.
+    - listitem:
+      - img
+      - strong: "Cardiovascular Health:"
+      - text: Research suggests that the anthocyanins in acai may help improve cholesterol levels by reducing LDL ("bad") cholesterol and increasing HDL ("good") cholesterol.
+    - listitem:
+      - img
+      - strong: "Neuroprotective Effects:"
+      - text: Preliminary studies indicate that the anti-inflammatory properties of acai may help protect the brain from age-related damage and support cognitive function.
+  - paragraph: "Note: While these statements are supported by scientific research, individual results may vary. Acai Berry is not intended to diagnose, treat, cure, or prevent any disease."
+  - heading "Nutritional Composition" [level=2]
+  - paragraph: Understanding the unique profile of Acai Berry
+  - heading "Key Components" [level=3]
+  - list:
+    - listitem:
+      - img
+      - strong: "Anthocyanins:"
+      - text: High concentration of these powerful antioxidants.
+    - listitem:
+      - img
+      - strong: "Healthy Fats:"
+      - text: Rich in omega-3, -6, and -9 fatty acids.
+    - listitem:
+      - img
+      - strong: "Dietary Fiber:"
+      - text: Supports digestive health and satiety.
+  - heading "Vitamins & Minerals" [level=3]
+  - list:
+    - listitem:
+      - img
+      - strong: "Vitamin A & C:"
+      - text: Essential for immune function and skin health.
+    - listitem:
+      - img
+      - strong: "Calcium & Iron:"
+      - text: Important for bone health and oxygen transport.
+  - heading "Experience the Power of Acai Berry" [level=2]
+  - paragraph: Incorporate this antioxidant-rich superfood into your daily routine and feel the difference.
+  - link "Shop Now":
+    - /url: /products/total-essential-plus
+    - button "Shop Now":
+      - text: Shop Now
+      - img
+  - link "Explore More Ingredients":
+    - /url: /ingredients
+    - button "Explore More Ingredients"
+- contentinfo:
+  - heading "La Belle Vie" [level=3]
+  - paragraph: Premium fiber supplements for optimal health and wellness.
+  - link "Facebook":
+    - /url: "#"
+  - link "Instagram":
+    - /url: "#"
+  - link "Twitter":
+    - /url: "#"
+  - heading "Products" [level=3]
+  - list:
+    - listitem:
+      - link "Total Essential":
+        - /url: /products
+    - listitem:
+      - link "Total Essential Plus":
+        - /url: /products
+    - listitem:
+      - link "Special Bundles":
+        - /url: /products
+    - listitem:
+      - link "Subscription Plans":
+        - /url: /products
+  - heading "Resources" [level=3]
+  - list:
+    - listitem:
+      - link "FAQ":
+        - /url: /faq
+    - listitem:
+      - link "Testimonials":
+        - /url: /testimonials
+  - heading "Company" [level=3]
+  - list
+  - paragraph: © 2025 La Belle Vie. All rights reserved.
+- region "Notifications (F8)":
+  - list
+```

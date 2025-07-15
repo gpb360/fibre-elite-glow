@@ -69,6 +69,9 @@ export function Header() {
           <Link href="/faq" className="text-sm font-semibold text-gray-700 transition-colors hover:text-green-600">
             FAQ
           </Link>
+          <Link href="/contact" className="text-sm font-semibold text-gray-700 transition-colors hover:text-green-600">
+            Contact
+          </Link>
         </nav>
         
         {/* Mobile menu button */}
@@ -172,6 +175,13 @@ export function Header() {
               onClick={() => setIsMenuOpen(false)}
             >
               FAQ
+            </Link>
+            <Link
+              href="/contact"
+              className="block py-2 text-base font-medium hover:text-gray-200"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Contact
             </Link>
             <div className="mt-4 flex items-center gap-4">
               <Link href="/cart" className="relative hover:text-gray-200 transition-colors">

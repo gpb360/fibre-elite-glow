@@ -1,0 +1,311 @@
+# Page snapshot
+
+```yaml
+- banner:
+  - link "La Belle Vie":
+    - /url: /
+  - navigation:
+    - link "Home":
+      - /url: /
+    - button "Products":
+      - text: Products
+      - img
+    - link "Benefits":
+      - /url: /benefits
+    - link "Testimonials":
+      - /url: /testimonials
+    - link "FAQ":
+      - /url: /faq
+  - button "Open main menu"
+  - link:
+    - /url: /cart
+    - img
+- main:
+  - paragraph: Natural Balance for Daily Wellness
+  - heading "Restore Your Body's Natural Rhythm" [level=1]
+  - paragraph: Our plant-based fiber blend supports your body's natural rhythm
+  - link "Total Essential":
+    - /url: /products/total-essential
+  - link "Total Essential Plus":
+    - /url: /products/total-essential-plus
+  - img
+  - text: Non-GMO Ingredients
+  - img
+  - text: Gluten Free
+  - img
+  - text: 100% Natural
+  - heading "Natural Balance for Daily Wellness" [level=2]
+  - paragraph: Our plant-based fiber blend supports your body's natural rhythm
+  - img
+  - heading "Natural Ingredients" [level=4]
+  - paragraph: Whole-fruit and vegetable fibers in every sachet
+  - img
+  - heading "Gentle Regularity" [level=4]
+  - paragraph: Promotes comfortable, predictable digestion.
+  - img
+  - heading "Sustained Vitality" [level=4]
+  - paragraph: Feel lighter and energized throughout your day.
+  - img
+  - heading "Everyday Defense" [level=4]
+  - paragraph: Antioxidant-rich fibers to support overall wellness.
+  - img
+  - heading "Satisfying Fullness" [level=4]
+  - paragraph: Fiber helps curb cravings between meals
+  - img
+  - heading "Effortless Routine" [level=4]
+  - paragraph: Single-serve sachets fit seamlessly into busy mornings
+  - paragraph: "\"Crafted to harmonize with your body, our blend delivers nourishment you can feel—naturally.\""
+  - heading "Our Fiber Blend Collection" [level=2]
+  - paragraph: Choose the perfect natural fiber blend for your daily wellness routine
+  - text: Best Seller
+  - img "Total Essential"
+  - heading "Total Essential" [level=3]
+  - paragraph: PREMIUM DAILY FIBER BLEND – Crafted from 100% fruit & vegetable fibers for gentle, natural regularity. 15 sachets per box.
+  - text: $79.99$89.99
+  - button "Add to Cart"
+  - text: New
+  - img "Total Essential Plus"
+  - heading "Total Essential Plus" [level=3]
+  - paragraph: ADVANCED DAILY FIBER BLEND – Enhanced with super-fruits for added antioxidants and a vibrant glow. 15 sachets per box.
+  - text: $84.99$94.99
+  - button "Add to Cart"
+  - link "View Packages":
+    - /url: /products/total-essential
+    - button "View Packages"
+  - link "View Packages":
+    - /url: /products/total-essential-plus
+    - button "View Packages"
+  - heading "Compare Our Products" [level=3]
+  - table:
+    - rowgroup:
+      - row "Feature Total Essential Total Essential Plus":
+        - cell "Feature"
+        - cell "Total Essential"
+        - cell "Total Essential Plus"
+    - rowgroup:
+      - row "Servings 15 sachets 15 sachets":
+        - cell "Servings"
+        - cell "15 sachets"
+        - cell "15 sachets"
+      - row "Fruits & Vegetables 14 varieties 18 varieties":
+        - cell "Fruits & Vegetables"
+        - cell "14 varieties"
+        - cell "18 varieties"
+      - row "Superfruits (Acai, Strawberry, etc.)":
+        - cell "Superfruits (Acai, Strawberry, etc.)"
+        - cell:
+          - img
+        - cell:
+          - img
+      - row "Prebiotics (Oligosaccharides)":
+        - cell "Prebiotics (Oligosaccharides)"
+        - cell:
+          - img
+        - cell:
+          - img
+      - row "Gluten Free":
+        - cell "Gluten Free"
+        - cell:
+          - img
+        - cell:
+          - img
+  - heading "Transform Your Health with Natural Fiber" [level=2]
+  - paragraph: Our premium vegetable and fruit fiber drink is designed to support your digestive health, boost your immunity, and help you maintain optimal wellness.
+  - list:
+    - listitem:
+      - img
+      - text: Supports healthy digestion
+    - listitem:
+      - img
+      - text: Boosts immunity naturally
+    - listitem:
+      - img
+      - text: Helps with weight management
+    - listitem:
+      - img
+      - text: Provides essential nutrients
+  - link "Explore Products":
+    - /url: /products
+    - button "Explore Products"
+  - img "Bottle with fruits and vegetables"
+  - heading "Perfect for the Whole Family" [level=2]
+  - paragraph: From children to adults, our delicious fiber drink is suitable for everyone. Easy to prepare and enjoy daily for ongoing health benefits.
+  - list:
+    - listitem:
+      - img
+      - text: Kid-friendly taste
+    - listitem:
+      - img
+      - text: No artificial additives
+    - listitem:
+      - img
+      - text: Quick and easy preparation
+    - listitem:
+      - img
+      - text: Healthy daily routine
+  - link "View Testimonials":
+    - /url: /testimonials
+    - button "View Testimonials"
+  - img "Child drinking healthy juice"
+  - heading "Your Wellness Journey Starts Here" [level=2]
+  - paragraph: Integrate our premium fiber supplement into your wellness routine for long-term health benefits. Just one serving daily makes a remarkable difference.
+  - list:
+    - listitem:
+      - img
+      - text: Complements active lifestyles
+    - listitem:
+      - img
+      - text: Enhances physical wellbeing
+    - listitem:
+      - img
+      - text: Sustainable health benefits
+    - listitem:
+      - img
+      - text: Feel the difference in days
+  - link "Start Your Journey":
+    - /url: /products
+    - button "Start Your Journey"
+  - img "Woman in yoga pose with product"
+  - heading "What Our Customers Say" [level=2]
+  - paragraph: Join thousands of satisfied customers who have transformed their health with Total Essential.
+  - img
+  - img
+  - img
+  - img
+  - img
+  - paragraph: I cannot believe how great Total Essential is working for me. (After some bad accidents and many broken bones, I was left severely constipated much of the time while healing) I endured 6 years of Dr’s prescriptions that did not work. Imagine the relief I am finally experiencing. Thank you!!!
+  - paragraph: G Normandeau
+  - paragraph: Nova Scotia
+  - img
+  - img
+  - img
+  - img
+  - img
+  - paragraph: I absolutely love the 15 Day Detox Program. Every time I have completed the 15 days, my family usually makes a comment about how good I look and how clear my complexion is. This is just a bonus, because I started using Total Cleansing (Total Essential) to rid my body of toxins in a natural, safe way I must say, I notice a difference after the first day, so you can imagine how good I feel after 15 days! Thank you for all your help.
+  - paragraph: J Lemay
+  - paragraph: Kelowna BC
+  - img
+  - img
+  - img
+  - img
+  - img
+  - paragraph: The Total Cleansing (Total Essential) 15 Day Detox Program is simply wonderful. It tastes great, is easy to take and works as promised. I have been taking this cleanse at least twice per year and am pleased every time. I have more energy and feel healthier, thank you La Belle Vie!
+  - paragraph: R Nunnikhoven
+  - paragraph: Maple Ridge BC
+  - img
+  - img
+  - img
+  - img
+  - img
+  - paragraph: I have been using the Total Cleansing (Total Essential) Detox program for about 2 years now. It has been life changing for me, I have troubles with my digestive system from working shift work as a nurse. After taking the Total Cleansing (Total Essential) detox I was able to be regular, gain extra energy and feel really great about myself. It also takes care of water retention and helped lose a few pounds, and totally cleared my skin. I now take the Total Cleansing (Total Essential) Detox every 6 months and feel absolutely great!! I have recommended it to my friends, co-workers and family!
+  - paragraph: J Neels
+  - paragraph: Chilliwack BC
+  - img
+  - img
+  - img
+  - img
+  - img
+  - paragraph: I had always wanted to try a cleanse because I had heard of people getting such great results. My problem was I struggled with the strict diet many cleanses require you to stick to. At the women’s show in Calgary there was a booth for La Belle Vie cleanse products. After having a lengthy discussion with the lady running it, I decided to give it a try. I liked the fact that you didn’t have to alter your diet and that it was an all natural product. After the 15-days, I had never felt better! I didn’t crave fatty, greasy foods anymore, my stomach didn’t feel so bloated, and I just felt better overall. I recommend this product to everyone because I truly believe in it! I continue to do the cleanse on a regular basis with the same results!
+  - paragraph: L Dunn
+  - paragraph: Calgary AB
+  - img
+  - img
+  - img
+  - img
+  - img
+  - paragraph: I looked into your product at a Spring Women’s show in Calgary. I have had serious constipation problems since 1998 with mild problems prior to that. As cleansing and fibre products are always what is recommended for all, and in particular for my particular concern…I have tried cleansing kits, clay products, every different type of fibre supplement, teas, colonics, enzymes, probiotic type products, senna products, lots of water and prescription products etc. some things helped only a little… but a lot of the fibre products would just pack the fibre in deeper into my intestines as I do not have good peristalsis in my gut. I have had serious bleeding, bloating, bulging belly, leaky gut…on and on. From the very first night I took your product, my intestines easily and effortlessly eliminated stool that I know has been buried deep. The size of the stool has gone from a very painful short straw width to a very effortless normal size stool. I and my intestines are very grateful. Thank you.
+  - paragraph: C Yuzwak
+  - paragraph: Calgary AB
+  - img
+  - img
+  - img
+  - img
+  - img
+  - paragraph: I first started using the La Belle Vie Total Cleansing (Total Essential) and Total Vitality products in my mid-20’s, and within the 10 month, I lost 10 pounds (without other dieting efforts except consuming less carbohydrates at dinner time)! Since then I kept using the Total Cleansing (Total Essential) product, and occasionally the Total Vitality product, and I kept my weight off. I have been a chubby girl all my life and these were the only products that helped me lose the weight. As a migraine sufferer, I get headaches whenever I have bowel irregularity. The Total Cleansing (Total Essential) product has helped me to eliminate this problem and as a result, I have way less bowel-movement related headache attacks. I have since then recommended this product to a few of my friends that were around my age, and my dad, who is in his mid-70’s now, and all of them have seen significant improvement in their bowel problems. A few of my friends have also used Total Cleansing (Total Essential) and Total Vitality in combination, and they have also achieve satisfying weight loss results. I recommend the Total Cleansing (Total Essential) to anyone who would like to improve their regularity, and for those of you who need to loose a few extra pounds, try the Total Vitality product and you might be amazed at the results!
+  - paragraph: M. Ho
+  - paragraph: Richmond BC
+  - heading "Trusted By Health Experts Worldwide" [level=3]
+  - img
+  - text: HealthDaily
+  - img
+  - text: NutriNews
+  - img
+  - text: MedPlus
+  - img
+  - text: FitBoost
+  - heading "Frequently Asked Questions" [level=2]
+  - paragraph: Find answers to common questions about our products and services.
+  - heading "What is Total Essential?" [level=3]:
+    - button "What is Total Essential?":
+      - text: What is Total Essential?
+      - img
+  - heading "How do I use Total Essential?" [level=3]:
+    - button "How do I use Total Essential?":
+      - text: How do I use Total Essential?
+      - img
+  - heading "What's the difference between Total Essential and Total Essentiel Plus?" [level=3]:
+    - button "What's the difference between Total Essential and Total Essentiel Plus?":
+      - text: What's the difference between Total Essential and Total Essentiel Plus?
+      - img
+  - heading "Is Total Essential suitable for children?" [level=3]:
+    - button "Is Total Essential suitable for children?":
+      - text: Is Total Essential suitable for children?
+      - img
+  - heading "Are there any side effects?" [level=3]:
+    - button "Are there any side effects?":
+      - text: Are there any side effects?
+      - img
+  - heading "How quickly will I see results?" [level=3]:
+    - button "How quickly will I see results?":
+      - text: How quickly will I see results?
+      - img
+  - heading "Transform Your Health Today" [level=2]
+  - paragraph: Join thousands of satisfied customers who have discovered the power of Total Essential.
+  - link "Total Essential":
+    - /url: /products/total-essential
+  - link "Total Essential Plus":
+    - /url: /products/total-essential-plus
+  - paragraph: "*Free shipping on orders over $50. 30-day money-back guarantee."
+  - img
+  - img
+  - img
+  - img
+  - img
+  - paragraph: 4.9/5 from over 2,000 reviews
+- contentinfo:
+  - heading "La Belle Vie" [level=3]
+  - paragraph: Premium fiber supplements for optimal health and wellness.
+  - link "Facebook":
+    - /url: "#"
+  - link "Instagram":
+    - /url: "#"
+  - link "Twitter":
+    - /url: "#"
+  - heading "Products" [level=3]
+  - list:
+    - listitem:
+      - link "Total Essential":
+        - /url: /products
+    - listitem:
+      - link "Total Essential Plus":
+        - /url: /products
+    - listitem:
+      - link "Special Bundles":
+        - /url: /products
+    - listitem:
+      - link "Subscription Plans":
+        - /url: /products
+  - heading "Resources" [level=3]
+  - list:
+    - listitem:
+      - link "FAQ":
+        - /url: /faq
+    - listitem:
+      - link "Testimonials":
+        - /url: /testimonials
+  - heading "Company" [level=3]
+  - list
+  - paragraph: © 2025 La Belle Vie. All rights reserved.
+- region "Notifications (F8)":
+  - list
+```

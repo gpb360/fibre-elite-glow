@@ -15,6 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/benefits',
     '/testimonials',
     '/faq',
+    '/contact',
     '/cart',
     '/checkout',
   ].map((route) => ({
