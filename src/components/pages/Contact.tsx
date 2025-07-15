@@ -88,7 +88,7 @@ export default function Contact() {
                     </div>
                     <div>
                       <p className="text-sm font-medium text-gray-900">Email</p>
-                      <p className="text-sm text-gray-600">support@lbve.ca</p>
+                      <p className="text-sm text-gray-600">admin@lbve.ca</p>
                     </div>
                   </div>
                   
@@ -98,7 +98,10 @@ export default function Contact() {
                     </div>
                     <div>
                       <p className="text-sm font-medium text-gray-900">Phone</p>
-                      <p className="text-sm text-gray-600">1-800-555-FIBER (3423)</p>
+                      <p className="text-sm text-gray-600">
+                        Toll Free: 1-888-661-9886<br />
+                        Local: 604-961-6231
+                      </p>
                     </div>
                   </div>
                   
@@ -115,6 +118,32 @@ export default function Contact() {
                 </div>
               </div>
 
+              <div>
+                <h2 className="text-2xl font-semibold text-gray-900 mb-6">Wholesale Contacts</h2>
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="flex-shrink-0">
+                      <Phone className="h-6 w-6 text-green-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">Preet Minhas</p>
+                      <p className="text-sm text-gray-600">604-583-5460</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center space-x-4">
+                    <div className="flex-shrink-0">
+                      <Phone className="h-6 w-6 text-green-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">Caterina Chu</p>
+                      <p className="text-sm text-gray-600">604-771-1668</p>
+                      <p className="text-xs text-gray-500">(Cantonese and Mandarin)</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
@@ -124,9 +153,9 @@ export default function Contact() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-gray-600">
-                    La Belle Vie Wellness<br />
-                    123 Health Street<br />
-                    Toronto, ON M5V 1J1<br />
+                    La Belle Vie Enterprises Ltd.<br />
+                    Unit #160B – 2471 Simpson Road<br />
+                    Richmond, BC V6X 2R2<br />
                     Canada
                   </p>
                 </CardContent>
