@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ThemeProvider } from "next-themes"
 import { useState } from "react"
+import { AuthProvider } from "@/contexts/AuthContext"
 
 export function ReactQueryProvider({
   children,
@@ -30,9 +31,11 @@ export function Providers({
       enableSystem={false}
       disableTransitionOnChange
     >
-      <ReactQueryProvider>
-        {children}
-      </ReactQueryProvider>
+      <AuthProvider>
+        <ReactQueryProvider>
+          {children}
+        </ReactQueryProvider>
+      </AuthProvider>
     </ThemeProvider>
   )
 }
