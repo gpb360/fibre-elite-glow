@@ -13,6 +13,73 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { usePackages, Package } from '@/hooks/usePackages';
 import { useCart } from '@/contexts/CartContext';
+import { ProductTestimonials, ProductTestimonial } from '@/components/ui/product-testimonials';
+
+const totalEssentialPlusTestimonials: ProductTestimonial[] = [
+  {
+    id: '1',
+    name: 'Jasmine',
+    rating: 5,
+    text: 'Tasty and effective, my kids love it too.',
+    verified: true
+  },
+  {
+    id: '2',
+    name: 'Yoki',
+    rating: 5,
+    text: 'Good during pregnancy to ease constipation.',
+    verified: true
+  },
+  {
+    id: '3',
+    name: 'Casandra',
+    rating: 5,
+    text: 'Helps get enough daily dietary fiber.',
+    verified: true
+  },
+  {
+    id: '4',
+    name: 'Sherry',
+    rating: 5,
+    text: 'Helped reduce stress-related pimples.',
+    verified: true
+  },
+  {
+    id: '5',
+    name: 'Phoebe',
+    rating: 5,
+    text: 'Amazing results, noticed changes by 5th drink.',
+    verified: true
+  },
+  {
+    id: '6',
+    name: 'Santos',
+    rating: 5,
+    text: 'Improved regularity, highly recommended.',
+    verified: true
+  },
+  {
+    id: '7',
+    name: 'Coey',
+    rating: 5,
+    text: 'Best drink for detox, felt lighter with healthier skin.',
+    verified: true
+  },
+  {
+    id: '8',
+    name: 'J Lemay',
+    location: 'Kelowna, BC',
+    rating: 5,
+    text: 'I absolutely love the 15 Day Detox Program. Every time I have completed the 15 days, my family usually makes a comment about how good I look and how clear my complexion is.'
+  },
+  {
+    id: '9',
+    name: 'L Dunn',
+    location: 'Calgary, AB',
+    rating: 5,
+    text: 'After the 15-days, I had never felt better! I didn\'t crave fatty, greasy foods anymore, my stomach didn\'t feel so bloated, and I just felt better overall.'
+  }
+];
 
 export function ProductEssentialPlus() {
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
@@ -591,6 +658,13 @@ export function ProductEssentialPlus() {
                 </Button>
               </Link>
             </div>
+          </div>
+        </section>
+
+        {/* Testimonials Section */}
+        <section className="py-16">
+          <div className="container px-4 md:px-6">
+            <ProductTestimonials testimonials={totalEssentialPlusTestimonials} />
           </div>
         </section>
 

@@ -95,22 +95,21 @@ export function Footer() {
                   Contact Us
                 </Link>
               </li>
-              {/* TODO: Create pages for privacy, terms, shipping before re-enabling */}
-              {/* <li>
+              <li>
+                <Link href="/about" className="text-sm text-gray-600 hover:text-green-600 transition-colors">
+                  About Us
+                </Link>
+              </li>
+              <li>
                 <Link href="/privacy" className="text-sm text-gray-600 hover:text-green-600 transition-colors">
                   Privacy Policy
                 </Link>
               </li>
               <li>
                 <Link href="/terms" className="text-sm text-gray-600 hover:text-green-600 transition-colors">
-                  Terms of Service
+                  Terms & Conditions
                 </Link>
               </li>
-              <li>
-                <Link href="/shipping" className="text-sm text-gray-600 hover:text-green-600 transition-colors">
-                  Shipping Information
-                </Link>
-              </li> */}
             </ul>
           </div>
         </div>
@@ -122,16 +121,12 @@ export function Footer() {
             </p>
 
             <div className="flex items-center space-x-8">
-              {/* TODO: Re-enable legal links once pages exist */}
-              {/* <Link href="/privacy" className="text-sm text-gray-500 hover:text-green-600 transition-colors">
+              <Link href="/privacy" className="text-sm text-gray-500 hover:text-green-600 transition-colors">
                 Privacy Policy
               </Link>
               <Link href="/terms" className="text-sm text-gray-500 hover:text-green-600 transition-colors">
                 Terms of Service
               </Link>
-              <Link href="/cookies" className="text-sm text-gray-500 hover:text-green-600 transition-colors">
-                Cookie Policy
-              </Link> */}
             </div>
           </div>
         </div>
