@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -96,11 +97,14 @@ const Cart = () => {
                         className="flex items-center gap-4 p-4 border rounded-lg bg-white"
                       >
                         {/* Product Image */}
-                        <div className="flex-shrink-0">
-                          <img
+                        <div className="flex-shrink-0 relative">
+                          <Image
                             src={item.image || '/placeholder.svg'}
                             alt={item.productName}
-                            className="h-20 w-20 rounded-lg object-cover"
+                            width={80}
+                            height={80}
+                            className="rounded-lg object-cover"
+                            sizes="80px"
                           />
                         </div>
 

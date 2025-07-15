@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Heading } from '@/components/ui/heading';
@@ -101,15 +102,19 @@ const CranberryHero = () => (
           </motion.div>
         </div>
         <motion.div 
-          className="mx-auto flex items-center justify-center" 
+          className="mx-auto flex items-center justify-center relative" 
           initial={{ opacity: 0, scale: 0.9 }} 
           animate={{ opacity: 1, scale: 1 }} 
           transition={{ duration: 0.7 }}
         >
-          <img 
+          <Image 
             src="/assets/16x9_a_close_up_shot_cranberry_.png" 
-            alt="Cranberry" 
+            alt="Fresh cranberries close-up showing their natural vibrant red color and texture" 
+            width={700}
+            height={400}
             className="rounded-lg shadow-xl"
+            priority={true}
+            sizes="(max-width: 768px) 100vw, 700px"
           />
         </motion.div>
       </div>

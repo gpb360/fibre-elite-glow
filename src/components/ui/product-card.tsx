@@ -2,6 +2,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useCart } from '@/contexts/CartContext';
@@ -75,11 +76,14 @@ export function ProductCard({
           {badge}
         </div>
       )}
-      <div className="aspect-square overflow-hidden">
-        <img
+      <div className="aspect-square overflow-hidden relative">
+        <Image
           src={image}
           alt={title}
-          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          fill
+          className="object-cover transition-transform duration-300 group-hover:scale-105"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          priority={false}
         />
       </div>
       <div className="p-6">
