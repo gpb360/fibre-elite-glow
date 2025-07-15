@@ -14,7 +14,10 @@
     "validate:env": "node scripts/validate-environment.js",
     "verify:db": "node scripts/verify-database-schema.js",
     "db:migrate": "node scripts/migrate-database.js",
-    "validate:test-data": "node scripts/validate-test-data.js"
+    "validate:test-data": "node scripts/validate-test-data.js",
+    "perf:audit": "node scripts/performance-audit.js",
+    "perf:build": "npm run build && npm run perf:audit",
+    "analyze": "cross-env ANALYZE=true npm run build"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -76,6 +79,7 @@
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.3",
+    "web-vitals": "^5.0.3",
     "zod": "^3.23.8"
   },
   "devDependencies": {

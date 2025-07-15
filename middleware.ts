@@ -58,7 +58,7 @@ export function middleware(request: NextRequest) {
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   response.headers.set(
     'Content-Security-Policy',
-    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.stripe.com; connect-src 'self' https://*.supabase.co https://api.stripe.com; frame-src https://js.stripe.com https://hooks.stripe.com;"
+    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://app.netlify.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.stripe.com https://app.netlify.com; connect-src 'self' https://*.supabase.co https://api.stripe.com https://app.netlify.com; frame-src https://js.stripe.com https://hooks.stripe.com https://app.netlify.com;"
   );
   
   // Return the response with added headers
