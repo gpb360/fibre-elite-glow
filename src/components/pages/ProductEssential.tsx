@@ -14,6 +14,52 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { usePackages, Package } from '@/hooks/usePackages';
 import { useCart } from '@/contexts/CartContext';
+import { ProductTestimonials, ProductTestimonial } from '@/components/ui/product-testimonials';
+
+const totalEssentialTestimonials: ProductTestimonial[] = [
+  {
+    id: '1',
+    name: 'Celine C',
+    rating: 5,
+    text: 'I simply love this product... I took it at night before I go to bed and when I woke up, I got the best release ever.',
+    verified: true
+  },
+  {
+    id: '2',
+    name: 'Nina',
+    rating: 5,
+    text: 'I have used 5 days only and can feel the result of losing weight',
+    verified: true
+  },
+  {
+    id: '3',
+    name: 'Jamie',
+    rating: 5,
+    text: 'I used to feel so bloated after a long flight... after taking this product, it\'s totally changed my life',
+    verified: true
+  },
+  {
+    id: '4',
+    name: 'G Normandeau',
+    location: 'Nova Scotia',
+    rating: 5,
+    text: 'I cannot believe how great Total Essential is working for me... I endured 6 years of Dr\'s prescriptions that did not work. Imagine the relief I am finally experiencing.'
+  },
+  {
+    id: '5',
+    name: 'R Nunnikhoven',
+    location: 'Maple Ridge, BC',
+    rating: 5,
+    text: 'The Total Cleansing (Total Essential) 15 Day Detox Program is simply wonderful. It tastes great, is easy to take and works as promised.'
+  },
+  {
+    id: '6',
+    name: 'J Neels',
+    location: 'Chilliwack, BC',
+    rating: 5,
+    text: 'I have been using the Total Cleansing (Total Essential) Detox program for about 2 years now. It has been life changing for me... After taking the detox I was able to be regular, gain extra energy and feel really great.'
+  }
+];
 
 export function ProductEssential() {
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
@@ -524,6 +570,13 @@ export function ProductEssential() {
             </p>
           </div>
         </SplitSection>
+
+        {/* Testimonials Section */}
+        <section className="py-16">
+          <div className="container px-4 md:px-6">
+            <ProductTestimonials testimonials={totalEssentialTestimonials} />
+          </div>
+        </section>
 
         {/* FAQ Section */}
         <FaqSection faqs={faqData} />
