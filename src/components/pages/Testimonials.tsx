@@ -3,6 +3,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Heading } from '@/components/ui/heading';
@@ -171,10 +172,12 @@ const Testimonials = () => {
                 >
                   <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group">
                     <div className="relative">
-                      <img
+                      <Image
                         src={video.thumbnail}
                         alt={video.title}
                         className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                        width={400}
+                        height={192}
                       />
                       <div className="absolute inset-0 bg-black/20 flex items-center justify-center group-hover:bg-black/30 transition-colors">
                         <div className="bg-white/90 rounded-full p-3 group-hover:scale-110 transition-transform">

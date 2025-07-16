@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -277,10 +278,12 @@ const OrderHistory: React.FC = () => {
                       <div key={item.id} className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
                           {item.product_image_url && (
-                            <img
+                            <Image
                               src={item.product_image_url}
                               alt={item.product_name}
                               className="h-10 w-10 rounded-md object-cover"
+                              width={40}
+                              height={40}
                             />
                           )}
                           <div>

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/lovable-uploads/27ca3fa0-24aa-479b-b075-3f11006467c5.png',
+        url: '/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp',
         width: 1200,
         height: 630,
         alt: 'Total Essential Premium Fiber Collection'
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Premium Fiber Supplements | Total Essential Collection',
     description: 'Choose the perfect natural fiber blend for your daily wellness routine.',
-    images: ['/lovable-uploads/27ca3fa0-24aa-479b-b075-3f11006467c5.png']
+    images: ['/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp']
   }
 };
 import { ProductCard } from '@/components/ui/product-card';
@@ -49,7 +49,7 @@ const ProductsPage = () => {
             <div className="grid gap-8 md:grid-cols-2 lg:gap-12 max-w-5xl mx-auto">
               <ProductCard
                 variant="green"
-                image="/lovable-uploads/27ca3fa0-24aa-479b-b075-3f11006467c5.png"
+                image="/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp"
                 title="Total Essential"
                 price="$79.99"
                 description="PREMIUM DAILY FIBER BLEND – Crafted from 100% fruit & vegetable fibers for gentle, natural regularity. 15 sachets per box."
@@ -62,7 +62,7 @@ const ProductsPage = () => {
 
               <ProductCard
                 variant="purple"
-                image="/lovable-uploads/5f8f72e3-397f-47a4-8bce-f15924c32a34.png"
+                image="/lovable-uploads/webp/5f8f72e3-397f-47a4-8bce-f15924c32a34.webp"
                 title="Total Essential Plus"
                 price="$84.99"
                 description="ADVANCED DAILY FIBER BLEND – Enhanced with super-fruits for added antioxidants and a vibrant glow. 15 sachets per box."

@@ -42,7 +42,7 @@ const DetoxifyingBroccoliExtractHero = () => (
     <div 
       className="absolute inset-0 z-0 bg-cover bg-center opacity-20" 
       style={{ 
-        backgroundImage: `url('/assets/16x9_broccoli_extract.png')`,
+        backgroundImage: `url('/assets/webp/16x9_broccoli_extract.webp')`,
         width: '100%'
       }}
     />

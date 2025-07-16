@@ -56,6 +56,19 @@ export function middleware(request: NextRequest) {
   response.headers.set('X-Frame-Options', 'DENY');
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  
+  // Add performance headers
+  response.headers.set('X-DNS-Prefetch-Control', 'on');
+  response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  
+  // Add caching headers for static assets
+  if (pathname.match(/\.(jpg|jpeg|png|gif|ico|svg|webp|js|css|woff|woff2|ttf|eot)$/)) {
+    response.headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+  } else if (pathname.startsWith('/api/')) {
+    response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+  } else {
+    response.headers.set('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400');
+  }
   response.headers.set(
     'Content-Security-Policy',
     "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://app.netlify.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.stripe.com https://app.netlify.com; connect-src 'self' https://*.supabase.co https://api.stripe.com https://app.netlify.com; frame-src https://js.stripe.com https://hooks.stripe.com https://app.netlify.com;"

@@ -90,7 +90,7 @@ export function ProductEssential() {
         price: selectedPackage.price,
         originalPrice: selectedPackage.original_price || undefined,
         savings: selectedPackage.savings || undefined,
-        image: '/lovable-uploads/27ca3fa0-24aa-479b-b075-3f11006467c5.png',
+        image: '/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp',
         packageSize: `${selectedPackage.quantity} box${selectedPackage.quantity > 1 ? 'es' : ''} (${selectedPackage.quantity * 15} sachets)`,
       });
 
@@ -293,7 +293,7 @@ export function ProductEssential() {
 
         {/* Ingredients Section */}
         <SplitSection
-          image="/lovable-uploads/6903ac0b-0e52-4260-bda8-07f24ce86b9a.png"
+          image="/lovable-uploads/webp/6903ac0b-0e52-4260-bda8-07f24ce86b9a.webp"
           imageAlt="Total Essential Ingredients"
           title="Premium Natural Ingredients"
           description="Every ingredient in Total Essential is carefully sourced from certified suppliers worldwide and meets the highest quality standards. All components are verified non-GMO (non-genetically modified organism) and certified Gluten-Free, ensuring purity and safety for daily consumption."
@@ -521,7 +521,7 @@ export function ProductEssential() {
 
         {/* How to Use Section */}
         <SplitSection
-          image="/lovable-uploads/a9768c7e-625a-4016-8baa-79cea10189ac.png"
+          image="/lovable-uploads/webp/a9768c7e-625a-4016-8baa-79cea10189ac.webp"
           imageAlt="How to use Total Essential"
           title="Simple Daily Protocol"
           description="Total Essential is designed for effortless integration into your daily wellness routine with maximum convenience and effectiveness."

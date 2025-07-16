@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -304,10 +305,12 @@ export default function OrderDetailsPage({ orderId }: OrderDetailsPageProps) {
                     {order.order_items.map((item) => (
                       <div key={item.id} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
                         {item.product_image_url && (
-                          <img
+                          <Image
                             src={item.product_image_url}
                             alt={item.product_name}
                             className="h-16 w-16 rounded-lg object-cover"
+                            width={64}
+                            height={64}
                           />
                         )}
                         <div className="flex-1">

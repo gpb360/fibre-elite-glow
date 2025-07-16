@@ -246,7 +246,7 @@ export function VideoTestingDashboard() {
             <div className="max-w-2xl mx-auto">
               <VideoPlayer
                 src={selectedVideo}
-                poster="/lovable-uploads/27ca3fa0-24aa-479b-b075-3f11006467c5.png"
+                poster="/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp"
                 showCustomControls={true}
                 aspectRatio="video"
                 className="w-full"
