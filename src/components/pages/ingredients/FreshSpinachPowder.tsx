@@ -10,6 +10,7 @@ import { motion } from 'framer-motion';
 import { Heart, Shield, Leaf, ArrowRight, Microscope, BarChart3, Droplets, Brain, Check, Zap, Flame } from 'lucide-react';
 import Link from 'next/link';
 import Head from 'next/head';
+import Image from 'next/image';
 
 // Schema.org JSON-LD structured data for SEO
 const IngredientSchema = () => {
@@ -106,12 +107,14 @@ const FreshSpinachPowderHero = () => (
           animate={{ opacity: 1, scale: 1 }} 
           transition={{ duration: 0.7 }}
         >
-          <img 
-            src="/assets/16x9_a_bowl_filled_with_green_spinach.png"
-            alt="Fresh Spinach Powder" 
+          <Image 
+            src="/assets/webp/16x9_a_bowl_filled_with_green_spinach.webp"
+            alt="Fresh Spinach Powder - Nutrient-dense green superfood for daily wellness" 
             className="rounded-lg shadow-xl"
-            width={600}
-            height={400}
+            width={1280}
+            height={720}
+            priority
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
           />
         </motion.div>
       </div>
