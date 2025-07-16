@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -296,10 +297,12 @@ export default function SubscriptionManagement() {
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center space-x-4">
                   {subscription.product_image_url && (
-                    <img
+                    <Image
                       src={subscription.product_image_url}
                       alt={subscription.product_name}
                       className="h-16 w-16 rounded-lg object-cover"
+                      width={64}
+                      height={64}
                     />
                   )}
                   <div>

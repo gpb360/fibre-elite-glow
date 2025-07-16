@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -105,10 +106,11 @@ export function HeroVideo({
         className
       )}>
         {poster ? (
-          <img
+          <Image
             src={poster}
-            alt="Video fallback"
+            alt="Video fallback poster image"
             className="w-full h-full object-cover"
+            fill
           />
         ) : (
           <div className="text-white text-center">

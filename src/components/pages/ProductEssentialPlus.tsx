@@ -560,7 +560,7 @@ export function ProductEssentialPlus() {
               <footer className="mt-8">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
-                    <img className="h-10 w-10 rounded-full bg-purple-100" src="public/placeholder.svg" alt="" />
+                    <Image className="h-10 w-10 rounded-full bg-purple-100" src="/placeholder.svg" alt="Testimonial avatar" width={40} height={40} />
                   </div>
                   <div className="ml-4">
                     <div className="text-base font-semibold text-gray-900">Tinesja Vanel</div>
