@@ -42,7 +42,7 @@ const BetaGlucanHero = () => (
     <div 
       className="absolute inset-0 z-0 bg-cover bg-center opacity-20" 
       style={{ 
-        backgroundImage: `url('/assets/16x9_A_pile_of_oats_and_oat_straws_ar.png')`,
+        backgroundImage: `url('/assets/webp/16x9_A_pile_of_oats_and_oat_straws_ar.webp')`,
         width: '100%'
       }}
     />

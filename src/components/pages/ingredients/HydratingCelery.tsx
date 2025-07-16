@@ -42,7 +42,7 @@ const HydratingCeleryHero = () => (
     <div 
       className="absolute inset-0 z-0 bg-cover bg-center opacity-20" 
       style={{ 
-        backgroundImage: `url('/assets/16x9_a_celery_plant_with_vibrant_gree.png')`,
+        backgroundImage: `url('/assets/webp/16x9_a_celery_plant_with_vibrant_gree.webp')`,
         width: '100%'
       }}
     />

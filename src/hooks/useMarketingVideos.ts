@@ -25,7 +25,7 @@ const FALLBACK_VIDEOS: MarketingVideo[] = [
     id: 'generic-edit',
     title: 'Main promotional video',
     src: '/videos/marketing/generic-edit.mp4',
-    poster: '/lovable-uploads/27ca3fa0-24aa-479b-b075-3f11006467c5.png',
+    poster: '/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp',
     usage: 'Hero section background/featured video',
     duration: '2:30',
     description: 'Professional promotional video showcasing Total Essential benefits and features'
@@ -34,7 +34,7 @@ const FALLBACK_VIDEOS: MarketingVideo[] = [
     id: 'happy-customers',
     title: 'Customer testimonials',
     src: '/videos/marketing/happy-customers.mp4',
-    poster: '/lovable-uploads/27ca3fa0-24aa-479b-b075-3f11006467c5.png',
+    poster: '/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp',
     usage: 'Testimonials section',
     duration: '1:45',
     description: 'Real customer testimonials and success stories'
@@ -43,7 +43,7 @@ const FALLBACK_VIDEOS: MarketingVideo[] = [
     id: 'ingredients',
     title: 'Product ingredients showcase',
     src: '/videos/marketing/ingredients.mp4',
-    poster: '/lovable-uploads/27ca3fa0-24aa-479b-b075-3f11006467c5.png',
+    poster: '/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp',
     usage: 'Product showcase section',
     duration: '1:20',
     description: 'Detailed showcase of natural ingredients and their benefits'
@@ -52,7 +52,7 @@ const FALLBACK_VIDEOS: MarketingVideo[] = [
     id: 'stylish-result',
     title: 'Results demonstration',
     src: '/videos/marketing/stylish-result.mp4',
-    poster: '/lovable-uploads/27ca3fa0-24aa-479b-b075-3f11006467c5.png',
+    poster: '/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp',
     usage: 'Health section and product showcase',
     duration: '2:00',
     description: 'Visual demonstration of health and wellness results'
@@ -61,7 +61,7 @@ const FALLBACK_VIDEOS: MarketingVideo[] = [
     id: 'open-box-vo',
     title: 'Unboxing with voiceover',
     src: '/videos/marketing/open-box-vo.mp4',
-    poster: '/lovable-uploads/27ca3fa0-24aa-479b-b075-3f11006467c5.png',
+    poster: '/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp',
     usage: 'Product pages',
     duration: '2:15',
     description: 'Professional unboxing experience with detailed product presentation'

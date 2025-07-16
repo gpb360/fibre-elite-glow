@@ -42,7 +42,7 @@ const FreshSpinachPowderHero = () => (
     <div 
       className="absolute inset-0 z-0 bg-cover bg-center opacity-20" 
       style={{ 
-        backgroundImage: `url('/assets/16x9_a_bowl_filled_with_green_spinach.png')`,
+        backgroundImage: `url('/assets/webp/16x9_a_bowl_filled_with_green_spinach.webp')`,
         width: '100%'
       }}
     />

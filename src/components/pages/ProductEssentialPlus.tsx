@@ -110,7 +110,7 @@ export function ProductEssentialPlus() {
         price: selectedPackage.price,
         originalPrice: selectedPackage.original_price || undefined,
         savings: selectedPackage.savings || undefined,
-        image: '/lovable-uploads/5f8f72e3-397f-47a4-8bce-f15924c32a34.png',
+        image: '/lovable-uploads/webp/5f8f72e3-397f-47a4-8bce-f15924c32a34.webp',
         packageSize: `${selectedPackage.quantity} box${selectedPackage.quantity > 1 ? 'es' : ''} (${selectedPackage.quantity * 15} sachets)`,
       });
 
@@ -303,7 +303,7 @@ export function ProductEssentialPlus() {
 
         {/* Ingredients Section */}
         <SplitSection
-          image="/lovable-uploads/d98185ae-142e-45e8-9804-7b3e5aee3680.png"
+          image="/lovable-uploads/webp/d98185ae-142e-45e8-9804-7b3e5aee3680.webp"
           imageAlt="Total Essential Plus Ingredients"
           title="Premium Natural Ingredients Plus Superfruits"
           description="Every ingredient in Total Essential Plus is carefully sourced from certified suppliers worldwide and meets the highest quality standards. All components are verified non-GMO and certified Gluten-Free, with the addition of four potent superfruit extracts for enhanced antioxidant protection and skin health benefits."
@@ -574,7 +574,7 @@ export function ProductEssentialPlus() {
 
         {/* How to Use Section */}
         <SplitSection
-          image="/lovable-uploads/c159fdf8-1fcc-418f-a95b-70543b77a5ae.png"
+          image="/lovable-uploads/webp/c159fdf8-1fcc-418f-a95b-70543b77a5ae.webp"
           imageAlt="How to use Total Essential Plus"
           title="Enhanced Daily Protocol"
           description="Total Essential Plus is designed for effortless integration into your daily beauty and wellness routine with maximum convenience and superior taste experience."
