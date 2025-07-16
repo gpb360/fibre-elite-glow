@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
@@ -10,13 +11,15 @@ export function Hero() {
   return (
     <section className="relative bg-green-50 pt-10 pb-10 md:pt-20 md:pb-20 overflow-hidden">
       {/* Background image for high-end feel */}
-      <div
-      className="absolute inset-0 z-0 bg-cover bg-center opacity-20"
-      style={{
-        backgroundImage: `url('/lovable-uploads/fruit-veg-bottle.png')`,
-        width: '100%'
-      }}
-    />
+      <div className="absolute inset-0 z-0 opacity-20">
+        <Image
+          src="/lovable-uploads/webp/fruit-veg-bottle.webp"
+          alt=""
+          fill
+          className="object-cover"
+          priority={false}
+        />
+      </div>
       <div className="container mx-auto px-4 md:px-6 max-w-6xl">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-20 items-center min-h-[500px]">
           <div className="flex flex-col justify-center space-y-8 text-left">
