@@ -256,7 +256,6 @@ export function ProductEssentialPlus() {
                   height={550}
                   priority
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 550px"
-                  height={550}
                 />
               </motion.div>
             </div>
