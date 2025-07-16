@@ -7,9 +7,16 @@ import { Providers } from './providers'
 import { CartProvider } from '@/contexts/CartContext'
 import { ClientBodyWrapper } from './components/ClientBodyWrapper'
 import GoogleAnalytics from '@/components/analytics/GoogleAnalytics'
+import PerformanceOptimizer from '@/components/performance/PerformanceOptimizer'
+import CriticalCSS from '@/components/performance/CriticalCSS'
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ 
+  subsets: ['latin'],
+  display: 'swap',
+  preload: true,
+  variable: '--font-inter'
+})
 
 export const metadata: Metadata = {
   title: 'Fibre Elite Glow - Premium Gut Health Supplements',
@@ -24,9 +31,14 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <CriticalCSS />
+        <link rel="preload" href="/_next/static/css/app/layout.css" as="style" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <GoogleAnalytics />
       </head>
-      <body suppressHydrationWarning>
+      <body suppressHydrationWarning className={inter.variable}>
+        {/* <PerformanceOptimizer /> */}
         <ClientBodyWrapper fontClassName={inter.className}>
           <Providers>
             <CartProvider>
