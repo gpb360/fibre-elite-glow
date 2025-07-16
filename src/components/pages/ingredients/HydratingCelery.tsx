@@ -10,6 +10,7 @@ import { motion } from 'framer-motion';
 import { Droplets, Flame, Shield, ArrowRight, Microscope, Leaf, BarChart3, Brain, Check, Zap, Heart } from 'lucide-react';
 import Link from 'next/link';
 import Head from 'next/head';
+import Image from 'next/image';
 
 // Schema.org JSON-LD structured data for SEO
 const IngredientSchema = () => {
@@ -106,10 +107,14 @@ const HydratingCeleryHero = () => (
           animate={{ opacity: 1, scale: 1 }} 
           transition={{ duration: 0.7 }}
         >
-          <img 
-            src="/assets/16x9_a_celery_plant_with_vibrant_gree.png" 
-            alt="Hydrating Celery" 
+          <Image 
+            src="/assets/webp/16x9_a_celery_plant_with_vibrant_gree.webp" 
+            alt="Hydrating Celery - Natural electrolyte source for hydration and mineral balance" 
             className="rounded-lg shadow-xl"
+            width={1280}
+            height={720}
+            priority
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
           />
         </motion.div>
       </div>
