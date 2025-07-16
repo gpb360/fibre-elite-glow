@@ -33,6 +33,21 @@ export default function PerformanceOptimizer({
         link.href = route
         document.head.appendChild(link)
       })
+      
+      // Preload critical WebP images
+      const criticalImages = [
+        '/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp',
+        '/lovable-uploads/webp/5f8f72e3-397f-47a4-8bce-f15924c32a34.webp'
+      ]
+      
+      criticalImages.forEach(src => {
+        const link = document.createElement('link')
+        link.rel = 'preload'
+        link.href = src
+        link.as = 'image'
+        link.type = 'image/webp'
+        document.head.appendChild(link)
+      })
     }
 
     // Optimize images by adding intersection observer for lazy loading
@@ -61,6 +76,24 @@ export default function PerformanceOptimizer({
     fontLink.type = 'font/woff2'
     fontLink.crossOrigin = 'anonymous'
     document.head.appendChild(fontLink)
+    
+    // Optimize JavaScript execution
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => {
+        // Defer non-critical JavaScript
+        const scripts = document.querySelectorAll('script[data-defer]')
+        scripts.forEach(script => {
+          const newScript = document.createElement('script')
+          newScript.src = script.getAttribute('data-src') || ''
+          document.head.appendChild(newScript)
+        })
+      })
+    }
+    
+    // Enable service worker for caching
+    if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+      navigator.serviceWorker.register('/sw.js').catch(console.error)
+    }
 
   }, [enableReporting, enablePrefetch])
 

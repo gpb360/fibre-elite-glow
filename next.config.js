@@ -20,7 +20,10 @@ const nextConfig = {
     domains: ['venomappdevelopment.com'],
     formats: ['image/webp', 'image/avif'],
     dangerouslyAllowSVG: true,
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    minimumCacheTTL: 31536000 // 1 year
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
@@ -29,6 +32,10 @@ const nextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   compress: true,
+  generateEtags: true,
+  httpAgentOptions: {
+    keepAlive: true,
+  },
   eslint: {
     ignoreDuringBuilds: true, // Temporarily disable for optimization work
   },
