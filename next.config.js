@@ -29,6 +29,12 @@ const nextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   compress: true,
+  eslint: {
+    ignoreDuringBuilds: false, // Keep ESLint enabled for production
+  },
+  typescript: {
+    ignoreBuildErrors: false,
+  },
   // Minimal webpack config
   webpack: (config, { isServer }) => {
     // Add polyfill for self in server-side rendering

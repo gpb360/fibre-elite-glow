@@ -9,6 +9,7 @@ import { SplitSection } from '@/components/ui/split-section';
 import { PackageSelector } from '@/components/ui/package-selector';
 import { FaqSection } from '@/components/FaqSection';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ExternalLink, Loader2, Check } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
@@ -227,12 +228,14 @@ export function ProductEssential() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
-                <img
-                  alt="Total Essential Product"
+                <Image
+                  alt="Total Essential Product - Complete fiber supplement for digestive health"
                   className="aspect-square overflow-hidden rounded-xl object-cover object-center sm:w-full"
-                  src="/lovable-uploads/27ca3fa0-24aa-479b-b075-3f11006467c5.png"
+                  src="/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp"
                   width={550}
                   height={550}
+                  priority
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 550px"
                 />
               </motion.div>
             </div>
