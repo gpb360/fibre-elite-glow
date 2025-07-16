@@ -10,13 +10,13 @@
 const nextConfig = {
   // Enable `"export"` mode only when STATIC_EXPORT=true is set at build time.
   
-  // Temporarily disable static generation to isolate build issues
-  output: process.env.STATIC_EXPORT === 'true' ? 'export' : undefined,
-
+  // Use standalone output for Netlify deployment
+  output: 'standalone',
+  
   experimental: {
     optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react', '@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-popover', '@radix-ui/react-tooltip'],
-    optimizeCss: true,
-    webpackBuildWorker: true
+    optimizeCss: false,
+    webpackBuildWorker: false
   },
   images: {
     domains: ['venomappdevelopment.com'],
@@ -33,6 +33,17 @@ const nextConfig = {
   compress: true,
   // Improve CSS debugging in development and optimize for production
   webpack: (config, { dev, isServer }) => {
+    // Fix 'self is not defined' error in server-side build
+    if (isServer) {
+      const webpack = require('webpack');
+      config.plugins.push(
+        new webpack.DefinePlugin({
+          'typeof self': JSON.stringify('undefined'),
+          'self': 'undefined'
+        })
+      );
+    }
+
     // Production optimizations
     if (!dev) {
       // Enable webpack optimizations
