@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { buttonVariants } from '@/components/ui/button';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { motion, LazyMotion, domAnimation } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useMarketingVideos } from '@/hooks/useMarketingVideos';
 import { Play, Pause } from 'lucide-react';
 
@@ -28,8 +28,7 @@ export function HeroWithVideo() {
   };
 
   return (
-    <LazyMotion features={domAnimation} strict>
-      <section className="relative overflow-hidden bg-white pt-20 pb-12 md:pt-32 md:pb-20">
+    <section className="relative overflow-hidden bg-white pt-20 pb-12 md:pt-32 md:pb-20">
         {/* Background gradient */}
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#f0fdf4_1px,transparent_1px),linear-gradient(to_bottom,#f0fdf4_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_110%)]"></div>
         
@@ -231,7 +230,6 @@ export function HeroWithVideo() {
         </div>
       </div>
     </section>
-    </LazyMotion>
   );
 }
 
