@@ -10,6 +10,7 @@ import { motion } from 'framer-motion';
 import { Heart, Shield, Award, ArrowRight, Microscope, Leaf, BarChart3, Droplets, Brain, Check } from 'lucide-react';
 import Link from 'next/link';
 import Head from 'next/head';
+import Image from 'next/image';
 
 // Schema.org JSON-LD structured data for SEO
 const IngredientSchema = () => {
@@ -37,13 +38,15 @@ const IngredientSchema = () => {
 
 const SustainablePalmFiberHero = () => (
   <section className="relative overflow-hidden bg-white pt-20 pb-12 md:pt-32 md:pb-20">
-    <div
-      className="absolute inset-0 z-0 bg-cover bg-center opacity-20"
-      style={{
-        backgroundImage: `url('/assets/16x9_A_photorealistic_palme-oil.png')`,
-        width: '100%'
-      }}
-    />
+    <div className="absolute inset-0 z-0 opacity-20">
+      <Image
+        src="/assets/webp/16x9_A_photorealistic_palme-oil.webp"
+        alt=""
+        fill
+        className="object-cover"
+        priority={false}
+      />
+    </div>
     
     <div className="container px-4 md:px-6 relative z-10">
       <div className="grid gap-6 lg:grid-cols-[1fr_600px] lg:gap-12 xl:grid-cols-[1fr_700px]">
@@ -105,10 +108,14 @@ const SustainablePalmFiberHero = () => (
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7 }}
         >
-          <img
-            src="/assets/16x9_A_photorealistic_palme-oil.png"
-            alt="Sustainable Palm Fiber"
+          <Image 
+            src="/assets/webp/16x9_A_photorealistic_palme-oil.webp"
+            alt="Sustainable Palm Fiber - Natural dietary fiber from oil palm trunks for digestive health"
             className="rounded-lg shadow-xl"
+            width={1280}
+            height={720}
+            priority
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
           />
         </motion.div>
       </div>

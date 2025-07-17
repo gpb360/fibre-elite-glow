@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { buttonVariants } from '@/components/ui/button';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -180,13 +181,14 @@ export function HeroWithVideo() {
               ) : (
                 <div className="relative">
                   {/* Main product image */}
-                  <img
-                    alt="Total Essential Product Box"
+                  <Image
+                    alt="Total Essential Product Box - Click to play product video"
                     className="aspect-square rounded-xl object-cover object-center cursor-pointer hover:scale-105 transition-transform duration-300"
-                    src="/lovable-uploads/27ca3fa0-24aa-479b-b075-3f11006467c5.png"
+                    src="/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp"
                     width={600}
                     height={600}
                     onClick={handleVideoToggle}
+                    priority
                   />
                   
                   {/* Play button overlay */}

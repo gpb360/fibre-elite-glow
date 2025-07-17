@@ -1,5 +1,6 @@
 
 import React from 'react';
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
 interface SplitSectionProps {
@@ -44,7 +45,7 @@ export function SplitSection({
             "mx-auto flex items-center justify-center",
             reverse ? "lg:order-first" : ""
           )}>
-            <img
+            <Image
               alt={imageAlt}
               className="aspect-square overflow-hidden rounded-xl object-cover object-center sm:w-full"
               src={image}

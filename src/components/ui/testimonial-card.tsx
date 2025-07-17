@@ -1,5 +1,6 @@
 
 import React from 'react';
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
 interface TestimonialCardProps {
@@ -50,10 +51,12 @@ export function TestimonialCard({
       {/* Author info */}
       <div className="flex items-center">
         {avatar && (
-          <img
+          <Image
             src={avatar}
-            alt={author}
+            alt={`${author} - customer testimonial`}
             className="mr-4 h-12 w-12 rounded-full object-cover"
+            width={48}
+            height={48}
           />
         )}
         <div>

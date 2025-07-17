@@ -20,6 +20,7 @@ interface ProductCardProps {
   productType: 'total_essential' | 'total_essential_plus';
   originalPrice?: string;
   savings?: number;
+  priority?: boolean;
 }
 
 export function ProductCard({
@@ -34,6 +35,7 @@ export function ProductCard({
   productType,
   originalPrice,
   savings,
+  priority = false,
 }: ProductCardProps) {
   const { addToCart, isLoading } = useCart();
   const [isAdding, setIsAdding] = React.useState(false);
@@ -83,7 +85,7 @@ export function ProductCard({
           fill
           className="object-cover transition-transform duration-300 group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          priority={false}
+          priority={priority}
         />
       </div>
       <div className="p-6">

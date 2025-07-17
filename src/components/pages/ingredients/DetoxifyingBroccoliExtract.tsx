@@ -10,6 +10,7 @@ import { motion } from 'framer-motion';
 import { Heart, Shield, Award, ArrowRight, Microscope, Leaf, BarChart3, Droplets, Brain, Check, Zap, Flame } from 'lucide-react';
 import Link from 'next/link';
 import Head from 'next/head';
+import Image from 'next/image';
 
 // Schema.org JSON-LD structured data for SEO
 const IngredientSchema = () => {
@@ -41,7 +42,7 @@ const DetoxifyingBroccoliExtractHero = () => (
     <div 
       className="absolute inset-0 z-0 bg-cover bg-center opacity-20" 
       style={{ 
-        backgroundImage: `url('/assets/16x9_broccoli_extract.png')`,
+        backgroundImage: `url('/assets/webp/16x9_broccoli_extract.webp')`,
         width: '100%'
       }}
     />
@@ -106,10 +107,14 @@ const DetoxifyingBroccoliExtractHero = () => (
           animate={{ opacity: 1, scale: 1 }} 
           transition={{ duration: 0.7 }}
         >
-          <img 
-            src="/assets/16x9_broccoli_extract.png" 
-            alt="Detoxifying Broccoli Extract"
+          <Image 
+            src="/assets/webp/16x9_broccoli_extract.webp" 
+            alt="Detoxifying Broccoli Extract - Natural ingredient for digestive health and detoxification"
+            width={1280}
+            height={720}
             className="rounded-lg shadow-xl"
+            priority
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
           />
         </motion.div>
       </div>

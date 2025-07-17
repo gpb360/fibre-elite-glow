@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Play, Pause, Volume2, VolumeX, Maximize, Loader2, Wifi, WifiOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -205,10 +206,12 @@ export function OptimizedVideoPlayer({
         <div className="text-center text-gray-500">
           <p className="text-sm">Unable to load video</p>
           {poster && (
-            <img
+            <Image
               src={poster}
               alt="Video thumbnail"
               className="mt-2 max-w-full max-h-32 object-cover rounded"
+              width={200}
+              height={128}
             />
           )}
         </div>

@@ -1,4 +1,7 @@
+'use client';
+
 import React, { useState, useCallback, useRef } from 'react';
+import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -274,10 +277,12 @@ export function ImageUpload({
             {uploadingFiles.map((uploadingFile) => (
               <Card key={uploadingFile.id} className="overflow-hidden">
                 <div className="relative">
-                  <img
+                  <Image
                     src={uploadingFile.preview}
                     alt="Preview"
                     className="w-full h-32 object-cover"
+                    width={200}
+                    height={128}
                   />
                   <Button
                     variant="destructive"
@@ -351,10 +356,12 @@ export function ImageUpload({
             {existingImages.map((image) => (
               <Card key={image.id} className="overflow-hidden">
                 <div className="relative">
-                  <img
+                  <Image
                     src={image.image_url}
                     alt={image.alt_text || 'Product image'}
                     className="w-full h-32 object-cover"
+                    width={200}
+                    height={128}
                   />
                   {image.is_primary && (
                     <div className="absolute top-2 left-2 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs flex items-center">

@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Head from 'next/head';
+import Image from 'next/image';
 
 // Schema.org JSON-LD structured data for SEO
 const IngredientsSchema = () => {
@@ -49,10 +50,12 @@ const IngredientCard = ({
   >
     <Link href={`/ingredients/${slug}`}>
       <div className="relative h-48 overflow-hidden">
-        <img 
+        <Image 
           src={image} 
-          alt={title} 
+          alt={`${title} - Natural ingredient for health and wellness`} 
           className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
       </div>
       <div className="p-6">

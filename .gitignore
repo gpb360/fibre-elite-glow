@@ -14,6 +14,22 @@ dist-ssr
 *.local
 .next
 
+# Testing
+/test-results/
+/playwright-report/
+/playwright/.cache/
+*.spec.js.snap
+
+# Performance reports
+performance-report.json
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -24,3 +40,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Database
+*.db
+*.sqlite
+
+# Temporary files
+*.tmp
+*.temp

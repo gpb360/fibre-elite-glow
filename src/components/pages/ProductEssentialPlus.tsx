@@ -8,11 +8,79 @@ import { SplitSection } from '@/components/ui/split-section';
 import { PackageSelector } from '@/components/ui/package-selector';
 import { FaqSection } from '@/components/FaqSection';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ExternalLink, Loader2, Check } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { usePackages, Package } from '@/hooks/usePackages';
 import { useCart } from '@/contexts/CartContext';
+import { ProductTestimonials, ProductTestimonial } from '@/components/ui/product-testimonials';
+
+const totalEssentialPlusTestimonials: ProductTestimonial[] = [
+  {
+    id: '1',
+    name: 'Jasmine',
+    rating: 5,
+    text: 'Tasty and effective, my kids love it too.',
+    verified: true
+  },
+  {
+    id: '2',
+    name: 'Yoki',
+    rating: 5,
+    text: 'Good during pregnancy to ease constipation.',
+    verified: true
+  },
+  {
+    id: '3',
+    name: 'Casandra',
+    rating: 5,
+    text: 'Helps get enough daily dietary fiber.',
+    verified: true
+  },
+  {
+    id: '4',
+    name: 'Sherry',
+    rating: 5,
+    text: 'Helped reduce stress-related pimples.',
+    verified: true
+  },
+  {
+    id: '5',
+    name: 'Phoebe',
+    rating: 5,
+    text: 'Amazing results, noticed changes by 5th drink.',
+    verified: true
+  },
+  {
+    id: '6',
+    name: 'Santos',
+    rating: 5,
+    text: 'Improved regularity, highly recommended.',
+    verified: true
+  },
+  {
+    id: '7',
+    name: 'Coey',
+    rating: 5,
+    text: 'Best drink for detox, felt lighter with healthier skin.',
+    verified: true
+  },
+  {
+    id: '8',
+    name: 'J Lemay',
+    location: 'Kelowna, BC',
+    rating: 5,
+    text: 'I absolutely love the 15 Day Detox Program. Every time I have completed the 15 days, my family usually makes a comment about how good I look and how clear my complexion is.'
+  },
+  {
+    id: '9',
+    name: 'L Dunn',
+    location: 'Calgary, AB',
+    rating: 5,
+    text: 'After the 15-days, I had never felt better! I didn\'t crave fatty, greasy foods anymore, my stomach didn\'t feel so bloated, and I just felt better overall.'
+  }
+];
 
 export function ProductEssentialPlus() {
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
@@ -42,7 +110,7 @@ export function ProductEssentialPlus() {
         price: selectedPackage.price,
         originalPrice: selectedPackage.original_price || undefined,
         savings: selectedPackage.savings || undefined,
-        image: '/lovable-uploads/5f8f72e3-397f-47a4-8bce-f15924c32a34.png',
+        image: '/lovable-uploads/webp/5f8f72e3-397f-47a4-8bce-f15924c32a34.webp',
         packageSize: `${selectedPackage.quantity} box${selectedPackage.quantity > 1 ? 'es' : ''} (${selectedPackage.quantity * 15} sachets)`,
       });
 
@@ -180,12 +248,14 @@ export function ProductEssentialPlus() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
-                <img
-                  alt="Total Essential Plus Product"
+                <Image
+                  alt="Total Essential Plus Product - Advanced fiber supplement with enhanced benefits"
                   className="aspect-square overflow-hidden rounded-xl object-cover object-center sm:w-full"
-                  src="/lovable-uploads/5f8f72e3-397f-47a4-8bce-f15924c32a34.png"
+                  src="/lovable-uploads/webp/5f8f72e3-397f-47a4-8bce-f15924c32a34.webp"
                   width={550}
                   height={550}
+                  priority
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 550px"
                 />
               </motion.div>
             </div>
@@ -233,7 +303,7 @@ export function ProductEssentialPlus() {
 
         {/* Ingredients Section */}
         <SplitSection
-          image="/lovable-uploads/d98185ae-142e-45e8-9804-7b3e5aee3680.png"
+          image="/lovable-uploads/webp/d98185ae-142e-45e8-9804-7b3e5aee3680.webp"
           imageAlt="Total Essential Plus Ingredients"
           title="Premium Natural Ingredients Plus Superfruits"
           description="Every ingredient in Total Essential Plus is carefully sourced from certified suppliers worldwide and meets the highest quality standards. All components are verified non-GMO and certified Gluten-Free, with the addition of four potent superfruit extracts for enhanced antioxidant protection and skin health benefits."
@@ -490,7 +560,7 @@ export function ProductEssentialPlus() {
               <footer className="mt-8">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
-                    <img className="h-10 w-10 rounded-full bg-purple-100" src="public/placeholder.svg" alt="" />
+                    <Image className="h-10 w-10 rounded-full bg-purple-100" src="/placeholder.svg" alt="Testimonial avatar" width={40} height={40} />
                   </div>
                   <div className="ml-4">
                     <div className="text-base font-semibold text-gray-900">Tinesja Vanel</div>
@@ -504,7 +574,7 @@ export function ProductEssentialPlus() {
 
         {/* How to Use Section */}
         <SplitSection
-          image="/lovable-uploads/c159fdf8-1fcc-418f-a95b-70543b77a5ae.png"
+          image="/lovable-uploads/webp/c159fdf8-1fcc-418f-a95b-70543b77a5ae.webp"
           imageAlt="How to use Total Essential Plus"
           title="Enhanced Daily Protocol"
           description="Total Essential Plus is designed for effortless integration into your daily beauty and wellness routine with maximum convenience and superior taste experience."
@@ -591,6 +661,13 @@ export function ProductEssentialPlus() {
                 </Button>
               </Link>
             </div>
+          </div>
+        </section>
+
+        {/* Testimonials Section */}
+        <section className="py-16">
+          <div className="container px-4 md:px-6">
+            <ProductTestimonials testimonials={totalEssentialPlusTestimonials} />
           </div>
         </section>
 

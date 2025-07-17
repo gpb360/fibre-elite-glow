@@ -3,6 +3,7 @@
 import React from 'react';
 import Header from '@/components/Header';
 import Link from 'next/link';
+import Image from 'next/image';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import Footer from '@/components/Footer';
@@ -37,13 +38,15 @@ const BenefitCard = ({
 
 const BenefitsHero = () => (
   <section className="relative overflow-hidden bg-white pt-20 pb-12 md:pt-32 md:pb-20">
-    <div 
-      className="absolute inset-0 z-0 bg-cover bg-center opacity-20" 
-      style={{ 
-        backgroundImage: `url('/lovable-uploads/d98185ae-142e-45e8-9804-7b3e5aee3680.png')`,
-        width: '100%'
-      }}
-    />
+    <div className="absolute inset-0 z-0 opacity-20">
+      <Image
+        src="/lovable-uploads/webp/d98185ae-142e-45e8-9804-7b3e5aee3680.webp"
+        alt=""
+        fill
+        className="object-cover"
+        priority={false}
+      />
+    </div>
     
     <div className="container px-4 md:px-6 relative z-10">
       <div className="grid gap-6 lg:grid-cols-[1fr_600px] lg:gap-12 xl:grid-cols-[1fr_700px]">

@@ -42,7 +42,7 @@ const CranberryHero = () => (
     <div 
       className="absolute inset-0 z-0 bg-cover bg-center opacity-20" 
       style={{ 
-        backgroundImage: `url('/assets/16x9_a_close_up_shot_cranberry_.png')`,
+        backgroundImage: `url('/assets/webp/16x9_a_close_up_shot_cranberry_.webp')`,
         width: '100%'
       }}
     />
@@ -108,7 +108,7 @@ const CranberryHero = () => (
           transition={{ duration: 0.7 }}
         >
           <Image 
-            src="/assets/16x9_a_close_up_shot_cranberry_.png" 
+            src="/assets/webp/16x9_a_close_up_shot_cranberry_.webp" 
             alt="Fresh cranberries close-up showing their natural vibrant red color and texture" 
             width={700}
             height={400}

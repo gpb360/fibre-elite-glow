@@ -9,11 +9,58 @@ import { SplitSection } from '@/components/ui/split-section';
 import { PackageSelector } from '@/components/ui/package-selector';
 import { FaqSection } from '@/components/FaqSection';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ExternalLink, Loader2, Check } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { usePackages, Package } from '@/hooks/usePackages';
 import { useCart } from '@/contexts/CartContext';
+import { ProductTestimonials, ProductTestimonial } from '@/components/ui/product-testimonials';
+
+const totalEssentialTestimonials: ProductTestimonial[] = [
+  {
+    id: '1',
+    name: 'Celine C',
+    rating: 5,
+    text: 'I simply love this product... I took it at night before I go to bed and when I woke up, I got the best release ever.',
+    verified: true
+  },
+  {
+    id: '2',
+    name: 'Nina',
+    rating: 5,
+    text: 'I have used 5 days only and can feel the result of losing weight',
+    verified: true
+  },
+  {
+    id: '3',
+    name: 'Jamie',
+    rating: 5,
+    text: 'I used to feel so bloated after a long flight... after taking this product, it\'s totally changed my life',
+    verified: true
+  },
+  {
+    id: '4',
+    name: 'G Normandeau',
+    location: 'Nova Scotia',
+    rating: 5,
+    text: 'I cannot believe how great Total Essential is working for me... I endured 6 years of Dr\'s prescriptions that did not work. Imagine the relief I am finally experiencing.'
+  },
+  {
+    id: '5',
+    name: 'R Nunnikhoven',
+    location: 'Maple Ridge, BC',
+    rating: 5,
+    text: 'The Total Cleansing (Total Essential) 15 Day Detox Program is simply wonderful. It tastes great, is easy to take and works as promised.'
+  },
+  {
+    id: '6',
+    name: 'J Neels',
+    location: 'Chilliwack, BC',
+    rating: 5,
+    text: 'I have been using the Total Cleansing (Total Essential) Detox program for about 2 years now. It has been life changing for me... After taking the detox I was able to be regular, gain extra energy and feel really great.'
+  }
+];
 
 export function ProductEssential() {
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
@@ -43,7 +90,7 @@ export function ProductEssential() {
         price: selectedPackage.price,
         originalPrice: selectedPackage.original_price || undefined,
         savings: selectedPackage.savings || undefined,
-        image: '/lovable-uploads/27ca3fa0-24aa-479b-b075-3f11006467c5.png',
+        image: '/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp',
         packageSize: `${selectedPackage.quantity} box${selectedPackage.quantity > 1 ? 'es' : ''} (${selectedPackage.quantity * 15} sachets)`,
       });
 
@@ -181,12 +228,14 @@ export function ProductEssential() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
-                <img
-                  alt="Total Essential Product"
+                <Image
+                  alt="Total Essential Product - Complete fiber supplement for digestive health"
                   className="aspect-square overflow-hidden rounded-xl object-cover object-center sm:w-full"
-                  src="/lovable-uploads/27ca3fa0-24aa-479b-b075-3f11006467c5.png"
+                  src="/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp"
                   width={550}
                   height={550}
+                  priority
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 550px"
                 />
               </motion.div>
             </div>
@@ -244,7 +293,7 @@ export function ProductEssential() {
 
         {/* Ingredients Section */}
         <SplitSection
-          image="/lovable-uploads/6903ac0b-0e52-4260-bda8-07f24ce86b9a.png"
+          image="/lovable-uploads/webp/6903ac0b-0e52-4260-bda8-07f24ce86b9a.webp"
           imageAlt="Total Essential Ingredients"
           title="Premium Natural Ingredients"
           description="Every ingredient in Total Essential is carefully sourced from certified suppliers worldwide and meets the highest quality standards. All components are verified non-GMO (non-genetically modified organism) and certified Gluten-Free, ensuring purity and safety for daily consumption."
@@ -472,7 +521,7 @@ export function ProductEssential() {
 
         {/* How to Use Section */}
         <SplitSection
-          image="/lovable-uploads/a9768c7e-625a-4016-8baa-79cea10189ac.png"
+          image="/lovable-uploads/webp/a9768c7e-625a-4016-8baa-79cea10189ac.webp"
           imageAlt="How to use Total Essential"
           title="Simple Daily Protocol"
           description="Total Essential is designed for effortless integration into your daily wellness routine with maximum convenience and effectiveness."
@@ -524,6 +573,13 @@ export function ProductEssential() {
             </p>
           </div>
         </SplitSection>
+
+        {/* Testimonials Section */}
+        <section className="py-16">
+          <div className="container px-4 md:px-6">
+            <ProductTestimonials testimonials={totalEssentialTestimonials} />
+          </div>
+        </section>
 
         {/* FAQ Section */}
         <FaqSection faqs={faqData} />

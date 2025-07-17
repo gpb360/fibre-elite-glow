@@ -28,7 +28,7 @@ export function ProductShowcase() {
         >
           <ProductCard
             variant="green"
-            image="/lovable-uploads/27ca3fa0-24aa-479b-b075-3f11006467c5.png"
+            image="/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp"
             title="Total Essential"
             price="$79.99"
             description="PREMIUM DAILY FIBER BLEND – Crafted from 100% fruit & vegetable fibers for gentle, natural regularity. 15 sachets per box."
@@ -37,11 +37,12 @@ export function ProductShowcase() {
             productType="total_essential"
             originalPrice="$89.99"
             savings={10}
+            priority={true}
           />
 
           <ProductCard
             variant="purple"
-            image="/lovable-uploads/5f8f72e3-397f-47a4-8bce-f15924c32a34.png"
+            image="/lovable-uploads/webp/5f8f72e3-397f-47a4-8bce-f15924c32a34.webp"
             title="Total Essential Plus"
             price="$84.99"
             description="ADVANCED DAILY FIBER BLEND – Enhanced with super-fruits for added antioxidants and a vibrant glow. 15 sachets per box."
@@ -50,6 +51,7 @@ export function ProductShowcase() {
             productType="total_essential_plus"
             originalPrice="$94.99"
             savings={10}
+            priority={true}
           />
         </motion.div>
 
