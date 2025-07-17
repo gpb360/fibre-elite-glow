@@ -28,17 +28,30 @@ export default function GoogleAnalytics() {
       <script
         async
         src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+        defer
       />
       <script
         dangerouslySetInnerHTML={{
           __html: `
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${GA_MEASUREMENT_ID}', {
-              page_title: document.title,
-              page_location: window.location.href,
-            });
+            
+            // Defer GA initialization to reduce TBT
+            if (document.readyState === 'complete') {
+              gtag('js', new Date());
+              gtag('config', '${GA_MEASUREMENT_ID}', {
+                page_title: document.title,
+                page_location: window.location.href,
+              });
+            } else {
+              window.addEventListener('load', function() {
+                gtag('js', new Date());
+                gtag('config', '${GA_MEASUREMENT_ID}', {
+                  page_title: document.title,
+                  page_location: window.location.href,
+                });
+              });
+            }
           `,
         }}
       />

@@ -68,33 +68,61 @@ const FALLBACK_VIDEOS: MarketingVideo[] = [
   }
 ];
 
+// Cache video config to avoid repeated API calls
+let videoCache: MarketingVideo[] | null = null;
+let cachePromise: Promise<MarketingVideo[]> | null = null;
+
+const loadVideoConfig = async (): Promise<MarketingVideo[]> => {
+  if (videoCache) {
+    return videoCache;
+  }
+
+  if (cachePromise) {
+    return cachePromise;
+  }
+
+  cachePromise = (async () => {
+    try {
+      const response = await fetch('/videos/marketing/video-config.json');
+      if (response.ok) {
+        const config: VideoConfig = await response.json();
+        videoCache = config.videos;
+        return config.videos;
+      } else {
+        // Use fallback videos if config file is not found
+        console.warn('Video config not found, using fallback videos');
+        videoCache = FALLBACK_VIDEOS;
+        return FALLBACK_VIDEOS;
+      }
+    } catch (err) {
+      console.warn('Failed to load video config, using fallback videos:', err);
+      videoCache = FALLBACK_VIDEOS;
+      return FALLBACK_VIDEOS;
+    }
+  })();
+
+  return cachePromise;
+};
+
 export function useMarketingVideos() {
   const [videos, setVideos] = useState<MarketingVideo[]>(FALLBACK_VIDEOS);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadVideoConfig = async () => {
+    // Defer loading to reduce initial TBT
+    const timer = setTimeout(async () => {
       try {
-        const response = await fetch('/videos/marketing/video-config.json');
-        if (response.ok) {
-          const config: VideoConfig = await response.json();
-          setVideos(config.videos);
-        } else {
-          // Use fallback videos if config file is not found
-          console.warn('Video config not found, using fallback videos');
-          setVideos(FALLBACK_VIDEOS);
-        }
+        const loadedVideos = await loadVideoConfig();
+        setVideos(loadedVideos);
       } catch (err) {
-        console.warn('Failed to load video config, using fallback videos:', err);
-        setVideos(FALLBACK_VIDEOS);
         setError('Failed to load video configuration');
       } finally {
         setLoading(false);
       }
-    };
+    }, 100); // Small delay to let critical content load first
 
-    loadVideoConfig();
+    return () => clearTimeout(timer);
   }, []);
 
   // Helper functions to get videos by usage
