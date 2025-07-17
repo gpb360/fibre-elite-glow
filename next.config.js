@@ -59,28 +59,23 @@ const nextConfig = {
   httpAgentOptions: {
     keepAlive: true,
   },
-  // Enhanced compression and text optimization
+  // Enhanced security and optimization headers
   async headers() {
     return [
       {
         source: '/(.*)',
         headers: [
           {
-            key: 'Content-Encoding',
-            value: 'gzip',
+            key: 'X-Frame-Options',
+            value: 'DENY',
           },
           {
-            key: 'Vary',
-            value: 'Accept-Encoding',
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
           },
-        ],
-      },
-      {
-        source: '/(.*)\\.(js|css)$',
-        headers: [
           {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
+            key: 'Referrer-Policy',
+            value: 'origin-when-cross-origin',
           },
         ],
       },
