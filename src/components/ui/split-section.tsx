@@ -51,6 +51,8 @@ export function SplitSection({
               src={image}
               width={550}
               height={550}
+              loading="lazy"
+              priority={false}
             />
           </div>
         </div>
