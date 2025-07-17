@@ -2,7 +2,7 @@
 "use client";
 
 import React, { memo } from 'react';
-import { motion, LazyMotion, domAnimation } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Heading } from '@/components/ui/heading';
 import { ProductCard } from '@/components/ui/product-card';
 import { Button } from '@/components/ui/button';
@@ -10,8 +10,7 @@ import Link from 'next/link';
 
 export const ProductShowcase = memo(() => {
   return (
-    <LazyMotion features={domAnimation} strict>
-      <section className="py-16 md:py-24 bg-gray-50">
+    <section className="py-16 md:py-24 bg-gray-50">
       <div className="container mx-auto px-4 md:px-6 max-w-7xl">
         <Heading
           title="Our Fiber Blend Collection"
@@ -202,7 +201,6 @@ export const ProductShowcase = memo(() => {
         </div>
       </div>
     </section>
-    </LazyMotion>
   );
 });
 

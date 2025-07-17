@@ -110,8 +110,8 @@ export function useMarketingVideos() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Defer loading to reduce initial TBT
-    const timer = setTimeout(async () => {
+    // Load videos immediately but use cache
+    const loadVideos = async () => {
       try {
         const loadedVideos = await loadVideoConfig();
         setVideos(loadedVideos);
@@ -120,9 +120,9 @@ export function useMarketingVideos() {
       } finally {
         setLoading(false);
       }
-    }, 100); // Small delay to let critical content load first
+    };
 
-    return () => clearTimeout(timer);
+    loadVideos();
   }, []);
 
   // Helper functions to get videos by usage
