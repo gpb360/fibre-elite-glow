@@ -25,6 +25,11 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <GoogleAnalytics />
+        {/* Preload critical hero images */}
+        <link rel="preload" href="/lovable-uploads/webp/fruit-veg-bottle.webp" as="image" type="image/webp" />
+        <link rel="preload" href="/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp" as="image" type="image/webp" />
+        <link rel="preload" href="/lovable-uploads/webp/5f8f72e3-397f-47a4-8bce-f15924c32a34.webp" as="image" type="image/webp" />
+        {/* Fonts are handled by Next.js font optimization */}
       </head>
       <body suppressHydrationWarning>
         <ClientBodyWrapper fontClassName={inter.className}>
