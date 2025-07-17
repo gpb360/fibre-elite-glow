@@ -1,15 +1,19 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, lazy, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { buttonVariants } from '@/components/ui/button';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
-import { VideoPlayer } from '@/components/ui/video-player';
+import { motion, LazyMotion, domAnimation } from 'framer-motion';
 import { useMarketingVideos } from '@/hooks/useMarketingVideos';
-import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
+import { Play, Pause } from 'lucide-react';
+
+// Lazy load video player to reduce initial bundle size
+const VideoPlayer = lazy(() => import('@/components/ui/video-player').then(module => ({
+  default: module.VideoPlayer
+})));
 
 export function HeroWithVideo() {
   const { heroVideo, loading } = useMarketingVideos();
@@ -24,18 +28,19 @@ export function HeroWithVideo() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-white pt-20 pb-12 md:pt-32 md:pb-20">
-      {/* Background gradient */}
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#f0fdf4_1px,transparent_1px),linear-gradient(to_bottom,#f0fdf4_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_110%)]"></div>
-      
-      <div className="container px-4 md:px-6">
+    <LazyMotion features={domAnimation} strict>
+      <section className="relative overflow-hidden bg-white pt-20 pb-12 md:pt-32 md:pb-20">
+        {/* Background gradient */}
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,#f0fdf4_1px,transparent_1px),linear-gradient(to_bottom,#f0fdf4_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_110%)]"></div>
+        
+        <div className="container px-4 md:px-6">
         <div className="grid gap-6 lg:grid-cols-[1fr_600px] lg:gap-12 xl:grid-cols-[1fr_700px]">
           <div className="flex flex-col justify-center space-y-4">
             <div className="space-y-2">
               <motion.div 
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
               >
                 <p className="text-green-500 font-semibold">La Belle Vie</p>
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
@@ -158,18 +163,24 @@ export function HeroWithVideo() {
             <div className="relative">
               {showVideo && heroVideo ? (
                 <div className="relative">
-                  <VideoPlayer
-                    src={heroVideo.src}
-                    poster={heroVideo.poster}
-                    autoPlay={true}
-                    muted={true}
-                    loop={true}
-                    showCustomControls={true}
-                    aspectRatio="square"
-                    className="w-[600px] h-[600px] rounded-xl"
-                    onPlay={() => setIsPlaying(true)}
-                    onPause={() => setIsPlaying(false)}
-                  />
+                  <Suspense fallback={
+                    <div className="w-[600px] h-[600px] rounded-xl bg-gray-100 animate-pulse flex items-center justify-center">
+                      <div className="text-gray-400">Loading video...</div>
+                    </div>
+                  }>
+                    <VideoPlayer
+                      src={heroVideo.src}
+                      poster={heroVideo.poster}
+                      autoPlay={true}
+                      muted={true}
+                      loop={true}
+                      showCustomControls={true}
+                      aspectRatio="square"
+                      className="w-[600px] h-[600px] rounded-xl"
+                      onPlay={() => setIsPlaying(true)}
+                      onPause={() => setIsPlaying(false)}
+                    />
+                  </Suspense>
                   
                   {/* Video Badge */}
                   <div className="absolute -right-4 -top-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-500 text-white shadow-lg">
@@ -180,7 +191,7 @@ export function HeroWithVideo() {
                 </div>
               ) : (
                 <div className="relative">
-                  {/* Main product image */}
+                  {/* Main product image - LCP candidate */}
                   <Image
                     alt="Total Essential Product Box - Click to play product video"
                     className="aspect-square rounded-xl object-cover object-center cursor-pointer hover:scale-105 transition-transform duration-300"
@@ -189,6 +200,10 @@ export function HeroWithVideo() {
                     height={600}
                     onClick={handleVideoToggle}
                     priority
+                    fetchPriority="high"
+                    placeholder="blur"
+                    blurDataURL="data:image/webp;base64,UklGRiQAAABXRUJQVlA4IBgAAAAwAQCdASoCAAEAAQAcJaQAA3AA/v3AgAA="
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                   />
                   
                   {/* Play button overlay */}
@@ -216,6 +231,7 @@ export function HeroWithVideo() {
         </div>
       </div>
     </section>
+    </LazyMotion>
   );
 }
 
