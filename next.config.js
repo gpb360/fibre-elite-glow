@@ -59,28 +59,6 @@ const nextConfig = {
   httpAgentOptions: {
     keepAlive: true,
   },
-  // Enhanced security and optimization headers
-  async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin',
-          },
-        ],
-      },
-    ];
-  },
   eslint: {
     ignoreDuringBuilds: true, // Temporarily disable for optimization work
   },

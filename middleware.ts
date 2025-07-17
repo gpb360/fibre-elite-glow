@@ -18,64 +18,45 @@ const REDIRECTS: Record<string, string> = {
  * 4. Normalizing URL casing (lowercase)
  */
 export function middleware(request: NextRequest) {
-  const url = request.nextUrl.clone();
-  const { pathname } = url;
-  
-  // 1. Handle trailing slashes - remove them for consistency
-  if (pathname !== '/' && pathname.endsWith('/')) {
-    url.pathname = pathname.slice(0, -1);
-    return NextResponse.redirect(url, 308); // 308 = Permanent Redirect
+  try {
+    const url = request.nextUrl.clone();
+    const { pathname } = url;
+    
+    // 1. Handle trailing slashes - remove them for consistency
+    if (pathname !== '/' && pathname.endsWith('/')) {
+      url.pathname = pathname.slice(0, -1);
+      return NextResponse.redirect(url, 308); // 308 = Permanent Redirect
+    }
+    
+    // 2. Redirect old routes to new ones
+    if (REDIRECTS[pathname]) {
+      url.pathname = REDIRECTS[pathname];
+      return NextResponse.redirect(url, 308);
+    }
+    
+    // 3. Block access to dev routes in production
+    if (
+      process.env.NODE_ENV === 'production' &&
+      (pathname.startsWith('/dev/') || pathname === '/dev')
+    ) {
+      url.pathname = '/404';
+      return NextResponse.rewrite(url);
+    }
+    
+    // 4. Handle case sensitivity - redirect uppercase URLs to lowercase
+    const lowercasePath = pathname.toLowerCase();
+    if (pathname !== lowercasePath) {
+      url.pathname = lowercasePath;
+      return NextResponse.redirect(url, 308);
+    }
+    
+    // 5. Return response with minimal processing
+    return NextResponse.next();
+  } catch (error) {
+    // Log error and return next response to prevent crashes
+    console.error('Middleware error:', error);
+    return NextResponse.next();
   }
-  
-  // 2. Redirect old routes to new ones
-  if (REDIRECTS[pathname]) {
-    url.pathname = REDIRECTS[pathname];
-    return NextResponse.redirect(url, 308);
-  }
-  
-  // 3. Block access to dev routes in production
-  if (
-    process.env.NODE_ENV === 'production' &&
-    (pathname.startsWith('/dev/') || pathname === '/dev')
-  ) {
-    url.pathname = '/404';
-    return NextResponse.rewrite(url);
-  }
-  
-  // 4. Handle case sensitivity - redirect uppercase URLs to lowercase
-  const lowercasePath = pathname.toLowerCase();
-  if (pathname !== lowercasePath) {
-    url.pathname = lowercasePath;
-    return NextResponse.redirect(url, 308);
-  }
-  
-  // 5. Add security headers to all responses
-  const response = NextResponse.next();
-  
-  // Add security headers
-  response.headers.set('X-Frame-Options', 'DENY');
-  response.headers.set('X-Content-Type-Options', 'nosniff');
-  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-  
-  // Add performance headers
-  response.headers.set('X-DNS-Prefetch-Control', 'on');
-  response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-  
-  // Add caching headers for static assets
-  if (pathname.match(/\.(jpg|jpeg|png|gif|ico|svg|webp|js|css|woff|woff2|ttf|eot)$/)) {
-    response.headers.set('Cache-Control', 'public, max-age=31536000, immutable');
-  } else if (pathname.startsWith('/api/')) {
-    response.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate');
-  } else {
-    response.headers.set('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400');
-  }
-  response.headers.set(
-    'Content-Security-Policy',
-    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://app.netlify.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.stripe.com https://app.netlify.com; connect-src 'self' https://*.supabase.co https://api.stripe.com https://app.netlify.com; frame-src https://js.stripe.com https://hooks.stripe.com https://app.netlify.com;"
-  );
-  
-  // Return the response with added headers
-  return response;
 }
 
 // Define which paths this middleware should run on
