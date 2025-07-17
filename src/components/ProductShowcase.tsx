@@ -37,6 +37,7 @@ export function ProductShowcase() {
             productType="total_essential"
             originalPrice="$89.99"
             savings={10}
+            priority={true}
           />
 
           <ProductCard
@@ -50,6 +51,7 @@ export function ProductShowcase() {
             productType="total_essential_plus"
             originalPrice="$94.99"
             savings={10}
+            priority={true}
           />
         </motion.div>
 

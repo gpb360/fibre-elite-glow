@@ -107,11 +107,6 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/agents" className="text-sm text-gray-600 hover:text-green-600 transition-colors">
-                  Authorized Agents
-                </Link>
-              </li>
-              <li>
                 <Link href="/privacy" className="text-sm text-gray-600 hover:text-green-600 transition-colors">
                   Privacy Policy
                 </Link>
