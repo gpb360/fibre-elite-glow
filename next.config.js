@@ -19,29 +19,22 @@ const nextConfig = {
       'lucide-react',
       '@radix-ui/react-accordion',
       '@radix-ui/react-alert-dialog',
-      '@radix-ui/react-aspect-ratio',
       '@radix-ui/react-avatar',
       '@radix-ui/react-checkbox',
       '@radix-ui/react-collapsible',
       '@radix-ui/react-dialog',
       '@radix-ui/react-dropdown-menu',
-      '@radix-ui/react-hover-card',
       '@radix-ui/react-label',
-      '@radix-ui/react-menubar',
-      '@radix-ui/react-navigation-menu',
       '@radix-ui/react-popover',
       '@radix-ui/react-progress',
-      '@radix-ui/react-radio-group',
       '@radix-ui/react-scroll-area',
       '@radix-ui/react-select',
       '@radix-ui/react-separator',
-      '@radix-ui/react-sheet',
-      '@radix-ui/react-slider',
+      '@radix-ui/react-slot',
       '@radix-ui/react-switch',
       '@radix-ui/react-tabs',
       '@radix-ui/react-toast',
       '@radix-ui/react-toggle',
-      '@radix-ui/react-toggle-group',
       '@radix-ui/react-tooltip',
       'framer-motion'
     ]
@@ -65,6 +58,33 @@ const nextConfig = {
   generateEtags: true,
   httpAgentOptions: {
     keepAlive: true,
+  },
+  // Enhanced compression and text optimization
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Content-Encoding',
+            value: 'gzip',
+          },
+          {
+            key: 'Vary',
+            value: 'Accept-Encoding',
+          },
+        ],
+      },
+      {
+        source: '/(.*)\\.(js|css)$',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+    ];
   },
   eslint: {
     ignoreDuringBuilds: true, // Temporarily disable for optimization work
@@ -107,6 +127,28 @@ const nextConfig = {
       // Improve tree shaking
       config.optimization.usedExports = true;
       config.optimization.sideEffects = false;
+      
+      // Enhanced minification for text compression
+      config.optimization.minimize = true;
+      if (config.optimization.minimizer) {
+        config.optimization.minimizer.forEach(minimizer => {
+          if (minimizer.constructor.name === 'TerserPlugin') {
+            minimizer.options.terserOptions = {
+              ...minimizer.options.terserOptions,
+              compress: {
+                ...minimizer.options.terserOptions?.compress,
+                drop_console: true,
+                drop_debugger: true,
+                pure_funcs: ['console.log', 'console.info'],
+              },
+              mangle: true,
+              format: {
+                comments: false,
+              },
+            };
+          }
+        });
+      }
 
       // Enhanced code splitting
       config.optimization.splitChunks = {

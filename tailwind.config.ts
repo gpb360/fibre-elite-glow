@@ -9,17 +9,6 @@ export default {
 		"./src/**/*.{ts,tsx}",
 	],
 	prefix: "",
-	// Enable development features
-	...(process.env.NODE_ENV === 'development' && {
-		safelist: [
-			// Preserve commonly used classes for debugging
-			'bg-gradient-to-b',
-			'from-green-50',
-			'to-white',
-			'py-16',
-			'md:py-24',
-		],
-	}),
 	theme: {
 		container: {
 			center: true,
@@ -118,40 +107,20 @@ export default {
 						height: '0'
 					}
 				},
-				'fade-in': {
-					'0%': { opacity: '0' },
-					'100%': { opacity: '1' }
-				},
 				'slide-up': {
 					'0%': { opacity: '0', transform: 'translateY(30px)' },
 					'100%': { opacity: '1', transform: 'translateY(0)' }
-				},
-				'scale-in': {
-					'0%': { opacity: '0', transform: 'scale(0.95)' },
-					'100%': { opacity: '1', transform: 'scale(1)' }
 				},
 				'shimmer': {
 					'0%': { backgroundPosition: '-200px 0' },
 					'100%': { backgroundPosition: 'calc(200px + 100%) 0' }
 				},
-				'float': {
-					'0%, 100%': { transform: 'translateY(0px)' },
-					'50%': { transform: 'translateY(-10px)' }
-				},
-				'pulse-glow': {
-					'0%, 100%': { boxShadow: '0 0 20px rgba(158, 212, 88, 0.4)' },
-					'50%': { boxShadow: '0 0 30px rgba(158, 212, 88, 0.8)' }
-				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-				'fade-in': 'fade-in 0.6s ease-out',
 				'slide-up': 'slide-up 0.6s ease-out',
-				'scale-in': 'scale-in 0.4s ease-out',
 				'shimmer': 'shimmer 1.5s infinite',
-				'float': 'float 3s ease-in-out infinite',
-				'pulse-glow': 'pulse-glow 2s ease-in-out infinite'
 			},
 			boxShadow: {
 				'premium': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',

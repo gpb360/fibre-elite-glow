@@ -113,7 +113,7 @@ const CranberryHero = () => (
             width={700}
             height={400}
             className="rounded-lg shadow-xl"
-            priority={true}
+            priority={false}
             sizes="(max-width: 768px) 100vw, 700px"
           />
         </motion.div>
