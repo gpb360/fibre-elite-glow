@@ -293,7 +293,7 @@ export function ProductEssential() {
 
         {/* Ingredients Section */}
         <SplitSection
-          image="/lovable-uploads/webp/6903ac0b-0e52-4260-bda8-07f24ce86b9a.webp"
+          image="/lovable-uploads/webp/2Fd98185ae-142e-45e8-9804-7b3e5aee3680.webp"
           imageAlt="Total Essential Ingredients"
           title="Premium Natural Ingredients"
           description="Every ingredient in Total Essential is carefully sourced from certified suppliers worldwide and meets the highest quality standards. All components are verified non-GMO (non-genetically modified organism) and certified Gluten-Free, ensuring purity and safety for daily consumption."
