@@ -2,7 +2,7 @@ import React from 'react';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Premium Fiber Supplements | Total Essential Collection | Fibre Elite Glow',
+  title: 'Premium Fiber Supplements | Total Essential Collection',
   description: 'Discover our premium fiber blend collection: Total Essential and Total Essential Plus. Natural fruit & vegetable fiber supplements for optimal digestive health and daily wellness.',
   keywords: 'fiber supplements, digestive health, natural fiber, Total Essential, fruit fiber, vegetable fiber, gut health, daily wellness, fiber blend',
   openGraph: {

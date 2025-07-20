@@ -2,7 +2,7 @@ import Testimonials from '@/components/pages/Testimonials'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Customer Reviews & Success Stories | Fiber Supplement Testimonials | Fibre Elite Glow',
+  title: 'Customer Reviews & Success Stories | Fiber Supplements',
   description: 'Read real customer testimonials and success stories about our premium fiber supplements. Discover how Total Essential has transformed digestive health and wellness.',
   keywords: 'fiber supplement reviews, customer testimonials, success stories, digestive health results, Total Essential reviews, wellness transformation',
   openGraph: {

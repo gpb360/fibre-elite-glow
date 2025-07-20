@@ -2,7 +2,7 @@ import Benefits from '@/components/pages/Benefits'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Health Benefits of Fiber Supplements | Digestive Wellness | Fibre Elite Glow',
+  title: 'Fiber Supplement Benefits | Better Digestion & Wellness',
   description: 'Discover the scientifically-proven health benefits of premium fiber supplements. Improve digestive health, boost immunity, support weight management, and enhance overall wellness.',
   keywords: 'fiber benefits, digestive health, gut health, immunity, weight management, cholesterol, blood sugar, fiber supplements, wellness benefits',
   openGraph: {

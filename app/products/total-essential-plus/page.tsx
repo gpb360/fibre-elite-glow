@@ -2,7 +2,7 @@ import ProductEssentialPlus from '@/components/pages/ProductEssentialPlus'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Total Essential Plus | Advanced Fiber Blend with Super-Fruits | Fibre Elite Glow',
+  title: 'Total Essential Plus | Advanced Fiber with Super-Fruits',
   description: 'Total Essential Plus: Advanced daily fiber blend enhanced with super-fruits for added antioxidants and vibrant glow. Premium digestive wellness with berry power. 15 sachets per box.',
   keywords: 'Total Essential Plus, advanced fiber supplement, super-fruits, antioxidants, berry fiber, digestive health, gut health, premium supplement, acai, goji, cranberry',
   openGraph: {
