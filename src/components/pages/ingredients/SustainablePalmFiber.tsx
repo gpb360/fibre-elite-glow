@@ -41,7 +41,7 @@ const SustainablePalmFiberHero = () => (
     <div className="absolute inset-0 z-0 opacity-20">
       <Image
         src="/assets/webp/16x9_A_photorealistic_palme-oil.webp"
-        alt=""
+        alt="Sustainable oil palm plantation - eco-friendly source of lignin-rich fiber for digestive health and detox"
         fill
         className="object-cover"
         priority={false}

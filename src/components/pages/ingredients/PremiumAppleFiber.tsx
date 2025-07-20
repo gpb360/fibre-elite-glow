@@ -41,7 +41,7 @@ const AppleFiberHero = () => (
     <div className="absolute inset-0 z-0 opacity-20">
       <Image
         src="/lovable-uploads/apple-bg.jpg"
-        alt=""
+        alt="Fresh apple orchard - natural source of balanced soluble and insoluble fiber for digestive wellness"
         fill
         className="object-cover"
         priority={false}

@@ -41,7 +41,7 @@ const DigestiveAidGuarGumHero = () => (
     <div className="absolute inset-0 z-0 opacity-20">
       <Image
         src="/assets/webp/16x9_A_close_up_shot_of_guar_gum.webp"
-        alt=""
+        alt="Natural guar gum powder - soluble fiber source for digestive regularity and gut health support"
         fill
         className="object-cover"
         priority={false}

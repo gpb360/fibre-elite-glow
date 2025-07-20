@@ -42,7 +42,7 @@ const AppleFiberHero = () => (
     <div className="absolute inset-0 z-0 opacity-20">
       <Image
         src="/assets/webp/16x9_apple_fibre.webp"
-        alt=""
+        alt="Red apples background showing source of premium apple fiber for digestive health and wellness"
         fill
         className="object-cover"
         priority={false}

@@ -42,7 +42,7 @@ const NutrientRichCarrotHero = () => (
     <div className="absolute inset-0 z-0 opacity-20">
       <Image
         src="/assets/webp/16x9_a_plump_organic_carrot_with_inte.webp"
-        alt=""
+        alt="Fresh organic carrot - beta-carotene rich root vegetable for vision support and digestive fiber"
         fill
         className="object-cover"
         priority={false}

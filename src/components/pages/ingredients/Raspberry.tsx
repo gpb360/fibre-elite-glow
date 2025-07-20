@@ -42,7 +42,7 @@ const RaspberryHero = () => (
     <div className="absolute inset-0 z-0 opacity-20">
       <Image
         src="/assets/webp/16x9_A_close_up_shot_of_a_cluster_of_.webp"
-        alt=""
+        alt="Fresh ripe raspberries - high-fiber antioxidant superfruit for digestive health and immune support"
         fill
         className="object-cover"
         priority={false}

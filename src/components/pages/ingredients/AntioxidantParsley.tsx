@@ -42,7 +42,7 @@ const AntioxidantParsleyHero = () => (
     <div className="absolute inset-0 z-0 opacity-20">
       <Image
         src="/assets/webp/16x9_A_vibrant_cluster_of_fresh_parsl.webp"
-        alt=""
+        alt="Fresh vibrant parsley - antioxidant-rich herb ingredient for digestive health and detoxification"
         fill
         className="object-cover"
         priority={false}

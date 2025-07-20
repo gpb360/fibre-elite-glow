@@ -42,7 +42,7 @@ const StrawberryHero = () => (
     <div className="absolute inset-0 z-0 opacity-20">
       <Image
         src="/assets/webp/16x9_Three_ripe_strawberries_with_bri.webp"
-        alt=""
+        alt="Fresh ripe strawberries - vitamin C rich superfruit for immune support and natural fiber supplementation"
         fill
         className="object-cover"
         priority={false}

@@ -42,7 +42,7 @@ const PrebioticPowerhouseHero = () => (
     <div className="absolute inset-0 z-0 opacity-20">
       <Image
         src="/assets/webp/16x9_a_prebiotic-powerhouse.webp"
-        alt=""
+        alt="Prebiotic fiber blend - diverse natural ingredients for gut microbiome support and digestive balance"
         fill
         className="object-cover"
         priority={false}

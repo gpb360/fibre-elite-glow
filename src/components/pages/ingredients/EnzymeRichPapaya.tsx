@@ -41,7 +41,7 @@ const EnzymeRichPapayaHero = () => (
     <div className="absolute inset-0 z-0 opacity-20">
       <Image
         src="/assets/webp/16x9_a_close_up_shot_of_a_papaya_frui.webp"
-        alt=""
+        alt="Fresh tropical papaya fruit - enzyme-rich ingredient for protein digestion and digestive comfort"
         fill
         className="object-cover"
         priority={false}

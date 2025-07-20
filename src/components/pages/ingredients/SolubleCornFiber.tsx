@@ -42,7 +42,7 @@ const SolubleCornFiberHero = () => (
     <div className="absolute inset-0 z-0 opacity-20">
       <Image
         src="/assets/webp/16x9_A_close_up_of_a_corn_plant_with_.webp"
-        alt=""
+        alt="Natural corn plant - sustainable source of gentle prebiotic fiber for gut health and blood sugar support"
         fill
         className="object-cover"
         priority={false}

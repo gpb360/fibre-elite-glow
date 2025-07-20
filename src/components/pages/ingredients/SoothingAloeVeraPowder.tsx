@@ -42,7 +42,7 @@ const SoothingAloeVeraPowderHero = () => (
     <div className="absolute inset-0 z-0 opacity-20">
       <Image
         src="/assets/webp/16x9_a_close_up_shot_of_aleo.webp"
-        alt=""
+        alt="Fresh aloe vera plant - soothing succulent for digestive tract wellness and natural hydration support"
         fill
         className="object-cover"
         priority={false}

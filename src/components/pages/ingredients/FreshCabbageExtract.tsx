@@ -42,7 +42,7 @@ const FreshCabbageExtractHero = () => (
     <div className="absolute inset-0 z-0 opacity-20">
       <Image
         src="/assets/webp/16x9_a_close_up_shot_of_cabbage.webp"
-        alt=""
+        alt="Fresh organic cabbage - nutrient-dense cruciferous vegetable for gut lining support and wellness"
         fill
         className="object-cover"
         priority={false}

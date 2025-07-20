@@ -42,7 +42,7 @@ const AcaiBerryHero = () => (
     <div className="absolute inset-0 z-0 opacity-20">
       <Image
         src="/assets/webp/16x9_A_cluster_of_acai_berries.webp"
-        alt=""
+        alt="Fresh acai berries cluster on branch - superfruit antioxidant ingredient for Total Essential fiber supplement"
         fill
         className="object-cover"
         priority={false}

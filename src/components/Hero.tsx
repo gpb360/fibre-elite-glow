@@ -14,7 +14,7 @@ export function Hero() {
       <div className="absolute inset-0 z-0 opacity-20">
         <Image
           src="/lovable-uploads/webp/fruit-veg-bottle.webp"
-          alt=""
+          alt="Natural fiber supplement bottles surrounded by fresh fruits and vegetables - Fibre Elite Glow wellness products"
           fill
           className="object-cover"
           priority={true}
