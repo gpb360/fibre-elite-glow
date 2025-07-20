@@ -5,6 +5,7 @@ import {
   STRIPE_CONFIG 
 } from '@/lib/stripe';
 import { supabaseAdmin } from '@/integrations/supabase/client';
+import { checkoutSessionSchema, validateInput } from '@/lib/validation';
 
 // Define types for the request body
 interface CartItem {
@@ -71,23 +72,29 @@ export async function POST(request: Request) {
       );
     }
     
-    // Parse request body
-    const body: CheckoutRequestBody = await request.json();
+    // Parse and validate request body
+    const rawBody = await request.json();
     
-    // Validate request data
-    if (!body.items || !Array.isArray(body.items) || body.items.length === 0) {
+    // Validate input using Zod schema
+    const validation = validateInput(checkoutSessionSchema, {
+      items: rawBody.items,
+      customerEmail: rawBody.customerInfo?.email,
+      successUrl: rawBody.successUrl || `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/success`,
+      cancelUrl: rawBody.cancelUrl || `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/error`,
+    });
+    
+    if (!validation.success) {
+      console.error('Validation errors:', validation.errors);
       return NextResponse.json(
-        { error: 'Invalid request: Cart is empty or items are not provided' },
+        { 
+          error: 'Invalid request data',
+          details: validation.errors 
+        },
         { status: 400 }
       );
     }
-
-    if (!body.customerInfo || !body.customerInfo.email) {
-      return NextResponse.json(
-        { error: 'Invalid request: Customer information is required' },
-        { status: 400 }
-      );
-    }
+    
+    const body = rawBody as CheckoutRequestBody;
 
     // Format line items for Stripe
     const lineItems = body.items.map(item => ({
