@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server';
-import { 
-  createCheckoutSession,
+import {
+  stripe,
   formatAmountForStripe,
-  STRIPE_CONFIG 
+  STRIPE_CONFIG
 } from '@/lib/stripe';
 import { supabaseAdmin } from '@/integrations/supabase/client';
-import { checkoutSessionSchema, validateInput } from '@/lib/validation';
 
 // Define types for the request body
 interface CartItem {
@@ -53,9 +52,9 @@ export async function POST(request: Request) {
     if (!process.env.STRIPE_SECRET_KEY) {
       console.error('❌ STRIPE_SECRET_KEY environment variable is missing');
       return NextResponse.json(
-        { 
+        {
           error: 'Server configuration error: Stripe secret key not configured',
-          debug: debugInfo 
+          debug: debugInfo
         },
         { status: 500 }
       );
@@ -64,34 +63,45 @@ export async function POST(request: Request) {
     if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
       console.error('❌ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY environment variable is missing');
       return NextResponse.json(
-        { 
+        {
           error: 'Server configuration error: Stripe publishable key not configured',
-          debug: debugInfo 
+          debug: debugInfo
         },
         { status: 500 }
       );
     }
+
+    // Get base URL with fallback for Netlify
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ||
+                   process.env.URL ||
+                   'https://lebve.netlify.app';
     
     // Parse and validate request body
     const rawBody = await request.json();
-    
-    // Validate input using Zod schema
-    const validation = validateInput(checkoutSessionSchema, {
-      items: rawBody.items,
-      customerEmail: rawBody.customerInfo?.email,
-      successUrl: rawBody.successUrl || `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/success`,
-      cancelUrl: rawBody.cancelUrl || `${process.env.NEXT_PUBLIC_BASE_URL}/checkout/error`,
-    });
-    
-    if (!validation.success) {
-      console.error('Validation errors:', validation.errors);
+
+    // Basic validation without Zod schema to avoid mismatch
+    if (!rawBody.items || !Array.isArray(rawBody.items) || rawBody.items.length === 0) {
       return NextResponse.json(
-        { 
-          error: 'Invalid request data',
-          details: validation.errors 
-        },
+        { error: 'Items array is required and must not be empty' },
         { status: 400 }
       );
+    }
+
+    if (!rawBody.customerInfo || !rawBody.customerInfo.email) {
+      return NextResponse.json(
+        { error: 'Customer information with email is required' },
+        { status: 400 }
+      );
+    }
+
+    // Validate each item has required fields
+    for (const item of rawBody.items) {
+      if (!item.id || !item.productName || typeof item.price !== 'number' || typeof item.quantity !== 'number') {
+        return NextResponse.json(
+          { error: 'Each item must have id, productName, price, and quantity' },
+          { status: 400 }
+        );
+      }
     }
     
     const body = rawBody as CheckoutRequestBody;
@@ -111,7 +121,7 @@ export async function POST(request: Request) {
     }));
 
     // Generate order number
-    const orderNumber = `FEG-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+    const orderNumber = `FEG-${Date.now()}-${Math.random().toString(36).substring(2, 11).toUpperCase()}`;
 
     // Create metadata for the order
     const metadata = {
@@ -128,10 +138,14 @@ export async function POST(request: Request) {
       }))),
     };
 
-    // Create checkout session
-    const session = await createCheckoutSession({
-      lineItems,
-      customerEmail: body.customerInfo.email,
+    // Create checkout session with explicit URLs
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: lineItems,
+      mode: STRIPE_CONFIG.mode,
+      success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/cart`,
+      customer_email: body.customerInfo.email,
       metadata,
     });
 
@@ -193,12 +207,9 @@ export async function POST(request: Request) {
     }
     
     return NextResponse.json(
-      { 
+      {
         error: errorMessage,
         type: error instanceof Error ? error.constructor.name : 'Unknown',
-        ...(process.env.NODE_ENV === 'development' && {
-          stack: error instanceof Error ? error.stack : undefined
-        })
       },
       { status: 500 }
     );
