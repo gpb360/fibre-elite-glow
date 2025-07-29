@@ -48,9 +48,7 @@ export function CtaSection() {
                 Total Essential Plus
               </Link>
             </div>
-            <p className="text-sm text-gray-500 font-medium">
-              *Free shipping on orders over $50. 30-day money-back guarantee.
-            </p>
+           
           </motion.div>
           
           <motion.div
