@@ -138,7 +138,7 @@ export async function POST(request: Request) {
       }))),
     };
 
-    // Create checkout session with explicit URLs
+    // Create checkout session with explicit URLs and email receipt
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: lineItems,
@@ -147,6 +147,10 @@ export async function POST(request: Request) {
       cancel_url: `${baseUrl}/cart`,
       customer_email: body.customerInfo.email,
       metadata,
+      // Enable automatic email receipts
+      payment_intent_data: {
+        receipt_email: body.customerInfo.email,
+      },
     });
 
     // Try to store checkout session info in Supabase if available
