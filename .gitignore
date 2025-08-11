@@ -48,3 +48,4 @@ performance-report.json
 # Temporary files
 *.tmp
 *.temp
+.browser-data/

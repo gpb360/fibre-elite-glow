@@ -192,8 +192,8 @@ const BetaGlucanOatBran = () => {
         
         {/* What is Beta-Glucan Oat Bran */}
         <SplitSection
-          image="/lovable-uploads/oat-bran-closeup.jpg"
-          imageAlt="Beta-Glucan Oat Bran Close-up"
+          image="/assets/webp/16x9_A_pile_of_oats_and_oat_straws_ar.webp"
+          imageAlt="Beta-Glucan Oat Bran - Premium oats and oat straws"
           title="What is Beta-Glucan Oat Bran?"
           description="A powerful soluble fiber with exceptional health benefits, backed by extensive scientific research."
           className="bg-white"
@@ -301,8 +301,8 @@ const BetaGlucanOatBran = () => {
         
         {/* How It Works */}
         <SplitSection
-          image="/lovable-uploads/cholesterol-diagram.jpg"
-          imageAlt="Beta-Glucan Cholesterol Reduction Mechanism"
+          image="/assets/webp/16x9_A_pile_of_oats_and_oat_straws_ar.webp"
+          imageAlt="Beta-Glucan Oat Bran - Scientific mechanism illustration"
           title="How Beta-Glucan Works"
           description="The science behind this powerful soluble fiber"
           reverse
