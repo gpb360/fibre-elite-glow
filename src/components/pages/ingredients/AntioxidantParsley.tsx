@@ -41,7 +41,7 @@ const AntioxidantParsleyHero = () => (
   <section className="relative overflow-hidden bg-white pt-20 pb-12 md:pt-32 md:pb-20">
     <div className="absolute inset-0 z-0 opacity-20">
       <Image
-        src="/assets/webp/16x9_A_vibrant_cluster_of_fresh_parsl.webp"
+        src="/assets/webp/16x9_a_vibrant_cluster_of_fresh_parsl.webp"
         alt="Fresh vibrant parsley - antioxidant-rich herb ingredient for digestive health and detoxification"
         fill
         className="object-cover"
@@ -109,9 +109,9 @@ const AntioxidantParsleyHero = () => (
           animate={{ opacity: 1, scale: 1 }} 
           transition={{ duration: 0.7 }}
         >
-          <Image 
-            src="/assets/webp/16x9_A_vibrant_cluster_of_fresh_parsl.webp" 
-            alt="Antioxidant Parsley - Fresh herb rich in vitamins and detoxifying compounds" 
+          <Image
+            src="/assets/webp/16x9_a_vibrant_cluster_of_fresh_parsl.webp"
+            alt="Antioxidant Parsley - Fresh herb rich in vitamins and detoxifying compounds"
             className="rounded-lg shadow-xl"
             width={1280}
             height={720}
@@ -193,8 +193,8 @@ const AntioxidantParsley = () => {
         <AntioxidantParsleyHero />
         
         <SplitSection
-          image="/lovable-uploads/parsley-closeup.jpg"
-          imageAlt="Parsley Close-up"
+          image="/assets/webp/16x9_a_vibrant_cluster_of_fresh_parsl.webp"
+          imageAlt="Antioxidant Parsley - Fresh vibrant cluster of parsley leaves"
           title="What is Antioxidant Parsley?"
           description="More than just a garnish, parsley is a surprisingly potent medicinal herb."
           className="bg-white"
@@ -232,8 +232,8 @@ const AntioxidantParsley = () => {
         </section>
         
         <SplitSection
-          image="/lovable-uploads/detox-illustration.jpg"
-          imageAlt="Detoxification Illustration"
+          image="/assets/webp/16x9_a_vibrant_cluster_of_fresh_parsl.webp"
+          imageAlt="Antioxidant Parsley - Natural detoxifying herb for cleansing"
           title="A Natural Detoxifier"
           description="How parsley supports the body's natural cleansing processes"
           reverse
