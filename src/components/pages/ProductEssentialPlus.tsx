@@ -71,7 +71,7 @@ const totalEssentialPlusTestimonials: ProductTestimonial[] = [
     name: 'J Lemay',
     location: 'Kelowna, BC',
     rating: 5,
-    text: 'I absolutely love the 15 Day Detox Program. Every time I have completed the 15 days, my family usually makes a comment about how good I look and how clear my complexion is.'
+    text: 'I absolutely love the Program. Every time I have completed the 15 days, my family usually makes a comment about how good I look and how clear my complexion is.'
   },
   {
     id: '9',

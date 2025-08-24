@@ -51,7 +51,7 @@ const totalEssentialTestimonials: ProductTestimonial[] = [
     name: 'R Nunnikhoven',
     location: 'Maple Ridge, BC',
     rating: 5,
-    text: 'The Total Essential  15 Day Detox Program is simply wonderful. It tastes great, is easy to take and works as promised.'
+    text: 'The Total Essential Program is simply wonderful. It tastes great, is easy to take and works as promised.'
   },
   {
     id: '6',

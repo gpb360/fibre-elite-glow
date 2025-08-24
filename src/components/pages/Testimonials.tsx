@@ -33,7 +33,7 @@ const Testimonials = () => {
       product: "Total Essential"
     },
     {
-      quote: "I absolutely love the 15 Day Detox Program. Every time I have completed the 15 days, my family usually makes a comment about how good I look and how clear my complexion is. This is just a bonus, because I started using Total Essential to rid my body of toxins in a natural, safe way. I must say, I notice a difference after the first day!",
+      quote: "I absolutely love the how total essential has changed my life. Every time I have completed the 15 days, my family usually makes a comment about how good I look and how clear my complexion is. This is just a bonus, because I started using Total Essential to rid my body of toxins in a natural, safe way. I must say, I notice a difference after the first day!",
       author: "J Lemay",
       role: "Kelowna BC",
       rating: 5,
