@@ -51,14 +51,14 @@ const totalEssentialTestimonials: ProductTestimonial[] = [
     name: 'R Nunnikhoven',
     location: 'Maple Ridge, BC',
     rating: 5,
-    text: 'The Total Cleansing (Total Essential) 15 Day Detox Program is simply wonderful. It tastes great, is easy to take and works as promised.'
+    text: 'The Total Essential  15 Day Detox Program is simply wonderful. It tastes great, is easy to take and works as promised.'
   },
   {
     id: '6',
     name: 'J Neels',
     location: 'Chilliwack, BC',
     rating: 5,
-    text: 'I have been using the Total Cleansing (Total Essential) Detox program for about 2 years now. It has been life changing for me... After taking the detox I was able to be regular, gain extra energy and feel really great.'
+    text: 'I have been using the Total Essential  Detox program for about 2 years now. It has been life changing for me... After taking the detox I was able to be regular, gain extra energy and feel really great.'
   }
 ];
 
