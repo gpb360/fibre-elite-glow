@@ -241,10 +241,7 @@ export default function PrivacyPolicy() {
                       <h4 className="font-semibold text-gray-900 mb-2">Email:</h4>
                       <p className="text-gray-700">admin@lbve.ca</p>
                     </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Phone:</h4>
-                      <p className="text-gray-700">1-888-661-9886</p>
-                    </div>
+                
                   </div>
                   
                   <div>

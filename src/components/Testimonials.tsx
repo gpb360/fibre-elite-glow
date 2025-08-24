@@ -15,19 +15,19 @@ export function Testimonials() {
       rating: 5,
     },
     {
-      quote: "I absolutely love the 15 Day Detox Program. Every time I have completed the 15 days, my family usually makes a comment about how good I look and how clear my complexion is. This is just a bonus, because I started using Total Cleansing (Total Essential) to rid my body of toxins in a natural, safe way I must say, I notice a difference after the first day, so you can imagine how good I feel after 15 days! Thank you for all your help.",
+      quote: "I absolutely love the 15 Day Detox Program. Every time I have completed the 15 days, my family usually makes a comment about how good I look and how clear my complexion is. This is just a bonus, because I started using Total Essential  to rid my body of toxins in a natural, safe way I must say, I notice a difference after the first day, so you can imagine how good I feel after 15 days! Thank you for all your help.",
       author: "J Lemay",
       role: "Kelowna BC",
       rating: 5,
     },
     {
-      quote: "The Total Cleansing (Total Essential) 15 Day Detox Program is simply wonderful. It tastes great, is easy to take and works as promised. I have been taking this cleanse at least twice per year and am pleased every time. I have more energy and feel healthier, thank you La Belle Vie!",
+      quote: "The Total Essential  15 Day Detox Program is simply wonderful. It tastes great, is easy to take and works as promised. I have been taking this cleanse at least twice per year and am pleased every time. I have more energy and feel healthier, thank you La Belle Vie!",
       author: "R Nunnikhoven",
       role: "Maple Ridge BC",
       rating: 5,
     },
     {
-      quote: "I have been using the Total Cleansing (Total Essential) Detox program for about 2 years now. It has been life changing for me, I have troubles with my digestive system from working shift work as a nurse. After taking the Total Cleansing (Total Essential) detox I was able to be regular, gain extra energy and feel really great about myself. It also takes care of water retention and helped lose a few pounds, and totally cleared my skin. I now take the Total Cleansing (Total Essential) Detox every 6 months and feel absolutely great!! I have recommended it to my friends, co-workers and family!",
+      quote: "I have been using the Total Essential  Detox program for about 2 years now. It has been life changing for me, I have troubles with my digestive system from working shift work as a nurse. After taking the Total Essential  detox I was able to be regular, gain extra energy and feel really great about myself. It also takes care of water retention and helped lose a few pounds, and totally cleared my skin. I now take the Total Essential  Detox every 6 months and feel absolutely great!! I have recommended it to my friends, co-workers and family!",
       author: "J Neels",
       role: "Chilliwack BC",
       rating: 5,
@@ -45,7 +45,7 @@ export function Testimonials() {
       rating: 5,
     },
     {
-      quote: "I first started using the La Belle Vie Total Cleansing (Total Essential) and Total Vitality products in my mid-20’s, and within the 10 month, I lost 10 pounds (without other dieting efforts except consuming less carbohydrates at dinner time)! Since then I kept using the Total Cleansing (Total Essential) product, and occasionally the Total Vitality product, and I kept my weight off. I have been a chubby girl all my life and these were the only products that helped me lose the weight. As a migraine sufferer, I get headaches whenever I have bowel irregularity. The Total Cleansing (Total Essential) product has helped me to eliminate this problem and as a result, I have way less bowel-movement related headache attacks. I have since then recommended this product to a few of my friends that were around my age, and my dad, who is in his mid-70’s now, and all of them have seen significant improvement in their bowel problems. A few of my friends have also used Total Cleansing (Total Essential) and Total Vitality in combination, and they have also achieve satisfying weight loss results. I recommend the Total Cleansing (Total Essential) to anyone who would like to improve their regularity, and for those of you who need to loose a few extra pounds, try the Total Vitality product and you might be amazed at the results!",
+      quote: "I first started using the La Belle Vie Total Essential  and Total Vitality products in my mid-20’s, and within the 10 month, I lost 10 pounds (without other dieting efforts except consuming less carbohydrates at dinner time)! Since then I kept using the Total Essential  product, and occasionally the Total Vitality product, and I kept my weight off. I have been a chubby girl all my life and these were the only products that helped me lose the weight. As a migraine sufferer, I get headaches whenever I have bowel irregularity. The Total Essential  product has helped me to eliminate this problem and as a result, I have way less bowel-movement related headache attacks. I have since then recommended this product to a few of my friends that were around my age, and my dad, who is in his mid-70’s now, and all of them have seen significant improvement in their bowel problems. A few of my friends have also used Total Essential  and Total Vitality in combination, and they have also achieve satisfying weight loss results. I recommend the Total Essential  to anyone who would like to improve their regularity, and for those of you who need to loose a few extra pounds, try the Total Vitality product and you might be amazed at the results!",
       author: "M. Ho",
       role: "Richmond BC",
       rating: 5,

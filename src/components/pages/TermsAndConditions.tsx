@@ -214,7 +214,7 @@ export default function TermsAndConditions() {
                     <div className="flex flex-col items-center">
                       <Phone className="h-6 w-6 text-green-600 mb-2" />
                       <p className="text-sm text-gray-700">
-                        Toll Free: 1-888-661-9886<br />
+               
                         Local: 604-961-6231
                       </p>
                     </div>
