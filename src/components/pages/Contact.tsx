@@ -128,6 +128,7 @@ export default function Contact() {
                     <div>
                       <p className="text-sm font-medium text-gray-900">Preet Minhas</p>
                       <p className="text-sm text-gray-600">604-583-5460</p>
+                      <p className="text-xs text-gray-500">(English and Punjabi)</p>
                     </div>
                   </div>
                   
@@ -138,7 +139,7 @@ export default function Contact() {
                     <div>
                       <p className="text-sm font-medium text-gray-900">Caterina Chu</p>
                       <p className="text-sm text-gray-600">604-771-1668</p>
-                      <p className="text-xs text-gray-500">(Cantonese and Mandarin)</p>
+                      <p className="text-xs text-gray-500">(English and Chinese)</p>
                     </div>
                   </div>
                 </div>
