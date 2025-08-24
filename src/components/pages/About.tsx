@@ -183,7 +183,7 @@ export default function About() {
                   <Phone className="h-8 w-8 text-green-600 mb-3" />
                   <h4 className="font-semibold text-gray-900 mb-2">Call Us</h4>
                   <p className="text-gray-700 text-sm">
-                    Toll Free: 1-888-661-9886<br />
+                 
                     Local: 604-961-6231
                   </p>
                 </div>

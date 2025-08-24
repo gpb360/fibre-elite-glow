@@ -99,7 +99,7 @@ export default function Contact() {
                     <div>
                       <p className="text-sm font-medium text-gray-900">Phone</p>
                       <p className="text-sm text-gray-600">
-                        Toll Free: 1-888-661-9886<br />
+           
                         Local: 604-961-6231
                       </p>
                     </div>
