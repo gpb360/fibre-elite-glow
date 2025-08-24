@@ -15,19 +15,19 @@ export function Testimonials() {
       rating: 5,
     },
     {
-      quote: "I absolutely love the 15 Day Detox Program. Every time I have completed the 15 days, my family usually makes a comment about how good I look and how clear my complexion is. This is just a bonus, because I started using Total Essential  to rid my body of toxins in a natural, safe way I must say, I notice a difference after the first day, so you can imagine how good I feel after 15 days! Thank you for all your help.",
+      quote: "I absolutely love the Total Essential Program. Every time I have completed the 15 days, my family usually makes a comment about how good I look and how clear my complexion is. This is just a bonus, because I started using Total Essential  to rid my body of toxins in a natural, safe way I must say, I notice a difference after the first day, so you can imagine how good I feel after 15 days! Thank you for all your help.",
       author: "J Lemay",
       role: "Kelowna BC",
       rating: 5,
     },
     {
-      quote: "The Total Essential  15 Day Detox Program is simply wonderful. It tastes great, is easy to take and works as promised. I have been taking this cleanse at least twice per year and am pleased every time. I have more energy and feel healthier, thank you La Belle Vie!",
+      quote: "The Total Essential Program is simply wonderful. It tastes great, is easy to take and works as promised. I have been taking this cleanse at least twice per year and am pleased every time. I have more energy and feel healthier, thank you La Belle Vie!",
       author: "R Nunnikhoven",
       role: "Maple Ridge BC",
       rating: 5,
     },
     {
-      quote: "I have been using the Total Essential  Detox program for about 2 years now. It has been life changing for me, I have troubles with my digestive system from working shift work as a nurse. After taking the Total Essential  detox I was able to be regular, gain extra energy and feel really great about myself. It also takes care of water retention and helped lose a few pounds, and totally cleared my skin. I now take the Total Essential  Detox every 6 months and feel absolutely great!! I have recommended it to my friends, co-workers and family!",
+      quote: "I have been using the Total Essential program for about 2 years now. It has been life changing for me, I have troubles with my digestive system from working shift work as a nurse. After taking the Total Essential  detox I was able to be regular, gain extra energy and feel really great about myself. It also takes care of water retention and helped lose a few pounds, and totally cleared my skin. I now take the Total Essential  Detox every 6 months and feel absolutely great!! I have recommended it to my friends, co-workers and family!",
       author: "J Neels",
       role: "Chilliwack BC",
       rating: 5,
