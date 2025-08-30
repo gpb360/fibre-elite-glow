@@ -167,6 +167,34 @@
 }
 
 @layer utilities {
+  /* Accessibility improvements */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Focus indicators */
+  .focus\:ring-accessibility:focus {
+    outline: 2px solid #9ED458;
+    outline-offset: 2px;
+  }
+
+  /* Skip links */
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: #000;
+    color: #fff;
+    padding: 8px;
+    text-decoration: none;
+    transition: top 0.3s;
+    z-index: 9999;
+  }
+
+  .skip-link:focus {
+    top: 6px;
+  }
 }
 
 /* Premium keyframes */

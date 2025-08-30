@@ -8,11 +8,15 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight, AlertCircle, CheckCircle } from 'lucide-react'
+import { ValidatedInput, FormSecurityIndicator, FormValidationSummary } from '@/components/ui/FormValidation'
+import { useFormValidation } from '@/hooks/useFormValidation'
+import { registerSchema } from '@/lib/validation'
+import { Eye, EyeOff, Mail, Lock, User, ArrowRight, AlertCircle, CheckCircle, Shield, Phone } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/integrations/supabase/client'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import { ErrorBoundary } from '@/components/error'
 
 interface SignUpForm {
   email: string
@@ -38,11 +42,24 @@ export default function SignUpPage() {
     acceptTerms: false,
     acceptMarketing: false
   })
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  const [validFields, setValidFields] = useState(0)
+  const [attemptCount, setAttemptCount] = useState(0)
+  
+  // Use enhanced form validation
+  const {
+    errors,
+    isValid,
+    isValidating,
+    validate,
+    clearErrors,
+    resetValidation
+  } = useFormValidation(registerSchema, {
+    validateOnChange: true,
+    showErrorToast: false
+  })
 
   // Redirect if already logged in
   useEffect(() => {
@@ -51,44 +68,70 @@ export default function SignUpPage() {
     }
   }, [user, loading, router])
 
-  const validateForm = () => {
-    if (!form.firstName.trim()) {
-      setError('First name is required.')
-      return false
+  // Enhanced password strength checker
+  const getPasswordStrength = (password: string) => {
+    let strength = 0
+    const checks = {
+      length: password.length >= 8,
+      uppercase: /[A-Z]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      numbers: /\d/.test(password),
+      special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
     }
-    if (!form.lastName.trim()) {
-      setError('Last name is required.')
-      return false
+    
+    strength = Object.values(checks).filter(Boolean).length
+    return { strength, checks }
+  }
+  
+  const passwordStrength = getPasswordStrength(form.password)
+  
+  // Enhanced security validation
+  const performSecurityChecks = (formData: SignUpForm) => {
+    const suspiciousPatterns = [
+      /<script/i,
+      /javascript:/i,
+      /vbscript:/i,
+      /onload=/i,
+      /onerror=/i
+    ]
+    
+    const fields = [formData.email, formData.firstName, formData.lastName]
+    for (const field of fields) {
+      for (const pattern of suspiciousPatterns) {
+        if (pattern.test(field)) {
+          return { isValid: false, error: 'Invalid characters detected in form data.' }
+        }
+      }
     }
-    if (!form.email.trim()) {
-      setError('Email is required.')
-      return false
-    }
-    if (!form.password) {
-      setError('Password is required.')
-      return false
-    }
-    if (form.password.length < 8) {
-      setError('Password must be at least 8 characters long.')
-      return false
-    }
-    if (form.password !== form.confirmPassword) {
-      setError('Passwords do not match.')
-      return false
-    }
-    if (!form.acceptTerms) {
-      setError('Please accept the Terms and Conditions.')
-      return false
-    }
-    return true
+    
+    return { isValid: true }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
     setSuccess(null)
-
-    if (!validateForm()) return
+    setAttemptCount(prev => prev + 1)
+    
+    // Rate limiting for signup attempts
+    if (attemptCount >= 5) {
+      setError('Too many signup attempts. Please wait 5 minutes before trying again.')
+      return
+    }
+    
+    // Validate form data with enhanced schema
+    const validation = await validate(form)
+    if (!validation.isValid) {
+      setError('Please fix the validation errors above.')
+      return
+    }
+    
+    // Additional security checks
+    const securityCheck = performSecurityChecks(form)
+    if (!securityCheck.isValid) {
+      setError(securityCheck.error!)
+      return
+    }
 
     setIsSubmitting(true)
 
@@ -161,6 +204,15 @@ export default function SignUpPage() {
     }))
     if (error) setError(null)
     if (success) setSuccess(null)
+    clearErrors()
+  }
+  
+  const handleValidationChange = (field: string) => (isValid: boolean, error?: string) => {
+    setValidFields(prev => {
+      const change = isValid ? 1 : -1
+      const newCount = Math.max(0, prev + change)
+      return Math.min(6, newCount) // Maximum 6 fields (firstName, lastName, email, password, confirmPassword, phone)
+    })
   }
 
   // Show loading state while checking auth
@@ -185,7 +237,12 @@ export default function SignUpPage() {
   }
 
   return (
-    <>
+    <ErrorBoundary
+      onError={(error, errorInfo) => {
+        console.error('SignUp Error:', error, errorInfo)
+      }}
+      resetKeys={[attemptCount]}
+    >
       <Header />
       <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
@@ -200,11 +257,28 @@ export default function SignUpPage() {
             <CardHeader>
               <CardTitle>Sign Up</CardTitle>
               <CardDescription>
-                Fill in your details to create your account
+                Fill in your details to create your secure account
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-6" data-testid="signup-form">
+                {/* Security and validation indicators */}
+                <FormSecurityIndicator 
+                  isSecure={isValid && validFields >= 5 && form.acceptTerms}
+                  validFields={validFields}
+                  totalFields={6}
+                />
+                
+                {/* Form validation summary */}
+                <FormValidationSummary 
+                  errors={errors}
+                  onFieldFocus={(fieldName) => {
+                    const element = document.getElementById(fieldName)
+                    element?.focus()
+                  }}
+                />
+                
+                {/* General error alert */}
                 {error && (
                   <Alert variant="destructive">
                     <AlertCircle className="h-4 w-4" />
@@ -212,6 +286,7 @@ export default function SignUpPage() {
                   </Alert>
                 )}
 
+                {/* Success alert */}
                 {success && (
                   <Alert className="border-green-500 bg-green-50">
                     <CheckCircle className="h-4 w-4 text-green-600" />
@@ -219,170 +294,202 @@ export default function SignUpPage() {
                   </Alert>
                 )}
 
+                {/* Name fields row */}
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
-                      First Name
-                    </label>
-                    <div className="relative">
-                      <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="firstName"
-                        name="firstName"
-                        type="text"
-                        required
-                        value={form.firstName}
-                        onChange={handleChange}
-                        placeholder="John"
-                        className="pl-10"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
-                      Last Name
-                    </label>
-                    <Input
-                      id="lastName"
-                      name="lastName"
-                      type="text"
-                      required
-                      value={form.lastName}
-                      onChange={handleChange}
-                      placeholder="Doe"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      required
-                      value={form.email}
-                      onChange={handleChange}
-                      placeholder="your@email.com"
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                    Phone Number (Optional)
-                  </label>
-                  <Input
-                    id="phone"
-                    name="phone"
-                    type="tel"
-                    value={form.phone}
+                  <ValidatedInput
+                    id="firstName"
+                    name="firstName"
+                    type="text"
+                    label="First Name"
+                    schema={registerSchema}
+                    fieldName="firstName"
+                    value={form.firstName}
                     onChange={handleChange}
-                    placeholder="(555) 123-4567"
+                    onValidationChange={handleValidationChange('firstName')}
+                    showSecurityIndicator={true}
+                    helperText="Enter your first name"
+                    required
+                    placeholder="John"
+                    data-testid="first-name-input"
+                  />
+                  
+                  <ValidatedInput
+                    id="lastName"
+                    name="lastName"
+                    type="text"
+                    label="Last Name"
+                    schema={registerSchema}
+                    fieldName="lastName"
+                    value={form.lastName}
+                    onChange={handleChange}
+                    onValidationChange={handleValidationChange('lastName')}
+                    showSecurityIndicator={true}
+                    helperText="Enter your last name"
+                    required
+                    placeholder="Doe"
+                    data-testid="last-name-input"
                   />
                 </div>
 
-                <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                    Password
-                  </label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <Input
-                      id="password"
-                      name="password"
-                      type={showPassword ? "text" : "password"}
-                      required
-                      value={form.password}
-                      onChange={handleChange}
-                      placeholder="Create a password"
-                      className="pl-10 pr-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    >
-                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </button>
-                  </div>
+                {/* Email field with validation */}
+                <ValidatedInput
+                  id="email"
+                  name="email"
+                  type="email"
+                  label="Email Address"
+                  schema={registerSchema}
+                  fieldName="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  onValidationChange={handleValidationChange('email')}
+                  showSecurityIndicator={true}
+                  helperText="Enter a valid email address for account verification"
+                  required
+                  placeholder="your@email.com"
+                  data-testid="email-input"
+                />
+
+                {/* Phone field with validation */}
+                <ValidatedInput
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  label="Phone Number (Optional)"
+                  schema={registerSchema}
+                  fieldName="phone"
+                  value={form.phone}
+                  onChange={handleChange}
+                  onValidationChange={handleValidationChange('phone')}
+                  showSecurityIndicator={false}
+                  helperText="Optional: For order updates and customer support"
+                  placeholder="(555) 123-4567"
+                  data-testid="phone-input"
+                />
+
+                {/* Password field with strength indicator */}
+                <div className="space-y-2">
+                  <ValidatedInput
+                    id="password"
+                    name="password"
+                    type="password"
+                    label="Password"
+                    schema={registerSchema}
+                    fieldName="password"
+                    value={form.password}
+                    onChange={handleChange}
+                    onValidationChange={handleValidationChange('password')}
+                    showSecurityIndicator={true}
+                    helperText="Minimum 8 characters with uppercase, lowercase, number, and special character"
+                    required
+                    placeholder="Create a strong password"
+                    data-testid="password-input"
+                  />
+                  
+                  {/* Password strength indicator */}
+                  {form.password && (
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-xs">
+                        <span>Password Strength:</span>
+                        <span className={passwordStrength.strength >= 4 ? 'text-green-600' : passwordStrength.strength >= 2 ? 'text-yellow-600' : 'text-red-600'}>
+                          {passwordStrength.strength >= 4 ? 'Strong' : passwordStrength.strength >= 2 ? 'Medium' : 'Weak'}
+                        </span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div 
+                          className={`h-2 rounded-full transition-all duration-300 ${
+                            passwordStrength.strength >= 4 ? 'bg-green-500' : 
+                            passwordStrength.strength >= 2 ? 'bg-yellow-500' : 'bg-red-500'
+                          }`}
+                          style={{ width: `${(passwordStrength.strength / 5) * 100}%` }}
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-1 text-xs">
+                        <span className={passwordStrength.checks.length ? 'text-green-600' : 'text-gray-400'}>
+                          ✓ 8+ characters
+                        </span>
+                        <span className={passwordStrength.checks.uppercase ? 'text-green-600' : 'text-gray-400'}>
+                          ✓ Uppercase
+                        </span>
+                        <span className={passwordStrength.checks.lowercase ? 'text-green-600' : 'text-gray-400'}>
+                          ✓ Lowercase
+                        </span>
+                        <span className={passwordStrength.checks.numbers ? 'text-green-600' : 'text-gray-400'}>
+                          ✓ Numbers
+                        </span>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
-                <div>
-                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
-                    Confirm Password
-                  </label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <Input
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      type={showConfirmPassword ? "text" : "password"}
-                      required
-                      value={form.confirmPassword}
-                      onChange={handleChange}
-                      placeholder="Confirm your password"
-                      className="pl-10 pr-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    >
-                      {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </button>
-                  </div>
-                </div>
+                {/* Confirm Password field */}
+                <ValidatedInput
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  label="Confirm Password"
+                  schema={registerSchema}
+                  fieldName="confirmPassword"
+                  value={form.confirmPassword}
+                  onChange={handleChange}
+                  onValidationChange={handleValidationChange('confirmPassword')}
+                  showSecurityIndicator={true}
+                  helperText="Re-enter your password to confirm"
+                  required
+                  placeholder="Confirm your password"
+                  data-testid="confirm-password-input"
+                />
 
+                {/* Terms and conditions */}
                 <div className="space-y-3">
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-start space-x-3">
                     <Checkbox
                       id="acceptTerms"
                       name="acceptTerms"
                       checked={form.acceptTerms}
                       onCheckedChange={(checked) => setForm(prev => ({ ...prev, acceptTerms: checked as boolean }))}
+                      data-testid="terms-checkbox"
+                      className="mt-0.5"
                     />
-                    <label htmlFor="acceptTerms" className="text-sm text-gray-700">
+                    <label htmlFor="acceptTerms" className="text-sm text-gray-700 leading-5">
                       I agree to the{' '}
-                      <Link href="/terms" className="text-green-600 hover:text-green-700">
+                      <Link href="/terms" className="text-green-600 hover:text-green-700 underline">
                         Terms and Conditions
                       </Link>{' '}
                       and{' '}
-                      <Link href="/privacy" className="text-green-600 hover:text-green-700">
+                      <Link href="/privacy" className="text-green-600 hover:text-green-700 underline">
                         Privacy Policy
                       </Link>
+                      {' '}*
                     </label>
                   </div>
 
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-start space-x-3">
                     <Checkbox
                       id="acceptMarketing"
                       name="acceptMarketing"
                       checked={form.acceptMarketing}
                       onCheckedChange={(checked) => setForm(prev => ({ ...prev, acceptMarketing: checked as boolean }))}
+                      data-testid="marketing-checkbox"
+                      className="mt-0.5"
                     />
-                    <label htmlFor="acceptMarketing" className="text-sm text-gray-700">
-                      I'd like to receive marketing emails and special offers
+                    <label htmlFor="acceptMarketing" className="text-sm text-gray-700 leading-5">
+                      I'd like to receive marketing emails and special offers (optional)
                     </label>
                   </div>
                 </div>
 
                 <Button
                   type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-green-600 hover:bg-green-700"
+                  disabled={isSubmitting || !isValid || !form.acceptTerms || isValidating}
+                  className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50"
+                  data-testid="submit-button"
                 >
                   {isSubmitting ? (
                     "Creating Account..."
                   ) : (
                     <>
-                      Create Account
+                      <Shield className="mr-2 h-4 w-4" />
+                      Create Secure Account
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </>
                   )}
@@ -402,6 +509,4 @@ export default function SignUpPage() {
         </div>
       </div>
       <Footer />
-    </>
-  )
-}
+    </ErrorBoundary>

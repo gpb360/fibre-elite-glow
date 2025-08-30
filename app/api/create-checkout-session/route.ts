@@ -5,37 +5,81 @@ import {
   STRIPE_CONFIG
 } from '@/lib/stripe';
 import { supabaseAdmin } from '@/integrations/supabase/client';
+import { checkoutFormSchema, CartItem } from '@/lib/validation';
+import { enhancedCheckoutSchema, SecurityValidation, FormValidationUtils } from '@/lib/form-validation';
+import { GlobalErrorHandler, ErrorSanitizer } from '@/lib/error-handler';
+import { CSRFProtection } from '@/lib/csrf';
+import { z } from 'zod';
 
-// Define types for the request body
-interface CartItem {
-  id: string;
-  productName: string;
-  price: number;
-  quantity: number;
-  imageUrl?: string;
-}
+// Enhanced server-side validation schema for checkout with CSRF protection
+const serverCheckoutSchema = z.object({
+  items: z.array(z.object({
+    id: z.string().min(1, 'Product ID is required').max(100, 'Product ID too long'),
+    productName: z.string().min(1, 'Product name is required').max(200, 'Product name too long'),
+    price: z.number().min(0.01, 'Price must be positive').max(9999.99, 'Price too high'),
+    quantity: z.number().int().min(1, 'Quantity must be at least 1').max(10, 'Maximum 10 items per product'),
+    imageUrl: z.string().url('Invalid image URL').optional(),
+  })).min(1, 'Cart cannot be empty').max(50, 'Too many items in cart'),
+  customerInfo: enhancedCheckoutSchema,
+  csrfToken: z.string().min(32, 'CSRF token required').max(128, 'CSRF token too long'),
+  securityContext: z.object({
+    userAgent: z.string().max(500, 'User agent too long'),
+    timestamp: z.number().min(Date.now() - 300000, 'Request too old').max(Date.now() + 60000, 'Request from future'),
+    formHash: z.string().min(1, 'Form hash required').max(1000, 'Form hash too long')
+  }).optional()
+});
 
-interface CustomerInfo {
-  email: string;
-  firstName: string;
-  lastName: string;
-  address: {
-    line1: string;
-    line2?: string;
-    city: string;
-    state: string;
-    postal_code: string;
-    country: string;
-  };
-}
-
-interface CheckoutRequestBody {
-  items: CartItem[];
-  customerInfo: CustomerInfo;
-}
+type CheckoutRequestBody = z.infer<typeof serverCheckoutSchema>;
 
 export async function POST(request: Request) {
   try {
+    // Enhanced security headers
+    const headers = new Headers();
+    headers.set('X-Content-Type-Options', 'nosniff');
+    headers.set('X-Frame-Options', 'DENY');
+    headers.set('X-XSS-Protection', '1; mode=block');
+    headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+    headers.set('X-Permitted-Cross-Domain-Policies', 'none');
+    
+    // CSRF Protection
+    const csrfResult = CSRFProtection.validateRequest(request);
+    if (!csrfResult.valid) {
+      console.warn('CSRF validation failed:', csrfResult.error);
+      return NextResponse.json(
+        {
+          error: 'Security validation failed',
+          code: 'CSRF_ERROR'
+        },
+        { status: 403, headers }
+      );
+    }
+
+    // Enhanced rate limiting
+    const clientIP = request.headers.get('x-forwarded-for') || 
+                     request.headers.get('x-real-ip') || 
+                     request.headers.get('cf-connecting-ip') || 
+                     'unknown';
+    
+    console.log(`Checkout request from IP: ${clientIP}`);
+    
+    // Additional security: check for bot-like behavior
+    const userAgent = request.headers.get('user-agent') || '';
+    const suspiciousBots = [
+      /bot/i, /crawler/i, /spider/i, /scraper/i,
+      /curl/i, /wget/i, /postman/i
+    ];
+    
+    if (suspiciousBots.some(pattern => pattern.test(userAgent))) {
+      console.warn('Suspicious user agent detected:', userAgent);
+      return NextResponse.json(
+        {
+          error: 'Access denied',
+          code: 'BOT_DETECTED'
+        },
+        { status: 403, headers }
+      );
+    }
+
     // Debug environment variables in production (only log presence, not values)
     const debugInfo = {
       hasStripeSecret: !!process.env.STRIPE_SECRET_KEY,
@@ -76,35 +120,106 @@ export async function POST(request: Request) {
                    process.env.URL ||
                    'https://lebve.netlify.app';
     
-    // Parse and validate request body
-    const rawBody = await request.json();
-
-    // Basic validation without Zod schema to avoid mismatch
-    if (!rawBody.items || !Array.isArray(rawBody.items) || rawBody.items.length === 0) {
+    // Parse and validate request body with comprehensive Zod validation
+    let rawBody: any;
+    try {
+      rawBody = await request.json();
+    } catch (error) {
+      console.error('Invalid JSON in request body:', error);
       return NextResponse.json(
-        { error: 'Items array is required and must not be empty' },
+        { 
+          error: 'Invalid request format',
+          details: ErrorSanitizer.sanitizeMessage(error)
+        },
         { status: 400 }
       );
     }
 
-    if (!rawBody.customerInfo || !rawBody.customerInfo.email) {
+    // Comprehensive server-side validation and sanitization
+    const validationResult = serverCheckoutSchema.safeParse(rawBody);
+    
+    if (!validationResult.success) {
+      console.error('Checkout validation failed:', validationResult.error.errors);
+      
+      // Format validation errors for client
+      const errorMessages = validationResult.error.errors.map(err => {
+        const path = err.path.join('.');
+        return `${path}: ${err.message}`;
+      });
+      
       return NextResponse.json(
-        { error: 'Customer information with email is required' },
+        {
+          error: 'Validation failed',
+          details: errorMessages,
+          code: 'VALIDATION_ERROR'
+        },
         { status: 400 }
       );
     }
 
-    // Validate each item has required fields
-    for (const item of rawBody.items) {
-      if (!item.id || !item.productName || typeof item.price !== 'number' || typeof item.quantity !== 'number') {
+    const body = validationResult.data;
+
+    // Enhanced security validation for all text fields
+    const customerInfo = body.customerInfo;
+    const allTextFields = [
+      customerInfo.firstName,
+      customerInfo.lastName,
+      customerInfo.email,
+      customerInfo.address,
+      customerInfo.city,
+      customerInfo.state,
+      customerInfo.zipCode,
+      customerInfo.phone || '',
+      ...body.items.map(item => item.productName)
+    ];
+
+    // Comprehensive security checks
+    const securityValidation = FormValidationUtils.getFormSecurityScore({
+      ...customerInfo,
+      items: body.items.map(item => item.productName).join(' ')
+    });
+    
+    if (!securityValidation.isSecure) {
+      console.warn('Security validation failed:', {
+        clientIP,
+        issues: securityValidation.issues,
+        score: securityValidation.percentage
+      });
+      return NextResponse.json(
+        {
+          error: 'Content validation failed',
+          details: securityValidation.issues,
+          code: 'SECURITY_VIOLATION'
+        },
+        { status: 400, headers }
+      );
+    }
+    
+    // Validate CSRF token if provided
+    if (body.csrfToken && !CSRFProtection.validateToken(body.csrfToken)) {
+      console.warn('Invalid CSRF token provided');
+      return NextResponse.json(
+        {
+          error: 'Invalid security token',
+          code: 'CSRF_INVALID'
+        },
+        { status: 403, headers }
+      );
+    }
+    
+    // Validate timestamp if security context provided
+    if (body.securityContext) {
+      const timeDiff = Date.now() - body.securityContext.timestamp;
+      if (timeDiff > 300000) { // 5 minutes
         return NextResponse.json(
-          { error: 'Each item must have id, productName, price, and quantity' },
-          { status: 400 }
+          {
+            error: 'Request expired. Please refresh and try again.',
+            code: 'REQUEST_EXPIRED'
+          },
+          { status: 400, headers }
         );
       }
     }
-    
-    const body = rawBody as CheckoutRequestBody;
 
     // Format line items for Stripe
     const lineItems = body.items.map(item => ({
@@ -123,12 +238,19 @@ export async function POST(request: Request) {
     // Generate order number
     const orderNumber = `FEG-${Date.now()}-${Math.random().toString(36).substring(2, 11).toUpperCase()}`;
 
-    // Create metadata for the order
+    // Create metadata for the order with enhanced security logging
     const metadata = {
       order_number: orderNumber,
       customer_name: `${body.customerInfo.firstName} ${body.customerInfo.lastName}`,
       customer_email: body.customerInfo.email,
-      shipping_address: JSON.stringify(body.customerInfo.address),
+      shipping_address: JSON.stringify({
+        line1: body.customerInfo.address,
+        city: body.customerInfo.city,
+        state: body.customerInfo.state,
+        postal_code: body.customerInfo.zipCode,
+        country: body.customerInfo.country
+      }),
+      customer_phone: body.customerInfo.phone || '',
       order_items: JSON.stringify(body.items.map(item => ({
         id: item.id,
         name: item.productName,
@@ -136,6 +258,10 @@ export async function POST(request: Request) {
         price: item.price,
         product_type: item.productName.toLowerCase().includes('plus') ? 'total_essential_plus' : 'total_essential'
       }))),
+      security_validated: 'true',
+      csrf_token_validated: body.csrfToken ? 'true' : 'false',
+      client_ip: clientIP,
+      user_agent: userAgent.substring(0, 100) // Limit length
     };
 
     // Create checkout session with explicit URLs and email receipt
@@ -195,27 +321,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Error creating checkout session:', error);
     
-    // Provide more specific error information
-    let errorMessage = 'Failed to create checkout session';
-    if (error instanceof Error) {
-      errorMessage = error.message;
-      
-      // Check for specific Stripe errors
-      if (error.message.includes('No such plan') || error.message.includes('No such price')) {
-        errorMessage = 'Invalid product configuration. Please contact support.';
-      } else if (error.message.includes('Invalid API key')) {
-        errorMessage = 'Server configuration error: Invalid Stripe API key';
-      } else if (error.message.includes('Could not create Stripe client')) {
-        errorMessage = 'Server configuration error: Stripe client initialization failed';
-      }
-    }
-    
-    return NextResponse.json(
-      {
-        error: errorMessage,
-        type: error instanceof Error ? error.constructor.name : 'Unknown',
-      },
-      { status: 500 }
-    );
+    // Use enhanced error handler with sanitization
+    return GlobalErrorHandler.handleApiError(error);
   }
 }

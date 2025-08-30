@@ -36,8 +36,17 @@ const nextConfig = {
       '@radix-ui/react-toast',
       '@radix-ui/react-toggle',
       '@radix-ui/react-tooltip',
-      'framer-motion'
-    ]
+      'framer-motion',
+      'zod',
+      'react-hook-form'
+    ],
+    optimizeCss: true,
+    webpackBuildWorker: true,
+    esmExternals: 'loose',
+    serverComponentsExternalPackages: ['sharp', 'onnxruntime-node'],
+    turbotrace: {
+      logLevel: 'error'
+    }
   },
   images: {
     domains: ['venomappdevelopment.com'],
@@ -46,18 +55,77 @@ const nextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 31536000 // 1 year
+    minimumCacheTTL: 31536000, // 1 year
+    loader: 'default',
+    path: '/_next/image',
+    unoptimized: false
+  },
+  
+  // Enhanced caching headers
+  async headers() {
+    return [
+      {
+        source: '/_next/static/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable'
+          }
+        ]
+      },
+      {
+        source: '/assets/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=2592000' // 30 days
+          }
+        ]
+      },
+      {
+        source: '/(.*).webp',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=2592000'
+          },
+          {
+            key: 'Vary',
+            value: 'Accept'
+          }
+        ]
+      },
+      {
+        source: '/api/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, s-maxage=60, stale-while-revalidate=300'
+          }
+        ]
+      }
+    ];
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
-    reactRemoveProperties: process.env.NODE_ENV === 'production'
+    reactRemoveProperties: process.env.NODE_ENV === 'production',
+    styledComponents: true
   },
+  
+  // Performance optimizations
+  swcMinify: true,
   poweredByHeader: false,
   reactStrictMode: true,
   compress: true,
   generateEtags: true,
+  
+  // Connection optimization
   httpAgentOptions: {
     keepAlive: true,
+    maxSockets: 100,
+    maxFreeSockets: 10,
+    timeout: 60000,
+    freeSocketTimeout: 30000
   },
   eslint: {
     ignoreDuringBuilds: true, // Temporarily disable for optimization work
@@ -126,6 +194,13 @@ const nextConfig = {
       // Enhanced code splitting
       config.optimization.splitChunks = {
         ...config.optimization.splitChunks,
+        chunks: 'all',
+        minSize: 20000,
+        maxSize: 244000,
+        minChunks: 1,
+        maxAsyncRequests: 30,
+        maxInitialRequests: 30,
+        enforceSizeThreshold: 50000,
         cacheGroups: {
           ...config.optimization.splitChunks.cacheGroups,
           vendor: {
@@ -134,6 +209,7 @@ const nextConfig = {
             chunks: 'all',
             priority: 10,
             reuseExistingChunk: true,
+            enforce: true
           },
           radix: {
             test: /[\\/]node_modules[\\/]@radix-ui[\\/]/,
@@ -141,6 +217,7 @@ const nextConfig = {
             chunks: 'all',
             priority: 20,
             reuseExistingChunk: true,
+            enforce: true
           },
           framer: {
             test: /[\\/]node_modules[\\/]framer-motion[\\/]/,
@@ -148,6 +225,22 @@ const nextConfig = {
             chunks: 'all',
             priority: 20,
             reuseExistingChunk: true,
+            enforce: true
+          },
+          zod: {
+            test: /[\\/]node_modules[\\/]zod[\\/]/,
+            name: 'zod',
+            chunks: 'all',
+            priority: 15,
+            reuseExistingChunk: true
+          },
+          react: {
+            test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+            name: 'react',
+            chunks: 'all',
+            priority: 30,
+            reuseExistingChunk: true,
+            enforce: true
           },
           common: {
             name: 'common',
@@ -155,8 +248,22 @@ const nextConfig = {
             chunks: 'all',
             priority: 5,
             reuseExistingChunk: true,
+            enforce: false
           },
+          default: {
+            minChunks: 2,
+            priority: -20,
+            reuseExistingChunk: true
+          }
         },
+      };
+      
+      // Add module concatenation for better tree shaking
+      config.optimization.concatenateModules = true;
+      
+      // Improve runtime chunk generation
+      config.optimization.runtimeChunk = {
+        name: entrypoint => `runtime-${entrypoint.name}`
       };
     }
 

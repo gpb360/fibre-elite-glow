@@ -41,7 +41,7 @@ const AntioxidantParsleyHero = () => (
   <section className="relative overflow-hidden bg-white pt-20 pb-12 md:pt-32 md:pb-20">
     <div className="absolute inset-0 z-0 opacity-20">
       <Image
-        src="/assets/webp/16x9_a_vibrant_cluster_of_fresh_parsl.webp"
+        src="/assets/webp/16x9_A_vibrant_cluster_of_fresh_parsl.webp"
         alt="Fresh vibrant parsley - antioxidant-rich herb ingredient for digestive health and detoxification"
         fill
         className="object-cover"
@@ -110,7 +110,7 @@ const AntioxidantParsleyHero = () => (
           transition={{ duration: 0.7 }}
         >
           <Image
-            src="/assets/webp/16x9_a_vibrant_cluster_of_fresh_parsl.webp"
+            src="/assets/webp/16x9_A_vibrant_cluster_of_fresh_parsl.webp"
             alt="Antioxidant Parsley - Fresh herb rich in vitamins and detoxifying compounds"
             className="rounded-lg shadow-xl"
             width={1280}

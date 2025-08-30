@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - Fibre Elite Glow</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .offline-container {
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+        
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .btn-primary {
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+            border-color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .btn-primary:hover {
+            background: white;
+            transform: translateY(-2px);
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .status.offline {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .status.online {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        
+        @media (max-width: 480px) {
+            .offline-container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .icon {
+                width: 60px;
+                height: 60px;
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="icon">📶</div>
+        <h1>You're Offline</h1>
+        <p>It looks like you've lost your internet connection. Don't worry - we've saved some content for you to browse while you're offline.</p>
+        
+        <div class="actions">
+            <button class="btn btn-primary" onclick="checkConnection()">Try Again</button>
+            <a href="/" class="btn">Go to Homepage</a>
+            <a href="/products" class="btn">Browse Products</a>
+        </div>
+        
+        <div id="status" class="status offline">
+            <strong>Status:</strong> <span id="statusText">Offline</span>
+        </div>
+    </div>
+
+    <script>
+        // Check online status
+        function updateStatus() {
+            const status = document.getElementById('status');
+            const statusText = document.getElementById('statusText');
+            
+            if (navigator.onLine) {
+                status.className = 'status online';
+                statusText.textContent = 'Online';
+            } else {
+                status.className = 'status offline';
+                statusText.textContent = 'Offline';
+            }
+        }
+        
+        // Try to reconnect
+        function checkConnection() {
+            if (navigator.onLine) {
+                // Try to reload the page
+                window.location.reload();
+            } else {
+                // Show a message
+                alert('Still offline. Please check your internet connection.');
+            }
+        }
+        
+        // Listen for online/offline events
+        window.addEventListener('online', () => {
+            updateStatus();
+            // Auto-reload when back online
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        });
+        
+        window.addEventListener('offline', updateStatus);
+        
+        // Initial status check
+        updateStatus();
+        
+        // Periodically check connection
+        setInterval(() => {
+            updateStatus();
+        }, 5000);
+        
+        // Try to use service worker to get cached content
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.ready.then(registration => {
+                console.log('Service Worker ready for offline support');
+                
+                // Send message to service worker for cache stats
+                navigator.serviceWorker.controller?.postMessage({
+                    type: 'CACHE_STATS'
+                });
+            });
+            
+            // Listen for messages from service worker
+            navigator.serviceWorker.addEventListener('message', event => {
+                if (event.data.type === 'CACHE_STATS_RESPONSE') {
+                    console.log('Cache stats:', event.data.stats);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
