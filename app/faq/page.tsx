@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/assets/faq-hero.jpg',
+        url: '/lovable-uploads/webp/fruit-veg-bottle.webp',
         width: 1200,
         height: 630,
         alt: 'Fiber Supplements FAQ and Expert Guidance'
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Frequently Asked Questions | Fiber Supplements FAQ',
     description: 'Get answers to common questions about our premium fiber supplements.',
-    images: ['/assets/faq-hero.jpg']
+    images: ['/lovable-uploads/webp/fruit-veg-bottle.webp']
   }
 }
 

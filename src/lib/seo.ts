@@ -13,7 +13,7 @@ interface SEOConfig {
 const defaultConfig = {
   domain: 'https://lbve.ca',
   siteName: 'Fibre Elite Glow',
-  defaultImage: '/assets/og-default.jpg',
+  defaultImage: '/lovable-uploads/webp/fruit-veg-bottle.webp',
   twitterHandle: '@fibreeliteglow'
 }
 

@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { CartItem, CartState, CartContextType } from '@/types/cart';
 import { toast } from '@/hooks/use-toast';
+import { ErrorBoundary } from '@/components/error';
 
 // Cart Actions
 type CartAction =
@@ -41,19 +42,20 @@ const calculateTotals = (items: CartItem[]): Omit<CartState, 'items'> => {
 
 // Cart reducer
 const cartReducer = (state: CartState, action: CartAction): CartState => {
-  console.log('🔄 Cart reducer called:', { action: action.type, state, payload: action });
+  // Development logging
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🔄 Cart reducer called:', { action: action.type, state, payload: action });
+  }
 
   switch (action.type) {
     case 'ADD_TO_CART': {
       const { item, quantity } = action.payload;
-      console.log('➕ Adding to cart:', { item, quantity, currentState: state });
 
       const existingItemIndex = state.items.findIndex(cartItem => cartItem.id === item.id);
 
       let newItems: CartItem[];
 
       if (existingItemIndex >= 0) {
-        console.log('🔄 Updating existing item at index:', existingItemIndex);
         // Update existing item quantity
         newItems = state.items.map((cartItem, index) =>
           index === existingItemIndex
@@ -61,7 +63,6 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
             : cartItem
         );
       } else {
-        console.log('🆕 Adding new item to cart');
         // Add new item
         newItems = [...state.items, { ...item, quantity }];
       }
@@ -72,7 +73,6 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
         ...totals,
       };
 
-      console.log('✅ New cart state:', newState);
       return newState;
     }
     
@@ -162,9 +162,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
 
     try {
-      console.log('🛒 Adding item to cart:', { item, quantity });
       dispatch({ type: 'ADD_TO_CART', payload: { item, quantity } });
-      console.log('✅ Item added to cart successfully');
 
       // Try to show toast, but don't fail if it doesn't work
       try {
@@ -173,10 +171,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
           description: `${item.productName} has been added to your cart.`,
         });
       } catch (toastError) {
-        console.warn('⚠️ Toast notification failed:', toastError);
       }
     } catch (error) {
-      console.error('❌ Failed to add item to cart:', error);
+      console.error('Failed to add item to cart:', error);
 
       // Try to show error toast, but don't fail if it doesn't work
       try {
@@ -186,7 +183,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
           variant: "destructive",
         });
       } catch (toastError) {
-        console.warn('⚠️ Error toast notification failed:', toastError);
       }
     } finally {
       setIsLoading(false);
@@ -194,7 +190,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const removeFromCart = (itemId: string) => {
-    console.log('🗑️ Removing item from cart:', itemId);
     dispatch({ type: 'REMOVE_FROM_CART', payload: { itemId } });
 
     try {
@@ -203,17 +198,14 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         description: "Item has been removed from your cart.",
       });
     } catch (toastError) {
-      console.warn('⚠️ Remove toast notification failed:', toastError);
     }
   };
 
   const updateQuantity = (itemId: string, quantity: number) => {
-    console.log('🔄 Updating quantity:', { itemId, quantity });
     dispatch({ type: 'UPDATE_QUANTITY', payload: { itemId, quantity } });
   };
 
   const clearCart = () => {
-    console.log('🧹 Clearing cart');
     dispatch({ type: 'CLEAR_CART' });
 
     try {
@@ -222,7 +214,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         description: "All items have been removed from your cart.",
       });
     } catch (toastError) {
-      console.warn('⚠️ Clear cart toast notification failed:', toastError);
     }
   };
 
@@ -236,9 +227,22 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <CartContext.Provider value={contextValue}>
-      {children}
-    </CartContext.Provider>
+    <ErrorBoundary
+      onError={(error, errorInfo) => {
+        console.error('Cart Error:', error, errorInfo)
+        // Clear cart on critical errors to prevent corruption
+        try {
+          localStorage.removeItem(CART_STORAGE_KEY)
+        } catch (e) {
+          console.warn('Failed to clear cart storage:', e)
+        }
+      }}
+      resetKeys={[cart.items.length]}
+    >
+      <CartContext.Provider value={contextValue}>
+        {children}
+      </CartContext.Provider>
+    </ErrorBoundary>
   );
 };
 

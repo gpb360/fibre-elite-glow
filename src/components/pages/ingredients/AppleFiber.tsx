@@ -194,8 +194,8 @@ const AppleFiber = () => {
         
         {/* What is Premium Apple Fiber */}
         <SplitSection
-          image="/lovable-uploads/apple-closeup.jpg"
-          imageAlt="Fresh Apple Close-up"
+          image="/assets/webp/16x9_apple_fibre.webp"
+          imageAlt="Premium Apple Fiber - Close-up view of natural apple fiber showing its texture and quality"
           title="What is Premium Apple Fiber?"
           description="A balanced source of both soluble and insoluble fiber derived from carefully selected apples."
           className="bg-white"

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/assets/benefits-hero.jpg',
+        url: '/lovable-uploads/webp/fruit-veg-bottle.webp',
         width: 1200,
         height: 630,
         alt: 'Health Benefits of Fiber Supplements'
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Health Benefits of Fiber Supplements | Digestive Wellness',
     description: 'Discover the scientifically-proven health benefits of premium fiber supplements.',
-    images: ['/assets/benefits-hero.jpg']
+    images: ['/lovable-uploads/webp/fruit-veg-bottle.webp']
   }
 }
 

@@ -13,33 +13,66 @@ export function Header() {
   const [isProductMenuOpen, setIsProductMenuOpen] = React.useState(false);
   const [isSignInOpen, setIsSignInOpen] = React.useState(false);
   const { cart } = useCart();
+  const productMenuRef = React.useRef<HTMLDivElement>(null);
+
+  // Handle outside click for dropdown
+  React.useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (productMenuRef.current && !productMenuRef.current.contains(event.target as Node)) {
+        setIsProductMenuOpen(false);
+      }
+    };
+
+    if (isProductMenuOpen) {
+      document.addEventListener('mousedown', handleOutsideClick);
+      return () => document.removeEventListener('mousedown', handleOutsideClick);
+    }
+  }, [isProductMenuOpen]);
+
+  // Handle keyboard navigation
+  const handleDropdownKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      setIsProductMenuOpen(false);
+    }
+  };
   
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/90 shadow-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/90 shadow-sm" data-testid="navigation-menu">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6 max-w-7xl">
         <div className="flex items-center gap-2">
-          <Link href="/" className="flex items-center">
+          <Link href="/" className="flex items-center" data-testid="logo-link">
             <span className="text-xl font-bold text-green-600 hover:text-green-700 transition-colors">La Belle Vie</span>
           </Link>
         </div>
         
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex gap-8">
+        <nav className="hidden md:flex gap-8" data-testid="desktop-navigation">
           <Link href="/" className="text-sm font-semibold text-gray-700 transition-colors hover:text-green-600">
             Home
           </Link>
-          <div className="relative">
+          <div className="relative" ref={productMenuRef}>
             <button
-              className="flex items-center text-sm font-semibold text-gray-700 transition-colors hover:text-green-600"
+              className="flex items-center text-sm font-semibold text-gray-700 transition-colors hover:text-green-600 focus:ring-accessibility"
               onClick={() => setIsProductMenuOpen(!isProductMenuOpen)}
+              onKeyDown={handleDropdownKeyDown}
+              data-testid="products-dropdown"
+              aria-expanded={isProductMenuOpen}
+              aria-haspopup="true"
+              id="products-menu-button"
             >
               Products
               <ChevronDown className="ml-1 h-4 w-4" />
             </button>
             
             {isProductMenuOpen && (
-              <div className="absolute mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                <div className="py-1" role="menu" aria-orientation="vertical">
+              <div 
+                className="absolute mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
+                role="menu" 
+                aria-orientation="vertical" 
+                aria-labelledby="products-menu-button"
+                onKeyDown={handleDropdownKeyDown}
+              >
+                <div className="py-1">
                   <Link
                     href="/products/total-essential"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -94,10 +127,10 @@ export function Header() {
         
         {/* Cart and action buttons */}
         <div className="hidden md:flex items-center gap-4">
-          <Link href="/cart" className="relative text-gray-700 hover:text-green-600 transition-colors">
+          <Link href="/cart" className="relative text-gray-700 hover:text-green-600 transition-colors" data-testid="cart-link">
             <ShoppingCart className="h-6 w-6" />
             {cart.totalItems > 0 && (
-              <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-green-500 text-xs text-white font-medium">
+              <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-green-500 text-xs text-white font-medium" data-testid="cart-counter">
                 {cart.totalItems > 99 ? '99+' : cart.totalItems}
               </span>
             )}

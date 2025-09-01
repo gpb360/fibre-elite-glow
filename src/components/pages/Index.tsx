@@ -43,14 +43,28 @@ const Index = () => {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <main className="flex-1">
-        <Hero />
-        <ProductFeatures />
-        <ProductShowcase />
-        <HealthSection />
-        <Testimonials />
-        <FaqSection faqs={faqItems} />
-        <CtaSection />
+      <main className="flex-1" data-testid="homepage-main">
+        <div data-testid="hero-section">
+          <Hero />
+        </div>
+        <div data-testid="product-features">
+          <ProductFeatures />
+        </div>
+        <div data-testid="product-showcase">
+          <ProductShowcase />
+        </div>
+        <div data-testid="health-section">
+          <HealthSection />
+        </div>
+        <div data-testid="testimonials-section">
+          <Testimonials />
+        </div>
+        <div data-testid="faq-section">
+          <FaqSection faqs={faqItems} />
+        </div>
+        <div data-testid="cta-section">
+          <CtaSection />
+        </div>
       </main>
       <Footer />
     </div>

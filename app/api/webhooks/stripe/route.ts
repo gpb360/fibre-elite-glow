@@ -2,7 +2,29 @@ import { NextResponse } from 'next/server';
 import { stripe, STRIPE_CONFIG } from '@/lib/stripe';
 import { supabaseAdmin } from '@/integrations/supabase/client';
 import { emailService } from '@/lib/email-service';
+import { inventoryService } from '@/lib/inventory-service';
+import { GlobalErrorHandler, ErrorSanitizer } from '@/lib/error-handler';
+import { emailSchema } from '@/lib/validation';
+import { z } from 'zod';
 import Stripe from 'stripe';
+
+// Order item schema for webhook validation
+const orderItemSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  quantity: z.number(),
+  price: z.number(),
+  product_type: z.string().optional(),
+});
+
+// Shipping address schema for webhook validation
+const shippingAddressSchema = z.object({
+  line1: z.string(),
+  city: z.string(),
+  state: z.string(),
+  postal_code: z.string(),
+  country: z.string(),
+});
 
 // Helper to get Stripe webhook secret from Supabase secrets
 async function getWebhookSecret(): Promise<string> {
@@ -37,19 +59,30 @@ async function getWebhookSecret(): Promise<string> {
   }
 }
 
-// Helper to ensure customer exists in database
+// Helper to ensure customer exists in database with enhanced validation
 async function ensureCustomerExists(email: string, name?: string): Promise<string | null> {
   if (!supabaseAdmin) return null;
 
   try {
-    // First, try to find existing customer
+    // Validate and sanitize email
+    const emailValidation = emailSchema.safeParse(email);
+    if (!emailValidation.success) {
+      console.error('Invalid email provided to ensureCustomerExists:', email);
+      return null;
+    }
+    const validEmail = emailValidation.data;
+
+    // Sanitize name
+    const sanitizedName = name ? name.replace(/[<>"'&]/g, '').trim().substring(0, 100) : '';
+
+    // Rest of the function remains the same...
     const { data: existingCustomer, error: findError } = await supabaseAdmin
       .from('customers')
       .select('id')
-      .eq('email', email)
+      .eq('email', validEmail)
       .single();
 
-    if (findError && findError.code !== 'PGRST116') { // PGRST116 is "not found"
+    if (findError && findError.code !== 'PGRST116') {
       console.error('Error finding customer:', findError);
       return null;
     }
@@ -59,13 +92,13 @@ async function ensureCustomerExists(email: string, name?: string): Promise<strin
     }
 
     // Create new customer if not found
-    const [firstName, lastName] = name ? name.split(' ') : ['', ''];
+    const [firstName, lastName] = sanitizedName ? sanitizedName.split(' ') : ['', ''];
     const { data: newCustomer, error: createError } = await supabaseAdmin
       .from('customers')
       .insert({
-        email,
-        first_name: firstName || '',
-        last_name: lastName || '',
+        email: validEmail,
+        first_name: firstName.substring(0, 50) || '',
+        last_name: lastName.substring(0, 50) || '',
       })
       .select('id')
       .single();
@@ -77,7 +110,7 @@ async function ensureCustomerExists(email: string, name?: string): Promise<strin
 
     return newCustomer.id;
   } catch (error) {
-    console.error('Error ensuring customer exists:', error);
+    console.error('Error ensuring customer exists:', ErrorSanitizer.sanitizeMessage(error));
     return null;
   }
 }
@@ -91,12 +124,45 @@ function generateOrderNumber(): string {
 
 export async function POST(request: Request) {
   try {
+    // Security headers
+    const headers = new Headers();
+    headers.set('X-Content-Type-Options', 'nosniff');
+    headers.set('X-Frame-Options', 'DENY');
+    headers.set('X-XSS-Protection', '1; mode=block');
+
+    // Validate request method
+    if (request.method !== 'POST') {
+      return NextResponse.json(
+        { error: 'Method not allowed' },
+        { status: 405 }
+      );
+    }
+
+    // Validate content type
+    const contentType = request.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      return NextResponse.json(
+        { error: 'Invalid content type' },
+        { status: 400 }
+      );
+    }
+
     const body = await request.text();
     const signature = request.headers.get('stripe-signature');
 
     if (!signature) {
+      console.warn('Webhook request missing Stripe signature');
       return NextResponse.json(
         { error: 'Missing Stripe signature' },
+        { status: 400 }
+      );
+    }
+
+    // Validate signature format
+    if (!signature.includes('t=') || !signature.includes('v1=')) {
+      console.warn('Invalid Stripe signature format');
+      return NextResponse.json(
+        { error: 'Invalid signature format' },
         { status: 400 }
       );
     }
@@ -122,8 +188,10 @@ export async function POST(request: Request) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session;
         
-        // Extract metadata and parse JSON fields safely
+        // Extract metadata and parse JSON fields safely with validation
         const metadata = session.metadata || {};
+        
+        // Validate and parse order items
         let orderItems: Array<{
           id: string;
           name: string;
@@ -131,6 +199,22 @@ export async function POST(request: Request) {
           price: number;
           product_type?: string;
         }> = [];
+        
+        if (metadata.order_items) {
+          try {
+            const parsed = JSON.parse(metadata.order_items);
+            const validation = z.array(orderItemSchema).safeParse(parsed);
+            if (validation.success) {
+              orderItems = validation.data;
+            } else {
+              console.warn('Invalid order items in webhook metadata');
+            }
+          } catch (error) {
+            console.warn('Failed to parse order items JSON in webhook metadata');
+          }
+        }
+        
+        // Validate and parse shipping address
         let shippingAddress: {
           first_name?: string;
           last_name?: string;
@@ -142,16 +226,18 @@ export async function POST(request: Request) {
           country?: string;
         } = {};
         
-        try {
-          if (metadata.order_items) {
-            orderItems = JSON.parse(metadata.order_items);
+        if (metadata.shipping_address) {
+          try {
+            const parsed = JSON.parse(metadata.shipping_address);
+            const validation = shippingAddressSchema.safeParse(parsed);
+            if (validation.success) {
+              shippingAddress = validation.data;
+            } else {
+              console.warn('Invalid shipping address in webhook metadata');
+            }
+          } catch (error) {
+            console.warn('Failed to parse shipping address JSON in webhook metadata');
           }
-          
-          if (metadata.shipping_address) {
-            shippingAddress = JSON.parse(metadata.shipping_address);
-          }
-        } catch (parseError) {
-          console.error('Error parsing session metadata:', parseError);
         }
 
         if (!supabaseAdmin) {
@@ -256,6 +342,29 @@ export async function POST(request: Request) {
 
         console.log(`Order created successfully: ${order?.id} (${order?.order_number})`);
 
+        // Update inventory for order items
+        if (orderItems.length > 0) {
+          try {
+            // Convert orderItems to proper OrderItem format
+            const typedOrderItems = orderItems.map(item => ({
+              name: item.name,
+              quantity: item.quantity,
+              price: item.price,
+              product_type: (item.product_type === 'total_essential_plus' ? 'total_essential_plus' : 'total_essential') as 'total_essential' | 'total_essential_plus'
+            }));
+            
+            const inventoryUpdated = await inventoryService.updateInventoryForOrder(typedOrderItems);
+            if (inventoryUpdated) {
+              console.log('Inventory updated successfully for order:', order?.order_number);
+            } else {
+              console.warn('Some inventory updates may have failed for order:', order?.order_number);
+            }
+          } catch (inventoryError) {
+            console.error('Error updating inventory:', inventoryError);
+            // Don't fail the webhook if inventory update fails
+          }
+        }
+
         // Send order confirmation email
         if (order && customerEmail) {
           try {
@@ -277,6 +386,46 @@ export async function POST(request: Request) {
           } catch (emailError) {
             console.error('Failed to send order confirmation email:', emailError);
             // Don't fail the webhook if email fails
+          }
+        }
+
+        // Send admin notification email
+        if (order && customerEmail && orderItems.length > 0) {
+          try {
+            const customerFullName = metadata.customer_name || `${shippingAddress.first_name || ''} ${shippingAddress.last_name || ''}`.trim() || 'Unknown Customer';
+            
+            // Convert orderItems to proper OrderItem format for admin notification
+            const typedOrderItems = orderItems.map(item => ({
+              name: item.name,
+              quantity: item.quantity,
+              price: item.price,
+              product_type: (item.product_type === 'total_essential_plus' ? 'total_essential_plus' : 'total_essential') as 'total_essential' | 'total_essential_plus'
+            }));
+            
+            await emailService.sendAdminOrderNotification({
+              orderNumber: order.order_number,
+              customerEmail,
+              customerName: customerFullName,
+              totalAmount: session.amount_total || 0,
+              currency: session.currency || 'usd',
+              items: typedOrderItems,
+              shippingAddress: {
+                firstName: shippingAddress.first_name || '',
+                lastName: shippingAddress.last_name || '',
+                addressLine1: shippingAddress.line1 || '',
+                addressLine2: shippingAddress.line2,
+                city: shippingAddress.city || '',
+                state: shippingAddress.state || '',
+                postalCode: shippingAddress.postal_code || '',
+                country: shippingAddress.country || 'US',
+              },
+              paymentIntentId: session.payment_intent as string,
+              createdAt: new Date().toISOString(),
+            });
+            console.log('Admin notification email sent for order:', order.order_number);
+          } catch (adminEmailError) {
+            console.error('Failed to send admin notification email:', adminEmailError);
+            // Don't fail the webhook if admin email fails
           }
         }
         
@@ -347,10 +496,7 @@ export async function POST(request: Request) {
     // Return success response
     return NextResponse.json({ received: true });
   } catch (error) {
-    console.error('Webhook error:', error);
-    return NextResponse.json(
-      { error: 'Webhook handler failed' },
-      { status: 500 }
-    );
+    console.error('Webhook error:', ErrorSanitizer.sanitizeMessage(error));
+    return GlobalErrorHandler.handleApiError(error);
   }
 }

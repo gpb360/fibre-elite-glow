@@ -9,6 +9,7 @@ import { ClientBodyWrapper } from './components/ClientBodyWrapper'
 import GoogleAnalytics from '@/components/analytics/GoogleAnalytics'
 import PerformanceOptimizer from '@/components/performance/PerformanceOptimizer'
 import CriticalCSS from '@/components/performance/CriticalCSS'
+import { ErrorBoundary } from '@/components/error'
 import './globals.css'
 
 const inter = Inter({ 
@@ -31,6 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <CriticalCSS />
         {/* Keep only essential preloads */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -46,6 +48,7 @@ export default function RootLayout({
         <GoogleAnalytics />
       </head>
       <body suppressHydrationWarning className={inter.variable}>
+        <a href="#main-content" className="skip-link">Skip to main content</a>
         <PerformanceOptimizer />
         <ClientBodyWrapper fontClassName={inter.className}>
           <Providers>

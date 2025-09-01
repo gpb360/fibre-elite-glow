@@ -1,0 +1,56 @@
+La Belle Vie Image Mapping Guide
+Generated: 2025-07-25T21:41:02.243Z
+
+HIGH PRIORITY MAPPINGS (Start Here):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔥 SEO/Meta Images:
+   Target: og-default.jpg (1200x630)
+   Look for: La Belle Vie social media banners, supplement brand graphics
+   Save as: og-default-option-1.jpg, og-default-option-2.jpg
+
+   Target: benefits-hero.jpg (1200x630) 
+   Look for: Health/wellness lifestyle images, people exercising
+   Save as: benefits-hero-option-1.jpg, benefits-hero-option-2.jpg
+
+🔥 Brand Assets:
+   Target: logo.png (500x200)
+   Look for: La Belle Vie logo designs, supplement brand logos
+   Save as: logo-option-1.png, logo-option-2.png
+
+🔥 Product Images:
+   Target: total-essential.jpg (800x800)
+   Look for: Green supplement jars, fiber supplement products
+   Save as: total-essential-option-1.jpg, total-essential-option-2.jpg
+
+   Target: total-essential-plus.jpg (800x800)
+   Look for: Purple/berry themed supplement jars, superfruit products
+   Save as: total-essential-plus-option-1.jpg, total-essential-plus-option-2.jpg
+
+MEDIUM PRIORITY MAPPINGS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📖 Educational Images:
+   apple-bg.jpg: Apple orchard or apple backgrounds
+   apple-fiber-hero.jpg: Apple fiber educational content
+
+📊 Scientific Diagrams:
+   fiber-diagram.jpg: Digestive system diagrams
+   gut-health-illustration.jpg: Gut microbiome illustrations
+
+🍎 Ingredient Closeups:
+   Look for macro photography of:
+   - Fresh berries (acai, raspberry, strawberry, cranberry)
+   - Vegetables (broccoli, spinach, celery, carrot)
+   - Fruits (apple, papaya closeups)
+
+AFTER DOWNLOADING:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Review all downloaded images
+2. Select the best option for each target file
+3. Rename to match exact target filenames
+4. Move to correct directories as specified in prompts
+5. Use our optimized Kling AI prompts for any missing images
+
+Reference: optimized-kling-ai-prompts.csv for exact specifications!

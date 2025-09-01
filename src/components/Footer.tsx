@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export function Footer() {
   return (
-    <footer className="bg-gray-50 border-t border-gray-200">
+    <footer className="bg-gray-50 border-t border-gray-200" data-testid="footer">
       <div className="container mx-auto px-4 md:px-6 py-16 md:py-20 max-w-7xl">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 lg:gap-12">
           <div className="space-y-4">
@@ -12,7 +12,7 @@ export function Footer() {
             <p className="text-sm text-gray-600 leading-relaxed">
               Premium fiber supplements for optimal health and wellness.
             </p>
-            <div className="flex space-x-4">
+            <div className="flex space-x-4" data-testid="social-links">
               <a href="https://www.facebook.com/LaBelleVieEntLtd/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-green-600 transition-colors">
                 <span className="sr-only">Facebook</span>
                 <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">

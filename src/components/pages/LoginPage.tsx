@@ -7,7 +7,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Eye, EyeOff, Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react'
+import { ValidatedInput, FormSecurityIndicator, FormValidationSummary } from '@/components/ui/FormValidation'
+import { useFormValidation } from '@/hooks/useFormValidation'
+import { loginSchema } from '@/lib/validation'
+import { Eye, EyeOff, Mail, Lock, ArrowRight, AlertCircle, Shield } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/integrations/supabase/client'
 import Header from '@/components/Header'
@@ -22,9 +25,22 @@ export default function LoginPage() {
   const router = useRouter()
   const { user, loading } = useAuth()
   const [form, setForm] = useState<LoginForm>({ email: '', password: '' })
-  const [showPassword, setShowPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [validFields, setValidFields] = useState(0)
+  
+  // Use enhanced form validation
+  const {
+    errors,
+    isValid,
+    isValidating,
+    validate,
+    clearErrors,
+    resetValidation
+  } = useFormValidation(loginSchema, {
+    validateOnChange: true,
+    showErrorToast: false
+  })
 
   // Redirect if already logged in
   useEffect(() => {
@@ -36,28 +52,54 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
+    
+    // Validate form data
+    const validation = await validate(form)
+    if (!validation.isValid) {
+      setError('Please fix the validation errors above.')
+      return
+    }
+    
     setIsSubmitting(true)
 
     try {
+      // Additional security checks
+      const sanitizedEmail = form.email.trim().toLowerCase()
+      
+      // Check for suspicious patterns
+      if (sanitizedEmail.includes('<') || sanitizedEmail.includes('>')) {
+        throw new Error('Invalid email format')
+      }
+      
       const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: form.email.trim(),
+        email: sanitizedEmail,
         password: form.password,
       })
 
       if (signInError) {
+        // Enhanced error handling with security awareness
         if (signInError.message.includes('Invalid login credentials')) {
           setError('Invalid email or password. Please check your credentials and try again.')
         } else if (signInError.message.includes('Email not confirmed')) {
           setError('Please check your email and click the confirmation link before signing in.')
+        } else if (signInError.message.includes('Too many requests')) {
+          setError('Too many login attempts. Please wait a few minutes before trying again.')
+        } else if (signInError.message.includes('User not found')) {
+          setError('No account found with this email address. Please check your email or sign up.')
         } else {
-          setError(signInError.message)
+          setError('Login failed. Please try again or contact support if the problem persists.')
         }
         return
       }
 
+      // Clear form data for security
+      setForm({ email: '', password: '' })
+      resetValidation()
+      
       // Successful login - redirect will happen via useEffect
       router.push('/account')
     } catch (error) {
+      console.error('Login error:', error)
       setError('An unexpected error occurred. Please try again.')
     } finally {
       setIsSubmitting(false)
@@ -65,11 +107,20 @@ export default function LoginPage() {
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
     setForm(prev => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [name]: value
     }))
     if (error) setError(null)
+    clearErrors()
+  }
+  
+  const handleValidationChange = (field: string) => (isValid: boolean, error?: string) => {
+    setValidFields(prev => {
+      const newCount = isValid ? prev + 1 : Math.max(0, prev - 1)
+      return Math.min(2, newCount) // Maximum 2 fields (email, password)
+    })
   }
 
   const handleForgotPassword = async () => {
@@ -135,7 +186,24 @@ export default function LoginPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-6" data-testid="login-form">
+                {/* Security and validation indicators */}
+                <FormSecurityIndicator 
+                  isSecure={isValid && validFields === 2}
+                  validFields={validFields}
+                  totalFields={2}
+                />
+                
+                {/* Form validation summary */}
+                <FormValidationSummary 
+                  errors={errors}
+                  onFieldFocus={(fieldName) => {
+                    const element = document.getElementById(fieldName)
+                    element?.focus()
+                  }}
+                />
+                
+                {/* General error alert */}
                 {error && (
                   <Alert variant="destructive">
                     <AlertCircle className="h-4 w-4" />
@@ -143,56 +211,46 @@ export default function LoginPage() {
                   </Alert>
                 )}
 
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address
-                  </label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      required
-                      value={form.email}
-                      onChange={handleChange}
-                      placeholder="your@email.com"
-                      className="pl-10"
-                    />
-                  </div>
-                </div>
+                {/* Email field with validation */}
+                <ValidatedInput
+                  id="email"
+                  name="email"
+                  type="email"
+                  label="Email Address"
+                  schema={loginSchema}
+                  fieldName="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  onValidationChange={handleValidationChange('email')}
+                  showSecurityIndicator={true}
+                  helperText="Enter the email address associated with your account"
+                  required
+                  placeholder="your@email.com"
+                />
 
-                <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                    Password
-                  </label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <Input
-                      id="password"
-                      name="password"
-                      type={showPassword ? "text" : "password"}
-                      required
-                      value={form.password}
-                      onChange={handleChange}
-                      placeholder="Enter your password"
-                      className="pl-10 pr-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    >
-                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </button>
-                  </div>
-                </div>
+                {/* Password field with validation */}
+                <ValidatedInput
+                  id="password"
+                  name="password"
+                  type="password"
+                  label="Password"
+                  schema={loginSchema}
+                  fieldName="password"
+                  value={form.password}
+                  onChange={handleChange}
+                  onValidationChange={handleValidationChange('password')}
+                  showSecurityIndicator={true}
+                  helperText="Enter your account password"
+                  required
+                  placeholder="Enter your password"
+                />
 
                 <div className="flex items-center justify-between">
                   <button
                     type="button"
                     onClick={handleForgotPassword}
                     className="text-sm text-green-600 hover:text-green-700"
+                    data-testid="forgot-password-link"
                   >
                     Forgot password?
                   </button>
@@ -200,14 +258,16 @@ export default function LoginPage() {
 
                 <Button
                   type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-green-600 hover:bg-green-700"
+                  disabled={isSubmitting || !isValid || isValidating}
+                  className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50"
+                  data-testid="submit-button"
                 >
                   {isSubmitting ? (
                     "Signing in..."
                   ) : (
                     <>
-                      Sign In
+                      <Shield className="mr-2 h-4 w-4" />
+                      Sign In Securely
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </>
                   )}
