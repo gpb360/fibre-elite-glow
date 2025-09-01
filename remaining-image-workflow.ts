@@ -169,9 +169,7 @@ async function generateAndUpdateImage(
   try {
     // Generate the image
     console.log(`📝 Prompt: ${promptData.prompt.substring(0, 100)}...`);
-    const base64Image = await togetherAI.generateImage(promptData.prompt, {
-      negative_prompt: promptData.negative_prompt
-    });
+    const base64Image = await togetherAI.generateImage(promptData.prompt, {});
 
     // Save the base64 image
     await saveBase64Image(base64Image, mapping.filename);

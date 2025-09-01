@@ -4,7 +4,7 @@ import { headers } from 'next/headers';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-06-20',
+  apiVersion: '2025-06-30.basil',
 });
 
 // Validation schema for payment recovery
@@ -153,7 +153,7 @@ async function attemptSessionRecovery(sessionId: string, customerEmail: string) 
       return {
         success: true,
         transaction: {
-          id: session.payment_intent?.id || session.id,
+          id: typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent?.id || session.id,
           sessionId: session.id,
           amount: session.amount_total || 0,
           currency: session.currency || 'usd',
@@ -213,7 +213,7 @@ async function attemptSessionRecovery(sessionId: string, customerEmail: string) 
 
 export async function POST(request: NextRequest) {
   try {
-    const headersList = headers();
+    const headersList = await headers();
     const forwardedFor = headersList.get('x-forwarded-for');
     const clientIp = forwardedFor?.split(',')[0] || 'unknown';
     

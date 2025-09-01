@@ -169,8 +169,8 @@ export class PiAPIFlux {
       const buffer = Buffer.from(arrayBuffer);
       
       // Ensure directory exists
-      const fs = require('fs');
-      const path = require('path');
+      const fs = await import('fs');
+      const path = await import('path');
       const fullDirectory = path.resolve(directory);
       
       if (!fs.existsSync(fullDirectory)) {

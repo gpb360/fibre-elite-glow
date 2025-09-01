@@ -11,10 +11,20 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/hooks/use-toast';
+import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Loader2, CreditCard, Lock, Wifi, WifiOff, Shield, AlertTriangle, CheckCircle } from 'lucide-react';
 import { ErrorBoundary } from '@/components/error';
+import { 
+  ValidatedInput, 
+  FormSecurityStatus, 
+  FormSecurityIndicator, 
+  FormValidationSummary, 
+  FormErrorRecovery
+} from '@/components/ui/FormValidation';
+import { useFormSecurityStatus } from '@/components/forms/FormSecurityStatus';
+import { useFormErrorRecovery } from '@/components/forms/FormErrorRecovery';
 
 /**
  * Initialise Stripe with the *publishable* key.
@@ -63,7 +73,8 @@ const CheckoutForm: React.FC = () => {
   const router = useRouter();
   const { cart, clearCart } = useCart();
   const { toast } = useToast();
-  const { isOffline } = useNetworkStatus();
+  const { isOnline } = useNetworkStatus();
+  const isOffline = !isOnline;
   
   // Enhanced form validation and error recovery
   const {

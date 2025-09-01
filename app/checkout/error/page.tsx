@@ -351,8 +351,8 @@ function CheckoutErrorContent() {
                     </Button>
                   </Link>
                   <Button variant="outline" size="sm" onClick={() => {
-                    if (typeof window !== 'undefined' && window.Intercom) {
-                      window.Intercom('show');
+                    if (typeof window !== 'undefined' && (window as any).Intercom) {
+                      (window as any).Intercom('show');
                     } else {
                       // Fallback to contact page
                       window.location.href = '/contact';

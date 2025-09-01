@@ -1,11 +1,32 @@
 // Email service for order confirmations and notifications
-import { OrderDetails } from '@/types/order';
+import { OrderDetails, OrderItem } from '@/types/order';
 
 interface EmailOptions {
   to: string;
   subject: string;
   html: string;
   text?: string;
+}
+
+interface AdminOrderNotification {
+  orderNumber: string;
+  customerEmail: string;
+  customerName: string;
+  totalAmount: number;
+  currency: string;
+  items: OrderItem[];
+  shippingAddress: {
+    firstName: string;
+    lastName: string;
+    addressLine1: string;
+    addressLine2?: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+  };
+  paymentIntentId?: string;
+  createdAt: string;
 }
 
 // Basic email service implementation
@@ -79,6 +100,20 @@ export class EmailService {
 
     return this.sendEmail({
       to: orderDetails.customerEmail,
+      subject,
+      html,
+      text,
+    });
+  }
+
+  async sendAdminOrderNotification(notification: AdminOrderNotification): Promise<boolean> {
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@lbve.ca';
+    const subject = `New Order Alert - ${notification.orderNumber}`;
+    const html = this.generateAdminNotificationHTML(notification);
+    const text = this.generateAdminNotificationText(notification);
+
+    return this.sendEmail({
+      to: adminEmail,
       subject,
       html,
       text,
@@ -198,6 +233,161 @@ What's Next?
 Questions? Contact our support team at support@fibreeliteglow.com
 
 Fibre Elite Glow - Premium Gut Health Solutions
+    `;
+  }
+
+  private generateAdminNotificationHTML(notification: AdminOrderNotification): string {
+    const itemsHtml = notification.items
+      .map(
+        (item) => `
+        <tr>
+          <td style="padding: 10px; border-bottom: 1px solid #eee;">
+            <strong>${item.name}</strong><br>
+            <small style="color: #666;">Type: ${item.product_type || 'N/A'}</small>
+          </td>
+          <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: center;">
+            ${item.quantity}
+          </td>
+          <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">
+            ${this.formatCurrency(item.price * item.quantity, notification.currency)}
+          </td>
+        </tr>
+      `
+      )
+      .join('');
+
+    return `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <title>New Order Alert</title>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: #dc3545; color: white; padding: 20px; text-align: center; border-radius: 8px; }
+            .alert { background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; margin: 20px 0; border-radius: 8px; }
+            .order-details { background: #fff; padding: 20px; margin: 20px 0; border: 1px solid #ddd; border-radius: 8px; }
+            .items-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+            .items-table th { background: #f8f9fa; padding: 12px; text-align: left; border-bottom: 2px solid #ddd; }
+            .items-table td { padding: 10px; border-bottom: 1px solid #eee; }
+            .total { font-size: 18px; font-weight: bold; color: #dc3545; }
+            .action-items { background: #e7f3ff; padding: 15px; border-radius: 8px; margin: 20px 0; }
+            .action-item { background: white; padding: 10px; margin: 8px 0; border-left: 4px solid #007bff; }
+            .customer-info { background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 10px 0; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>🚨 New Order Alert</h1>
+              <p>A new order has been placed and requires your attention</p>
+            </div>
+
+            <div class="alert">
+              <strong>⚡ Action Required:</strong> Process order ${notification.orderNumber} - Customer: ${notification.customerEmail}
+            </div>
+
+            <div class="order-details">
+              <h2>Order Summary</h2>
+              <p><strong>Order Number:</strong> ${notification.orderNumber}</p>
+              <p><strong>Order Date:</strong> ${new Date(notification.createdAt).toLocaleDateString()} at ${new Date(notification.createdAt).toLocaleTimeString()}</p>
+              <p><strong>Payment Intent:</strong> ${notification.paymentIntentId || 'N/A'}</p>
+
+              <div class="customer-info">
+                <h3>Customer Information</h3>
+                <p><strong>Name:</strong> ${notification.customerName}</p>
+                <p><strong>Email:</strong> ${notification.customerEmail}</p>
+                <p><strong>Shipping Address:</strong><br>
+                  ${notification.shippingAddress.firstName} ${notification.shippingAddress.lastName}<br>
+                  ${notification.shippingAddress.addressLine1}<br>
+                  ${notification.shippingAddress.addressLine2 ? notification.shippingAddress.addressLine2 + '<br>' : ''}
+                  ${notification.shippingAddress.city}, ${notification.shippingAddress.state} ${notification.shippingAddress.postalCode}<br>
+                  ${notification.shippingAddress.country}
+                </p>
+              </div>
+
+              <h3>Items Ordered</h3>
+              <table class="items-table">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th style="text-align: center;">Quantity</th>
+                    <th style="text-align: right;">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${itemsHtml}
+                </tbody>
+              </table>
+
+              <p class="total">Order Total: ${this.formatCurrency(notification.totalAmount / 100, notification.currency)}</p>
+            </div>
+
+            <div class="action-items">
+              <h3>📋 Action Items</h3>
+              <div class="action-item">
+                <strong>1. Verify Inventory:</strong> Check stock levels for all ordered items
+              </div>
+              <div class="action-item">
+                <strong>2. Process Payment:</strong> Confirm payment has been processed successfully
+              </div>
+              <div class="action-item">
+                <strong>3. Prepare Shipment:</strong> Package items and prepare shipping label
+              </div>
+              <div class="action-item">
+                <strong>4. Update Customer:</strong> Send tracking information once shipped
+              </div>
+            </div>
+
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666;">
+              <p><strong>Fibre Elite Glow Admin Panel</strong></p>
+              <p>Order processing system notification</p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
+  }
+
+  private generateAdminNotificationText(notification: AdminOrderNotification): string {
+    const itemsText = notification.items
+      .map((item) => `${item.name} (${item.product_type || 'N/A'}) x${item.quantity} - ${this.formatCurrency(item.price * item.quantity, notification.currency)}`)
+      .join('\n');
+
+    return `
+NEW ORDER ALERT - ${notification.orderNumber}
+
+⚡ ACTION REQUIRED: Process new order
+
+Order Details:
+- Order Number: ${notification.orderNumber}
+- Order Date: ${new Date(notification.createdAt).toLocaleString()}
+- Payment Intent: ${notification.paymentIntentId || 'N/A'}
+
+Customer Information:
+- Name: ${notification.customerName}
+- Email: ${notification.customerEmail}
+
+Shipping Address:
+${notification.shippingAddress.firstName} ${notification.shippingAddress.lastName}
+${notification.shippingAddress.addressLine1}
+${notification.shippingAddress.addressLine2 ? notification.shippingAddress.addressLine2 + '\n' : ''}${notification.shippingAddress.city}, ${notification.shippingAddress.state} ${notification.shippingAddress.postalCode}
+${notification.shippingAddress.country}
+
+Items Ordered:
+${itemsText}
+
+Order Total: ${this.formatCurrency(notification.totalAmount / 100, notification.currency)}
+
+📋 ACTION ITEMS:
+1. Verify Inventory: Check stock levels for all ordered items
+2. Process Payment: Confirm payment has been processed successfully
+3. Prepare Shipment: Package items and prepare shipping label
+4. Update Customer: Send tracking information once shipped
+
+Fibre Elite Glow Admin Panel
+Order processing system notification
     `;
   }
 

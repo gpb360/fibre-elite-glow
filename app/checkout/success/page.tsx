@@ -85,7 +85,7 @@ function CheckoutSuccessContent() {
           });
           
           if (!validationResult.isValid) {
-            setValidationError(validationResult.error || 'Order validation failed');
+            setValidationError(validationResult.errors[0] || 'Order validation failed');
             return;
           }
           
@@ -97,8 +97,8 @@ function CheckoutSuccessContent() {
             totalAmount: data.amount
           });
           
-          if (!confirmationResult.success) {
-            setValidationError(confirmationResult.error || 'Order confirmation failed');
+          if (!confirmationResult.isValid) {
+            setValidationError(confirmationResult.errors[0] || 'Order confirmation failed');
             return;
           }
           

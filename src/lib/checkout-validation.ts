@@ -215,11 +215,28 @@ export function useCheckoutValidation(options: CheckoutValidationOptions = {}) {
     }
   }, [])
   
+  /**
+   * Validate order completion
+   */
+  const validateOrderCompletion = useCallback(async (orderData: any) => {
+    const errors: string[] = []
+    
+    if (!orderData.sessionId) errors.push('Missing session ID')
+    if (!orderData.customerEmail) errors.push('Missing customer email')
+    if (!orderData.amount) errors.push('Missing order amount')
+    
+    return {
+      isValid: errors.length === 0,
+      errors
+    }
+  }, [])
+
   return {
     validationResult,
     isValidating,
     validateCheckout,
     validateField,
+    validateOrderCompletion,
     retryCount,
     setRetryCount
   }
@@ -303,6 +320,31 @@ export function useCartPersistence() {
     return saved.length > currentCart.length
   }, [loadCart])
   
+  /**
+   * Check if there's a persisted cart
+   */
+  const hasPersistedCart = useCallback(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY)
+      if (!saved) return false
+      
+      const cartData = JSON.parse(saved)
+      const age = Date.now() - cartData.timestamp
+      const maxAge = MAX_AGE_HOURS * 60 * 60 * 1000
+      
+      return age <= maxAge && cartData.items && cartData.items.length > 0
+    } catch (error) {
+      return false
+    }
+  }, [])
+  
+  /**
+   * Restore cart items
+   */
+  const restoreCart = useCallback(() => {
+    return loadCart()
+  }, [loadCart])
+  
   // Auto-load on mount
   useEffect(() => {
     loadCart()
@@ -314,7 +356,9 @@ export function useCartPersistence() {
     saveCart,
     loadCart,
     clearPersistedCart,
-    needsRecovery
+    needsRecovery,
+    hasPersistedCart,
+    restoreCart
   }
 }
 
@@ -372,9 +416,25 @@ export function useOrderConfirmation() {
     }
   }, [])
   
+  /**
+   * Confirm order
+   */
+  const confirmOrder = useCallback(async (orderData: any) => {
+    setIsValidating(true)
+    try {
+      const result = await validateOrderConfirmation(orderData)
+      return result
+    } finally {
+      setIsValidating(false)
+    }
+  }, [validateOrderConfirmation])
+
   return {
     isValidating,
+    isConfirming: isValidating,
+    confirmationError: validationErrors.length > 0 ? validationErrors[0] : null,
     validationErrors,
-    validateOrderConfirmation
+    validateOrderConfirmation,
+    confirmOrder
   }
 }

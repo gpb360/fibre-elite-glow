@@ -1,11 +1,11 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import {
   stripe,
   formatAmountForStripe,
   STRIPE_CONFIG
 } from '@/lib/stripe';
 import { supabaseAdmin } from '@/integrations/supabase/client';
-import { checkoutFormSchema, CartItem } from '@/lib/validation';
+import { checkoutFormSchema, cartItemSchema } from '@/lib/validation';
 import { enhancedCheckoutSchema, SecurityValidation, FormValidationUtils } from '@/lib/form-validation';
 import { GlobalErrorHandler, ErrorSanitizer } from '@/lib/error-handler';
 import { CSRFProtection } from '@/lib/csrf';
@@ -31,7 +31,7 @@ const serverCheckoutSchema = z.object({
 
 type CheckoutRequestBody = z.infer<typeof serverCheckoutSchema>;
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     // Enhanced security headers
     const headers = new Headers();

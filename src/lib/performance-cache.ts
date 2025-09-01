@@ -465,11 +465,12 @@ export const BundleOptimizer = {
   ) => {
     const LazyComponent = React.lazy(importFn);
     
-    return React.forwardRef((props: React.ComponentProps<T>, ref) => (
-      <React.Suspense fallback={fallback ? React.createElement(fallback) : <div>Loading...</div>}>
-        <LazyComponent {...props} ref={ref} />
-      </React.Suspense>
-    ));
+    return React.forwardRef((props: React.ComponentProps<T>, ref) =>
+      React.createElement(React.Suspense, 
+        { fallback: fallback ? React.createElement(fallback) : React.createElement('div', {}, 'Loading...') },
+        React.createElement(LazyComponent, { ...props, ref })
+      )
+    );
   },
 
   // Preload critical components

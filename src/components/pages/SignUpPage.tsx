@@ -510,3 +510,5 @@ export default function SignUpPage() {
       </div>
       <Footer />
     </ErrorBoundary>
+  );
+}

@@ -38,9 +38,7 @@ async function main(): Promise<void> {
     console.log(`📝 Ultra-Realistic Prompt: ${ultraRealisticPrompt.substring(0, 100)}...`);
     
     // Generate the ultra-realistic image
-    const base64Image = await togetherAI.generateImage(ultraRealisticPrompt, {
-      negative_prompt: negativePrompt
-    });
+    const base64Image = await togetherAI.generateImage(ultraRealisticPrompt, {});
 
     // Save the base64 image
     await saveBase64Image(base64Image, 'hydration-illustration.jpg');

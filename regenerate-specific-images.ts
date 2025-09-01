@@ -120,9 +120,7 @@ async function regenerateImage(
 
   try {
     // Generate the image with new prompt
-    const base64Image = await togetherAI.generateImage(image.newPrompt, {
-      negative_prompt: image.negativePrompt
-    });
+    const base64Image = await togetherAI.generateImage(image.newPrompt, {});
 
     // Save the base64 image
     await saveBase64Image(base64Image, image.filename);

@@ -4,7 +4,7 @@ import { headers } from 'next/headers';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-06-20',
+  apiVersion: '2025-06-30.basil',
 });
 
 // Validation schema for transaction verification
@@ -46,7 +46,7 @@ function isRateLimited(clientId: string): boolean {
 
 export async function POST(request: NextRequest) {
   try {
-    const headersList = headers();
+    const headersList = await headers();
     const forwardedFor = headersList.get('x-forwarded-for');
     const clientIp = forwardedFor?.split(',')[0] || 'unknown';
     
@@ -175,15 +175,12 @@ export async function POST(request: NextRequest) {
         case 'canceled':
           transactionStatus = 'canceled';
           break;
-        case 'payment_failed':
-          transactionStatus = 'failed';
-          break;
       }
     }
 
     // Create transaction object
     const transaction = {
-      id: session.payment_intent?.id || session.id,
+      id: typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent?.id || session.id,
       sessionId: session.id,
       amount: sessionAmount,
       currency: session.currency || 'usd',

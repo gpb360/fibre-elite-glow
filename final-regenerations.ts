@@ -94,9 +94,7 @@ async function regenerateImage(
   console.log(`📝 Prompt: ${image.newPrompt.substring(0, 100)}...`);
 
   try {
-    const base64Image = await togetherAI.generateImage(image.newPrompt, {
-      negative_prompt: image.negativePrompt
-    });
+    const base64Image = await togetherAI.generateImage(image.newPrompt, {});
 
     await saveBase64Image(base64Image, image.filename);
     await updateComponent(image);
