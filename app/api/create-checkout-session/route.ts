@@ -188,10 +188,11 @@ export async function POST(request: Request) {
       // Allow promotion codes for discounts
       allow_promotion_codes: true,
       
-      // Require legal compliance
+      // FIXED: Only include supported consent collection options
       consent_collection: {
         terms_of_service: 'required',
-        privacy_policy: 'required',
+        // Note: privacy_policy is not supported in current Stripe API
+        // You can handle privacy policy acceptance in your own UI before checkout
       },
       
       // Comprehensive metadata for webhook processing
@@ -322,7 +323,6 @@ export async function POST(request: Request) {
         'shipping_address', 
         'phone_number',
         'terms_of_service',
-        'privacy_policy',
         'promotion_codes'
       ]
     });
