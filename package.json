@@ -44,6 +44,7 @@
     "@radix-ui/react-toast": "^1.2.1",
     "@radix-ui/react-toggle": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.4",
+    "@sendgrid/mail": "^8.1.4",
     "@stripe/react-stripe-js": "^3.7.0",
     "@stripe/stripe-js": "^7.3.1",
     "@supabase/supabase-js": "^2.50.4",
@@ -75,6 +76,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@netlify/functions": "^2.8.1",
     "@playwright/mcp": "^0.0.29",
     "@playwright/test": "^1.53.1",
     "@supabase/mcp-server-supabase": "^0.4.5",
