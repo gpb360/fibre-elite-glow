@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "engines": {
-    "node": ">=18.18.0",
+    "node": ">=18.18.0 <=20.18.0",
     "pnpm": ">=8.0.0"
   },
   "scripts": {
@@ -21,7 +21,8 @@
     "validate:test-data": "node scripts/validate-test-data.js",
     "perf:audit": "node scripts/performance-audit.js",
     "perf:build": "npm run build && npm run perf:audit",
-    "analyze": "cross-env ANALYZE=true npm run build"
+    "analyze": "cross-env ANALYZE=true npm run build",
+    "postinstall": "echo 'Dependencies installed successfully'"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
