@@ -164,7 +164,7 @@ export async function POST(request: Request) {
 
         // Ensure customer exists in database
         const customerEmail = session.customer_details?.email || metadata.customer_email || '';
-        const customerName = metadata.customer_name || session.customer_details?.name || undefined;
+        const customerName = metadata.customer_name || session.customer_details?.name || '';
         const customerId = await ensureCustomerExists(customerEmail, customerName);
 
         // Update checkout session status in database
@@ -199,25 +199,25 @@ export async function POST(request: Request) {
           metadata: metadata,
           test_mode: STRIPE_CONFIG.testMode,
           
-          // Shipping address from metadata
-          shipping_first_name: shippingAddress.first_name || '',
-          shipping_last_name: shippingAddress.last_name || '',
-          shipping_address_line_1: shippingAddress.line1 || '',
-          shipping_address_line_2: shippingAddress.line2 || '',
-          shipping_city: shippingAddress.city || '',
-          shipping_state_province: shippingAddress.state || '',
-          shipping_postal_code: shippingAddress.postal_code || '',
-          shipping_country: shippingAddress.country || 'US',
+          // Shipping address from metadata or session
+          shipping_first_name: shippingAddress.first_name || session.shipping_details?.name?.split(' ')[0] || '',
+          shipping_last_name: shippingAddress.last_name || session.shipping_details?.name?.split(' ').slice(1).join(' ') || '',
+          shipping_address_line_1: shippingAddress.line1 || session.shipping_details?.address?.line1 || '',
+          shipping_address_line_2: shippingAddress.line2 || session.shipping_details?.address?.line2 || '',
+          shipping_city: shippingAddress.city || session.shipping_details?.address?.city || '',
+          shipping_state_province: shippingAddress.state || session.shipping_details?.address?.state || '',
+          shipping_postal_code: shippingAddress.postal_code || session.shipping_details?.address?.postal_code || '',
+          shipping_country: shippingAddress.country || session.shipping_details?.address?.country || 'US',
           
-          // Billing address (same as shipping for now)
-          billing_first_name: shippingAddress.first_name || '',
-          billing_last_name: shippingAddress.last_name || '',
-          billing_address_line_1: shippingAddress.line1 || '',
-          billing_address_line_2: shippingAddress.line2 || '',
-          billing_city: shippingAddress.city || '',
-          billing_state_province: shippingAddress.state || '',
-          billing_postal_code: shippingAddress.postal_code || '',
-          billing_country: shippingAddress.country || 'US',
+          // Billing address from session
+          billing_first_name: session.customer_details?.name?.split(' ')[0] || '',
+          billing_last_name: session.customer_details?.name?.split(' ').slice(1).join(' ') || '',
+          billing_address_line_1: session.customer_details?.address?.line1 || '',
+          billing_address_line_2: session.customer_details?.address?.line2 || '',
+          billing_city: session.customer_details?.address?.city || '',
+          billing_state_province: session.customer_details?.address?.state || '',
+          billing_postal_code: session.customer_details?.address?.postal_code || '',
+          billing_country: session.customer_details?.address?.country || 'US',
         };
 
         const { data: order, error: orderError } = await supabaseAdmin
@@ -254,12 +254,31 @@ export async function POST(request: Request) {
           }
         }
 
-        console.log(`Order created successfully: ${order?.id} (${order?.order_number})`);
+        console.log(`✅ Order created successfully: ${order?.id} (${order?.order_number})`);
 
-        // Send order confirmation email
+        // Prepare notification data for admin email
+        const adminNotificationData = {
+          orderNumber: orderNumber,
+          customerEmail: customerEmail,
+          customerName: customerName,
+          amount: session.amount_total ? session.amount_total / 100 : 0,
+          currency: session.currency?.toUpperCase() || 'USD',
+          items: orderItems.map(item => ({
+            name: item.name,
+            quantity: item.quantity,
+            price: item.price
+          })),
+          paymentStatus: session.payment_status || 'unknown',
+          createdAt: new Date().toISOString(),
+        };
+
+        // Send emails concurrently for better performance
+        const emailPromises = [];
+
+        // Send order confirmation email to customer
         if (order && customerEmail) {
-          try {
-            await emailService.sendOrderConfirmation({
+          emailPromises.push(
+            emailService.sendOrderConfirmation({
               id: order.id,
               orderNumber: order.order_number,
               amount: session.amount_total || 0,
@@ -272,13 +291,33 @@ export async function POST(request: Request) {
                 price: item.price
               })),
               createdAt: new Date().toISOString(),
-            });
-            console.log(`Order confirmation email sent to ${customerEmail}`);
-          } catch (emailError) {
-            console.error('Failed to send order confirmation email:', emailError);
-            // Don't fail the webhook if email fails
-          }
+            }).catch(error => {
+              console.error('Failed to send customer order confirmation:', error);
+              return false;
+            })
+          );
         }
+
+        // Send admin notification email
+        emailPromises.push(
+          emailService.sendAdminOrderNotification(adminNotificationData).catch(error => {
+            console.error('Failed to send admin order notification:', error);
+            return false;
+          })
+        );
+
+        // Execute email sending
+        const emailResults = await Promise.allSettled(emailPromises);
+        
+        // Log email results
+        emailResults.forEach((result, index) => {
+          if (result.status === 'fulfilled') {
+            const emailType = index === 0 ? 'customer confirmation' : 'admin notification';
+            console.log(`📧 ${emailType} email: ${result.value ? 'sent' : 'failed'}`);
+          } else {
+            console.error(`📧 Email promise rejected:`, result.reason);
+          }
+        });
         
         break;
       }
@@ -303,6 +342,8 @@ export async function POST(request: Request) {
         if (sessionUpdateError) {
           console.error('Error updating expired checkout session:', sessionUpdateError);
         }
+
+        console.log(`⏰ Checkout session expired: ${session.id}`);
         break;
       }
 
@@ -335,19 +376,65 @@ export async function POST(request: Request) {
           if (updateError) {
             console.error('Error updating failed payment session:', updateError);
           }
+
+          // Send admin notification for payment failure
+          try {
+            const metadata = sessionData.metadata || {};
+            await emailService.sendAdminPaymentFailureNotification({
+              orderNumber: metadata.order_number || 'Unknown',
+              customerEmail: sessionData.customer_email || 'Unknown',
+              customerName: metadata.customer_name || 'Unknown',
+              amount: sessionData.amount_total || 0,
+              currency: sessionData.currency || 'USD',
+              error: paymentIntent.last_payment_error?.message || 'Payment failed',
+              paymentStatus: 'failed',
+              createdAt: new Date().toISOString(),
+              items: []
+            });
+            console.log(`📧 Admin payment failure notification sent for payment intent: ${paymentIntent.id}`);
+          } catch (emailError) {
+            console.error('Failed to send admin payment failure notification:', emailError);
+          }
         }
+
+        console.log(`❌ Payment failed: ${paymentIntent.id} - ${paymentIntent.last_payment_error?.message || 'Unknown error'}`);
+        break;
+      }
+
+      case 'charge.dispute.created': {
+        const dispute = event.data.object as Stripe.Dispute;
+        console.log(`⚠️ Dispute created: ${dispute.id} - Amount: ${dispute.amount / 100} ${dispute.currency.toUpperCase()}`);
+        
+        // TODO: Send admin dispute notification
+        // This would require implementing sendAdminDisputeNotification in email service
+        break;
+      }
+
+      case 'invoice.payment_succeeded': {
+        const invoice = event.data.object as Stripe.Invoice;
+        console.log(`💰 Invoice paid: ${invoice.id} - Amount: ${(invoice.amount_paid || 0) / 100} ${invoice.currency?.toUpperCase()}`);
+        break;
+      }
+
+      case 'customer.subscription.created':
+      case 'customer.subscription.updated':
+      case 'customer.subscription.deleted': {
+        const subscription = event.data.object as Stripe.Subscription;
+        console.log(`📋 Subscription ${event.type}: ${subscription.id} - Status: ${subscription.status}`);
+        
+        // TODO: Handle subscription events if you add subscription products
         break;
       }
 
       default:
         // Log but ignore other event types
-        console.log(`Unhandled event type: ${event.type}`);
+        console.log(`📝 Unhandled event type: ${event.type}`);
     }
 
     // Return success response
     return NextResponse.json({ received: true });
   } catch (error) {
-    console.error('Webhook error:', error);
+    console.error('❌ Webhook error:', error);
     return NextResponse.json(
       { error: 'Webhook handler failed' },
       { status: 500 }
