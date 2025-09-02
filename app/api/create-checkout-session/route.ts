@@ -188,12 +188,10 @@ export async function POST(request: Request) {
       // Allow promotion codes for discounts
       allow_promotion_codes: true,
       
-      // FIXED: Only include supported consent collection options
-      consent_collection: {
-        terms_of_service: 'required',
-        // Note: privacy_policy is not supported in current Stripe API
-        // You can handle privacy policy acceptance in your own UI before checkout
-      },
+      // REMOVED: Terms of service consent collection until URL is configured in Stripe
+      // consent_collection: {
+      //   terms_of_service: 'required',
+      // },
       
       // Comprehensive metadata for webhook processing
       metadata,
@@ -227,50 +225,6 @@ export async function POST(request: Request) {
           message: 'Complete your order to start your gut health journey with Fibre Elite Glow!',
         },
       },
-      
-      // Shipping options (uncomment and configure if you have shipping rates set up)
-      // shipping_options: [
-      //   {
-      //     shipping_rate_data: {
-      //       type: 'fixed_amount',
-      //       fixed_amount: {
-      //         amount: 500, // $5.00 shipping
-      //         currency: STRIPE_CONFIG.currency,
-      //       },
-      //       display_name: 'Standard Shipping',
-      //       delivery_estimate: {
-      //         minimum: {
-      //           unit: 'business_day',
-      //           value: 3,
-      //         },
-      //         maximum: {
-      //           unit: 'business_day',
-      //           value: 7,
-      //         },
-      //       },
-      //     },
-      //   },
-      //   {
-      //     shipping_rate_data: {
-      //       type: 'fixed_amount',
-      //       fixed_amount: {
-      //         amount: 1500, // $15.00 express shipping
-      //         currency: STRIPE_CONFIG.currency,
-      //       },
-      //       display_name: 'Express Shipping',
-      //       delivery_estimate: {
-      //         minimum: {
-      //           unit: 'business_day',
-      //           value: 1,
-      //         },
-      //         maximum: {
-      //           unit: 'business_day',
-      //           value: 2,
-      //         },
-      //       },
-      //     },
-      //   },
-      // ],
     });
 
     // Try to store checkout session info in Supabase if available
@@ -311,7 +265,7 @@ export async function POST(request: Request) {
     console.log(`📧 Customer: ${body.customerInfo.email}`);
     console.log(`📦 Order: ${orderNumber}`);
     console.log(`💰 Total: ${session.amount_total ? (session.amount_total / 100) : 0} ${session.currency?.toUpperCase()}`);
-    console.log(`🎯 Fields collected: billing address, shipping address, phone number, terms acceptance`);
+    console.log(`🎯 Fields collected: billing address, shipping address, phone number, promotion codes`);
 
     // Return the checkout session URL with order information
     return NextResponse.json({ 
@@ -322,7 +276,6 @@ export async function POST(request: Request) {
         'billing_address',
         'shipping_address', 
         'phone_number',
-        'terms_of_service',
         'promotion_codes'
       ]
     });
