@@ -2,10 +2,10 @@
 
 import React, { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import { Card, CardContent, CardHeader, CardTitle } from '../../../src/components/ui/card';
+import { Button } from '../../../src/components/ui/button';
+import Header from '../../../src/components/Header';
+import Footer from '../../../src/components/Footer';
 import { XCircle, ArrowLeft, CreditCard, HelpCircle } from 'lucide-react';
 import Link from 'next/link';
 
@@ -84,7 +84,7 @@ function CheckoutErrorContent() {
           suggestions: [
             'Verify your card details',
             'Try a different payment method',
-            'Ensure your bank hasn’t blocked the transaction',
+            'Ensure your bank hasn\'t blocked the transaction',
           ],
         };
       case 'session_expired':
