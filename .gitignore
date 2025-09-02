@@ -18,6 +18,7 @@ dist-ssr
 /test-results/
 /playwright-report/
 /playwright/.cache/
+/playwright/tests/
 *.spec.js.snap
 
 # Performance reports
@@ -49,3 +50,18 @@ performance-report.json
 *.tmp
 *.temp
 .browser-data/
+
+# Generated/temporary scripts
+test-*.ts
+generate-*.ts
+regenerate-*.ts
+*-workflow.ts
+check-remaining-*.ts
+
+# Build artifacts
+tsconfig.tsbuildinfo
+bun.lockb
+
+# Downloads and temp data
+downloads/
+mcp-test-screenshot.png

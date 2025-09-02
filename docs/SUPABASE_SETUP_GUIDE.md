@@ -18,19 +18,19 @@ Your current Supabase project (`lyynavswxtzhsmwetgtn`) is currently **INACTIVE**
 Once your project is active, execute the following SQL files in order:
 
 ### 2.1 Create the Schema
-Copy and paste the contents of `database-schema.sql` into your Supabase SQL Editor:
+Copy and paste the contents of `supabase/database-schema.sql` into your Supabase SQL Editor:
 
 ```sql
 -- This will create all tables, indexes, and triggers
--- File: database-schema.sql
+-- File: supabase/database-schema.sql
 ```
 
 ### 2.2 Insert Sample Data
-Copy and paste the contents of `sample-data.sql` into your Supabase SQL Editor:
+Copy and paste the contents of `supabase/sample-data.sql` into your Supabase SQL Editor:
 
 ```sql
 -- This will populate your database with initial product data
--- File: sample-data.sql
+-- File: supabase/sample-data.sql
 ```
 
 ## 📊 Database Structure Overview

@@ -868,7 +868,7 @@ async function main() {
     const requiredFiles = [
       'app/api/create-checkout-session/route.ts',
       'app/api/webhooks/stripe/route.ts',
-      'database-stripe-migration.sql',
+      'supabase/database-stripe-migration.sql',
       'src/lib/stripe.ts'
     ];
     

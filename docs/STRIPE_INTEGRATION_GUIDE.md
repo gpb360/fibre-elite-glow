@@ -11,7 +11,7 @@ Key features implemented:
 * **Client flow** – `/checkout` page now collects customer / shipping details and redirects to a secure Stripe-hosted Checkout session.
 * **Serverless API** – `app/api/create-checkout-session/route.ts` creates the Stripe checkout session and stores metadata (cart items, address, etc.) in Supabase.
 * **Webhooks** – `app/api/webhooks/stripe/route.ts` receives Stripe events and converts successful sessions into **orders**, updates payment status or flags failures.
-* **Database support** – New tables (`checkout_sessions`, `secrets`, etc.) plus RLS policies were added in `database-stripe-migration.sql`.
+* **Database support** – New tables (`checkout_sessions`, `secrets`, etc.) plus RLS policies were added in `supabase/database-stripe-migration.sql`.
 * **Secrets management** – All sensitive keys (secret key & webhook secret) are now pulled from **Supabase Secrets**, never from code or `.env` in production.
 * **Utilities & scripts** – `scripts/setup-supabase-secrets.js` helps migrate secrets interactively; Playwright flows exercise positive/negative checkout paths.
 
@@ -63,8 +63,8 @@ NEXT_PUBLIC_BASE_URL=http://localhost:3000
 1. Run the existing schema plus the Stripe migration:
 
    ```bash
-   pnpm supabase db push database-schema.sql            # first-time
-   pnpm supabase db push database-stripe-migration.sql  # Stripe tables
+   pnpm supabase db push supabase/database-schema.sql            # first-time
+   pnpm supabase db push supabase/database-stripe-migration.sql  # Stripe tables
    ```
 
 2. Verify new tables:

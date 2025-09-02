@@ -51,7 +51,7 @@ export class InventoryService {
         }
 
         // Calculate new stock quantity
-        const newStockQuantity = packageData.stock_quantity - item.quantity;
+        const newStockQuantity = (packageData.stock_quantity ?? 0) - item.quantity;
 
         // Update stock quantity
         const { error: updateError } = await supabaseAdmin
@@ -111,8 +111,8 @@ export class InventoryService {
         }
 
         // Check if sufficient stock is available
-        if (packageData.stock_quantity < item.quantity) {
-          issues.push(`Insufficient stock for "${item.name}": ${item.quantity} requested, ${packageData.stock_quantity} available`);
+        if ((packageData.stock_quantity ?? 0) < item.quantity) {
+          issues.push(`Insufficient stock for "${item.name}": ${item.quantity} requested, ${packageData.stock_quantity ?? 0} available`);
         }
       }
 
@@ -148,8 +148,8 @@ export class InventoryService {
         packageId: pkg.id,
         productName: pkg.product_name,
         productType: pkg.product_type as 'total_essential' | 'total_essential_plus',
-        currentStock: pkg.stock_quantity,
-        isLowStock: pkg.stock_quantity <= this.LOW_STOCK_THRESHOLD
+        currentStock: pkg.stock_quantity ?? 0,
+        isLowStock: (pkg.stock_quantity ?? 0) <= this.LOW_STOCK_THRESHOLD
       }));
     } catch (error) {
       console.error('Error getting inventory levels:', error);
@@ -182,10 +182,10 @@ export class InventoryService {
         let newStockQuantity: number;
         switch (operation.operation) {
           case 'add':
-            newStockQuantity = packageData.stock_quantity + operation.quantity;
+            newStockQuantity = (packageData.stock_quantity ?? 0) + operation.quantity;
             break;
           case 'subtract':
-            newStockQuantity = Math.max(0, packageData.stock_quantity - operation.quantity);
+            newStockQuantity = Math.max(0, (packageData.stock_quantity ?? 0) - operation.quantity);
             break;
           case 'set':
             newStockQuantity = Math.max(0, operation.quantity);

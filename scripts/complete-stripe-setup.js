@@ -308,9 +308,9 @@ async function runDatabaseMigrations(supabase) {
     }
     
     // Read the migration file
-    const migrationFile = path.join(process.cwd(), 'database-stripe-migration.sql');
+    const migrationFile = path.join(process.cwd(), 'supabase/database-stripe-migration.sql');
     if (!fs.existsSync(migrationFile)) {
-      throw new Error('Migration file not found: database-stripe-migration.sql');
+      throw new Error('Migration file not found: supabase/database-stripe-migration.sql');
     }
     
     const migrationSql = fs.readFileSync(migrationFile, 'utf8');

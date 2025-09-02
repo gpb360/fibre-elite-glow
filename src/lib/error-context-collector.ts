@@ -159,7 +159,7 @@ class ErrorContextCollector {
 
       this.contextData.browser = browserContext;
     } catch (error) {
-      logger.warn('Failed to collect browser context', { error: error });
+      logger.warn('Failed to collect browser context', { additional: { error: error instanceof Error ? error.message : String(error) } });
     }
   }
 
@@ -217,7 +217,7 @@ class ErrorContextCollector {
       });
 
     } catch (error) {
-      logger.warn('Failed to set up performance monitoring', { error: error });
+      logger.warn('Failed to set up performance monitoring', { additional: { error: error instanceof Error ? error.message : String(error) } });
     }
   }
 
@@ -247,7 +247,7 @@ class ErrorContextCollector {
         this.contextData.performance = performanceContext;
       }
     } catch (error) {
-      logger.warn('Failed to collect navigation timing', { error: error });
+      logger.warn('Failed to collect navigation timing', { additional: { error: error instanceof Error ? error.message : String(error) } });
     }
   }
 
@@ -348,7 +348,7 @@ class ErrorContextCollector {
     const originalFetch = window.fetch;
     window.fetch = async (...args) => {
       const startTime = Date.now();
-      const url = typeof args[0] === 'string' ? args[0] : args[0].url;
+      const url = typeof args[0] === 'string' ? args[0] : args[0] instanceof URL ? args[0].toString() : args[0].url;
       const method = args[1]?.method || 'GET';
 
       try {
@@ -454,8 +454,10 @@ class ErrorContextCollector {
   public getFullContext(): Partial<ErrorContextData> {
     return {
       ...this.contextData,
-      // Add current timestamp
-      timestamp: Date.now()
+      customData: {
+        ...this.contextData.customData,
+        timestamp: Date.now()
+      }
     };
   }
 

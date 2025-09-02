@@ -16,15 +16,80 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Loader2, CreditCard, Lock, Wifi, WifiOff, Shield, AlertTriangle, CheckCircle } from 'lucide-react';
 import { ErrorBoundary } from '@/components/error';
-import { 
-  ValidatedInput, 
-  FormSecurityStatus, 
-  FormSecurityIndicator, 
-  FormValidationSummary, 
+import {
+  FormSecurityStatus,
+  FormSecurityIndicator,
+  FormValidationSummary,
   FormErrorRecovery
 } from '@/components/ui/FormValidation';
 import { useFormSecurityStatus } from '@/components/forms/FormSecurityStatus';
-import { useFormErrorRecovery } from '@/components/forms/FormErrorRecovery';
+import { useFormErrorRecovery, FormError } from '@/components/forms/FormErrorRecovery';
+import { useFormValidation } from '@/hooks/useFormValidation';
+import { enhancedCheckoutSchema, FormValidationUtils, FormRateLimiting } from '@/lib/form-validation';
+
+// Simple API mutation hook for checkout
+interface UseApiMutationOptions {
+  maxRetries?: number;
+  showErrorToast?: boolean;
+  onRetry?: (attempt: number) => void;
+}
+
+interface UseApiMutationReturn {
+  mutate: (url: string, data: any) => Promise<any>;
+  loading: boolean;
+  error: Error | null;
+  retry: () => void;
+}
+
+function useApiMutation(options: UseApiMutationOptions = {}): UseApiMutationReturn {
+  const { maxRetries = 3, onRetry } = options;
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [lastRequest, setLastRequest] = useState<{ url: string; data: any } | null>(null);
+
+  const mutate = async (url: string, data: any) => {
+    setLoading(true);
+    setError(null);
+    setLastRequest({ url, data });
+
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const result = await response.json();
+        setLoading(false);
+        return result;
+      } catch (err) {
+        if (attempt === maxRetries) {
+          setError(err as Error);
+          setLoading(false);
+          throw err;
+        }
+        onRetry?.(attempt);
+        // Wait before retry with exponential backoff
+        await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
+      }
+    }
+  };
+
+  const retry = () => {
+    if (lastRequest) {
+      mutate(lastRequest.url, lastRequest.data);
+    }
+  };
+
+  return { mutate, loading, error, retry };
+}
 
 /**
  * Initialise Stripe with the *publishable* key.
@@ -71,7 +136,7 @@ interface CheckoutFormData {
 
 const CheckoutForm: React.FC = () => {
   const router = useRouter();
-  const { cart, clearCart } = useCart();
+  const { cart } = useCart();
   const { toast } = useToast();
   const { isOnline } = useNetworkStatus();
   const isOffline = !isOnline;
@@ -122,7 +187,6 @@ const CheckoutForm: React.FC = () => {
   });
   
   const [validFields, setValidFields] = useState(0);
-  const [attemptCount, setAttemptCount] = useState(0);
   const [csrfToken, setCsrfToken] = useState<string>('');
   
   // Form security status
@@ -151,17 +215,8 @@ const CheckoutForm: React.FC = () => {
     clearFormErrors();
   };
   
-  const handleValidationChange = (field: string) => (isValid: boolean, error?: string) => {
-    setValidFields(prev => {
-      const change = isValid ? 1 : -1;
-      const newCount = Math.max(0, prev + change);
-      return Math.min(8, newCount); // Maximum 8 fields
-    });
-  };
-
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    setAttemptCount(prev => prev + 1);
     
     // Rate limiting check
     const rateLimitCheck = FormRateLimiting.isSubmissionAllowed(formData.email || 'anonymous', 3, 15);
@@ -196,8 +251,8 @@ const CheckoutForm: React.FC = () => {
     }
 
     // Enhanced form validation
-    const validation = await validate(formData);
-    if (!validation.isValid) {
+    const isFormValid = await validate(formData);
+    if (!isFormValid) {
       addError({
         type: 'validation',
         message: 'Please correct the errors in the form before proceeding.',
@@ -283,27 +338,30 @@ const CheckoutForm: React.FC = () => {
       } else {
         throw new Error('No checkout URL received');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Checkout error:', error);
-      
+
       // Record failed attempt
       FormRateLimiting.recordAttempt(formData.email, false);
-      
+
       // Categorize error type
       let errorType: FormError['type'] = 'unknown';
-      if (error.message?.includes('network') || error.message?.includes('fetch')) {
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+      const errorStatus = (error as { status?: number })?.status;
+
+      if (errorMessage?.includes('network') || errorMessage?.includes('fetch')) {
         errorType = 'network';
-      } else if (error.message?.includes('authentication') || error.message?.includes('unauthorized')) {
+      } else if (errorMessage?.includes('authentication') || errorMessage?.includes('unauthorized')) {
         errorType = 'authentication';
-      } else if (error.message?.includes('rate') || error.message?.includes('limit')) {
+      } else if (errorMessage?.includes('rate') || errorMessage?.includes('limit')) {
         errorType = 'rate-limit';
-      } else if (error.status >= 500) {
+      } else if (errorStatus && errorStatus >= 500) {
         errorType = 'server';
       }
-      
+
       addError({
         type: errorType,
-        message: error.message || 'An unexpected error occurred during checkout. Please try again.',
+        message: errorMessage || 'An unexpected error occurred during checkout. Please try again.',
         retryable: errorType !== 'rate-limit'
       });
     }
@@ -323,39 +381,32 @@ const CheckoutForm: React.FC = () => {
   return (
     <form onSubmit={handleSubmit} className="space-y-6" data-testid="checkout-form">
       {/* Security Status */}
-      <FormSecurityStatus 
-        checks={securityStatus.checks}
-        overallStatus={securityStatus.overallStatus}
-        showDetails={false}
+      <FormSecurityStatus
+        status={securityStatus.overallStatus === 'secure' ? 'secure' : securityStatus.overallStatus === 'warning' ? 'warning' : 'error'}
+        message={`Form security: ${securityStatus.passedChecks}/${securityStatus.totalChecks} checks passed`}
       />
-      
+
       {/* Form validation indicators */}
-      <FormSecurityIndicator 
-        isSecure={isValid && validFields >= 6}
-        validFields={validFields}
-        totalFields={8}
+      <FormSecurityIndicator
+        score={validFields * 12.5}
+        maxScore={100}
+        issues={validationErrors.map(e => e.message)}
       />
-      
+
       {/* Form validation summary */}
-      <FormValidationSummary 
+      <FormValidationSummary
         errors={validationErrors}
-        onFieldFocus={(fieldName) => {
-          const element = document.getElementById(fieldName)
-          element?.focus()
-        }}
+        isValid={isValid}
       />
       
       {/* Form Error Recovery */}
-      <FormErrorRecovery
-        errors={formErrors}
-        onRetry={retryFormSubmission}
-        onClearErrors={clearFormErrors}
-        onFieldFocus={(fieldName) => {
-          const element = document.getElementById(fieldName)
-          element?.focus()
-        }}
-        isRetrying={isRetrying}
-      />
+      {formErrors.length > 0 && (
+        <FormErrorRecovery
+          error={formErrors[0]?.message}
+          onRetry={() => retryFormSubmission(() => Promise.resolve())}
+          onReset={clearFormErrors}
+        />
+      )}
 
       {/* Customer Information */}
       <Card>
@@ -363,77 +414,69 @@ const CheckoutForm: React.FC = () => {
           <CardTitle className="flex items-center gap-2">
             <CreditCard className="h-5 w-5" />
             Customer Information
-            <Shield className="h-4 w-4 text-green-600" title="Secure form" />
+            <Shield className="h-4 w-4 text-green-600" />
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <ValidatedInput
-              id="email"
-              name="email"
-              type="email"
-              label="Email Address"
-              schema={enhancedCheckoutSchema}
-              fieldName="email"
-              value={formData.email}
-              onChange={(e) => handleInputChange('email', e.target.value)}
-              onValidationChange={handleValidationChange('email')}
-              showSecurityIndicator={true}
-              helperText="We'll send your order confirmation here"
-              required
-              placeholder="your@email.com"
-              data-testid="email-input"
-            />
+            <div className="space-y-2">
+              <Label htmlFor="email">Email Address *</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={(e) => handleInputChange('email', e.target.value)}
+                placeholder="your@email.com"
+                required
+                data-testid="email-input"
+              />
+              <p className="text-sm text-gray-600">We&apos;ll send your order confirmation here</p>
+            </div>
             
-            <ValidatedInput
-              id="firstName"
-              name="firstName"
-              type="text"
-              label="First Name"
-              schema={enhancedCheckoutSchema}
-              fieldName="firstName"
-              value={formData.firstName}
-              onChange={(e) => handleInputChange('firstName', e.target.value)}
-              onValidationChange={handleValidationChange('firstName')}
-              showSecurityIndicator={true}
-              helperText="Your legal first name"
-              required
-              placeholder="John"
-              data-testid="first-name-input"
-            />
-            
-            <ValidatedInput
-              id="lastName"
-              name="lastName"
-              type="text"
-              label="Last Name"
-              schema={enhancedCheckoutSchema}
-              fieldName="lastName"
-              value={formData.lastName}
-              onChange={(e) => handleInputChange('lastName', e.target.value)}
-              onValidationChange={handleValidationChange('lastName')}
-              showSecurityIndicator={true}
-              helperText="Your legal last name"
-              required
-              placeholder="Doe"
-              data-testid="last-name-input"
-            />
-            
-            <ValidatedInput
-              id="phone"
-              name="phone"
-              type="tel"
-              label="Phone Number (Optional)"
-              schema={enhancedCheckoutSchema}
-              fieldName="phone"
-              value={formData.phone || ''}
-              onChange={(e) => handleInputChange('phone', e.target.value)}
-              onValidationChange={handleValidationChange('phone')}
-              showSecurityIndicator={false}
-              helperText="For delivery updates and support"
-              placeholder="(555) 123-4567"
-              data-testid="phone-input"
-            />
+            <div className="space-y-2">
+              <Label htmlFor="firstName">First Name *</Label>
+              <Input
+                id="firstName"
+                name="firstName"
+                type="text"
+                value={formData.firstName}
+                onChange={(e) => handleInputChange('firstName', e.target.value)}
+                placeholder="John"
+                required
+                data-testid="first-name-input"
+              />
+              <p className="text-sm text-gray-600">Your legal first name</p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="lastName">Last Name *</Label>
+              <Input
+                id="lastName"
+                name="lastName"
+                type="text"
+                value={formData.lastName}
+                onChange={(e) => handleInputChange('lastName', e.target.value)}
+                placeholder="Doe"
+                required
+                data-testid="last-name-input"
+              />
+              <p className="text-sm text-gray-600">Your legal last name</p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone Number (Optional)</Label>
+              <Input
+                id="phone"
+                name="phone"
+                type="tel"
+                value={formData.phone || ''}
+                onChange={(e) => handleInputChange('phone', e.target.value)}
+                placeholder="(555) 123-4567"
+                data-testid="phone-input"
+              />
+              <p className="text-sm text-gray-600">For delivery updates and support</p>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -444,78 +487,70 @@ const CheckoutForm: React.FC = () => {
           <CardTitle className="flex items-center gap-2">
             <Lock className="h-5 w-5" />
             Shipping Address
-            <Shield className="h-4 w-4 text-green-600" title="Secure form" />
+            <Shield className="h-4 w-4 text-green-600" />
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <ValidatedInput
-            id="address"
-            name="address"
-            type="text"
-            label="Street Address"
-            schema={enhancedCheckoutSchema}
-            fieldName="address"
-            value={formData.address}
-            onChange={(e) => handleInputChange('address', e.target.value)}
-            onValidationChange={handleValidationChange('address')}
-            showSecurityIndicator={true}
-            helperText="Your full street address"
-            required
-            placeholder="123 Main Street"
-            data-testid="address-line1"
-          />
+          <div className="space-y-2">
+            <Label htmlFor="address">Street Address *</Label>
+            <Input
+              id="address"
+              name="address"
+              type="text"
+              value={formData.address}
+              onChange={(e) => handleInputChange('address', e.target.value)}
+              placeholder="123 Main Street"
+              required
+              data-testid="address-line1"
+            />
+            <p className="text-sm text-gray-600">Your full street address</p>
+          </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <ValidatedInput
-              id="city"
-              name="city"
-              type="text"
-              label="City"
-              schema={enhancedCheckoutSchema}
-              fieldName="city"
-              value={formData.city}
-              onChange={(e) => handleInputChange('city', e.target.value)}
-              onValidationChange={handleValidationChange('city')}
-              showSecurityIndicator={true}
-              helperText="Your city"
-              required
-              placeholder="Los Angeles"
-              data-testid="city-input"
-            />
-            
-            <ValidatedInput
-              id="state"
-              name="state"
-              type="text"
-              label="State"
-              schema={enhancedCheckoutSchema}
-              fieldName="state"
-              value={formData.state}
-              onChange={(e) => handleInputChange('state', e.target.value)}
-              onValidationChange={handleValidationChange('state')}
-              showSecurityIndicator={true}
-              helperText="State or province"
-              required
-              placeholder="CA"
-              data-testid="state-input"
-            />
-            
-            <ValidatedInput
-              id="zipCode"
-              name="zipCode"
-              type="text"
-              label="ZIP Code"
-              schema={enhancedCheckoutSchema}
-              fieldName="zipCode"
-              value={formData.zipCode}
-              onChange={(e) => handleInputChange('zipCode', e.target.value)}
-              onValidationChange={handleValidationChange('zipCode')}
-              showSecurityIndicator={true}
-              helperText="5-digit ZIP code"
-              required
-              placeholder="90210"
-              data-testid="zip-input"
-            />
+            <div className="space-y-2">
+              <Label htmlFor="city">City *</Label>
+              <Input
+                id="city"
+                name="city"
+                type="text"
+                value={formData.city}
+                onChange={(e) => handleInputChange('city', e.target.value)}
+                placeholder="Los Angeles"
+                required
+                data-testid="city-input"
+              />
+              <p className="text-sm text-gray-600">Your city</p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="state">State *</Label>
+              <Input
+                id="state"
+                name="state"
+                type="text"
+                value={formData.state}
+                onChange={(e) => handleInputChange('state', e.target.value)}
+                placeholder="CA"
+                required
+                data-testid="state-input"
+              />
+              <p className="text-sm text-gray-600">State or province</p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="zipCode">ZIP Code *</Label>
+              <Input
+                id="zipCode"
+                name="zipCode"
+                type="text"
+                value={formData.zipCode}
+                onChange={(e) => handleInputChange('zipCode', e.target.value)}
+                placeholder="90210"
+                required
+                data-testid="zip-input"
+              />
+              <p className="text-sm text-gray-600">5-digit ZIP code</p>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -550,7 +585,7 @@ const CheckoutForm: React.FC = () => {
           <AlertDescription className="text-orange-800">
             <div className="flex items-center justify-between">
               <div>
-                <span className="font-medium">You're currently offline</span>
+                <span className="font-medium">You&apos;re currently offline</span>
                 <p className="text-sm mt-1">Please check your internet connection to continue with checkout.</p>
               </div>
               <Button

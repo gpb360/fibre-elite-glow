@@ -84,7 +84,8 @@ export class CSRFProtection {
     }
     
     // Validate CSRF token for production
-    if (!this.validateToken(request)) {
+    const token = this.getTokenFromRequest(request) || this.getTokenFromCookie(request);
+    if (!token || !this.validateToken(token)) {
       return { valid: false, error: 'Invalid CSRF token' };
     }
     
@@ -130,7 +131,8 @@ export class CSRFProtection {
     }
 
     // Validate CSRF token for state-changing requests in production
-    if (!this.validateToken(request)) {
+    const token = this.getTokenFromRequest(request) || this.getTokenFromCookie(request);
+    if (!token || !this.validateToken(token)) {
       console.warn(`CSRF validation failed for ${method} ${pathname}`);
       return NextResponse.json(
         { error: 'CSRF token validation failed' },

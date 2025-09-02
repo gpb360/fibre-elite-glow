@@ -89,7 +89,7 @@ const nextConfig = {
   compress: true,
   generateEtags: true,
   eslint: {
-    ignoreDuringBuilds: true, // Temporarily disable for optimization work
+    ignoreDuringBuilds: false,
   },
   typescript: {
     ignoreBuildErrors: false,

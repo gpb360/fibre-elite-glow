@@ -55,7 +55,7 @@ export default function LoginPage() {
     
     // Validate form data
     const validation = await validate(form)
-    if (!validation.isValid) {
+    if (!validation) {
       setError('Please fix the validation errors above.')
       return
     }
@@ -188,19 +188,16 @@ export default function LoginPage() {
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6" data-testid="login-form">
                 {/* Security and validation indicators */}
-                <FormSecurityIndicator 
-                  isSecure={isValid && validFields === 2}
-                  validFields={validFields}
-                  totalFields={2}
+                <FormSecurityIndicator
+                  score={validFields * 50}
+                  maxScore={100}
+                  issues={!isValid ? ['Form validation incomplete'] : []}
                 />
                 
                 {/* Form validation summary */}
-                <FormValidationSummary 
+                <FormValidationSummary
                   errors={errors}
-                  onFieldFocus={(fieldName) => {
-                    const element = document.getElementById(fieldName)
-                    element?.focus()
-                  }}
+                  isValid={isValid}
                 />
                 
                 {/* General error alert */}

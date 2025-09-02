@@ -1,4 +1,4 @@
-import { performanceCache } from './performance-cache';
+import { PerformanceCache } from './performance-cache';
 
 // Types for error logging system
 export interface LogLevel {
@@ -300,20 +300,24 @@ class ProductionErrorLogger {
     // Global JavaScript errors
     window.addEventListener('error', (event) => {
       this.error('Global JavaScript Error', {
-        message: event.message,
-        filename: event.filename,
-        lineno: event.lineno,
-        colno: event.colno,
-        error: event.error?.toString(),
-        stack: event.error?.stack
+        additional: {
+          message: event.message,
+          filename: event.filename,
+          lineno: event.lineno,
+          colno: event.colno,
+          error: event.error?.toString(),
+          stack: event.error?.stack
+        }
       });
     });
 
     // Unhandled promise rejections
     window.addEventListener('unhandledrejection', (event) => {
       this.error('Unhandled Promise Rejection', {
-        reason: event.reason?.toString(),
-        stack: event.reason?.stack
+        additional: {
+          reason: event.reason?.toString(),
+          stack: event.reason?.stack
+        }
       });
     });
 
@@ -321,8 +325,10 @@ class ProductionErrorLogger {
     if (typeof window !== 'undefined' && (window as any).__REACT_ERROR_OVERLAY_GLOBAL_HOOK__) {
       (window as any).__REACT_ERROR_OVERLAY_GLOBAL_HOOK__.onBuildError = (error: Error) => {
         this.error('React Build Error', {
-          message: error.message,
-          stack: error.stack
+          additional: {
+            message: error.message,
+            stack: error.stack
+          }
         });
       };
     }
@@ -370,7 +376,7 @@ class ProductionErrorLogger {
     }
 
     // Add stack trace for errors
-    if (level === 'error' && this.config.enableStackTrace) {
+    if (level === 'ERROR' && this.config.enableStackTrace) {
       entry.stack = new Error().stack;
     }
 
@@ -383,9 +389,9 @@ class ProductionErrorLogger {
     
     // Console output in development
     if (this.config.enableConsole) {
-      const consoleMethod = entry.level === 'error' ? 'error' : 
-                           entry.level === 'warn' ? 'warn' : 
-                           entry.level === 'info' ? 'info' : 'debug';
+      const consoleMethod = entry.level === 'ERROR' ? 'error' : 
+                           entry.level === 'WARN' ? 'warn' : 
+                           entry.level === 'INFO' ? 'info' : 'debug';
       
       console[consoleMethod](`[${entry.level.toUpperCase()}] ${entry.message}`, entry.context || '');
     }
@@ -422,23 +428,23 @@ class ProductionErrorLogger {
 
   // Public logging methods
   public error(message: string, context?: ErrorContext): void {
-    const entry = this.createLogEntry('error', message, context);
+    const entry = this.createLogEntry('ERROR', message, context);
     this.addLog(entry);
   }
 
   public warn(message: string, context?: ErrorContext): void {
-    const entry = this.createLogEntry('warn', message, context);
+    const entry = this.createLogEntry('WARN', message, context);
     this.addLog(entry);
   }
 
   public info(message: string, context?: ErrorContext): void {
-    const entry = this.createLogEntry('info', message, context);
+    const entry = this.createLogEntry('INFO', message, context);
     this.addLog(entry);
   }
 
   public debug(message: string, context?: ErrorContext): void {
     if (process.env.NODE_ENV === 'development') {
-      const entry = this.createLogEntry('debug', message, context);
+      const entry = this.createLogEntry('DEBUG', message, context);
       this.addLog(entry);
     }
   }
@@ -540,7 +546,7 @@ class ProductionErrorLogger {
     });
 
     const recentErrors = this.logs
-      .filter(log => log.level === 'error')
+      .filter(log => log.level === 'ERROR')
       .sort((a, b) => b.timestamp - a.timestamp)
       .slice(0, 10);
 

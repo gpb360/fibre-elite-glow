@@ -256,14 +256,14 @@ class PaymentRecoveryService {
     const maxAge = 24 * 60 * 60 * 1000; // 24 hours
 
     // Clear old recovery attempts
-    for (const [key, attempt] of this.recoveryAttempts.entries()) {
+    for (const [key, attempt] of Array.from(this.recoveryAttempts.entries())) {
       if (now - attempt.timestamp > maxAge) {
         this.recoveryAttempts.delete(key);
       }
     }
 
     // Clear old verification cache
-    for (const [key, result] of this.verificationCache.entries()) {
+    for (const [key, result] of Array.from(this.verificationCache.entries())) {
       if (now - (result as any).timestamp > 300000) { // 5 minutes
         this.verificationCache.delete(key);
       }

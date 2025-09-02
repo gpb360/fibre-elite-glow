@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 // Types for caching system
 export interface CacheEntry<T> {
@@ -120,7 +120,7 @@ class PerformanceCache<T = any> {
     let lruKey = '';
     let oldestAccess = Infinity;
 
-    for (const [key, accessTime] of this.accessOrder.entries()) {
+    for (const [key, accessTime] of Array.from(this.accessOrder.entries())) {
       if (accessTime < oldestAccess) {
         oldestAccess = accessTime;
         lruKey = key;
@@ -147,7 +147,7 @@ class PerformanceCache<T = any> {
 
     // Update memory usage
     let totalSize = 0;
-    for (const entry of this.cache.values()) {
+    for (const entry of Array.from(this.cache.values())) {
       totalSize += entry.size;
     }
     this.metrics.memoryUsage = totalSize;
@@ -246,7 +246,7 @@ class PerformanceCache<T = any> {
     const now = Date.now();
     const expiredKeys: string[] = [];
 
-    for (const [key, entry] of this.cache.entries()) {
+    for (const [key, entry] of Array.from(this.cache.entries())) {
       if (now - entry.timestamp > entry.ttl) {
         expiredKeys.push(key);
       }
@@ -291,7 +291,7 @@ class PerformanceCache<T = any> {
     if (typeof window === 'undefined') return;
 
     try {
-      const compressed = this.compress(entry);
+      const compressed = JSON.stringify(entry);
       localStorage.setItem(key, compressed);
     } catch (error) {
       console.warn('Failed to save cache entry to storage:', error);
@@ -464,17 +464,24 @@ export const BundleOptimizer = {
     fallback?: React.ComponentType
   ) => {
     const LazyComponent = React.lazy(importFn);
-    
-    return React.forwardRef((props: React.ComponentProps<T>, ref) =>
-      React.createElement(React.Suspense, 
+
+    const LazyWrapper = React.forwardRef<
+      React.ComponentRef<T>,
+      React.ComponentPropsWithoutRef<T>
+    >((props, ref) =>
+      React.createElement(React.Suspense,
         { fallback: fallback ? React.createElement(fallback) : React.createElement('div', {}, 'Loading...') },
-        React.createElement(LazyComponent, { ...props, ref })
+        React.createElement(LazyComponent, { ...props, ref } as any)
       )
     );
+
+    LazyWrapper.displayName = `LazyComponent(Component)`;
+
+    return LazyWrapper;
   },
 
   // Preload critical components
-  preloadComponent: (importFn: () => Promise<any>) => {
+  preloadComponent: (importFn: () => Promise<{ default: React.ComponentType<any> }>) => {
     if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
       requestIdleCallback(() => {
         importFn().catch(console.error);
@@ -490,7 +497,8 @@ export const BundleOptimizer = {
       case 'animations':
         return !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       case 'highres':
-        return window.devicePixelRatio > 1 && navigator.connection?.effectiveType !== '2g';
+        return window.devicePixelRatio > 1 &&
+          ('connection' in navigator && (navigator as Navigator & { connection?: { effectiveType?: string } }).connection?.effectiveType !== '2g');
       case 'video':
         return !window.matchMedia('(prefers-reduced-data: reduce)').matches;
       default:

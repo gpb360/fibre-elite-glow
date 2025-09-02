@@ -7,7 +7,7 @@ import { Heading } from '@/components/ui/heading';
 import { SplitSection } from '@/components/ui/split-section';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
-import { Zap, Shield, Droplets, ArrowRight, Microscope, Leaf, BarChart3, Brain, Check, Flame, Heart } from 'lucide-react';
+import { Zap, Shield, Droplets, Leaf, Flame, Heart } from 'lucide-react';
 import Link from 'next/link';
 import Head from 'next/head';
 import Image from 'next/image';

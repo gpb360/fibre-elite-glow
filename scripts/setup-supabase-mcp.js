@@ -212,8 +212,8 @@ async function runDatabaseMigrations(missingTables) {
   
   // Check if migration files exist
   const migrationFiles = [
-    'database-schema.sql',
-    'database-stripe-migration.sql'
+    'supabase/database-schema.sql',
+    'supabase/database-stripe-migration.sql'
   ];
   
   let missingFiles = [];
@@ -251,10 +251,10 @@ async function runDatabaseMigrations(missingTables) {
     
     try {
       console.log(chalk.cyan('  Applying base schema...'));
-      execSync('supabase db push database-schema.sql', { stdio: 'inherit' });
+      execSync('supabase db push supabase/database-schema.sql', { stdio: 'inherit' });
       
       console.log(chalk.cyan('  Applying Stripe migration...'));
-      execSync('supabase db push database-stripe-migration.sql', { stdio: 'inherit' });
+      execSync('supabase db push supabase/database-stripe-migration.sql', { stdio: 'inherit' });
       
       console.log(chalk.green('  ✅ Database migrations applied successfully'));
       return true;
@@ -267,9 +267,9 @@ async function runDatabaseMigrations(missingTables) {
       console.log(chalk.cyan('  1. Go to Supabase dashboard: https://app.supabase.io'));
       console.log(chalk.cyan('  2. Select your project'));
       console.log(chalk.cyan('  3. Go to SQL Editor'));
-      console.log(chalk.cyan('  4. Copy and paste the contents of database-schema.sql'));
+      console.log(chalk.cyan('  4. Copy and paste the contents of supabase/database-schema.sql'));
       console.log(chalk.cyan('  5. Run the SQL'));
-      console.log(chalk.cyan('  6. Repeat with database-stripe-migration.sql'));
+      console.log(chalk.cyan('  6. Repeat with supabase/database-stripe-migration.sql'));
       
       return false;
     }
@@ -503,8 +503,8 @@ function displayNextSteps(results) {
   
   if (!results.tables) {
     console.log(chalk.yellow('1. Run database migrations to create required tables'));
-    console.log(chalk.cyan('   supabase db push database-schema.sql'));
-    console.log(chalk.cyan('   supabase db push database-stripe-migration.sql'));
+    console.log(chalk.cyan('   supabase db push supabase/database-schema.sql'));
+    console.log(chalk.cyan('   supabase db push supabase/database-stripe-migration.sql'));
   }
   
   if (!results.mcp) {

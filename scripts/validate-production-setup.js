@@ -179,8 +179,8 @@ class ProductionSetupValidator {
     this.log('\n🗄️  Validating Database Schema...', 'bold');
 
     const schemaFiles = [
-      'database-schema.sql',
-      'complete-database-setup.sql',
+      'supabase/database-schema.sql',
+      'supabase/complete-database-setup.sql',
     ];
 
     for (const schemaFile of schemaFiles) {

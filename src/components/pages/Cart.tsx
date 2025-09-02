@@ -191,7 +191,7 @@ const Cart = () => {
                               className="flex items-center gap-2" 
                               data-testid="quantity-controls"
                               role="group"
-                              aria-label={`Quantity controls for ${item.title}`}
+                              aria-label={`Quantity controls for ${item.productName}`}
                               onKeyDown={(e) => handleKeyDown(e, item.id, item.quantity)}
                               tabIndex={0}
                             >
@@ -201,7 +201,7 @@ const Cart = () => {
                                 className="h-10 w-10 min-w-[40px] touch-target"
                                 onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
                                 disabled={isUpdating || item.quantity <= 1}
-                                aria-label={`Decrease quantity of ${item.title}`}
+                                aria-label={`Decrease quantity of ${item.productName}`}
                                 title="Decrease quantity (Arrow Down or - key)"
                               >
                                 <Minus className="h-4 w-4" />
@@ -220,7 +220,7 @@ const Cart = () => {
                                 className="h-10 w-10 min-w-[40px] touch-target"
                                 onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
                                 disabled={isUpdating || item.quantity >= 10}
-                                aria-label={`Increase quantity of ${item.title}`}
+                                aria-label={`Increase quantity of ${item.productName}`}
                                 title="Increase quantity (Arrow Up or + key)"
                               >
                                 <Plus className="h-4 w-4" />

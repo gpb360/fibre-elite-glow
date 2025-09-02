@@ -442,7 +442,11 @@ export function useLoadingState(initialLoading = false) {
   }, []);
 
   const setError = React.useCallback((error: string | Error | null) => {
-    setState(prev => ({ ...prev, isLoading: false, error }));
+    setState(prev => ({
+      ...prev,
+      isLoading: false,
+      error: error instanceof Error ? error.message : error
+    }));
   }, []);
 
   const setData = React.useCallback((data: any) => {

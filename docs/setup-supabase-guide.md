@@ -101,9 +101,9 @@ pnpm add -D @supabase/mcp
 
    ```bash
    # base e-commerce schema
-   supabase db push database-schema.sql
+   supabase db push supabase/database-schema.sql
    # tables used by Stripe & secrets
-   supabase db push database-stripe-migration.sql
+   supabase db push supabase/database-stripe-migration.sql
    ```
 
 ---

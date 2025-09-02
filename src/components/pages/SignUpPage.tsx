@@ -4,14 +4,13 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Checkbox } from '@/components/ui/checkbox'
 import { ValidatedInput, FormSecurityIndicator, FormValidationSummary } from '@/components/ui/FormValidation'
 import { useFormValidation } from '@/hooks/useFormValidation'
 import { registerSchema } from '@/lib/validation'
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight, AlertCircle, CheckCircle, Shield, Phone } from 'lucide-react'
+import { ArrowRight, AlertCircle, CheckCircle, Shield } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/integrations/supabase/client'
 import Header from '@/components/Header'
@@ -54,8 +53,7 @@ export default function SignUpPage() {
     isValid,
     isValidating,
     validate,
-    clearErrors,
-    resetValidation
+    clearErrors
   } = useFormValidation(registerSchema, {
     validateOnChange: true,
     showErrorToast: false
@@ -120,8 +118,8 @@ export default function SignUpPage() {
     }
     
     // Validate form data with enhanced schema
-    const validation = await validate(form)
-    if (!validation.isValid) {
+    const isFormValid = await validate(form)
+    if (!isFormValid) {
       setError('Please fix the validation errors above.')
       return
     }
@@ -189,7 +187,7 @@ export default function SignUpPage() {
           acceptMarketing: false
         })
       }
-    } catch (error) {
+    } catch {
       setError('An unexpected error occurred. Please try again.')
     } finally {
       setIsSubmitting(false)
@@ -207,11 +205,14 @@ export default function SignUpPage() {
     clearErrors()
   }
   
-  const handleValidationChange = (field: string) => (isValid: boolean, error?: string) => {
-    setValidFields(prev => {
-      const change = isValid ? 1 : -1
-      const newCount = Math.max(0, prev + change)
-      return Math.min(6, newCount) // Maximum 6 fields (firstName, lastName, email, password, confirmPassword, phone)
+  const [fieldValidationState, setFieldValidationState] = useState<Record<string, boolean>>({})
+
+  const handleValidationChange = (field: string) => (isValid: boolean) => {
+    setFieldValidationState(prev => {
+      const newState = { ...prev, [field]: isValid }
+      const validCount = Object.values(newState).filter(Boolean).length
+      setValidFields(validCount)
+      return newState
     })
   }
 
@@ -263,19 +264,16 @@ export default function SignUpPage() {
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6" data-testid="signup-form">
                 {/* Security and validation indicators */}
-                <FormSecurityIndicator 
-                  isSecure={isValid && validFields >= 5 && form.acceptTerms}
-                  validFields={validFields}
-                  totalFields={6}
+                <FormSecurityIndicator
+                  score={validFields}
+                  maxScore={6}
+                  issues={errors.map(err => err.message)}
                 />
                 
                 {/* Form validation summary */}
-                <FormValidationSummary 
+                <FormValidationSummary
                   errors={errors}
-                  onFieldFocus={(fieldName) => {
-                    const element = document.getElementById(fieldName)
-                    element?.focus()
-                  }}
+                  isValid={isValid}
                 />
                 
                 {/* General error alert */}

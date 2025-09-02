@@ -1,34 +1,109 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
-import { Shield, AlertCircle, CheckCircle } from 'lucide-react'
+import { Shield, AlertCircle, CheckCircle, Info } from 'lucide-react'
+import { z } from 'zod'
 
 interface ValidatedInputProps {
+  id?: string
+  name?: string
   type?: string
+  label?: string
   placeholder?: string
   value: string
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onValidationChange?: (isValid: boolean, error?: string) => void
   error?: string
   icon?: React.ReactNode
   className?: string
   disabled?: boolean
+  required?: boolean
+  helperText?: string
+  showSecurityIndicator?: boolean
+  schema?: z.ZodObject<any> | z.ZodEffects<any>
+  fieldName?: string
+  'data-testid'?: string
 }
 
 export function ValidatedInput({
+  id,
+  name,
   type = 'text',
+  label,
   placeholder,
   value,
   onChange,
-  error,
+  onValidationChange,
+  error: externalError,
   icon,
   className,
-  disabled
+  disabled,
+  required,
+  helperText,
+  showSecurityIndicator = false,
+  schema,
+  fieldName,
+  'data-testid': dataTestId,
+  ...props
 }: ValidatedInputProps) {
+  const [internalError, setInternalError] = useState<string | undefined>()
+  const [isValid, setIsValid] = useState(false)
+
+  // Use external error if provided, otherwise use internal error
+  const displayError = externalError || internalError
+
+  // Validate field when value changes
+  useEffect(() => {
+    if (schema && fieldName && value !== undefined) {
+      try {
+        // Create a partial object for validation
+        const fieldData = { [fieldName]: value }
+
+        // Try to validate the specific field
+        if ('shape' in schema && schema.shape && fieldName in schema.shape) {
+          // For ZodObject, validate the specific field
+          const fieldSchema = schema.shape[fieldName]
+          fieldSchema.parse(value)
+        } else {
+          // For other schema types, validate the full object
+          schema.parse(fieldData)
+        }
+
+        setInternalError(undefined)
+        setIsValid(true)
+        onValidationChange?.(true)
+      } catch (err) {
+        if (err instanceof z.ZodError) {
+          const fieldError = err.errors.find(e =>
+            e.path.length === 0 || e.path.includes(fieldName)
+          )
+          const errorMessage = fieldError?.message || 'Invalid input'
+          setInternalError(errorMessage)
+          setIsValid(false)
+          onValidationChange?.(false, errorMessage)
+        }
+      }
+    } else {
+      // If no schema validation, consider it valid if not empty (when required)
+      const fieldIsValid = required ? value.trim().length > 0 : true
+      setIsValid(fieldIsValid)
+      onValidationChange?.(fieldIsValid)
+    }
+  }, [value, schema, fieldName, required, onValidationChange])
+
   return (
-    <div className="space-y-1">
+    <div className="space-y-2">
+      {label && (
+        <Label htmlFor={id} className="text-sm font-medium">
+          {label}
+          {required && <span className="text-red-500 ml-1">*</span>}
+        </Label>
+      )}
+
       <div className="relative">
         {icon && (
           <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
@@ -36,18 +111,37 @@ export function ValidatedInput({
           </div>
         )}
         <Input
+          id={id}
+          name={name}
           type={type}
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          className={`${icon ? 'pl-10' : ''} ${error ? 'border-red-500' : ''} ${className}`}
+          className={`${icon ? 'pl-10' : ''} ${displayError ? 'border-red-500 focus:border-red-500' : isValid && value ? 'border-green-500' : ''} ${className}`}
           disabled={disabled}
+          required={required}
+          data-testid={dataTestId}
+          {...props}
         />
+
+        {showSecurityIndicator && isValid && value && (
+          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+            <CheckCircle className="w-4 h-4 text-green-500" />
+          </div>
+        )}
       </div>
-      {error && (
+
+      {displayError && (
         <p className="text-sm text-red-600 flex items-center gap-1">
           <AlertCircle className="w-3 h-3" />
-          {error}
+          {displayError}
+        </p>
+      )}
+
+      {helperText && !displayError && (
+        <p className="text-sm text-gray-500 flex items-center gap-1">
+          <Info className="w-3 h-3" />
+          {helperText}
         </p>
       )}
     </div>
