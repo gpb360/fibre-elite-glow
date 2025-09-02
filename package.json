@@ -2,8 +2,9 @@
   "name": "fibre-elite-glow",
   "private": true,
   "version": "0.0.0",
+  "packageManager": "pnpm@8.15.0",
   "engines": {
-    "node": ">=18.18.0 <=20.18.0",
+    "node": ">=18.18.0",
     "pnpm": ">=8.0.0"
   },
   "scripts": {
