@@ -2,13 +2,13 @@
 
 import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import { Card, CardContent, CardHeader, CardTitle } from '../../../src/components/ui/card';
+import { Button } from '../../../src/components/ui/button';
+import { Badge } from '../../../src/components/ui/badge';
+import Header from '../../../src/components/Header';
+import Footer from '../../../src/components/Footer';
 import { CheckCircle, Package, Mail, ArrowRight, Download } from 'lucide-react';
-import { useCart } from '@/contexts/CartContext';
+// import { useCart } from '@/contexts/CartContext';
 import Link from 'next/link';
 
 interface OrderDetails {
@@ -28,7 +28,7 @@ interface OrderDetails {
 
 function CheckoutSuccessContent() {
   const searchParams = useSearchParams();
-  const { clearCart } = useCart();
+  // const { clearCart } = useCart();
   const [orderDetails, setOrderDetails] = useState<OrderDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -69,7 +69,7 @@ function CheckoutSuccessContent() {
         setOrderDetails(data);
 
         // Clear the cart after successful payment
-        clearCart();
+        // clearCart();
       } catch (err) {
         console.error('❌ Error fetching order details:', err);
         setError(err instanceof Error ? err.message : 'Failed to load order details');
@@ -79,7 +79,7 @@ function CheckoutSuccessContent() {
     };
 
     fetchOrderDetails();
-  }, [searchParams, clearCart]);
+  }, [searchParams]);
 
   if (loading) {
     return (
