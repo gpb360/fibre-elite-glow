@@ -1,0 +1,6 @@
+# pnpm configuration for Netlify deployment
+auto-install-peers=true
+prefer-frozen-lockfile=false
+strict-peer-dependencies=false
+shamefully-hoist=true
+public-hoist-pattern=*
