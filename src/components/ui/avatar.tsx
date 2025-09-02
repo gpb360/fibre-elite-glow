@@ -1,7 +1,27 @@
 import * as React from "react"
-import * as AvatarPrimitive from "@radix-ui/react-avatar"
+// Temporarily commented out due to build issues
+// import * as AvatarPrimitive from "@radix-ui/react-avatar"
 
 import { cn } from "@/lib/utils"
+
+// Temporary placeholder components until @radix-ui/react-avatar is properly resolved
+const AvatarPrimitive = {
+  Root: React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+    ({ className, ...props }, ref) => (
+      <div ref={ref} className={className} {...props} />
+    )
+  ),
+  Image: React.forwardRef<HTMLImageElement, React.ImgHTMLAttributes<HTMLImageElement>>(
+    ({ className, ...props }, ref) => (
+      <img ref={ref} className={className} {...props} />
+    )
+  ),
+  Fallback: React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+    ({ className, ...props }, ref) => (
+      <div ref={ref} className={className} {...props} />
+    )
+  ),
+}
 
 const Avatar = React.forwardRef<
   React.ElementRef<typeof AvatarPrimitive.Root>,

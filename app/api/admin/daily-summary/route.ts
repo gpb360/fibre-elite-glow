@@ -67,14 +67,14 @@ export async function GET(request: Request) {
       customerEmail: order.email,
       customerName: `${order.billing_first_name} ${order.billing_last_name}`.trim(),
       amount: order.total_amount,
-      currency: order.currency,
+      currency: order.currency || 'USD',
       items: (order.order_items || []).map((item: any) => ({
         name: item.product_name,
         quantity: item.quantity,
         price: item.unit_price
       })),
-      paymentStatus: order.payment_status,
-      createdAt: order.created_at,
+      paymentStatus: order.payment_status || 'pending',
+      createdAt: order.created_at || new Date().toISOString(),
     }));
 
     // Send daily summary email

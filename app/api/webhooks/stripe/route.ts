@@ -199,15 +199,15 @@ export async function POST(request: Request) {
           metadata: metadata,
           test_mode: STRIPE_CONFIG.testMode,
           
-          // Shipping address from metadata or session
-          shipping_first_name: shippingAddress.first_name || session.shipping_details?.name?.split(' ')[0] || '',
-          shipping_last_name: shippingAddress.last_name || session.shipping_details?.name?.split(' ').slice(1).join(' ') || '',
-          shipping_address_line_1: shippingAddress.line1 || session.shipping_details?.address?.line1 || '',
-          shipping_address_line_2: shippingAddress.line2 || session.shipping_details?.address?.line2 || '',
-          shipping_city: shippingAddress.city || session.shipping_details?.address?.city || '',
-          shipping_state_province: shippingAddress.state || session.shipping_details?.address?.state || '',
-          shipping_postal_code: shippingAddress.postal_code || session.shipping_details?.address?.postal_code || '',
-          shipping_country: shippingAddress.country || session.shipping_details?.address?.country || 'US',
+          // Shipping address from metadata or session customer details
+          shipping_first_name: shippingAddress.first_name || session.customer_details?.name?.split(' ')[0] || '',
+          shipping_last_name: shippingAddress.last_name || session.customer_details?.name?.split(' ').slice(1).join(' ') || '',
+          shipping_address_line_1: shippingAddress.line1 || session.customer_details?.address?.line1 || '',
+          shipping_address_line_2: shippingAddress.line2 || session.customer_details?.address?.line2 || '',
+          shipping_city: shippingAddress.city || session.customer_details?.address?.city || '',
+          shipping_state_province: shippingAddress.state || session.customer_details?.address?.state || '',
+          shipping_postal_code: shippingAddress.postal_code || session.customer_details?.address?.postal_code || '',
+          shipping_country: shippingAddress.country || session.customer_details?.address?.country || 'US',
           
           // Billing address from session
           billing_first_name: session.customer_details?.name?.split(' ')[0] || '',
@@ -379,7 +379,7 @@ export async function POST(request: Request) {
 
           // Send admin notification for payment failure
           try {
-            const metadata = sessionData.metadata || {};
+            const metadata = (sessionData.metadata || {}) as Record<string, string>;
             await emailService.sendAdminPaymentFailureNotification({
               orderNumber: metadata.order_number || 'Unknown',
               customerEmail: sessionData.customer_email || 'Unknown',
