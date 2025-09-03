@@ -79,7 +79,11 @@
     "zod": "^3.23.8",
     "tailwindcss": "^3.4.11",
     "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.47"
+    "postcss": "^8.4.47",
+    "typescript": "^5.5.3",
+    "@types/node": "^22.5.5",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0"
   },
   "devDependencies": {
     "@netlify/functions": "^2.8.1",
@@ -94,16 +98,12 @@
     "@types/istanbul-lib-instrument": "^1.7.8",
     "@types/istanbul-lib-report": "^3.0.3",
     "@types/istanbul-reports": "^3.0.4",
-    "@types/node": "^22.5.5",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
     "@types/yargs": "^17.0.33",
     "@types/yargs-parser": "^21.0.3",
     "eslint": "^8.57.0",
     "eslint-config-next": "^15.1.6",
     "intersection-observer": "^0.12.2",
     "jsdom": "^26.1.0",
-    "node-fetch": "^3.3.2",
-    "typescript": "^5.5.3"
+    "node-fetch": "^3.3.2"
   }
 }
