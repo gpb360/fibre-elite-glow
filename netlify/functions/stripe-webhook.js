@@ -262,7 +262,7 @@ Admin Dashboard: https://lebve.netlify.app/admin
   `;
 }
 
-// Email sending function - using console for now, can be replaced with SendGrid, SMTP, etc.
+// Email sending function with Resend support
 async function sendEmail({ to, subject, html, text }) {
   const emailProvider = process.env.EMAIL_PROVIDER || 'console';
 
@@ -271,13 +271,39 @@ async function sendEmail({ to, subject, html, text }) {
     console.log('=== EMAIL NOTIFICATION ===');
     console.log('To:', to);
     console.log('Subject:', subject);
-    console.log('HTML Content:', html);
+    console.log('Text:', text);
     console.log('========================');
     return;
   }
 
+  if (emailProvider === 'resend') {
+    try {
+      const { Resend } = require('resend');
+      const resend = new Resend(process.env.RESEND_API_KEY);
+
+      const result = await resend.emails.send({
+        from: process.env.FROM_EMAIL || 'noreply@lbve.ca',
+        to: [to],
+        subject: subject,
+        text: text,
+        html: html
+      });
+
+      console.log('Email sent successfully via Resend:', result);
+      return result;
+    } catch (error) {
+      console.error('Resend error:', error);
+      // Fallback to console if Resend fails
+      console.log('=== EMAIL FALLBACK ===');
+      console.log('To:', to);
+      console.log('Subject:', subject);
+      console.log('Text:', text);
+      console.log('===================');
+    }
+  }
+
   if (emailProvider === 'sendgrid') {
-    // Only require SendGrid when actually needed
+    // Keep SendGrid support for backwards compatibility
     try {
       const sgMail = require('@sendgrid/mail');
       sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -289,6 +315,8 @@ async function sendEmail({ to, subject, html, text }) {
         text,
         html
       });
+
+      console.log('Email sent successfully via SendGrid');
     } catch (error) {
       console.error('SendGrid error:', error);
       // Fallback to console if SendGrid fails
