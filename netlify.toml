@@ -1,20 +1,10 @@
 [build]
-  command = "corepack enable && corepack prepare pnpm@8.15.0 --activate && rm -rf .next && pnpm install --no-frozen-lockfile && pnpm build"
-  publish = ".next"
+  command = "rm -rf .next && pnpm build"
 
 [build.environment]
   NEXT_TELEMETRY_DISABLED = "1"
   NODE_ENV = "production"
-  NODE_VERSION = "20.18.0"
-  COREPACK_ENABLE_STRICT = "0"
-  PNPM_VERSION = "8.15.0"
-  NPM_CONFIG_FUND = "false"
-  NPM_CONFIG_AUDIT = "false"
-
-# Functions configuration for Netlify Functions
-[functions]
-  directory = "netlify/functions"
-  node_bundler = "esbuild"
+  NODE_VERSION = "18.20.0"
 
 # Safe compression and caching headers
 [[headers]]
@@ -45,14 +35,6 @@
     Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
     Access-Control-Allow-Headers = "Content-Type, Authorization, X-Requested-With"
     Cache-Control = "no-cache, no-store, must-revalidate"
-
-# Netlify Functions headers
-[[headers]]
-  for = "/.netlify/functions/*"
-  [headers.values]
-    Access-Control-Allow-Origin = "*"
-    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
-    Access-Control-Allow-Headers = "Content-Type, Authorization, stripe-signature"
 
 # General security headers
 [[headers]]
