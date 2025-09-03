@@ -277,6 +277,7 @@ async function sendEmail({ to, subject, html, text }) {
   }
 
   if (emailProvider === 'resend') {
+    // Resend email provider
     try {
       const { Resend } = require('resend');
       const resend = new Resend(process.env.RESEND_API_KEY);

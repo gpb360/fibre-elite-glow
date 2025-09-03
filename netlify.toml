@@ -21,7 +21,7 @@ package = "@netlify/plugin-nextjs"
   
   # Include external dependencies in function bundles
   [functions.stripe-webhook]
-    external_node_modules = ["stripe", "@sendgrid/mail"]
+    external_node_modules = ["stripe", "@sendgrid/mail", "resend"]
 
 # Safe compression and caching headers
 [[headers]]
