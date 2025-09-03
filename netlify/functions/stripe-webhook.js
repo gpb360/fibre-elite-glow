@@ -277,16 +277,27 @@ async function sendEmail({ to, subject, html, text }) {
   }
 
   if (emailProvider === 'sendgrid') {
-    const sgMail = require('@sendgrid/mail');
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    // Only require SendGrid when actually needed
+    try {
+      const sgMail = require('@sendgrid/mail');
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-    await sgMail.send({
-      to,
-      from: process.env.FROM_EMAIL || 'noreply@lbve.ca',
-      subject,
-      text,
-      html
-    });
+      await sgMail.send({
+        to,
+        from: process.env.FROM_EMAIL || 'noreply@lbve.ca',
+        subject,
+        text,
+        html
+      });
+    } catch (error) {
+      console.error('SendGrid error:', error);
+      // Fallback to console if SendGrid fails
+      console.log('=== EMAIL FALLBACK ===');
+      console.log('To:', to);
+      console.log('Subject:', subject);
+      console.log('Text:', text);
+      console.log('===================');
+    }
   }
 
   // Add other email providers as needed (SMTP, etc.)
