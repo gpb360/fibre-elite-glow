@@ -39,7 +39,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
 
-  // Simplified webpack configuration - remove complex optimizations that may cause issues
+  // Enhanced webpack configuration for better module resolution
   webpack: (config, { dev, isServer }) => {
     // Essential server-side polyfills only
     if (isServer) {
@@ -49,7 +49,12 @@ const nextConfig = {
       };
     }
 
-    // Remove complex webpack optimizations that may cause build failures
+    // Ensure proper path alias resolution
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': require('path').resolve(__dirname, 'src'),
+    };
+
     // Keep only essential configurations
     return config;
   }
