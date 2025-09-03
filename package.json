@@ -78,9 +78,7 @@
     "zod": "^3.23.8",
     "tailwindcss": "^3.4.11",
     "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.47"
-  },
-  "devDependencies": {
+    "postcss": "^8.4.47",
     "@netlify/functions": "^2.8.1",
     "@playwright/mcp": "^0.0.29",
     "@playwright/test": "^1.53.1",
