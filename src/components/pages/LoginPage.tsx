@@ -223,6 +223,7 @@ export default function LoginPage() {
                   helperText="Enter the email address associated with your account"
                   required
                   placeholder="your@email.com"
+                  data-testid="email-input"
                 />
 
                 {/* Password field with validation */}
@@ -240,6 +241,7 @@ export default function LoginPage() {
                   helperText="Enter your account password"
                   required
                   placeholder="Enter your password"
+                  data-testid="password-input"
                 />
 
                 <div className="flex items-center justify-between">
@@ -257,7 +259,7 @@ export default function LoginPage() {
                   type="submit"
                   disabled={isSubmitting || !isValid || isValidating}
                   className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50"
-                  data-testid="submit-button"
+                  data-testid="login-button"
                 >
                   {isSubmitting ? (
                     "Signing in..."

@@ -197,9 +197,9 @@ export function useFormSecurityStatus(formData: Record<string, any>, options: {
       const hasLowercase = /[a-z]/.test(password)
       const hasNumbers = /\d/.test(password)
       const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password)
-      
+
       const strength = [hasMinLength, hasUppercase, hasLowercase, hasNumbers, hasSpecial].filter(Boolean).length
-      
+
       newChecks.push({
         id: 'password-strength',
         label: 'Password Strength',
@@ -219,7 +219,8 @@ export function useFormSecurityStatus(formData: Record<string, any>, options: {
     })
 
     // Input validation check
-    const hasValidInputs = Object.values(formData).every(value => {
+    const hasValidInputs = Object.keys(formData).every(key => {
+      const value = formData[key]
       if (typeof value === 'string') {
         return !/<script|javascript:|vbscript:|onload=|onerror=/i.test(value)
       }
@@ -247,7 +248,7 @@ export function useFormSecurityStatus(formData: Record<string, any>, options: {
     } else {
       setOverallStatus('secure')
     }
-  }, [formData, options])
+  }, [formData, options.enablePasswordStrength, options.enableXSSProtection, options.enableRateLimit]) // Be specific about which options we depend on
 
   return {
     checks,
