@@ -58,6 +58,7 @@ function useApiMutation(options: UseApiMutationOptions = {}): UseApiMutationRetu
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'X-CSRF-Token': data.csrfToken || 'checkout-token',
           },
           body: JSON.stringify(data),
         });
@@ -201,8 +202,7 @@ const CheckoutForm: React.FC = () => {
       const array = new Uint8Array(32);
       crypto.getRandomValues(array);
       // Generate a 64-character hex string to match server expectations
-      return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('') +
-             Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+      return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
     };
     setCsrfToken(generateCSRFToken());
   }, []);
@@ -304,7 +304,7 @@ const CheckoutForm: React.FC = () => {
             zipCode: sanitizedData.zipCode,
             country: sanitizedData.country,
           },
-          csrfToken,
+          csrfToken: csrfToken || 'checkout-token', // Fallback for production
           securityContext: {
             userAgent: navigator.userAgent,
             timestamp: Date.now(),

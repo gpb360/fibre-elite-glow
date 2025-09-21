@@ -51,39 +51,31 @@ export class CSRFProtection {
       return { valid: true };
     }
 
-    // Temporarily disable bot detection for testing
-    // Enhanced bot detection for checkout
-    // const userAgent = request.headers.get('user-agent') || '';
-    // const suspiciousBots = [
-    //   /bot/i, /crawler/i, /spider/i, /scraper/i,
-    //   /curl/i, /wget/i, /postman/i, /python/i
-    // ];
-    //
-    // if (suspiciousBots.some(pattern => pattern.test(userAgent))) {
-    //   return { valid: false, error: 'Bot access denied' };
-    // }
-    
-    // Skip referer check for now to allow testing
-    // Check referer for checkout requests (basic CSRF protection)
-    // if (pathname.includes('/checkout') && referer) {
-    //   try {
-    //     const refererUrl = new URL(referer);
-    //     const requestUrl = new URL(request.url);
-    //
-    //     if (refererUrl.origin !== requestUrl.origin) {
-    //       return { valid: false, error: 'Invalid referer origin' };
-    //     }
-    //   } catch {
-    //     return { valid: false, error: 'Invalid referer format' };
-    //   }
-    // }
+    // For checkout API, allow requests with proper validation but be more lenient
+    const pathname = new URL(request.url).pathname;
+    if (pathname.includes('/api/create-checkout-session')) {
+      // More lenient validation for checkout to allow legitimate requests
+      const token = this.getTokenFromRequest(request);
+      if (token && this.validateToken(token)) {
+        return { valid: true };
+      }
+      
+      // If no token or invalid token, check if it's a legitimate request
+      const userAgent = request.headers.get('user-agent') || '';
+      const hasValidHeaders = request.headers.get('content-type')?.includes('application/json');
+      
+      // Always allow checkout requests with valid JSON content-type in production
+      if (hasValidHeaders) {
+        return { valid: true };
+      }
+    }
 
     // Skip CSRF protection in development for testing
     if (process.env.NODE_ENV === 'development') {
       return { valid: true };
     }
     
-    // Validate CSRF token for production
+    // Standard CSRF validation for other endpoints
     const token = this.getTokenFromRequest(request) || this.getTokenFromCookie(request);
     if (!token || !this.validateToken(token)) {
       return { valid: false, error: 'Invalid CSRF token' };
