@@ -5,3 +5,19 @@ port = 54324
 
 [inbucket]
 port = 54325
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = true
+
+# Configure SMTP for auth emails via Resend
+[auth.email.smtp]
+enabled = true
+host = "smtp.resend.com"
+port = 465
+user = "resend"
+# Set SMTP password to your Resend API key
+# pass = "re_your_api_key_here"
+admin_email = "noreply@stripe.lbve.ca"
+sender_name = "Lebelle Vie"
