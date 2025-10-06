@@ -12,12 +12,14 @@ double_confirm_changes = true
 enable_confirmations = true
 
 # Configure SMTP for auth emails via Resend
+# Note: Disabled for local development - emails are caught by Inbucket
+# Enable this in production by setting enabled = true and adding your Resend API key
 [auth.email.smtp]
-enabled = true
+enabled = false
 host = "smtp.resend.com"
 port = 465
 user = "resend"
-# Set SMTP password to your Resend API key
+# Set SMTP password to your Resend API key when enabling
 # pass = "re_your_api_key_here"
 admin_email = "noreply@stripe.lbve.ca"
 sender_name = "Lebelle Vie"
