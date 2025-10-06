@@ -2,7 +2,7 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')!
-const ADMIN_EMAIL = Deno.env.get('ADMIN_EMAIL') || 'admin@lbve.ca'
+const ADMIN_EMAIL = Deno.env.get('ADMIN_EMAIL') || 'admin@venomappdevelopment.com'
 
 serve(async (req) => {
   try {
@@ -11,7 +11,7 @@ serve(async (req) => {
     // Email configuration based on type
     const emailConfig: any = {
       from: 'Fibre Elite Glow <orders@stripe.lbve.ca>',
-      reply_to: 'support@lbve.ca'
+      reply_to: 'support@venomappdevelopment.com'
     }
 
     switch (type) {
@@ -85,7 +85,7 @@ function generateOrderEmail(data: any) {
             background-color: #f9fafb;
           }
           .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #9ED458 0%, #7FB835 100%);
             color: white;
             padding: 30px;
             border-radius: 10px 10px 0 0;
@@ -106,7 +106,7 @@ function generateOrderEmail(data: any) {
           .button {
             display: inline-block;
             padding: 12px 24px;
-            background: #667eea;
+            background: #9ED458;
             color: white;
             text-decoration: none;
             border-radius: 6px;
@@ -156,7 +156,7 @@ function generateOrderEmail(data: any) {
           <p>Your order has been confirmed and will be processed shortly. You'll receive a shipping notification once your order is on its way!</p>
 
           <div class="footer">
-            <p>Questions? Contact us at <a href="mailto:support@lbve.ca">support@lbve.ca</a></p>
+            <p>Questions? Contact us at <a href="mailto:support@venomappdevelopment.com">support@venomappdevelopment.com</a></p>
             <p>© ${new Date().getFullYear()} Fibre Elite Glow. All rights reserved.</p>
           </div>
         </div>
@@ -186,7 +186,7 @@ function generateAdminEmail(data: any) {
             padding: 20px;
           }
           .alert {
-            background: #10b981;
+            background: #9ED458;
             color: white;
             padding: 20px;
             border-radius: 8px;
