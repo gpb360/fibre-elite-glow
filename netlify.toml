@@ -1,6 +1,19 @@
 [build]
   command = "corepack enable && corepack prepare pnpm@8.15.0 --activate && pnpm install --prod=false --frozen-lockfile && pnpm build"
 
+# Force HTTPS redirect
+[[redirects]]
+  from = "http://lbve.venomappdevelopment.com/*"
+  to = "https://lbve.venomappdevelopment.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://*.netlify.app/*"
+  to = "https://:splat.netlify.app/:splat"
+  status = 301
+  force = true
+
 # Use Netlify's Essential Next.js plugin for proper Next.js support
 [[plugins]]
 package = "@netlify/plugin-nextjs"

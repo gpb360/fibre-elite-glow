@@ -8,7 +8,7 @@ import { Badge } from '../../../src/components/ui/badge';
 import Header from '../../../src/components/Header';
 import Footer from '../../../src/components/Footer';
 import { CheckCircle, Package, Mail, ArrowRight, Download } from 'lucide-react';
-// import { useCart } from '@/contexts/CartContext';
+import { useCart } from '@/contexts/CartContext';
 import Link from 'next/link';
 
 interface OrderDetails {
@@ -28,7 +28,7 @@ interface OrderDetails {
 
 function CheckoutSuccessContent() {
   const searchParams = useSearchParams();
-  // const { clearCart } = useCart();
+  const { clearCart } = useCart();
   const [orderDetails, setOrderDetails] = useState<OrderDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -52,11 +52,31 @@ function CheckoutSuccessContent() {
       try {
         const response = await fetch(`/api/checkout-session/${sessionId}`);
 
-        console.log('📡 API Response:', { 
-          status: response.status, 
+        console.log('📡 API Response:', {
+          status: response.status,
           statusText: response.statusText,
-          ok: response.ok 
+          ok: response.ok
         });
+
+        // Handle rate limiting - wait and retry once
+        if (response.status === 429) {
+          console.log('⏳ Rate limited. Waiting 2 seconds before retry...');
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          const retryResponse = await fetch(`/api/checkout-session/${sessionId}`);
+
+          if (!retryResponse.ok) {
+            const errorText = await retryResponse.text();
+            console.error('❌ API Error Response after retry:', errorText);
+            throw new Error(`API Error: ${retryResponse.status} - ${errorText}`);
+          }
+
+          const data = await retryResponse.json();
+          console.log('✅ Order details received after retry:', data);
+          setOrderDetails(data);
+          clearCart();
+          setLoading(false);
+          return;
+        }
 
         if (!response.ok) {
           const errorText = await response.text();
@@ -69,7 +89,8 @@ function CheckoutSuccessContent() {
         setOrderDetails(data);
 
         // Clear the cart after successful payment
-        // clearCart();
+        console.log('🧹 Clearing cart after successful order');
+        clearCart();
       } catch (err) {
         console.error('❌ Error fetching order details:', err);
         setError(err instanceof Error ? err.message : 'Failed to load order details');
