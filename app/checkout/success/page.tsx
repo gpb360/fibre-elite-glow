@@ -52,11 +52,31 @@ function CheckoutSuccessContent() {
       try {
         const response = await fetch(`/api/checkout-session/${sessionId}`);
 
-        console.log('📡 API Response:', { 
-          status: response.status, 
+        console.log('📡 API Response:', {
+          status: response.status,
           statusText: response.statusText,
-          ok: response.ok 
+          ok: response.ok
         });
+
+        // Handle rate limiting - wait and retry once
+        if (response.status === 429) {
+          console.log('⏳ Rate limited. Waiting 2 seconds before retry...');
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          const retryResponse = await fetch(`/api/checkout-session/${sessionId}`);
+
+          if (!retryResponse.ok) {
+            const errorText = await retryResponse.text();
+            console.error('❌ API Error Response after retry:', errorText);
+            throw new Error(`API Error: ${retryResponse.status} - ${errorText}`);
+          }
+
+          const data = await retryResponse.json();
+          console.log('✅ Order details received after retry:', data);
+          setOrderDetails(data);
+          clearCart();
+          setLoading(false);
+          return;
+        }
 
         if (!response.ok) {
           const errorText = await response.text();
