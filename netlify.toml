@@ -1,5 +1,5 @@
 [build]
-  command = "corepack enable && corepack prepare pnpm@8.15.0 --activate && pnpm install --no-frozen-lockfile && pnpm build"
+  command = "corepack enable && corepack prepare pnpm@8.15.0 --activate && pnpm install --prod=false --frozen-lockfile && pnpm build"
 
 # Use Netlify's Essential Next.js plugin for proper Next.js support
 [[plugins]]
