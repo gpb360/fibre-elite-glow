@@ -47,18 +47,36 @@ export async function GET(
   try {
     // Get user session if available (for authorization)
     const authHeader = request.headers.get('authorization');
-    const userSession = authHeader ? 
+    const userSession = authHeader ?
       await supabase.auth.getSession() : null;
     const userId = userSession?.data?.session?.user?.id;
 
     console.log('🔐 User session:', { userId, hasAuth: !!authHeader });
 
-    // Retrieve checkout session from Stripe
+    // Retrieve checkout session from Stripe with retry logic for rate limits
     console.log('🔄 Retrieving Stripe session...');
-    const stripeSession = await stripe.checkout.sessions.retrieve(
-      sessionId,
-      { expand: ['payment_intent', 'line_items'] }
-    );
+    let stripeSession: Stripe.Checkout.Session;
+    let retryCount = 0;
+    const maxRetries = 3;
+
+    while (retryCount <= maxRetries) {
+      try {
+        stripeSession = await stripe.checkout.sessions.retrieve(
+          sessionId,
+          { expand: ['payment_intent', 'line_items'] }
+        );
+        break; // Success, exit retry loop
+      } catch (err) {
+        if (err instanceof Stripe.errors.StripeRateLimitError && retryCount < maxRetries) {
+          retryCount++;
+          const delay = Math.pow(2, retryCount) * 1000; // Exponential backoff: 2s, 4s, 8s
+          console.log(`⏳ Rate limit hit, retrying in ${delay}ms (attempt ${retryCount}/${maxRetries})...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+        } else {
+          throw err; // Re-throw if not rate limit or max retries reached
+        }
+      }
+    }
 
     console.log('✅ Stripe session retrieved:', { 
       id: stripeSession.id, 
@@ -154,13 +172,19 @@ export async function GET(
     return NextResponse.json(orderDetails);
   } catch (error) {
     console.error('Error retrieving checkout session:', error);
-    
+
     // Determine appropriate error response
     if (error instanceof Stripe.errors.StripeError) {
       if (error.type === 'StripeInvalidRequestError') {
         return NextResponse.json(
           { error: 'Invalid session ID or session expired' },
           { status: 404 }
+        );
+      }
+      if (error.type === 'StripeRateLimitError') {
+        return NextResponse.json(
+          { error: 'Too many requests. Please wait a moment and refresh the page.' },
+          { status: 429 }
         );
       }
     }
