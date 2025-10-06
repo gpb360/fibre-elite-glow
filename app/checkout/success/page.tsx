@@ -8,7 +8,7 @@ import { Badge } from '../../../src/components/ui/badge';
 import Header from '../../../src/components/Header';
 import Footer from '../../../src/components/Footer';
 import { CheckCircle, Package, Mail, ArrowRight, Download } from 'lucide-react';
-// import { useCart } from '@/contexts/CartContext';
+import { useCart } from '@/contexts/CartContext';
 import Link from 'next/link';
 
 interface OrderDetails {
@@ -28,7 +28,7 @@ interface OrderDetails {
 
 function CheckoutSuccessContent() {
   const searchParams = useSearchParams();
-  // const { clearCart } = useCart();
+  const { clearCart } = useCart();
   const [orderDetails, setOrderDetails] = useState<OrderDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -69,7 +69,8 @@ function CheckoutSuccessContent() {
         setOrderDetails(data);
 
         // Clear the cart after successful payment
-        // clearCart();
+        console.log('🧹 Clearing cart after successful order');
+        clearCart();
       } catch (err) {
         console.error('❌ Error fetching order details:', err);
         setError(err instanceof Error ? err.message : 'Failed to load order details');
