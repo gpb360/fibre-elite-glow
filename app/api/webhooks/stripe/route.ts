@@ -2,10 +2,12 @@
 import { headers } from 'next/headers'
 import { stripe } from '@/lib/stripe'
 import { supabaseAdmin } from '@/integrations/supabase/client'
+import type Stripe from 'stripe'
 
 export async function POST(req: Request) {
   const body = await req.text()
-  const signature = headers().get('stripe-signature')!
+  const headersList = await headers()
+  const signature = headersList.get('stripe-signature')!
 
   let event: Stripe.Event
 
@@ -37,14 +39,14 @@ export async function POST(req: Request) {
       const { data: order, error: orderError } = await supabase
         .from('orders')
         .insert({
-          stripe_session_id: session.id,
-          stripe_payment_intent: session.payment_intent,
-          customer_email: session.customer_email,
-          customer_name: session.customer_details?.name,
+          order_number: `FEG-${Date.now()}-${Math.random().toString(36).substring(7)}`,
+          email: session.customer_email || '',
+          stripe_payment_intent_id: session.payment_intent as string,
           total_amount: (session.amount_total || 0) / 100,
+          subtotal: (session.amount_subtotal || session.amount_total || 0) / 100,
           currency: session.currency,
-          status: 'confirmed',
-          metadata: session.metadata,
+          status: 'processing',
+          payment_status: 'paid',
         })
         .select()
         .single()
