@@ -27,5 +27,5 @@
     "exactOptionalPropertyTypes": false
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "**/*.test.ts", "**/*.test.tsx", "src/test/**/*", "tests/**/*"]
+  "exclude": ["node_modules", "**/*.test.ts", "**/*.test.tsx", "src/test/**/*", "tests/**/*", "supabase/functions/**/*"]
 }

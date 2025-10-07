@@ -39,13 +39,13 @@ export default function AccountPage() {
   }, [user])
 
   const fetchOrderStats = async () => {
-    if (!user?.id) return
-    
+    if (!user?.email) return
+
     try {
       const { data: orders, error } = await supabase
         .from('orders')
         .select('total_amount, status, created_at')
-        .eq('user_id', user.id)
+        .eq('email', user.email)
         .order('created_at', { ascending: false })
 
       if (error) {
@@ -55,7 +55,7 @@ export default function AccountPage() {
 
       setOrders(orders || [])
       setOrderCount(orders?.length || 0)
-      
+
       const total = orders?.reduce((sum, order) => sum + (order.total_amount || 0), 0) || 0
       setTotalSpent(total)
     } catch (error) {
