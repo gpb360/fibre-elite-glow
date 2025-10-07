@@ -11,11 +11,13 @@ import PerformanceOptimizer from '@/components/performance/PerformanceOptimizer'
 import CriticalCSS from '@/components/performance/CriticalCSS'
 import './globals.css'
 
-const inter = Inter({ 
+const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   preload: true,
-  variable: '--font-inter'
+  variable: '--font-inter',
+  fallback: ['system-ui', 'arial'],
+  adjustFontFallback: true,
 })
 
 export const metadata: Metadata = {
@@ -32,17 +34,21 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <CriticalCSS />
-        {/* Keep only essential preloads */}
+        {/* Preconnect to critical domains - highest priority */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        
+
         {/* Only preload the hero image - LCP candidate */}
         <link rel="preload" href="/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp" as="image" type="image/webp" fetchPriority="high" />
-        
-        {/* DNS prefetch only for critical domains */}
+
+        {/* DNS prefetch for third-party domains */}
         <link rel="dns-prefetch" href="https://api.stripe.com" />
         <link rel="dns-prefetch" href="https://js.stripe.com" />
-        
+        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+
+        {/* Prevent font loading issues */}
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+
         <GoogleAnalytics />
       </head>
       <body suppressHydrationWarning className={inter.variable}>
