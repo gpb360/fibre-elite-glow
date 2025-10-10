@@ -2,20 +2,12 @@
 
 import React, { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-<<<<<<< HEAD
-import { Card, CardContent, CardHeader, CardTitle } from '../../../src/components/ui/card';
-import { Button } from '../../../src/components/ui/button';
-import Header from '../../../src/components/Header';
-import Footer from '../../../src/components/Footer';
-import { XCircle, ArrowLeft, CreditCard, HelpCircle } from 'lucide-react';
-=======
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useCartPersistence } from '@/lib/checkout-validation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { XCircle, ArrowLeft, CreditCard, HelpCircle, RefreshCw, AlertTriangle, Shield } from 'lucide-react';
->>>>>>> feature/resend-email-integration
 import Link from 'next/link';
 
 function CheckoutErrorContent() {

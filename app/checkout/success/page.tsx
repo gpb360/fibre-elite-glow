@@ -8,12 +8,8 @@ import { Badge } from '../../../src/components/ui/badge';
 import Header from '../../../src/components/Header';
 import Footer from '../../../src/components/Footer';
 import { CheckCircle, Package, Mail, ArrowRight, Download } from 'lucide-react';
-<<<<<<< HEAD
-// import { useCart } from '@/contexts/CartContext';
-=======
 import { useCart } from '@/contexts/CartContext';
 import { useCheckoutValidation, useOrderConfirmation } from '@/lib/checkout-validation';
->>>>>>> feature/resend-email-integration
 import Link from 'next/link';
 
 interface OrderDetails {
@@ -77,13 +73,7 @@ function CheckoutSuccessContent() {
 
         const data = await response.json();
         console.log('✅ Order details received:', data);
-<<<<<<< HEAD
-        setOrderDetails(data);
 
-        // Clear the cart after successful payment
-        // clearCart();
-=======
-        
         // Validate order completion with enhanced security
         setIsValidatingOrder(true);
         try {
@@ -93,12 +83,12 @@ function CheckoutSuccessContent() {
             expectedAmount: data.amount,
             customerEmail: data.customerEmail
           });
-          
+
           if (!validationResult.isValid) {
             setValidationError(validationResult.errors[0] || 'Order validation failed');
             return;
           }
-          
+
           // Confirm order with validation
           const confirmationResult = await confirmOrder({
             orderId: data.id,
@@ -106,27 +96,26 @@ function CheckoutSuccessContent() {
             customerEmail: data.customerEmail,
             totalAmount: data.amount
           });
-          
+
           if (!confirmationResult.isValid) {
             setValidationError(confirmationResult.errors[0] || 'Order confirmation failed');
             return;
           }
-          
+
           setOrderDetails(data);
-          
+
           // Clear the cart after successful payment and validation
           clearCart();
-          
+
           // Store order completion timestamp for security
           localStorage.setItem(`order_${data.id}_completed`, Date.now().toString());
-          
+
         } catch (validationError) {
           console.error('❌ Order validation error:', validationError);
           setValidationError('Order validation failed. Please contact support.');
         } finally {
           setIsValidatingOrder(false);
         }
->>>>>>> feature/resend-email-integration
       } catch (err) {
         console.error('❌ Error fetching order details:', err);
         setError(err instanceof Error ? err.message : 'Failed to load order details');

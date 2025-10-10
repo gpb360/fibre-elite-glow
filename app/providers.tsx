@@ -1,16 +1,9 @@
 'use client';
 
-<<<<<<< HEAD
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ThemeProvider } from "next-themes";
-import { useState } from "react";
-import { AuthProvider } from "@/contexts/AuthContext";
-=======
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ThemeProvider } from 'next-themes'
 import { useState } from 'react'
 import { AuthProvider } from '@/contexts/AuthContext'
->>>>>>> feature/resend-email-integration
 
 export function ReactQueryProvider({
   children,

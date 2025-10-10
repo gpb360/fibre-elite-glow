@@ -242,31 +242,12 @@ export async function POST(request: NextRequest) {
     // Generate order number
     const orderNumber = `FEG-${Date.now()}-${Math.random().toString(36).substring(2, 11).toUpperCase()}`;
 
-<<<<<<< HEAD
-    // Create comprehensive metadata for the order (Stripe has 500 character limit per value)
-    const orderItems = body.items.map(item => ({
-      id: item.id,
-      name: item.productName,
-      quantity: item.quantity,
-      price: item.price,
-      product_type: item.productName.toLowerCase().includes('plus') ? 'total_essential_plus' : 'total_essential'
-    }));
-
-=======
-    // Create metadata for the order with enhanced security logging
->>>>>>> feature/resend-email-integration
+  // Create metadata for the order with enhanced security logging
     const metadata = {
       order_number: orderNumber,
       customer_name: `${body.customerInfo.firstName} ${body.customerInfo.lastName}`.substring(0, 500),
       customer_email: body.customerInfo.email,
-<<<<<<< HEAD
-      shipping_address: JSON.stringify(body.customerInfo.address).substring(0, 500),
-      order_items: JSON.stringify(orderItems).substring(0, 500),
-      order_type: 'ecommerce',
-      source: 'website',
-      total_items: body.items.length.toString()
-=======
-      shipping_address: JSON.stringify({
+    shipping_address: JSON.stringify({
         line1: body.customerInfo.address,
         city: body.customerInfo.city,
         state: body.customerInfo.state,
@@ -285,7 +266,6 @@ export async function POST(request: NextRequest) {
       csrf_token_validated: body.csrfToken ? 'true' : 'false',
       client_ip: clientIP,
       user_agent: userAgent.substring(0, 100) // Limit length
->>>>>>> feature/resend-email-integration
     };
 
     // Create checkout session with comprehensive field collection
@@ -424,37 +404,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('❌ Error creating checkout session:', error);
     
-<<<<<<< HEAD
-    // Provide more specific error information
-    let errorMessage = 'Failed to create checkout session';
-    if (error instanceof Error) {
-      errorMessage = error.message;
-      
-      // Check for specific Stripe errors
-      if (error.message.includes('No such plan') || error.message.includes('No such price')) {
-        errorMessage = 'Invalid product configuration. Please contact support.';
-      } else if (error.message.includes('Invalid API key')) {
-        errorMessage = 'Server configuration error: Invalid Stripe API key';
-      } else if (error.message.includes('Could not create Stripe client')) {
-        errorMessage = 'Server configuration error: Stripe client initialization failed';
-      } else if (error.message.includes('Invalid country')) {
-        errorMessage = 'Shipping not available to your location. Please contact support.';
-      } else if (error.message.includes('consent_collection')) {
-        errorMessage = 'Legal compliance configuration error. Please contact support.';
-      }
-    }
-    
-    return NextResponse.json(
-      {
-        error: errorMessage,
-        type: error instanceof Error ? error.constructor.name : 'Unknown',
-        orderNumber: null
-      },
-      { status: 500 }
-    );
-=======
-    // Use enhanced error handler with sanitization
+  // Use enhanced error handler with sanitization
     return GlobalErrorHandler.handleApiError(error);
->>>>>>> feature/resend-email-integration
   }
 }
