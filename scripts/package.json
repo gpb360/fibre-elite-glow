@@ -1,0 +1,50 @@
+{
+  "name": "comprehensive-image-audit-system",
+  "version": "1.0.0",
+  "description": "Comprehensive Image Audit and Mapping System using Playwright and Google Sheets",
+  "main": "comprehensive-image-audit.js",
+  "scripts": {
+    "audit": "node comprehensive-image-audit.js",
+    "audit:phase1": "node comprehensive-image-audit.js --phase1",
+    "audit:phase2": "node comprehensive-image-audit.js --phase2", 
+    "audit:phase3": "node comprehensive-image-audit.js --phase3",
+    "audit:phase4": "node comprehensive-image-audit.js --phase4",
+    "inventory": "node image-audit-system.js",
+    "missing": "node missing-images-audit.js",
+    "mapping": "node image-mapping-system.js",
+    "sheets": "node google-sheets-integration.js",
+    "setup": "node setup-audit-system.js",
+    "install-deps": "npm install playwright sharp googleapis",
+    "install-browsers": "npx playwright install",
+    "test-setup": "node test-prerequisites.js"
+  },
+  "dependencies": {
+    "playwright": "^1.40.0",
+    "sharp": "^0.32.0",
+    "googleapis": "^128.0.0"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "image-audit",
+    "playwright",
+    "google-sheets",
+    "seo",
+    "image-optimization",
+    "web-crawling",
+    "image-mapping"
+  ],
+  "author": "Fibre Elite Glow Development Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gpb360/fibre-elite-glow.git",
+    "directory": "scripts"
+  },
+  "bugs": {
+    "url": "https://github.com/gpb360/fibre-elite-glow/issues"
+  },
+  "homepage": "https://github.com/gpb360/fibre-elite-glow#readme"
+}

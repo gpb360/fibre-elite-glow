@@ -36,8 +36,8 @@ export default function PerformanceOptimizer({
       
       // Preload critical WebP images
       const criticalImages = [
-        '/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp',
-        '/lovable-uploads/webp/5f8f72e3-397f-47a4-8bce-f15924c32a34.webp'
+        '/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp',
+        '/lovable-uploads/webp/total-essential-plus-fiber-supplement-bottle.webp'
       ]
       
       criticalImages.forEach(src => {

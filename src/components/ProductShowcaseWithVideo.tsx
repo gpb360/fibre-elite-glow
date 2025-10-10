@@ -77,7 +77,7 @@ export function ProductShowcaseWithVideo() {
             <div className="grid gap-6 sm:grid-cols-2 lg:gap-12 mb-8">
               <ProductCard
                 variant="green"
-                image="/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp"
+                image="/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp"
                 title="Total Essential"
                 price="$79.99"
                 description="PREMIUM 15-DAY DETOX & WELLNESS PROGRAM - Transform your digestive health with our scientifically formulated blend of 100% natural ingredients."
@@ -90,7 +90,7 @@ export function ProductShowcaseWithVideo() {
               
               <ProductCard
                 variant="purple"
-                image="/lovable-uploads/webp/5f8f72e3-397f-47a4-8bce-f15924c32a34.webp"
+                image="/lovable-uploads/webp/total-essential-plus-fiber-supplement-bottle.webp"
                 title="Total Essential Plus"
                 price="$84.99"
                 description="ADVANCED 15-DAY BEAUTY & WELLNESS PROGRAM - Enhanced formula with superfruits for superior antioxidant protection and radiant skin health."

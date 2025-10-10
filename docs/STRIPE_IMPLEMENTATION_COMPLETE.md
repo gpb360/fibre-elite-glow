@@ -8,7 +8,7 @@ _Fibre Elite Glow – `droid/stripe-implementation` branch_
 |------|--------|-------|
 | Client Checkout Page | **✓ Complete** | `src/components/pages/Checkout.tsx` collects customer + address data and redirects to Stripe Checkout. |
 | Serverless End-points | **✓ Complete** | `app/api/create-checkout-session/`, `app/api/webhooks/stripe/`, `app/api/checkout-session/[sessionId]/` |
-| Database Schema | **✓ Migrated** | `checkout_sessions`, `orders`, `secrets`, `user_roles` with RLS policies (`database-stripe-migration.sql`). |
+| Database Schema | **✓ Migrated** | `checkout_sessions`, `orders`, `secrets`, `user_roles` with RLS policies (`supabase/database-stripe-migration.sql`). |
 | Webhook Handling | **✓ Complete** | Handles success, expiration, payment failure – converts sessions → orders. |
 | Secrets Management | **✓ Complete** | `STRIPE_SECRET_KEY` & `STRIPE_WEBHOOK_SECRET` loaded from **Supabase Secrets** in prod; `.env.local` for dev. |
 | E2E Coverage | **✓ Complete** | Playwright suites for positive, negative, edge-case, perf & accessibility scenarios. |
@@ -27,7 +27,7 @@ _Fibre Elite Glow – `droid/stripe-implementation` branch_
    * `webhooks/stripe` – verification, order creation, status syncing.
    * `checkout-session/[sessionId]` – public order lookup for success page.
 3. **Database Migration**
-   * New tables, enum extension, RLS, indices (`database-stripe-migration.sql`).
+   * New tables, enum extension, RLS, indices (`supabase/database-stripe-migration.sql`).
 4. **Secrets & Env Handling**
    * Automatic fetch from Supabase Secrets.
    * Warning helpers for key misuse (test vs live).
@@ -69,11 +69,11 @@ NEXT_PUBLIC_BASE_URL=http://localhost:3000
 ### 3.3 Database Migration
 ```bash
 # Option A – Supabase CLI
-supabase db push database-schema.sql
-supabase db push database-stripe-migration.sql
+supabase db push supabase/database-schema.sql
+supabase db push supabase/database-stripe-migration.sql
 
 # Option B – Dashboard
-Upload contents of database-stripe-migration.sql in SQL Editor and Run
+Upload contents of supabase/database-stripe-migration.sql in SQL Editor and Run
 ```
 
 ### 3.4 Secrets in Production

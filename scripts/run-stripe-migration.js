@@ -130,11 +130,11 @@ async function runMigration(supabase) {
     // At this point the script *should* run the migration, but per new requirements
     // we focus on validation only and give clear instructions to the developer.
 
-    const migrationFile = path.join(process.cwd(), 'database-stripe-migration.sql');
+    const migrationFile = path.join(process.cwd(), 'supabase/database-stripe-migration.sql');
     log.error('Stripe tables are missing.');
 
     if (!fs.existsSync(migrationFile)) {
-      log.error('Migration file "database-stripe-migration.sql" is not present in project root.');
+      log.error('Migration file "supabase/database-stripe-migration.sql" is not present in project root.');
       return false;
     }
 
@@ -146,11 +146,11 @@ async function runMigration(supabase) {
       Run ONE of the following commands to apply the migration:
 
       1) Using Supabase CLI:
-         supabase db push database-stripe-migration.sql
+         supabase db push supabase/database-stripe-migration.sql
 
       2) Using Supabase Dashboard:
          • Open your project -> SQL Editor
-         • Paste contents of database-stripe-migration.sql
+         • Paste contents of supabase/database-stripe-migration.sql
          • Run
 
       Re-run this script afterwards to confirm tables exist.

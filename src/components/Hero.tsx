@@ -39,20 +39,20 @@ export function Hero() {
               </motion.div>
             </div>
             <motion.div
-              className="flex flex-row gap-4"
+              className="flex flex-row gap-4 relative"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
               <Link
                 href="/products/total-essential"
-                className={cn(buttonVariants({ size: "lg" }), "bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-md font-medium z-20")}
+                className={cn(buttonVariants({ size: "lg" }), "bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-md font-medium relative z-20")}
               >
                 Total Essential
               </Link>
               <Link
                 href="/products/total-essential-plus"
-                className={cn(buttonVariants({ size: "lg", variant: "premium2" }),"z-10")}
+                className={cn(buttonVariants({ size: "lg", variant: "premium2" }), "relative z-10")}
               >
                 Total Essential Plus
               </Link>
@@ -96,7 +96,17 @@ export function Hero() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6 }}
           >
-           
+            <div className="relative">
+              <Image
+                alt="Total Essential Product Box - Premium fiber supplement for gut health and digestive wellness"
+                className="aspect-square rounded-xl object-cover object-center hover:scale-105 transition-transform duration-300 shadow-2xl"
+                src="/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp"
+                width={600}
+                height={600}
+                priority={true}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl"></div>
+            </div>
           </motion.div>
         </div>
       </div>

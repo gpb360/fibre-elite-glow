@@ -179,7 +179,7 @@ async function createTableDirectly() {
     
     if (error && error.code === 'PGRST116') {
       console.log(chalk.red('❌ Table does not exist and cannot be created via RPC'));
-      console.log(chalk.yellow('💡 Please run the database-schema.sql file manually in your Supabase SQL editor'));
+      console.log(chalk.yellow('💡 Please run the supabase/database-schema.sql file manually in your Supabase SQL editor'));
       console.log(chalk.yellow('   or ensure RLS policies allow table creation'));
       return false;
     }
@@ -232,7 +232,7 @@ async function main() {
     console.log(chalk.yellow('\\n💡 Manual steps required:'));
     console.log(chalk.yellow('1. Go to your Supabase dashboard'));
     console.log(chalk.yellow('2. Navigate to SQL Editor'));
-    console.log(chalk.yellow('3. Run the complete-database-setup.sql file'));
+    console.log(chalk.yellow('3. Run the supabase/complete-database-setup.sql file'));
     console.log(chalk.yellow('4. Alternatively, run: npm run db:setup'));
     process.exit(1);
   }

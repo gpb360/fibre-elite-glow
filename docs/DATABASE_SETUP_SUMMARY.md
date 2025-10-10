@@ -6,7 +6,7 @@ Your Supabase project (`lyynavswxtzhsmwetgtn`) is currently **INACTIVE** and nee
 
 ## 🎯 What I've Prepared for You
 
-### 1. **📊 Comprehensive Database Schema** (`database-schema.sql`)
+### 1. **📊 Comprehensive Database Schema** (`supabase/database-schema.sql`)
 - **9 core tables** for complete e-commerce functionality
 - **Proper relationships** and foreign keys
 - **Type-safe enums** for product types, order status, payment status
@@ -14,7 +14,7 @@ Your Supabase project (`lyynavswxtzhsmwetgtn`) is currently **INACTIVE** and nee
 - **Performance indexes** for fast queries
 - **UUID primary keys** for security
 
-### 2. **📦 Sample Data** (`sample-data.sql`)
+### 2. **📦 Sample Data** (`supabase/sample-data.sql`)
 - **Pre-populated categories** (Fiber Supplements, Wellness Products)
 - **Your current products** (Total Essential, Total Essential Plus)
 - **Package variants** (15, 30, 60 day supplies with realistic pricing)
@@ -49,8 +49,8 @@ Your Supabase project (`lyynavswxtzhsmwetgtn`) is currently **INACTIVE** and nee
 
 ### Step 2: Set Up Database Structure 🗃️
 1. Open Supabase SQL Editor
-2. Run `database-schema.sql` to create all tables
-3. Run `sample-data.sql` to populate with initial data
+2. Run `supabase/database-schema.sql` to create all tables
+3. Run `supabase/sample-data.sql` to populate with initial data
 4. Verify tables are created successfully
 
 ### Step 3: Update Application Code 💻

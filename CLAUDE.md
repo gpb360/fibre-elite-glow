@@ -46,8 +46,8 @@ pnpm test:headed      # Run Playwright tests with UI
 - `middleware.ts` - Next.js middleware for auth
 - `components.json` - Shadcn/ui configuration
 - `tailwind.config.ts` - Tailwind CSS configuration
-- `database-schema.sql` - Database schema
-- `complete-database-setup.sql` - Complete database setup
+- `supabase/database-schema.sql` - Database schema
+- `supabase/complete-database-setup.sql` - Complete database setup
 
 ## Development Guidelines
 1. **Components**: Use existing UI components from `src/components/ui/`

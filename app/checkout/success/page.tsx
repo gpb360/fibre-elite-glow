@@ -8,7 +8,12 @@ import { Badge } from '../../../src/components/ui/badge';
 import Header from '../../../src/components/Header';
 import Footer from '../../../src/components/Footer';
 import { CheckCircle, Package, Mail, ArrowRight, Download } from 'lucide-react';
+<<<<<<< HEAD
 // import { useCart } from '@/contexts/CartContext';
+=======
+import { useCart } from '@/contexts/CartContext';
+import { useCheckoutValidation, useOrderConfirmation } from '@/lib/checkout-validation';
+>>>>>>> feature/resend-email-integration
 import Link from 'next/link';
 
 interface OrderDetails {
@@ -32,6 +37,12 @@ function CheckoutSuccessContent() {
   const [orderDetails, setOrderDetails] = useState<OrderDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const [isValidatingOrder, setIsValidatingOrder] = useState(false);
+  
+  // Enhanced checkout validation hooks
+  const { validateOrderCompletion, isValidating: isCheckoutValidating } = useCheckoutValidation();
+  const { confirmOrder, isConfirming, confirmationError } = useOrderConfirmation();
 
   useEffect(() => {
     const sessionId = searchParams?.get('session_id');
@@ -66,10 +77,56 @@ function CheckoutSuccessContent() {
 
         const data = await response.json();
         console.log('✅ Order details received:', data);
+<<<<<<< HEAD
         setOrderDetails(data);
 
         // Clear the cart after successful payment
         // clearCart();
+=======
+        
+        // Validate order completion with enhanced security
+        setIsValidatingOrder(true);
+        try {
+          const validationResult = await validateOrderCompletion({
+            sessionId,
+            orderData: data,
+            expectedAmount: data.amount,
+            customerEmail: data.customerEmail
+          });
+          
+          if (!validationResult.isValid) {
+            setValidationError(validationResult.errors[0] || 'Order validation failed');
+            return;
+          }
+          
+          // Confirm order with validation
+          const confirmationResult = await confirmOrder({
+            orderId: data.id,
+            sessionId,
+            customerEmail: data.customerEmail,
+            totalAmount: data.amount
+          });
+          
+          if (!confirmationResult.isValid) {
+            setValidationError(confirmationResult.errors[0] || 'Order confirmation failed');
+            return;
+          }
+          
+          setOrderDetails(data);
+          
+          // Clear the cart after successful payment and validation
+          clearCart();
+          
+          // Store order completion timestamp for security
+          localStorage.setItem(`order_${data.id}_completed`, Date.now().toString());
+          
+        } catch (validationError) {
+          console.error('❌ Order validation error:', validationError);
+          setValidationError('Order validation failed. Please contact support.');
+        } finally {
+          setIsValidatingOrder(false);
+        }
+>>>>>>> feature/resend-email-integration
       } catch (err) {
         console.error('❌ Error fetching order details:', err);
         setError(err instanceof Error ? err.message : 'Failed to load order details');
@@ -81,14 +138,23 @@ function CheckoutSuccessContent() {
     fetchOrderDetails();
   }, [searchParams]);
 
-  if (loading) {
+  if (loading || isValidatingOrder || isCheckoutValidating || isConfirming) {
     return (
       <div className="flex min-h-screen flex-col">
         <Header />
         <main className="flex-1 bg-gray-50 flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading your order details...</p>
+            <p className="text-gray-600">
+              {isValidatingOrder ? 'Validating your order...' :
+               isConfirming ? 'Confirming order completion...' :
+               'Loading your order details...'}
+            </p>
+            {(isValidatingOrder || isConfirming) && (
+              <p className="text-sm text-gray-500 mt-2">
+                This may take a few moments for security verification.
+              </p>
+            )}
           </div>
         </main>
         <Footer />
@@ -96,8 +162,10 @@ function CheckoutSuccessContent() {
     );
   }
 
-  if (error || !orderDetails) {
+  if (error || validationError || confirmationError || !orderDetails) {
     const sessionId = searchParams?.get('session_id');
+    const displayError = validationError || confirmationError || error;
+    
     return (
       <div className="flex min-h-screen flex-col">
         <Header />
@@ -109,16 +177,27 @@ function CheckoutSuccessContent() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </div>
-              <h2 className="text-xl font-semibold mb-2">Order Not Found</h2>
-              <p className="text-gray-600 mb-4">{error || 'We could not find your order details.'}</p>
+              <h2 className="text-xl font-semibold mb-2">
+                {validationError || confirmationError ? 'Order Validation Failed' : 'Order Not Found'}
+              </h2>
+              <p className="text-gray-600 mb-4">
+                {displayError || 'We could not find your order details.'}
+              </p>
               {sessionId && (
                 <p className="text-xs text-gray-500 mb-4 font-mono">
                   Session ID: {sessionId}
                 </p>
               )}
               <div className="space-y-2">
+                {(validationError || confirmationError) && (
+                  <Link href="/contact">
+                    <Button variant="default">Contact Support</Button>
+                  </Link>
+                )}
                 <Link href="/">
-                  <Button>Return to Home</Button>
+                  <Button variant={validationError || confirmationError ? "outline" : "default"}>
+                    Return to Home
+                  </Button>
                 </Link>
                 <button 
                   onClick={() => window.location.reload()} 
@@ -127,6 +206,13 @@ function CheckoutSuccessContent() {
                   Try Again
                 </button>
               </div>
+              {(validationError || confirmationError) && (
+                <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <p className="text-xs text-yellow-800">
+                    <strong>Important:</strong> If your payment was processed, please contact our support team immediately.
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </main>

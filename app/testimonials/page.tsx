@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/assets/testimonials-hero.jpg',
+        url: '/lovable-uploads/webp/fruit-veg-bottle.webp',
         width: 1200,
         height: 630,
         alt: 'Customer Success Stories and Testimonials'
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Customer Reviews & Success Stories | Fiber Supplement Testimonials',
     description: 'Read real customer testimonials and success stories about our premium fiber supplements.',
-    images: ['/assets/testimonials-hero.jpg']
+    images: ['/lovable-uploads/webp/fruit-veg-bottle.webp']
   }
 }
 

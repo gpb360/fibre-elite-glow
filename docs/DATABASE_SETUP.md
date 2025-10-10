@@ -30,7 +30,7 @@ If the automated migration doesn't work, follow these manual steps:
 ### 2. Run the Complete Schema
 Option A: Run the complete database setup
 ```sql
--- Copy and paste the contents of complete-database-setup.sql
+-- Copy and paste the contents of supabase/complete-database-setup.sql
 -- This will create all tables, indexes, and functions
 ```
 

@@ -1,49 +1,89 @@
 import { z } from 'zod';
+import { 
+  enhancedEmailSchema, 
+  enhancedPasswordSchema, 
+  enhancedNameSchema, 
+  enhancedPhoneSchema,
+  enhancedRegisterSchema,
+  enhancedLoginSchema,
+  enhancedCheckoutSchema,
+  SecurityValidation
+} from './form-validation'
 
-// Email validation schema
-export const emailSchema = z
-  .string()
-  .email('Please enter a valid email address')
-  .min(1, 'Email is required')
-  .max(255, 'Email is too long');
+// Legacy dangerous patterns (deprecated - use SecurityValidation instead)
+const DANGEROUS_PATTERNS = [
+  /<script[^>]*>/gi,
+  /<\/script>/gi,
+  /javascript:/gi,
+  /vbscript:/gi,
+  /onload=/gi,
+  /onerror=/gi,
+  /onclick=/gi,
+  /onmouseover=/gi,
+  /<iframe[^>]*>/gi,
+  /<object[^>]*>/gi,
+  /<embed[^>]*>/gi,
+];
 
-// Password validation schema
-export const passwordSchema = z
-  .string()
-  .min(8, 'Password must be at least 8 characters')
-  .max(128, 'Password is too long')
-  .regex(
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-    'Password must contain at least one lowercase letter, one uppercase letter, and one number'
-  );
+// Legacy validation functions (deprecated - use SecurityValidation from form-validation.ts instead)
+const isSecureInput = SecurityValidation.isSecureInput
+const sanitizeAndValidate = SecurityValidation.sanitizeInput
 
-// User registration schema
-export const registerSchema = z.object({
-  email: emailSchema,
-  password: passwordSchema,
-  confirmPassword: z.string(),
-  firstName: z
-    .string()
-    .min(1, 'First name is required')
-    .max(50, 'First name is too long')
-    .regex(/^[a-zA-Z\s'-]+$/, 'First name contains invalid characters'),
-  lastName: z
-    .string()
-    .min(1, 'Last name is required')
-    .max(50, 'Last name is too long')
-    .regex(/^[a-zA-Z\s'-]+$/, 'Last name contains invalid characters'),
-}).refine(
-  (data) => data.password === data.confirmPassword,
-  {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  }
-);
+// Re-export enhanced schemas for backward compatibility
+export const emailSchema = enhancedEmailSchema
+export const passwordSchema = enhancedPasswordSchema
+export const nameSchema = enhancedNameSchema
+export const registerSchema = enhancedRegisterSchema
+export const loginSchema = enhancedLoginSchema
+export const checkoutCustomerSchema = enhancedCheckoutSchema
 
-// Login schema
-export const loginSchema = z.object({
-  email: emailSchema,
-  password: z.string().min(1, 'Password is required'),
+
+
+// Address schema with comprehensive validation
+export const addressSchema = z.object({
+  line1: z.string()
+    .min(1, 'Address is required')
+    .max(100, 'Address is too long')
+    .refine((value) => isSecureInput(value), 'Address contains invalid characters')
+    .transform(sanitizeAndValidate),
+  line2: z.string()
+    .max(100, 'Address line 2 is too long')
+    .optional()
+    .transform(val => val ? sanitizeAndValidate(val) : val),
+  city: z.string()
+    .min(1, 'City is required')
+    .max(50, 'City name is too long')
+    .regex(/^[a-zA-Z\s'-]+$/, 'City contains invalid characters')
+    .refine((value) => isSecureInput(value), 'City contains invalid characters')
+    .transform(sanitizeAndValidate),
+  state: z.string()
+    .min(2, 'State is required')
+    .max(50, 'State name is too long')
+    .regex(/^[a-zA-Z\s'-]+$/, 'State contains invalid characters')
+    .refine((value) => isSecureInput(value), 'State contains invalid characters')
+    .transform(sanitizeAndValidate),
+  postal_code: z.string()
+    .min(5, 'Postal code is required')
+    .max(10, 'Postal code is too long')
+    .regex(/^[a-zA-Z0-9\s-]+$/, 'Invalid postal code format')
+    .refine((value) => isSecureInput(value), 'Postal code contains invalid characters')
+    .transform(sanitizeAndValidate),
+  country: z.string()
+    .length(2, 'Country code must be 2 characters')
+    .regex(/^[A-Z]{2}$/, 'Invalid country code format')
+    .default('US'),
+});
+
+// Complete checkout form validation
+export const checkoutFormSchema = z.object({
+  customerInfo: checkoutCustomerSchema,
+  address: addressSchema,
+  items: z.array(z.object({
+    id: z.string().min(1, 'Product ID is required'),
+    productName: z.string().min(1, 'Product name is required'),
+    quantity: z.number().int().min(1, 'Quantity must be at least 1').max(10, 'Maximum 10 items per product'),
+    price: z.number().min(0.01, 'Price must be greater than 0'),
+  })).min(1, 'Cart cannot be empty'),
 });
 
 // Contact form schema
@@ -85,18 +125,7 @@ export const checkoutSessionSchema = z.object({
   cancelUrl: z.string().url('Invalid cancel URL'),
 });
 
-// Address schema
-export const addressSchema = z.object({
-  firstName: z.string().min(1, 'First name is required').max(50),
-  lastName: z.string().min(1, 'Last name is required').max(50),
-  address1: z.string().min(1, 'Address is required').max(100),
-  address2: z.string().max(100).optional(),
-  city: z.string().min(1, 'City is required').max(50),
-  state: z.string().min(2, 'State is required').max(50),
-  postalCode: z.string().min(5, 'Postal code is required').max(10),
-  country: z.string().min(2, 'Country is required').max(2),
-  phone: z.string().regex(/^\+?[\d\s\-\(\)]+$/, 'Invalid phone number').optional(),
-});
+
 
 // Product review schema
 export const reviewSchema = z.object({

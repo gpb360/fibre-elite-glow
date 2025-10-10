@@ -40,7 +40,7 @@ const BenefitsHero = () => (
   <section className="relative overflow-hidden bg-white pt-20 pb-12 md:pt-32 md:pb-20">
     <div className="absolute inset-0 z-0 opacity-20">
       <Image
-        src="/lovable-uploads/webp/d98185ae-142e-45e8-9804-7b3e5aee3680.webp"
+        src="/lovable-uploads/webp/digestive-health-benefits-fiber-supplement.webp"
         alt="Total Essential and Total Essential Plus fiber supplement packages showcasing natural health benefits"
         fill
         className="object-cover"

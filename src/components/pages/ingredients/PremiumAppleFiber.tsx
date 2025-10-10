@@ -40,8 +40,8 @@ const AppleFiberHero = () => (
   <section className="relative overflow-hidden bg-white pt-20 pb-12 md:pt-32 md:pb-20">
     <div className="absolute inset-0 z-0 opacity-20">
       <Image
-        src="/lovable-uploads/apple-bg.jpg"
-        alt="Fresh apple orchard - natural source of balanced soluble and insoluble fiber for digestive wellness"
+        src="/assets/webp/16x9_apple_fibre.webp"
+        alt="Fresh apple fiber source - natural balanced soluble and insoluble fiber for digestive wellness"
         fill
         className="object-cover"
         priority={false}
@@ -108,8 +108,8 @@ const AppleFiberHero = () => (
           animate={{ opacity: 1, scale: 1 }} 
           transition={{ duration: 0.7 }}
         >
-          <Image 
-            src="/lovable-uploads/apple-fiber-hero.jpg" 
+          <Image
+            src="/assets/webp/16x9_apple_fibre.webp"
             alt="Premium Apple Fiber - Natural soluble and insoluble fiber from apple pomace" 
             className="rounded-lg shadow-xl"
             width={1280}

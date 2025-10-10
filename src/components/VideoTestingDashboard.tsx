@@ -246,7 +246,7 @@ export function VideoTestingDashboard() {
             <div className="max-w-2xl mx-auto">
               <VideoPlayer
                 src={selectedVideo}
-                poster="/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp"
+                poster="/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp"
                 showCustomControls={true}
                 aspectRatio="video"
                 className="w-full"

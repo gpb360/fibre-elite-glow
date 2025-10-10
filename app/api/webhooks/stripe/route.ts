@@ -1,269 +1,932 @@
-// app/api/webhooks/stripe/route.ts
-import { headers } from 'next/headers'
-import { stripe } from '@/lib/stripe'
-import { supabaseAdmin } from '@/integrations/supabase/client'
-import type Stripe from 'stripe'
+import { NextResponse } from 'next/server';
+import { stripe, STRIPE_CONFIG } from '@/lib/stripe';
+import { supabaseAdmin } from '@/integrations/supabase/client';
+import { emailService } from '@/lib/email-service';
+import { inventoryService } from '@/lib/inventory-service';
+import { GlobalErrorHandler, ErrorSanitizer } from '@/lib/error-handler';
+import { emailSchema } from '@/lib/validation';
+import { z } from 'zod';
+import Stripe from 'stripe';
 
-export async function POST(req: Request) {
-  const body = await req.text()
-  const headersList = await headers()
-  const signature = headersList.get('stripe-signature')
+// Order item schema for webhook validation
+const orderItemSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  quantity: z.number(),
+  price: z.number(),
+  product_type: z.string().optional(),
+});
 
-  if (!signature) {
-    console.error('❌ No Stripe signature found in headers')
-    return new Response('No Stripe signature found', { status: 400 })
+// Shipping address schema for webhook validation
+const shippingAddressSchema = z.object({
+  line1: z.string(),
+  city: z.string(),
+  state: z.string(),
+  postal_code: z.string(),
+  country: z.string(),
+});
+
+// Helper to get Stripe webhook secret from Supabase secrets
+async function getWebhookSecret(): Promise<string> {
+  try {
+    // Try to get the webhook secret from Supabase secrets
+    if (supabaseAdmin) {
+      const { data, error } = await supabaseAdmin
+        .from('secrets')
+        .select('value')
+        .eq('key', 'STRIPE_WEBHOOK_SECRET')
+        .single();
+
+      if (!error && data) {
+        return data.value;
+      }
+    }
+
+    // Fall back to environment variable if Supabase secret not available
+    const envSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    if (!envSecret) {
+      throw new Error('Stripe webhook secret not found in Supabase secrets or environment variables');
+    }
+    return envSecret;
+  } catch (error) {
+    console.error('Error retrieving webhook secret:', error);
+    // Fall back to environment variable
+    const envSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    if (!envSecret) {
+      throw new Error('Stripe webhook secret not found');
+    }
+    return envSecret;
   }
+}
 
-  let event: Stripe.Event
+// Helper to ensure customer exists in database with enhanced validation
+async function ensureCustomerExists(email: string, name?: string): Promise<string | null> {
+  if (!supabaseAdmin) return null;
 
   try {
-    event = stripe.webhooks.constructEvent(
-      body,
-      signature,
-      process.env.STRIPE_WEBHOOK_SECRET!
-    )
-  } catch (err) {
-    const errorMessage = err instanceof Error ? err.message : 'Unknown error'
-    console.error('❌ Webhook signature verification failed:', errorMessage)
-    console.error('Body length:', body.length)
-    console.error('Signature:', signature.substring(0, 20) + '...')
-    console.error('Webhook secret set:', !!process.env.STRIPE_WEBHOOK_SECRET)
-    return new Response(`Webhook Error: ${errorMessage}`, { status: 400 })
-  }
+    // Validate and sanitize email
+    const emailValidation = emailSchema.safeParse(email);
+    if (!emailValidation.success) {
+      console.error('Invalid email provided to ensureCustomerExists:', email);
+      return null;
+    }
+    const validEmail = emailValidation.data;
 
-  console.log('✅ Webhook event received:', event.type)
+    // Sanitize name
+    const sanitizedName = name ? name.replace(/[<>"'&]/g, '').trim().substring(0, 100) : '';
 
-  if (!supabaseAdmin) {
-    console.error('❌ Supabase admin client not configured')
-    return new Response('Supabase admin client not configured', { status: 500 })
-  }
+    // Rest of the function remains the same...
+    const { data: existingCustomer, error: findError } = await supabaseAdmin
+      .from('customers')
+      .select('id')
+      .eq('email', validEmail)
+      .single();
 
-  const supabase = supabaseAdmin
-
-  switch (event.type) {
-    case 'checkout.session.completed': {
-      try {
-        const session = event.data.object as Stripe.Checkout.Session
-        console.log('💳 Processing checkout session:', session.id)
-
-        // Get line items (may fail for test events from stripe trigger)
-        let lineItems
-        try {
-          lineItems = await stripe.checkout.sessions.listLineItems(session.id)
-          console.log('📦 Line items retrieved:', lineItems.data.length)
-        } catch (err) {
-          console.warn('⚠️ Could not fetch line items (test event?):', (err as Error).message)
-          // Use empty line items for test events
-          lineItems = { data: [] }
-        }
-
-        // First, store checkout session in database
-        console.log('💾 Saving checkout session to database...')
-        const { error: sessionError } = await supabase
-          .from('checkout_sessions')
-          .upsert({
-            session_id: session.id,
-            customer_email: session.customer_email || 'no-email@test.com',
-            amount_total: (session.amount_total || 0) / 100,
-            currency: (session.currency || 'usd').toUpperCase(),
-            payment_intent: session.payment_intent as string,
-            payment_status: 'paid',
-            status: 'complete',
-            test_mode: session.livemode === false,
-          }, { onConflict: 'session_id' })
-
-        if (sessionError) {
-          console.warn('⚠️ Could not save checkout session:', sessionError)
-        }
-
-        // Store order in database
-        console.log('💾 Saving order to database...')
-        const orderNumber = `ORD-${Date.now()}-${Math.random().toString(36).substring(7).toUpperCase()}`
-        const { data: order, error: orderError } = await supabase
-          .from('orders')
-          .insert({
-            order_number: orderNumber,
-            email: session.customer_email || 'no-email@test.com',
-            status: 'processing',
-            payment_status: 'paid',
-            subtotal: (session.amount_subtotal || session.amount_total || 0) / 100,
-            total_amount: (session.amount_total || 0) / 100,
-          })
-          .select()
-          .single()
-
-        if (orderError) {
-          console.error('❌ Database error:', orderError)
-          throw new Error(`Database error: ${orderError.message}`)
-        }
-
-        if (order) {
-          console.log('✅ Order saved:', order.id)
-          const customerName = session.customer_details?.name || 'Customer'
-        const totalAmount = ((session.amount_total || 0) / 100).toFixed(2)
-
-        // Format shipping address
-        const shippingAddress = session.customer_details?.address
-        const shippingAddressHtml = shippingAddress ? `
-          <div class="order-box">
-            <h3 style="margin-top: 0;">Shipping Address</h3>
-            <p>${shippingAddress.line1 || ''}</p>
-            ${shippingAddress.line2 ? `<p>${shippingAddress.line2}</p>` : ''}
-            <p>${shippingAddress.city || ''}, ${shippingAddress.state || ''} ${shippingAddress.postal_code || ''}</p>
-            <p>${shippingAddress.country || ''}</p>
-          </div>
-        ` : ''
-
-        // Format items for email
-        const items = lineItems.data.length > 0
-          ? lineItems.data.map(item => ({
-              description: item.description,
-              quantity: item.quantity,
-              amount: ((item.amount_total || 0) / 100).toFixed(2)
-            }))
-          : [{
-              description: 'Test Order Item',
-              quantity: 1,
-              amount: totalAmount
-            }]
-
-        // Send customer confirmation email via Resend directly
-        console.log('📧 Sending customer confirmation email to:', session.customer_email)
-
-        const itemsList = items.map((item: any) =>
-          `<tr>
-            <td style="padding: 10px; border-bottom: 1px solid #e5e7eb;">${item.description}</td>
-            <td style="padding: 10px; border-bottom: 1px solid #e5e7eb; text-align: center;">${item.quantity}</td>
-            <td style="padding: 10px; border-bottom: 1px solid #e5e7eb; text-align: right;">$${item.amount}</td>
-          </tr>`
-        ).join('')
-
-        // Send customer email
-        const customerEmailResponse = await fetch('https://api.resend.com/emails', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            from: 'Fibre Elite Glow <orders@stripe.venomappdevelopment.com>',
-            to: session.customer_email!,
-            subject: `Order Confirmed: ${orderNumber}`,
-            html: `
-              <!DOCTYPE html>
-              <html>
-                <head>
-                  <style>
-                    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb; }
-                    .header { background: linear-gradient(135deg, #9ED458 0%, #7FB835 100%); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center; }
-                    .content { background: white; padding: 30px; border: 1px solid #e5e7eb; border-radius: 0 0 10px 10px; }
-                    .order-box { background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0; }
-                    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-                    .footer { text-align: center; margin-top: 30px; color: #6b7280; font-size: 14px; }
-                  </style>
-                </head>
-                <body>
-                  <div class="header"><h1>🎉 Order Confirmed!</h1><p>Thank you for your purchase, ${customerName}!</p></div>
-                  <div class="content">
-                    <div class="order-box">
-                      <h3 style="margin-top: 0;">Order Details</h3>
-                      <p><strong>Order Number:</strong> ${orderNumber}</p>
-                      <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
-                      <p><strong>Total:</strong> $${totalAmount}</p>
-                    </div>
-                    ${shippingAddressHtml}
-                    <h3>Items Ordered:</h3>
-                    <table>
-                      <thead><tr style="background: #f3f4f6;"><th style="padding: 10px; text-align: left;">Item</th><th style="padding: 10px; text-align: center;">Qty</th><th style="padding: 10px; text-align: right;">Price</th></tr></thead>
-                      <tbody>${itemsList}</tbody>
-                    </table>
-                    <p>Your order has been confirmed and will be processed shortly. You'll receive a shipping notification once your order is on its way!</p>
-                    <div class="footer"><p>Questions? Contact us at <a href="mailto:support@lbve.ca">support@lbve.ca</a></p><p>© ${new Date().getFullYear()} Fibre Elite Glow. All rights reserved.</p></div>
-                  </div>
-                </body>
-              </html>
-            `,
-          }),
-        })
-        const customerResult = await customerEmailResponse.json()
-        console.log('Customer email result:', customerResult)
-
-        // Send admin email
-        const adminEmailResponse = await fetch('https://api.resend.com/emails', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            from: 'Fibre Elite Glow <orders@stripe.venomappdevelopment.com>',
-            to: process.env.ADMIN_EMAIL || 'admin@venomappdevelopment.com',
-            subject: `🛒 New Order: ${orderNumber} - $${totalAmount}`,
-            html: `
-              <!DOCTYPE html>
-              <html>
-                <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-                  <div style="background: #9ED458; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-                    <h2>🛒 New Order Received!</h2>
-                    <p>Order ${orderNumber} has been placed successfully.</p>
-                  </div>
-                  <div style="background: #f3f4f6; padding: 20px; border-radius: 8px;">
-                    <h3>Customer Information</h3>
-                    <p><strong>Name:</strong> ${customerName}</p>
-                    <p><strong>Email:</strong> ${session.customer_email}</p>
-                    ${shippingAddress ? `
-                    <h3>Shipping Address</h3>
-                    <p>${shippingAddress.line1 || ''}<br>
-                    ${shippingAddress.line2 ? shippingAddress.line2 + '<br>' : ''}
-                    ${shippingAddress.city || ''}, ${shippingAddress.state || ''} ${shippingAddress.postal_code || ''}<br>
-                    ${shippingAddress.country || ''}</p>
-                    ` : ''}
-                    <h3>Order Summary</h3>
-                    <p><strong>Order Number:</strong> ${orderNumber}</p>
-                    <p><strong>Total Amount:</strong> $${totalAmount}</p>
-                    <h3>Items Ordered:</h3>
-                    <table style="width: 100%; border-collapse: collapse; margin: 15px 0; background: white;">
-                      <thead><tr style="background: #e5e7eb;"><th style="padding: 10px; text-align: left;">Item</th><th style="padding: 10px; text-align: center;">Qty</th><th style="padding: 10px; text-align: right;">Price</th></tr></thead>
-                      <tbody>${itemsList}</tbody>
-                    </table>
-                    <div style="margin-top: 20px;">
-                      <a href="https://dashboard.stripe.com/payments/${session.payment_intent}" style="display: inline-block; padding: 10px 20px; background: #3b82f6; color: white; text-decoration: none; border-radius: 6px;">View in Stripe</a>
-                    </div>
-                  </div>
-                </body>
-              </html>
-            `,
-          }),
-        })
-        const adminResult = await adminEmailResponse.json()
-        console.log('Admin email result:', adminResult)
-        }
-      } catch (err) {
-        console.error('❌ Error processing checkout.session.completed:', err)
-        return new Response(`Error: ${err instanceof Error ? err.message : 'Unknown error'}`, { status: 500 })
-      }
-      break
+    if (findError && findError.code !== 'PGRST116') {
+      console.error('Error finding customer:', findError);
+      return null;
     }
 
-    case 'payment_intent.payment_failed': {
-      const paymentIntent = event.data.object as Stripe.PaymentIntent
+    if (existingCustomer) {
+      return existingCustomer.id;
+    }
 
-      // Send admin alert via Supabase Edge Function
-      await supabase.functions.invoke('send-email', {
-        body: {
-          type: 'payment_failed',
-          data: {
-            orderNumber: paymentIntent.metadata.order_number || 'Unknown Order',
-            customerEmail: paymentIntent.receipt_email || 'Unknown',
-            amount: (paymentIntent.amount / 100).toFixed(2),
-            error: paymentIntent.last_payment_error?.message || 'Payment failed',
-            stripePaymentId: paymentIntent.id
+    // Create new customer if not found
+    const [firstName, lastName] = sanitizedName ? sanitizedName.split(' ') : ['', ''];
+    const { data: newCustomer, error: createError } = await supabaseAdmin
+      .from('customers')
+      .insert({
+        email: validEmail,
+        first_name: firstName.substring(0, 50) || '',
+        last_name: lastName.substring(0, 50) || '',
+      })
+      .select('id')
+      .single();
+
+    if (createError) {
+      console.error('Error creating customer:', createError);
+      return null;
+    }
+
+    return newCustomer.id;
+  } catch (error) {
+    console.error('Error ensuring customer exists:', ErrorSanitizer.sanitizeMessage(error));
+    return null;
+  }
+}
+
+// Helper to generate unique order number
+function generateOrderNumber(): string {
+  const timestamp = Date.now().toString();
+  const random = Math.random().toString(36).substring(2, 8).toUpperCase();
+  return `FEG-${timestamp}-${random}`;
+}
+
+// Helper functions for sending emails via Resend Edge Function
+async function sendOrderConfirmationEmail(params: {
+  orderNumber: string;
+  customerEmail: string;
+  customerName: string;
+  items: Array<{
+    name: string;
+    quantity: number;
+    price: number;
+    product_type?: string;
+  }>;
+  totalAmount: number;
+  currency: string;
+}): Promise<void> {
+  try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!supabaseUrl || !supabaseServiceKey) {
+      console.error('Supabase configuration missing - cannot send order confirmation email');
+      return;
+    }
+
+    // Generate email content
+    const subject = `Order Confirmation - ${params.orderNumber}`;
+    const html = generateOrderConfirmationHTML(params);
+    const text = generateOrderConfirmationText(params);
+
+    // Call Resend Edge Function
+    const response = await fetch(`${supabaseUrl}/functions/v1/resend-email`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${supabaseServiceKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        to: params.customerEmail,
+        subject,
+        html,
+        text
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Failed to send order confirmation email:', errorData);
+    } else {
+      console.log(`Order confirmation email sent to ${params.customerEmail}`);
+    }
+  } catch (error) {
+    console.error('Error sending order confirmation email:', error);
+  }
+}
+
+async function sendAdminNotificationEmail(params: {
+  orderNumber: string;
+  customerEmail: string;
+  customerName: string;
+  items: Array<{
+    name: string;
+    quantity: number;
+    price: number;
+    product_type?: string;
+  }>;
+  totalAmount: number;
+  currency: string;
+  shippingAddress: {
+    firstName: string;
+    lastName: string;
+    addressLine1: string;
+    addressLine2?: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+  };
+  paymentIntentId?: string;
+}): Promise<void> {
+  try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@lbve.ca';
+
+    if (!supabaseUrl || !supabaseServiceKey) {
+      console.error('Supabase configuration missing - cannot send admin notification email');
+      return;
+    }
+
+    // Generate email content
+    const subject = `🚨 New Order Alert - ${params.orderNumber}`;
+    const html = generateAdminNotificationHTML(params);
+    const text = generateAdminNotificationText(params);
+
+    // Call Resend Edge Function
+    const response = await fetch(`${supabaseUrl}/functions/v1/resend-email`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${supabaseServiceKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        to: adminEmail,
+        subject,
+        html,
+        text
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Failed to send admin notification email:', errorData);
+    } else {
+      console.log(`Admin notification email sent for order: ${params.orderNumber}`);
+    }
+  } catch (error) {
+    console.error('Error sending admin notification email:', error);
+  }
+}
+
+// Email content generation functions
+function generateOrderConfirmationHTML(params: {
+  orderNumber: string;
+  customerName: string;
+  items: Array<{
+    name: string;
+    quantity: number;
+    price: number;
+  }>;
+  totalAmount: number;
+  currency: string;
+}): string {
+  const itemsHtml = params.items
+    .map(item => `
+      <tr>
+        <td style="padding: 10px; border-bottom: 1px solid #eee;">
+          <strong>${item.name}</strong>
+        </td>
+        <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: center;">
+          ${item.quantity}
+        </td>
+        <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">
+          ${formatCurrency(item.price * item.quantity, params.currency)}
+        </td>
+      </tr>
+    `)
+    .join('');
+
+  return `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <title>Order Confirmation</title>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: #f8f9fa; padding: 20px; text-align: center; border-radius: 8px; }
+          .order-details { background: #fff; padding: 20px; margin: 20px 0; border: 1px solid #ddd; border-radius: 8px; }
+          .items-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+          .items-table th { background: #f8f9fa; padding: 12px; text-align: left; border-bottom: 2px solid #ddd; }
+          .items-table td { padding: 10px; border-bottom: 1px solid #eee; }
+          .total { font-size: 18px; font-weight: bold; color: #28a745; }
+          .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>🎉 Order Confirmed!</h1>
+            <p>Thank you for your order. We're excited to get your Fibre Elite Glow products to you!</p>
+          </div>
+
+          <div class="order-details">
+            <h2>Order Details</h2>
+            <p><strong>Order Number:</strong> ${params.orderNumber}</p>
+            <p><strong>Order Date:</strong> ${new Date().toLocaleDateString()}</p>
+            <p><strong>Status:</strong> Confirmed</p>
+
+            <h3>Items Ordered</h3>
+            <table class="items-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th style="text-align: center;">Quantity</th>
+                  <th style="text-align: right;">Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${itemsHtml}
+              </tbody>
+            </table>
+
+            <p class="total">Total: ${formatCurrency(params.totalAmount, params.currency)}</p>
+          </div>
+
+          <div class="order-details">
+            <h2>What's Next?</h2>
+            <ol>
+              <li><strong>Processing:</strong> Your order is being prepared (1-2 business days)</li>
+              <li><strong>Shipping:</strong> You'll receive tracking information once shipped</li>
+              <li><strong>Delivery:</strong> Your package will arrive within 3-7 business days</li>
+            </ol>
+          </div>
+
+          <div class="footer">
+            <p>Questions? Contact our support team at support@fibreeliteglow.com</p>
+            <p>Fibre Elite Glow - Premium Gut Health Solutions</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+}
+
+function generateOrderConfirmationText(params: {
+  orderNumber: string;
+  customerName: string;
+  items: Array<{
+    name: string;
+    quantity: number;
+    price: number;
+  }>;
+  totalAmount: number;
+  currency: string;
+}): string {
+  const itemsText = params.items
+    .map(item => `${item.name} x${item.quantity} - ${formatCurrency(item.price * item.quantity, params.currency)}`)
+    .join('\n');
+
+  return `
+Order Confirmation - ${params.orderNumber}
+
+Thank you for your order! Here are your order details:
+
+Order Number: ${params.orderNumber}
+Order Date: ${new Date().toLocaleDateString()}
+Status: Confirmed
+
+Items Ordered:
+${itemsText}
+
+Total: ${formatCurrency(params.totalAmount, params.currency)}
+
+What's Next?
+1. Processing: Your order is being prepared (1-2 business days)
+2. Shipping: You'll receive tracking information once shipped
+3. Delivery: Your package will arrive within 3-7 business days
+
+Questions? Contact our support team at support@fibreeliteglow.com
+
+Fibre Elite Glow - Premium Gut Health Solutions
+  `;
+}
+
+function generateAdminNotificationHTML(params: {
+  orderNumber: string;
+  customerEmail: string;
+  customerName: string;
+  items: Array<{
+    name: string;
+    quantity: number;
+    price: number;
+  }>;
+  totalAmount: number;
+  currency: string;
+  shippingAddress: {
+    firstName: string;
+    lastName: string;
+    addressLine1: string;
+    addressLine2?: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+  };
+  paymentIntentId?: string;
+}): string {
+  const itemsHtml = params.items
+    .map(item => `
+      <tr>
+        <td style="padding: 10px; border-bottom: 1px solid #eee;">
+          <strong>${item.name}</strong>
+        </td>
+        <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: center;">
+          ${item.quantity}
+        </td>
+        <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">
+          ${formatCurrency(item.price * item.quantity, params.currency)}
+        </td>
+      </tr>
+    `)
+    .join('');
+
+  return `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <title>New Order Alert</title>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: #dc3545; color: white; padding: 20px; text-align: center; border-radius: 8px; }
+          .alert { background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; margin: 20px 0; border-radius: 8px; }
+          .order-details { background: #fff; padding: 20px; margin: 20px 0; border: 1px solid #ddd; border-radius: 8px; }
+          .items-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+          .items-table th { background: #f8f9fa; padding: 12px; text-align: left; border-bottom: 2px solid #ddd; }
+          .items-table td { padding: 10px; border-bottom: 1px solid #eee; }
+          .total { font-size: 18px; font-weight: bold; color: #dc3545; }
+          .action-items { background: #e7f3ff; padding: 15px; border-radius: 8px; margin: 20px 0; }
+          .action-item { background: white; padding: 10px; margin: 8px 0; border-left: 4px solid #007bff; }
+          .customer-info { background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 10px 0; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>🚨 New Order Alert</h1>
+            <p>A new order has been placed and requires your attention</p>
+          </div>
+
+          <div class="alert">
+            <strong>⚡ Action Required:</strong> Process order ${params.orderNumber} - Customer: ${params.customerEmail}
+          </div>
+
+          <div class="order-details">
+            <h2>Order Summary</h2>
+            <p><strong>Order Number:</strong> ${params.orderNumber}</p>
+            <p><strong>Order Date:</strong> ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
+            ${params.paymentIntentId ? `<p><strong>Payment Intent:</strong> ${params.paymentIntentId}</p>` : ''}
+
+            <div class="customer-info">
+              <h3>Customer Information</h3>
+              <p><strong>Name:</strong> ${params.customerName}</p>
+              <p><strong>Email:</strong> ${params.customerEmail}</p>
+              <p><strong>Shipping Address:</strong><br>
+                ${params.shippingAddress.firstName} ${params.shippingAddress.lastName}<br>
+                ${params.shippingAddress.addressLine1}<br>
+                ${params.shippingAddress.addressLine2 ? params.shippingAddress.addressLine2 + '<br>' : ''}
+                ${params.shippingAddress.city}, ${params.shippingAddress.state} ${params.shippingAddress.postalCode}<br>
+                ${params.shippingAddress.country}
+              </p>
+            </div>
+
+            <h3>Items Ordered</h3>
+            <table class="items-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th style="text-align: center;">Quantity</th>
+                  <th style="text-align: right;">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${itemsHtml}
+              </tbody>
+            </table>
+
+            <p class="total">Order Total: ${formatCurrency(params.totalAmount, params.currency)}</p>
+          </div>
+
+          <div class="action-items">
+            <h3>📋 Action Items</h3>
+            <div class="action-item">
+              <strong>1. Verify Inventory:</strong> Check stock levels for all ordered items
+            </div>
+            <div class="action-item">
+              <strong>2. Process Payment:</strong> Confirm payment has been processed successfully
+            </div>
+            <div class="action-item">
+              <strong>3. Prepare Shipment:</strong> Package items and prepare shipping label
+            </div>
+            <div class="action-item">
+              <strong>4. Update Customer:</strong> Send tracking information once shipped
+            </div>
+          </div>
+
+          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666;">
+            <p><strong>Fibre Elite Glow Admin Panel</strong></p>
+            <p>Order processing system notification</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+}
+
+function generateAdminNotificationText(params: {
+  orderNumber: string;
+  customerEmail: string;
+  customerName: string;
+  items: Array<{
+    name: string;
+    quantity: number;
+    price: number;
+  }>;
+  totalAmount: number;
+  currency: string;
+  shippingAddress: {
+    firstName: string;
+    lastName: string;
+    addressLine1: string;
+    addressLine2?: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+  };
+  paymentIntentId?: string;
+}): string {
+  const itemsText = params.items
+    .map(item => `${item.name} x${item.quantity} - ${formatCurrency(item.price * item.quantity, params.currency)}`)
+    .join('\n');
+
+  return `
+NEW ORDER ALERT - ${params.orderNumber}
+
+⚡ ACTION REQUIRED: Process new order
+
+Order Details:
+- Order Number: ${params.orderNumber}
+- Order Date: ${new Date().toLocaleString()}
+${params.paymentIntentId ? `- Payment Intent: ${params.paymentIntentId}` : ''}
+
+Customer Information:
+- Name: ${params.customerName}
+- Email: ${params.customerEmail}
+
+Shipping Address:
+${params.shippingAddress.firstName} ${params.shippingAddress.lastName}
+${params.shippingAddress.addressLine1}
+${params.shippingAddress.addressLine2 ? params.shippingAddress.addressLine2 + '\n' : ''}${params.shippingAddress.city}, ${params.shippingAddress.state} ${params.shippingAddress.postalCode}
+${params.shippingAddress.country}
+
+Items Ordered:
+${itemsText}
+
+Order Total: ${formatCurrency(params.totalAmount, params.currency)}
+
+📋 ACTION ITEMS:
+1. Verify Inventory: Check stock levels for all ordered items
+2. Process Payment: Confirm payment has been processed successfully
+3. Prepare Shipment: Package items and prepare shipping label
+4. Update Customer: Send tracking information once shipped
+
+Fibre Elite Glow Admin Panel
+Order processing system notification
+  `;
+}
+
+function formatCurrency(amount: number, currency: string = 'USD'): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currency.toUpperCase(),
+  }).format(amount);
+}
+
+export async function POST(request: Request) {
+  try {
+    // Security headers
+    const headers = new Headers();
+    headers.set('X-Content-Type-Options', 'nosniff');
+    headers.set('X-Frame-Options', 'DENY');
+    headers.set('X-XSS-Protection', '1; mode=block');
+
+    // Validate request method
+    if (request.method !== 'POST') {
+      return NextResponse.json(
+        { error: 'Method not allowed' },
+        { status: 405 }
+      );
+    }
+
+    // Validate content type
+    const contentType = request.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      return NextResponse.json(
+        { error: 'Invalid content type' },
+        { status: 400 }
+      );
+    }
+
+    const body = await request.text();
+    const signature = request.headers.get('stripe-signature');
+
+    if (!signature) {
+      console.warn('Webhook request missing Stripe signature');
+      return NextResponse.json(
+        { error: 'Missing Stripe signature' },
+        { status: 400 }
+      );
+    }
+
+    // Validate signature format
+    if (!signature.includes('t=') || !signature.includes('v1=')) {
+      console.warn('Invalid Stripe signature format');
+      return NextResponse.json(
+        { error: 'Invalid signature format' },
+        { status: 400 }
+      );
+    }
+
+    // Get webhook secret
+    const webhookSecret = await getWebhookSecret();
+    
+    // Verify webhook signature
+    let event: Stripe.Event;
+    try {
+      event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      console.error(`Webhook signature verification failed: ${errorMessage}`);
+      return NextResponse.json(
+        { error: `Webhook signature verification failed: ${errorMessage}` },
+        { status: 400 }
+      );
+    }
+
+    // Handle specific event types
+    switch (event.type) {
+      case 'checkout.session.completed': {
+        const session = event.data.object as Stripe.Checkout.Session;
+        
+        // Extract metadata and parse JSON fields safely with validation
+        const metadata = session.metadata || {};
+        
+        // Validate and parse order items
+        let orderItems: Array<{
+          id: string;
+          name: string;
+          quantity: number;
+          price: number;
+          product_type?: string;
+        }> = [];
+        
+        if (metadata.order_items) {
+          try {
+            const parsed = JSON.parse(metadata.order_items);
+            const validation = z.array(orderItemSchema).safeParse(parsed);
+            if (validation.success) {
+              orderItems = validation.data;
+            } else {
+              console.warn('Invalid order items in webhook metadata');
+            }
+          } catch (error) {
+            console.warn('Failed to parse order items JSON in webhook metadata');
           }
         }
-      })
-      break
-    }
-  }
+        
+        // Validate and parse shipping address
+        let shippingAddress: {
+          first_name?: string;
+          last_name?: string;
+          line1?: string;
+          line2?: string;
+          city?: string;
+          state?: string;
+          postal_code?: string;
+          country?: string;
+        } = {};
+        
+        if (metadata.shipping_address) {
+          try {
+            const parsed = JSON.parse(metadata.shipping_address);
+            const validation = shippingAddressSchema.safeParse(parsed);
+            if (validation.success) {
+              shippingAddress = validation.data;
+            } else {
+              console.warn('Invalid shipping address in webhook metadata');
+            }
+          } catch (error) {
+            console.warn('Failed to parse shipping address JSON in webhook metadata');
+          }
+        }
 
-  return new Response('Webhook processed', { status: 200 })
+        if (!supabaseAdmin) {
+          console.error('Supabase admin client not available - cannot process checkout session completion');
+          return NextResponse.json(
+            { error: 'Database unavailable' },
+            { status: 500 }
+          );
+        }
+
+        // Ensure customer exists in database
+        const customerEmail = session.customer_details?.email || metadata.customer_email || '';
+        const customerName = metadata.customer_name || session.customer_details?.name || undefined;
+        const customerId = await ensureCustomerExists(customerEmail, customerName);
+
+        // Update checkout session status in database
+        const { error: sessionUpdateError } = await supabaseAdmin
+          .from('checkout_sessions')
+          .update({ 
+            status: session.status, 
+            payment_status: session.payment_status,
+            updated_at: new Date().toISOString() 
+          })
+          .eq('session_id', session.id);
+
+        if (sessionUpdateError) {
+          console.error('Error updating checkout session:', sessionUpdateError);
+        }
+
+        // Generate order number if not present in metadata
+        const orderNumber = metadata.order_number || generateOrderNumber();
+
+        // Create comprehensive order record
+        const orderData = {
+          order_number: orderNumber,
+          session_id: session.id,
+          customer_id: customerId,
+          email: customerEmail,
+          status: 'pending' as const,
+          payment_status: session.payment_status === 'paid' ? 'paid' as const : 'pending' as const,
+          subtotal: session.amount_subtotal ? session.amount_subtotal / 100 : 0,
+          total_amount: session.amount_total ? session.amount_total / 100 : 0,
+          currency: session.currency?.toUpperCase() || 'USD',
+          payment_intent: session.payment_intent as string,
+          metadata: metadata,
+          test_mode: STRIPE_CONFIG.testMode,
+          
+          // Shipping address from metadata
+          shipping_first_name: shippingAddress.first_name || '',
+          shipping_last_name: shippingAddress.last_name || '',
+          shipping_address_line_1: shippingAddress.line1 || '',
+          shipping_address_line_2: shippingAddress.line2 || '',
+          shipping_city: shippingAddress.city || '',
+          shipping_state_province: shippingAddress.state || '',
+          shipping_postal_code: shippingAddress.postal_code || '',
+          shipping_country: shippingAddress.country || 'US',
+          
+          // Billing address (same as shipping for now)
+          billing_first_name: shippingAddress.first_name || '',
+          billing_last_name: shippingAddress.last_name || '',
+          billing_address_line_1: shippingAddress.line1 || '',
+          billing_address_line_2: shippingAddress.line2 || '',
+          billing_city: shippingAddress.city || '',
+          billing_state_province: shippingAddress.state || '',
+          billing_postal_code: shippingAddress.postal_code || '',
+          billing_country: shippingAddress.country || 'US',
+        };
+
+        const { data: order, error: orderError } = await supabaseAdmin
+          .from('orders')
+          .insert(orderData)
+          .select('id, order_number')
+          .single();
+
+        if (orderError) {
+          console.error('Error creating order record:', orderError);
+          return NextResponse.json(
+            { error: 'Error creating order record' },
+            { status: 500 }
+          );
+        }
+
+        // Create order items
+        if (orderItems.length > 0 && order) {
+          const orderItemsData = orderItems.map(item => ({
+            order_id: order.id,
+            product_name: item.name,
+            product_type: (item.product_type || 'total_essential') as 'total_essential' | 'total_essential_plus',
+            quantity: item.quantity,
+            unit_price: item.price,
+            total_price: item.price * item.quantity,
+          }));
+
+          const { error: itemsError } = await supabaseAdmin
+            .from('order_items')
+            .insert(orderItemsData);
+
+          if (itemsError) {
+            console.error('Error creating order items:', itemsError);
+          }
+        }
+
+        console.log(`Order created successfully: ${order?.id} (${order?.order_number})`);
+
+        // Update inventory for order items
+        if (orderItems.length > 0) {
+          try {
+            // Convert orderItems to proper OrderItem format
+            const typedOrderItems = orderItems.map(item => ({
+              name: item.name,
+              quantity: item.quantity,
+              price: item.price,
+              product_type: (item.product_type === 'total_essential_plus' ? 'total_essential_plus' : 'total_essential') as 'total_essential' | 'total_essential_plus'
+            }));
+            
+            const inventoryUpdated = await inventoryService.updateInventoryForOrder(typedOrderItems);
+            if (inventoryUpdated) {
+              console.log('Inventory updated successfully for order:', order?.order_number);
+            } else {
+              console.warn('Some inventory updates may have failed for order:', order?.order_number);
+            }
+          } catch (inventoryError) {
+            console.error('Error updating inventory:', inventoryError);
+            // Don't fail the webhook if inventory update fails
+          }
+        }
+
+        // Send order confirmation email via Resend
+        if (order && customerEmail) {
+          await sendOrderConfirmationEmail({
+            orderNumber: order.order_number,
+            customerEmail,
+            customerName: metadata.customer_name || `${shippingAddress.first_name || ''} ${shippingAddress.last_name || ''}`.trim() || 'Valued Customer',
+            items: orderItems,
+            totalAmount: (session.amount_total || 0) / 100,
+            currency: session.currency || 'usd'
+          });
+        }
+
+        // Send admin notification email via Resend
+        if (order && customerEmail && orderItems.length > 0) {
+          const customerFullName = metadata.customer_name || `${shippingAddress.first_name || ''} ${shippingAddress.last_name || ''}`.trim() || 'Unknown Customer';
+
+          await sendAdminNotificationEmail({
+            orderNumber: order.order_number,
+            customerEmail,
+            customerName: customerFullName,
+            items: orderItems,
+            totalAmount: (session.amount_total || 0) / 100,
+            currency: session.currency || 'usd',
+            shippingAddress: {
+              firstName: shippingAddress.first_name || '',
+              lastName: shippingAddress.last_name || '',
+              addressLine1: shippingAddress.line1 || '',
+              addressLine2: shippingAddress.line2,
+              city: shippingAddress.city || '',
+              state: shippingAddress.state || '',
+              postalCode: shippingAddress.postal_code || '',
+              country: shippingAddress.country || 'US',
+            },
+            paymentIntentId: session.payment_intent as string
+          });
+        }
+        
+        break;
+      }
+
+      case 'checkout.session.expired': {
+        const session = event.data.object as Stripe.Checkout.Session;
+        
+        if (!supabaseAdmin) {
+          console.warn('Supabase admin client not available - cannot update expired session');
+          break;
+        }
+
+        // Update checkout session status in database
+        const { error: sessionUpdateError } = await supabaseAdmin
+          .from('checkout_sessions')
+          .update({ 
+            status: 'expired', 
+            updated_at: new Date().toISOString() 
+          })
+          .eq('session_id', session.id);
+
+        if (sessionUpdateError) {
+          console.error('Error updating expired checkout session:', sessionUpdateError);
+        }
+        break;
+      }
+
+      case 'payment_intent.payment_failed': {
+        const paymentIntent = event.data.object as Stripe.PaymentIntent;
+        
+        if (!supabaseAdmin) {
+          console.warn('Supabase admin client not available - cannot update failed payment');
+          break;
+        }
+
+        // Find associated checkout session
+        const { data: sessionData } = await supabaseAdmin
+          .from('checkout_sessions')
+          .select('*')
+          .eq('payment_intent', paymentIntent.id)
+          .single();
+
+        if (sessionData) {
+          // Update checkout session status
+          const { error: updateError } = await supabaseAdmin
+            .from('checkout_sessions')
+            .update({ 
+              status: 'payment_failed', 
+              updated_at: new Date().toISOString(),
+              failure_reason: paymentIntent.last_payment_error?.message || 'Unknown error'
+            })
+            .eq('session_id', sessionData.session_id);
+
+          if (updateError) {
+            console.error('Error updating failed payment session:', updateError);
+          }
+        }
+        break;
+      }
+
+      default:
+        // Log but ignore other event types
+        console.log(`Unhandled event type: ${event.type}`);
+    }
+
+    // Return success response
+    return NextResponse.json({ received: true });
+  } catch (error) {
+    console.error('Webhook error:', ErrorSanitizer.sanitizeMessage(error));
+    return GlobalErrorHandler.handleApiError(error);
+  }
 }

@@ -194,7 +194,7 @@ export function HeroWithVideo() {
                   <Image
                     alt="Total Essential Product Box - Click to play product video"
                     className="aspect-square rounded-xl object-cover object-center cursor-pointer hover:scale-105 transition-transform duration-300"
-                    src="/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp"
+                    src="/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp"
                     width={600}
                     height={600}
                     onClick={handleVideoToggle}

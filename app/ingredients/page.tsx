@@ -21,7 +21,7 @@ async function getIngredients() {
       })
       .map(async (dir) => {
         let name = dir.replace(/-/g, ' ');
-        let image = '/placeholder.svg'; // Default placeholder
+        let image = '/lovable-uploads/webp/digestive-health-benefits-fiber-supplement.webp'; // Default fallback
 
         try {
           const metadataModule = await import(`./${dir}/metadata`);
@@ -44,7 +44,7 @@ async function getIngredients() {
               // File doesn't exist, continue checking
             }
           }
-          if (image !== '/placeholder.svg') break;
+          if (image !== '/lovable-uploads/webp/digestive-health-benefits-fiber-supplement.webp') break;
         }
 
         return {

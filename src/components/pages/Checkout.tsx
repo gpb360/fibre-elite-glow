@@ -8,11 +8,88 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/hooks/use-toast';
+import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { Loader2, CreditCard, Lock } from 'lucide-react';
+import { Loader2, CreditCard, Lock, Wifi, WifiOff, Shield, AlertTriangle, CheckCircle } from 'lucide-react';
+import { ErrorBoundary } from '@/components/error';
+import {
+  FormSecurityStatus,
+  FormSecurityIndicator,
+  FormValidationSummary,
+  FormErrorRecovery
+} from '@/components/ui/FormValidation';
+import { useFormSecurityStatus } from '@/components/forms/FormSecurityStatus';
+import { useFormErrorRecovery, FormError } from '@/components/forms/FormErrorRecovery';
+import { useFormValidation } from '@/hooks/useFormValidation';
+import { enhancedCheckoutSchema, FormValidationUtils, FormRateLimiting } from '@/lib/form-validation';
+
+// Simple API mutation hook for checkout
+interface UseApiMutationOptions {
+  maxRetries?: number;
+  showErrorToast?: boolean;
+  onRetry?: (attempt: number) => void;
+}
+
+interface UseApiMutationReturn {
+  mutate: (url: string, data: any) => Promise<any>;
+  loading: boolean;
+  error: Error | null;
+  retry: () => void;
+}
+
+function useApiMutation(options: UseApiMutationOptions = {}): UseApiMutationReturn {
+  const { maxRetries = 3, onRetry } = options;
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [lastRequest, setLastRequest] = useState<{ url: string; data: any } | null>(null);
+
+  const mutate = async (url: string, data: any) => {
+    setLoading(true);
+    setError(null);
+    setLastRequest({ url, data });
+
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const result = await response.json();
+        setLoading(false);
+        return result;
+      } catch (err) {
+        if (attempt === maxRetries) {
+          setError(err as Error);
+          setLoading(false);
+          throw err;
+        }
+        onRetry?.(attempt);
+        // Wait before retry with exponential backoff
+        await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
+      }
+    }
+  };
+
+  const retry = () => {
+    if (lastRequest) {
+      mutate(lastRequest.url, lastRequest.data);
+    }
+  };
+
+  return { mutate, loading, error, retry };
+}
 
 /**
  * Initialise Stripe with the *publishable* key.
@@ -49,123 +126,244 @@ interface CheckoutFormData {
   email: string;
   firstName: string;
   lastName: string;
-  address: {
-    line1: string;
-    line2?: string;
-    city: string;
-    state: string;
-    postal_code: string;
-    country: string;
-  };
+  phone?: string;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: string;
 }
 
 const CheckoutForm: React.FC = () => {
-  // NOTE: stripe / elements hooks are not currently used,
-  // but we keep them here in case card elements are added later.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const stripe = null;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const elements = null;
   const router = useRouter();
-  const { cart, clearCart } = useCart();
+  const { cart } = useCart();
   const { toast } = useToast();
+  const { isOnline } = useNetworkStatus();
+  const isOffline = !isOnline;
   
-  const [isProcessing, setIsProcessing] = useState(false);
+  // Enhanced form validation and error recovery
+  const {
+    errors: validationErrors,
+    isValid,
+    isValidating,
+    validate,
+    clearErrors,
+    resetValidation
+  } = useFormValidation(enhancedCheckoutSchema, {
+    validateOnChange: true,
+    showErrorToast: false
+  });
+  
+  const {
+    errors: formErrors,
+    isRetrying,
+    addError,
+    clearErrors: clearFormErrors,
+    retry: retryFormSubmission
+  } = useFormErrorRecovery();
+  
+  // Use the new API mutation hook with retry functionality
+  const { mutate: createCheckoutSession, loading: isProcessing, error, retry } = useApiMutation({
+    maxRetries: 3,
+    showErrorToast: false, // We'll handle errors manually
+    onRetry: (attempt) => {
+      toast({
+        title: "Retrying...",
+        description: `Attempting to process payment (attempt ${attempt}/3)`,
+      });
+    }
+  });
+  
   const [formData, setFormData] = useState<CheckoutFormData>({
     email: '',
     firstName: '',
     lastName: '',
-    address: {
-      line1: '',
-      line2: '',
-      city: '',
-      state: '',
-      postal_code: '',
-      country: 'US',
-    },
+    phone: '',
+    address: '',
+    city: '',
+    state: '',
+    zipCode: '',
+    country: 'US',
+  });
+  
+  const [validFields, setValidFields] = useState(0);
+  const [csrfToken, setCsrfToken] = useState<string>('');
+  
+  // Form security status
+  const securityStatus = useFormSecurityStatus(formData, {
+    enablePasswordStrength: false,
+    enableXSSProtection: true,
+    enableRateLimit: true
   });
 
+  // Generate CSRF token on component mount
+  useEffect(() => {
+    const generateCSRFToken = () => {
+      const array = new Uint8Array(32);
+      crypto.getRandomValues(array);
+      return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+    };
+    setCsrfToken(generateCSRFToken());
+  }, []);
+  
   const handleInputChange = (field: string, value: string) => {
-    if (field.startsWith('address.')) {
-      const addressField = field.split('.')[1];
-      setFormData(prev => ({
-        ...prev,
-        address: {
-          ...prev.address,
-          [addressField]: value,
-        },
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [field]: value,
-      }));
-    }
+    setFormData(prev => ({
+      ...prev,
+      [field]: value,
+    }));
+    clearErrors();
+    clearFormErrors();
   };
-
+  
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    
+    // Rate limiting check
+    const rateLimitCheck = FormRateLimiting.isSubmissionAllowed(formData.email || 'anonymous', 3, 15);
+    if (!rateLimitCheck.allowed) {
+      const resetTime = rateLimitCheck.resetTime;
+      addError({
+        type: 'rate-limit',
+        message: `Too many checkout attempts. Please try again ${resetTime ? `at ${resetTime.toLocaleTimeString()}` : 'in 15 minutes'}.`,
+        retryable: false
+      });
+      return;
+    }
 
     // Extra guard in case Stripe is not initialised due to missing key
     if (!stripePromise) {
-      toast({
-        title: 'Configuration Error',
-        description:
-          'Stripe is not configured correctly. Please check the browser console for details or contact support.',
-        variant: 'destructive',
+      addError({
+        type: 'server',
+        message: 'Payment system is not configured correctly. Please contact support.',
+        retryable: false
       });
-      /* eslint-disable no-console */
-      console.error('Stripe checkout attempted but stripePromise is null. Check NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY environment variable.');
-      /* eslint-enable no-console */
       return;
     }
 
     if (cart.items.length === 0) {
-      toast({
-        title: "Error",
-        description: "Your cart is empty. Please add items before checking out.",
-        variant: "destructive",
+      addError({
+        type: 'validation',
+        message: 'Your cart is empty. Please add items before checking out.',
+        retryable: false
       });
       router.push('/cart');
       return;
     }
 
-    setIsProcessing(true);
+    // Enhanced form validation
+    const isFormValid = await validate(formData);
+    if (!isFormValid) {
+      addError({
+        type: 'validation',
+        message: 'Please correct the errors in the form before proceeding.',
+        retryable: false
+      });
+      return;
+    }
+    
+    // Security validation
+    const securityScore = FormValidationUtils.getFormSecurityScore(formData);
+    if (!securityScore.isSecure) {
+      addError({
+        type: 'validation',
+        message: 'Form contains potentially dangerous content. Please review your input.',
+        retryable: false
+      });
+      return;
+    }
+
+    // Check if offline
+    if (isOffline) {
+      addError({
+        type: 'network',
+        message: 'No internet connection. Please check your connection and try again.',
+        retryable: true
+      });
+      return;
+    }
 
     try {
-      // Create checkout session
-      const response = await fetch('/api/create-checkout-session', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      // Sanitize form data
+      const sanitizedData = FormValidationUtils.sanitizeFormData(formData);
+      
+      // Create checkout session with enhanced security
+      const response = await createCheckoutSession(
+        '/api/create-checkout-session',
+        {
           items: cart.items,
-          customerInfo: formData,
-        }),
+          customerInfo: {
+            email: sanitizedData.email,
+            firstName: sanitizedData.firstName,
+            lastName: sanitizedData.lastName,
+            phone: sanitizedData.phone,
+            address: {
+              line1: sanitizedData.address,
+              line2: '',
+              city: sanitizedData.city,
+              state: sanitizedData.state,
+              postal_code: sanitizedData.zipCode,
+              country: sanitizedData.country,
+            },
+          },
+          csrfToken,
+          securityContext: {
+            userAgent: navigator.userAgent,
+            timestamp: Date.now(),
+            formHash: btoa(JSON.stringify(sanitizedData))
+          }
+        }
+      );
+
+      // Record successful attempt
+      FormRateLimiting.recordAttempt(formData.email, true);
+      
+      // Clear form data for security
+      setFormData({
+        email: '',
+        firstName: '',
+        lastName: '',
+        phone: '',
+        address: '',
+        city: '',
+        state: '',
+        zipCode: '',
+        country: 'US',
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to create checkout session');
-      }
-
-      const { url } = await response.json();
+      resetValidation();
+      clearFormErrors();
 
       // Redirect to Stripe Checkout
-      if (url) {
-        router.push(url);
+      if (response.url) {
+        router.push(response.url);
       } else {
         throw new Error('No checkout URL received');
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Checkout error:', error);
-      toast({
-        title: "Payment Error",
-        description: error instanceof Error ? error.message : "An unexpected error occurred during checkout.",
-        variant: "destructive",
+
+      // Record failed attempt
+      FormRateLimiting.recordAttempt(formData.email, false);
+
+      // Categorize error type
+      let errorType: FormError['type'] = 'unknown';
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+      const errorStatus = (error as { status?: number })?.status;
+
+      if (errorMessage?.includes('network') || errorMessage?.includes('fetch')) {
+        errorType = 'network';
+      } else if (errorMessage?.includes('authentication') || errorMessage?.includes('unauthorized')) {
+        errorType = 'authentication';
+      } else if (errorMessage?.includes('rate') || errorMessage?.includes('limit')) {
+        errorType = 'rate-limit';
+      } else if (errorStatus && errorStatus >= 500) {
+        errorType = 'server';
+      }
+
+      addError({
+        type: errorType,
+        message: errorMessage || 'An unexpected error occurred during checkout. Please try again.',
+        retryable: errorType !== 'rate-limit'
       });
-    } finally {
-      setIsProcessing(false);
     }
   };
 
@@ -181,47 +379,103 @@ const CheckoutForm: React.FC = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6" data-testid="checkout-form">
+      {/* Security Status */}
+      <FormSecurityStatus
+        status={securityStatus.overallStatus === 'secure' ? 'secure' : securityStatus.overallStatus === 'warning' ? 'warning' : 'error'}
+        message={`Form security: ${securityStatus.passedChecks}/${securityStatus.totalChecks} checks passed`}
+      />
+
+      {/* Form validation indicators */}
+      <FormSecurityIndicator
+        score={validFields * 12.5}
+        maxScore={100}
+        issues={validationErrors.map(e => e.message)}
+      />
+
+      {/* Form validation summary */}
+      <FormValidationSummary
+        errors={validationErrors}
+        isValid={isValid}
+      />
+      
+      {/* Form Error Recovery */}
+      {formErrors.length > 0 && (
+        <FormErrorRecovery
+          error={formErrors[0]?.message}
+          onRetry={() => retryFormSubmission(() => Promise.resolve())}
+          onReset={clearFormErrors}
+        />
+      )}
+
       {/* Customer Information */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <CreditCard className="h-5 w-5" />
             Customer Information
+            <Shield className="h-4 w-4 text-green-600" />
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="email">Email Address *</Label>
               <Input
                 id="email"
+                name="email"
                 type="email"
                 value={formData.email}
                 onChange={(e) => handleInputChange('email', e.target.value)}
+                placeholder="your@email.com"
                 required
                 data-testid="email-input"
               />
+              <p className="text-sm text-gray-600">We&apos;ll send your order confirmation here</p>
             </div>
-            <div>
+            
+            <div className="space-y-2">
               <Label htmlFor="firstName">First Name *</Label>
               <Input
                 id="firstName"
+                name="firstName"
+                type="text"
                 value={formData.firstName}
                 onChange={(e) => handleInputChange('firstName', e.target.value)}
+                placeholder="John"
                 required
                 data-testid="first-name-input"
               />
+              <p className="text-sm text-gray-600">Your legal first name</p>
             </div>
-            <div>
+
+            <div className="space-y-2">
               <Label htmlFor="lastName">Last Name *</Label>
               <Input
                 id="lastName"
+                name="lastName"
+                type="text"
                 value={formData.lastName}
                 onChange={(e) => handleInputChange('lastName', e.target.value)}
+                placeholder="Doe"
                 required
                 data-testid="last-name-input"
               />
+              <p className="text-sm text-gray-600">Your legal last name</p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone Number (Optional)</Label>
+              <Input
+                id="phone"
+                name="phone"
+                type="tel"
+                value={formData.phone || ''}
+                onChange={(e) => handleInputChange('phone', e.target.value)}
+                placeholder="(555) 123-4567"
+                data-testid="phone-input"
+              />
+              <p className="text-sm text-gray-600">For delivery updates and support</p>
             </div>
           </div>
         </CardContent>
@@ -230,57 +484,72 @@ const CheckoutForm: React.FC = () => {
       {/* Shipping Address */}
       <Card>
         <CardHeader>
-          <CardTitle>Shipping Address</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Lock className="h-5 w-5" />
+            Shipping Address
+            <Shield className="h-4 w-4 text-green-600" />
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div>
-            <Label htmlFor="address1">Address Line 1 *</Label>
+          <div className="space-y-2">
+            <Label htmlFor="address">Street Address *</Label>
             <Input
-              id="address1"
-              value={formData.address.line1}
-              onChange={(e) => handleInputChange('address.line1', e.target.value)}
+              id="address"
+              name="address"
+              type="text"
+              value={formData.address}
+              onChange={(e) => handleInputChange('address', e.target.value)}
+              placeholder="123 Main Street"
               required
               data-testid="address-line1"
             />
+            <p className="text-sm text-gray-600">Your full street address</p>
           </div>
-          <div>
-            <Label htmlFor="address2">Address Line 2</Label>
-            <Input
-              id="address2"
-              value={formData.address.line2 || ''}
-              onChange={(e) => handleInputChange('address.line2', e.target.value)}
-            />
-          </div>
+          
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="city">City *</Label>
               <Input
                 id="city"
-                value={formData.address.city}
-                onChange={(e) => handleInputChange('address.city', e.target.value)}
+                name="city"
+                type="text"
+                value={formData.city}
+                onChange={(e) => handleInputChange('city', e.target.value)}
+                placeholder="Los Angeles"
                 required
                 data-testid="city-input"
               />
+              <p className="text-sm text-gray-600">Your city</p>
             </div>
-            <div>
+
+            <div className="space-y-2">
               <Label htmlFor="state">State *</Label>
               <Input
                 id="state"
-                value={formData.address.state}
-                onChange={(e) => handleInputChange('address.state', e.target.value)}
+                name="state"
+                type="text"
+                value={formData.state}
+                onChange={(e) => handleInputChange('state', e.target.value)}
+                placeholder="CA"
                 required
                 data-testid="state-input"
               />
+              <p className="text-sm text-gray-600">State or province</p>
             </div>
-            <div>
-              <Label htmlFor="zip">ZIP Code *</Label>
+
+            <div className="space-y-2">
+              <Label htmlFor="zipCode">ZIP Code *</Label>
               <Input
-                id="zip"
-                value={formData.address.postal_code}
-                onChange={(e) => handleInputChange('address.postal_code', e.target.value)}
+                id="zipCode"
+                name="zipCode"
+                type="text"
+                value={formData.zipCode}
+                onChange={(e) => handleInputChange('zipCode', e.target.value)}
+                placeholder="90210"
                 required
                 data-testid="zip-input"
               />
+              <p className="text-sm text-gray-600">5-digit ZIP code</p>
             </div>
           </div>
         </CardContent>
@@ -309,30 +578,107 @@ const CheckoutForm: React.FC = () => {
         </CardContent>
       </Card>
 
+      {/* Network Status & Additional Error Handling */}
+      {isOffline && (
+        <Alert className="border-orange-200 bg-orange-50">
+          <WifiOff className="h-4 w-4" />
+          <AlertDescription className="text-orange-800">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="font-medium">You&apos;re currently offline</span>
+                <p className="text-sm mt-1">Please check your internet connection to continue with checkout.</p>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => window.location.reload()}
+                className="text-orange-700 border-orange-300 hover:bg-orange-100"
+              >
+                Retry
+              </Button>
+            </div>
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {error && (
+        <Alert variant="destructive">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="font-medium">Payment Error</span>
+                <p className="text-sm mt-1">
+                  {error.message || 'An error occurred during checkout'}
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={retry}
+                className="text-red-700 border-red-300 hover:bg-red-100"
+              >
+                Try Again
+              </Button>
+            </div>
+          </AlertDescription>
+        </Alert>
+      )}
+
       {/* Submit Button */}
       <Button
         type="submit"
-        disabled={isProcessing}
+        disabled={isProcessing || isOffline || !isValid || isValidating || formErrors.length > 0}
         className="w-full"
         size="lg"
         data-testid="stripe-submit"
       >
-        {isProcessing ? (
+        {isOffline ? (
+          <>
+            <WifiOff className="mr-2 h-4 w-4" />
+            Offline
+          </>
+        ) : isProcessing || isRetrying ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Processing...
+            {isRetrying ? 'Retrying...' : 'Processing...'}
+          </>
+        ) : validFields >= 6 && isValid ? (
+          <>
+            <CheckCircle className="mr-2 h-4 w-4" />
+            Proceed to Secure Payment
           </>
         ) : (
           <>
             <Lock className="mr-2 h-4 w-4" />
-            Proceed to Payment
+            Complete Form to Continue
           </>
         )}
       </Button>
 
-      <p className="text-sm text-gray-600 text-center">
-        Your payment information is secure and encrypted.
-      </p>
+      {/* Security Information */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-center space-x-4 text-xs text-green-700">
+          <div className="flex items-center space-x-1">
+            <Lock className="h-3 w-3" />
+            <span>SSL Encrypted</span>
+          </div>
+          <div className="flex items-center space-x-1">
+            <Shield className="h-3 w-3" />
+            <span>PCI Compliant</span>
+          </div>
+          <div className="flex items-center space-x-1">
+            <CheckCircle className="h-3 w-3" />
+            <span>Secure Payment</span>
+          </div>
+        </div>
+        <p className="text-sm text-gray-600 text-center">
+          Your payment information is secure and encrypted. We never store your payment details.
+        </p>
+      </div>
+      
+      {/* CSRF Token (hidden) */}
+      <input type="hidden" name="csrf_token" value={csrfToken} />
     </form>
   );
 };
@@ -344,9 +690,22 @@ const Checkout: React.FC = () => {
       <main className="flex-1 bg-gray-50 py-8">
         <div className="container px-4 md:px-6 max-w-2xl mx-auto">
           <h1 className="text-3xl font-bold mb-8">Checkout</h1>
-          <Elements stripe={stripePromise}>
-            <CheckoutForm />
-          </Elements>
+          <ErrorBoundary
+            onError={(error, errorInfo) => {
+              console.error('Checkout Error:', error, errorInfo)
+            }}
+            resetKeys={[typeof window !== 'undefined' ? window.location.href : '']}
+          >
+            <Elements stripe={stripePromise}>
+              <ErrorBoundary
+                onError={(error, errorInfo) => {
+                  console.error('Payment Form Error:', error, errorInfo)
+                }}
+              >
+                <CheckoutForm />
+              </ErrorBoundary>
+            </Elements>
+          </ErrorBoundary>
         </div>
       </main>
       <Footer />
