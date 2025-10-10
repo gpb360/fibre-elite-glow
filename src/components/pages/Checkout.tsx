@@ -17,12 +17,11 @@ import Footer from '@/components/Footer';
 import { Loader2, CreditCard, Lock, Wifi, WifiOff, Shield, AlertTriangle, CheckCircle } from 'lucide-react';
 import { ErrorBoundary } from '@/components/error';
 import {
-  FormSecurityStatus,
   FormSecurityIndicator,
   FormValidationSummary,
   FormErrorRecovery
 } from '@/components/ui/FormValidation';
-import { useFormSecurityStatus } from '@/components/forms/FormSecurityStatus';
+import { FormSecurityStatus, useFormSecurityStatus } from '@/components/forms/FormSecurityStatus';
 import { useFormErrorRecovery, FormError } from '@/components/forms/FormErrorRecovery';
 import { useFormValidation } from '@/hooks/useFormValidation';
 import { enhancedCheckoutSchema, FormValidationUtils, FormRateLimiting } from '@/lib/form-validation';
@@ -195,6 +194,23 @@ const CheckoutForm: React.FC = () => {
     enableXSSProtection: true,
     enableRateLimit: true
   });
+
+  // Update valid fields count based on form validation
+  useEffect(() => {
+    const filledFields = Object.values(formData).filter(value =>
+      typeof value === 'string' && value.trim().length > 0
+    ).length;
+    setValidFields(filledFields);
+  }, [formData]);
+
+  // Validate form on data change
+  useEffect(() => {
+    if (Object.values(formData).some(value =>
+      typeof value === 'string' && value.trim().length > 0
+    )) {
+      validate(formData);
+    }
+  }, [formData, validate]);
 
   // Generate CSRF token on component mount
   useEffect(() => {
@@ -381,10 +397,13 @@ const CheckoutForm: React.FC = () => {
   return (
     <form onSubmit={handleSubmit} className="space-y-6" data-testid="checkout-form">
       {/* Security Status */}
-      <FormSecurityStatus
-        status={securityStatus.overallStatus === 'secure' ? 'secure' : securityStatus.overallStatus === 'warning' ? 'warning' : 'error'}
-        message={`Form security: ${securityStatus.passedChecks}/${securityStatus.totalChecks} checks passed`}
-      />
+      <div className="mb-4">
+        <FormSecurityStatus
+          checks={securityStatus.checks}
+          overallStatus={securityStatus.overallStatus}
+          showDetails={false}
+        />
+      </div>
 
       {/* Form validation indicators */}
       <FormSecurityIndicator
@@ -643,10 +662,15 @@ const CheckoutForm: React.FC = () => {
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             {isRetrying ? 'Retrying...' : 'Processing...'}
           </>
-        ) : validFields >= 6 && isValid ? (
+        ) : isValid && securityStatus.overallStatus === 'secure' ? (
           <>
-            <CheckCircle className="mr-2 h-4 w-4" />
-            Proceed to Secure Payment
+            <Lock className="mr-2 h-4 w-4" />
+            Checkout
+          </>
+        ) : isValidating || securityStatus.overallStatus === 'validating' ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Validating...
           </>
         ) : (
           <>
