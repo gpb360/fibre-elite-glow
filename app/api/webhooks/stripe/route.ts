@@ -122,6 +122,463 @@ function generateOrderNumber(): string {
   return `FEG-${timestamp}-${random}`;
 }
 
+// Helper functions for sending emails via Resend Edge Function
+async function sendOrderConfirmationEmail(params: {
+  orderNumber: string;
+  customerEmail: string;
+  customerName: string;
+  items: Array<{
+    name: string;
+    quantity: number;
+    price: number;
+    product_type?: string;
+  }>;
+  totalAmount: number;
+  currency: string;
+}): Promise<void> {
+  try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!supabaseUrl || !supabaseServiceKey) {
+      console.error('Supabase configuration missing - cannot send order confirmation email');
+      return;
+    }
+
+    // Generate email content
+    const subject = `Order Confirmation - ${params.orderNumber}`;
+    const html = generateOrderConfirmationHTML(params);
+    const text = generateOrderConfirmationText(params);
+
+    // Call Resend Edge Function
+    const response = await fetch(`${supabaseUrl}/functions/v1/resend-email`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${supabaseServiceKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        to: params.customerEmail,
+        subject,
+        html,
+        text
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Failed to send order confirmation email:', errorData);
+    } else {
+      console.log(`Order confirmation email sent to ${params.customerEmail}`);
+    }
+  } catch (error) {
+    console.error('Error sending order confirmation email:', error);
+  }
+}
+
+async function sendAdminNotificationEmail(params: {
+  orderNumber: string;
+  customerEmail: string;
+  customerName: string;
+  items: Array<{
+    name: string;
+    quantity: number;
+    price: number;
+    product_type?: string;
+  }>;
+  totalAmount: number;
+  currency: string;
+  shippingAddress: {
+    firstName: string;
+    lastName: string;
+    addressLine1: string;
+    addressLine2?: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+  };
+  paymentIntentId?: string;
+}): Promise<void> {
+  try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@lbve.ca';
+
+    if (!supabaseUrl || !supabaseServiceKey) {
+      console.error('Supabase configuration missing - cannot send admin notification email');
+      return;
+    }
+
+    // Generate email content
+    const subject = `🚨 New Order Alert - ${params.orderNumber}`;
+    const html = generateAdminNotificationHTML(params);
+    const text = generateAdminNotificationText(params);
+
+    // Call Resend Edge Function
+    const response = await fetch(`${supabaseUrl}/functions/v1/resend-email`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${supabaseServiceKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        to: adminEmail,
+        subject,
+        html,
+        text
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Failed to send admin notification email:', errorData);
+    } else {
+      console.log(`Admin notification email sent for order: ${params.orderNumber}`);
+    }
+  } catch (error) {
+    console.error('Error sending admin notification email:', error);
+  }
+}
+
+// Email content generation functions
+function generateOrderConfirmationHTML(params: {
+  orderNumber: string;
+  customerName: string;
+  items: Array<{
+    name: string;
+    quantity: number;
+    price: number;
+  }>;
+  totalAmount: number;
+  currency: string;
+}): string {
+  const itemsHtml = params.items
+    .map(item => `
+      <tr>
+        <td style="padding: 10px; border-bottom: 1px solid #eee;">
+          <strong>${item.name}</strong>
+        </td>
+        <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: center;">
+          ${item.quantity}
+        </td>
+        <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">
+          ${formatCurrency(item.price * item.quantity, params.currency)}
+        </td>
+      </tr>
+    `)
+    .join('');
+
+  return `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <title>Order Confirmation</title>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: #f8f9fa; padding: 20px; text-align: center; border-radius: 8px; }
+          .order-details { background: #fff; padding: 20px; margin: 20px 0; border: 1px solid #ddd; border-radius: 8px; }
+          .items-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+          .items-table th { background: #f8f9fa; padding: 12px; text-align: left; border-bottom: 2px solid #ddd; }
+          .items-table td { padding: 10px; border-bottom: 1px solid #eee; }
+          .total { font-size: 18px; font-weight: bold; color: #28a745; }
+          .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>🎉 Order Confirmed!</h1>
+            <p>Thank you for your order. We're excited to get your Fibre Elite Glow products to you!</p>
+          </div>
+
+          <div class="order-details">
+            <h2>Order Details</h2>
+            <p><strong>Order Number:</strong> ${params.orderNumber}</p>
+            <p><strong>Order Date:</strong> ${new Date().toLocaleDateString()}</p>
+            <p><strong>Status:</strong> Confirmed</p>
+
+            <h3>Items Ordered</h3>
+            <table class="items-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th style="text-align: center;">Quantity</th>
+                  <th style="text-align: right;">Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${itemsHtml}
+              </tbody>
+            </table>
+
+            <p class="total">Total: ${formatCurrency(params.totalAmount, params.currency)}</p>
+          </div>
+
+          <div class="order-details">
+            <h2>What's Next?</h2>
+            <ol>
+              <li><strong>Processing:</strong> Your order is being prepared (1-2 business days)</li>
+              <li><strong>Shipping:</strong> You'll receive tracking information once shipped</li>
+              <li><strong>Delivery:</strong> Your package will arrive within 3-7 business days</li>
+            </ol>
+          </div>
+
+          <div class="footer">
+            <p>Questions? Contact our support team at support@fibreeliteglow.com</p>
+            <p>Fibre Elite Glow - Premium Gut Health Solutions</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+}
+
+function generateOrderConfirmationText(params: {
+  orderNumber: string;
+  customerName: string;
+  items: Array<{
+    name: string;
+    quantity: number;
+    price: number;
+  }>;
+  totalAmount: number;
+  currency: string;
+}): string {
+  const itemsText = params.items
+    .map(item => `${item.name} x${item.quantity} - ${formatCurrency(item.price * item.quantity, params.currency)}`)
+    .join('\n');
+
+  return `
+Order Confirmation - ${params.orderNumber}
+
+Thank you for your order! Here are your order details:
+
+Order Number: ${params.orderNumber}
+Order Date: ${new Date().toLocaleDateString()}
+Status: Confirmed
+
+Items Ordered:
+${itemsText}
+
+Total: ${formatCurrency(params.totalAmount, params.currency)}
+
+What's Next?
+1. Processing: Your order is being prepared (1-2 business days)
+2. Shipping: You'll receive tracking information once shipped
+3. Delivery: Your package will arrive within 3-7 business days
+
+Questions? Contact our support team at support@fibreeliteglow.com
+
+Fibre Elite Glow - Premium Gut Health Solutions
+  `;
+}
+
+function generateAdminNotificationHTML(params: {
+  orderNumber: string;
+  customerEmail: string;
+  customerName: string;
+  items: Array<{
+    name: string;
+    quantity: number;
+    price: number;
+  }>;
+  totalAmount: number;
+  currency: string;
+  shippingAddress: {
+    firstName: string;
+    lastName: string;
+    addressLine1: string;
+    addressLine2?: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+  };
+  paymentIntentId?: string;
+}): string {
+  const itemsHtml = params.items
+    .map(item => `
+      <tr>
+        <td style="padding: 10px; border-bottom: 1px solid #eee;">
+          <strong>${item.name}</strong>
+        </td>
+        <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: center;">
+          ${item.quantity}
+        </td>
+        <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">
+          ${formatCurrency(item.price * item.quantity, params.currency)}
+        </td>
+      </tr>
+    `)
+    .join('');
+
+  return `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <title>New Order Alert</title>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: #dc3545; color: white; padding: 20px; text-align: center; border-radius: 8px; }
+          .alert { background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; margin: 20px 0; border-radius: 8px; }
+          .order-details { background: #fff; padding: 20px; margin: 20px 0; border: 1px solid #ddd; border-radius: 8px; }
+          .items-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+          .items-table th { background: #f8f9fa; padding: 12px; text-align: left; border-bottom: 2px solid #ddd; }
+          .items-table td { padding: 10px; border-bottom: 1px solid #eee; }
+          .total { font-size: 18px; font-weight: bold; color: #dc3545; }
+          .action-items { background: #e7f3ff; padding: 15px; border-radius: 8px; margin: 20px 0; }
+          .action-item { background: white; padding: 10px; margin: 8px 0; border-left: 4px solid #007bff; }
+          .customer-info { background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 10px 0; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>🚨 New Order Alert</h1>
+            <p>A new order has been placed and requires your attention</p>
+          </div>
+
+          <div class="alert">
+            <strong>⚡ Action Required:</strong> Process order ${params.orderNumber} - Customer: ${params.customerEmail}
+          </div>
+
+          <div class="order-details">
+            <h2>Order Summary</h2>
+            <p><strong>Order Number:</strong> ${params.orderNumber}</p>
+            <p><strong>Order Date:</strong> ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
+            ${params.paymentIntentId ? `<p><strong>Payment Intent:</strong> ${params.paymentIntentId}</p>` : ''}
+
+            <div class="customer-info">
+              <h3>Customer Information</h3>
+              <p><strong>Name:</strong> ${params.customerName}</p>
+              <p><strong>Email:</strong> ${params.customerEmail}</p>
+              <p><strong>Shipping Address:</strong><br>
+                ${params.shippingAddress.firstName} ${params.shippingAddress.lastName}<br>
+                ${params.shippingAddress.addressLine1}<br>
+                ${params.shippingAddress.addressLine2 ? params.shippingAddress.addressLine2 + '<br>' : ''}
+                ${params.shippingAddress.city}, ${params.shippingAddress.state} ${params.shippingAddress.postalCode}<br>
+                ${params.shippingAddress.country}
+              </p>
+            </div>
+
+            <h3>Items Ordered</h3>
+            <table class="items-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th style="text-align: center;">Quantity</th>
+                  <th style="text-align: right;">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${itemsHtml}
+              </tbody>
+            </table>
+
+            <p class="total">Order Total: ${formatCurrency(params.totalAmount, params.currency)}</p>
+          </div>
+
+          <div class="action-items">
+            <h3>📋 Action Items</h3>
+            <div class="action-item">
+              <strong>1. Verify Inventory:</strong> Check stock levels for all ordered items
+            </div>
+            <div class="action-item">
+              <strong>2. Process Payment:</strong> Confirm payment has been processed successfully
+            </div>
+            <div class="action-item">
+              <strong>3. Prepare Shipment:</strong> Package items and prepare shipping label
+            </div>
+            <div class="action-item">
+              <strong>4. Update Customer:</strong> Send tracking information once shipped
+            </div>
+          </div>
+
+          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666;">
+            <p><strong>Fibre Elite Glow Admin Panel</strong></p>
+            <p>Order processing system notification</p>
+          </div>
+        </div>
+      </body>
+    </html>
+  `;
+}
+
+function generateAdminNotificationText(params: {
+  orderNumber: string;
+  customerEmail: string;
+  customerName: string;
+  items: Array<{
+    name: string;
+    quantity: number;
+    price: number;
+  }>;
+  totalAmount: number;
+  currency: string;
+  shippingAddress: {
+    firstName: string;
+    lastName: string;
+    addressLine1: string;
+    addressLine2?: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+  };
+  paymentIntentId?: string;
+}): string {
+  const itemsText = params.items
+    .map(item => `${item.name} x${item.quantity} - ${formatCurrency(item.price * item.quantity, params.currency)}`)
+    .join('\n');
+
+  return `
+NEW ORDER ALERT - ${params.orderNumber}
+
+⚡ ACTION REQUIRED: Process new order
+
+Order Details:
+- Order Number: ${params.orderNumber}
+- Order Date: ${new Date().toLocaleString()}
+${params.paymentIntentId ? `- Payment Intent: ${params.paymentIntentId}` : ''}
+
+Customer Information:
+- Name: ${params.customerName}
+- Email: ${params.customerEmail}
+
+Shipping Address:
+${params.shippingAddress.firstName} ${params.shippingAddress.lastName}
+${params.shippingAddress.addressLine1}
+${params.shippingAddress.addressLine2 ? params.shippingAddress.addressLine2 + '\n' : ''}${params.shippingAddress.city}, ${params.shippingAddress.state} ${params.shippingAddress.postalCode}
+${params.shippingAddress.country}
+
+Items Ordered:
+${itemsText}
+
+Order Total: ${formatCurrency(params.totalAmount, params.currency)}
+
+📋 ACTION ITEMS:
+1. Verify Inventory: Check stock levels for all ordered items
+2. Process Payment: Confirm payment has been processed successfully
+3. Prepare Shipment: Package items and prepare shipping label
+4. Update Customer: Send tracking information once shipped
+
+Fibre Elite Glow Admin Panel
+Order processing system notification
+  `;
+}
+
+function formatCurrency(amount: number, currency: string = 'USD'): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currency.toUpperCase(),
+  }).format(amount);
+}
+
 export async function POST(request: Request) {
   try {
     // Security headers
@@ -365,68 +822,41 @@ export async function POST(request: Request) {
           }
         }
 
-        // Send order confirmation email
+        // Send order confirmation email via Resend
         if (order && customerEmail) {
-          try {
-            await emailService.sendOrderConfirmation({
-              id: order.id,
-              orderNumber: order.order_number,
-              amount: session.amount_total || 0,
-              currency: session.currency || 'usd',
-              status: 'confirmed',
-              customerEmail,
-              items: orderItems.map(item => ({
-                name: item.name,
-                quantity: item.quantity,
-                price: item.price
-              })),
-              createdAt: new Date().toISOString(),
-            });
-            console.log(`Order confirmation email sent to ${customerEmail}`);
-          } catch (emailError) {
-            console.error('Failed to send order confirmation email:', emailError);
-            // Don't fail the webhook if email fails
-          }
+          await sendOrderConfirmationEmail({
+            orderNumber: order.order_number,
+            customerEmail,
+            customerName: metadata.customer_name || `${shippingAddress.first_name || ''} ${shippingAddress.last_name || ''}`.trim() || 'Valued Customer',
+            items: orderItems,
+            totalAmount: (session.amount_total || 0) / 100,
+            currency: session.currency || 'usd'
+          });
         }
 
-        // Send admin notification email
+        // Send admin notification email via Resend
         if (order && customerEmail && orderItems.length > 0) {
-          try {
-            const customerFullName = metadata.customer_name || `${shippingAddress.first_name || ''} ${shippingAddress.last_name || ''}`.trim() || 'Unknown Customer';
-            
-            // Convert orderItems to proper OrderItem format for admin notification
-            const typedOrderItems = orderItems.map(item => ({
-              name: item.name,
-              quantity: item.quantity,
-              price: item.price,
-              product_type: (item.product_type === 'total_essential_plus' ? 'total_essential_plus' : 'total_essential') as 'total_essential' | 'total_essential_plus'
-            }));
-            
-            await emailService.sendAdminOrderNotification({
-              orderNumber: order.order_number,
-              customerEmail,
-              customerName: customerFullName,
-              totalAmount: session.amount_total || 0,
-              currency: session.currency || 'usd',
-              items: typedOrderItems,
-              shippingAddress: {
-                firstName: shippingAddress.first_name || '',
-                lastName: shippingAddress.last_name || '',
-                addressLine1: shippingAddress.line1 || '',
-                addressLine2: shippingAddress.line2,
-                city: shippingAddress.city || '',
-                state: shippingAddress.state || '',
-                postalCode: shippingAddress.postal_code || '',
-                country: shippingAddress.country || 'US',
-              },
-              paymentIntentId: session.payment_intent as string,
-              createdAt: new Date().toISOString(),
-            });
-            console.log('Admin notification email sent for order:', order.order_number);
-          } catch (adminEmailError) {
-            console.error('Failed to send admin notification email:', adminEmailError);
-            // Don't fail the webhook if admin email fails
-          }
+          const customerFullName = metadata.customer_name || `${shippingAddress.first_name || ''} ${shippingAddress.last_name || ''}`.trim() || 'Unknown Customer';
+
+          await sendAdminNotificationEmail({
+            orderNumber: order.order_number,
+            customerEmail,
+            customerName: customerFullName,
+            items: orderItems,
+            totalAmount: (session.amount_total || 0) / 100,
+            currency: session.currency || 'usd',
+            shippingAddress: {
+              firstName: shippingAddress.first_name || '',
+              lastName: shippingAddress.last_name || '',
+              addressLine1: shippingAddress.line1 || '',
+              addressLine2: shippingAddress.line2,
+              city: shippingAddress.city || '',
+              state: shippingAddress.state || '',
+              postalCode: shippingAddress.postal_code || '',
+              country: shippingAddress.country || 'US',
+            },
+            paymentIntentId: session.payment_intent as string
+          });
         }
         
         break;

@@ -1,9 +1,29 @@
 /**
  * Performance Optimizer Utility
- * 
+ *
  * Provides performance optimization features for reducing main thread tasks
  * and deferring non-critical operations
  */
+
+// Type definition for requestIdleCallback
+interface RequestIdleCallbackOptions {
+  timeout?: number;
+}
+
+interface RequestIdleCallbackDeadline {
+  readonly didTimeout: boolean;
+  timeRemaining(): number;
+}
+
+declare global {
+  interface Window {
+    requestIdleCallback(
+      callback: (deadline: RequestIdleCallbackDeadline) => void,
+      options?: RequestIdleCallbackOptions
+    ): number;
+    cancelIdleCallback(handle: number): void;
+  }
+}
 
 // Singleton intersection observer for all images
 class GlobalIntersectionObserver {
@@ -103,7 +123,7 @@ export class PerformanceOptimizer {
    */
   private runWhenIdle(task: () => void): void {
     if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-      (window as any).requestIdleCallback(task, { timeout: 2000 });
+      window.requestIdleCallback(() => task(), { timeout: 2000 });
     } else {
       // Fallback for browsers without requestIdleCallback
       setTimeout(task, 0);
@@ -136,7 +156,7 @@ export class PerformanceOptimizer {
   /**
    * Debounce function calls to reduce frequency
    */
-  public debounce<T extends (...args: any[]) => any>(
+  public debounce<T extends (...args: unknown[]) => unknown>(
     func: T,
     wait: number
   ): (...args: Parameters<T>) => void {
@@ -150,7 +170,7 @@ export class PerformanceOptimizer {
   /**
    * Throttle function calls to limit frequency
    */
-  public throttle<T extends (...args: any[]) => any>(
+  public throttle<T extends (...args: unknown[]) => unknown>(
     func: T,
     limit: number
   ): (...args: Parameters<T>) => void {
@@ -259,10 +279,10 @@ export const unobserveElement = (element: Element) => {
   performanceOptimizer.unobserveElement(element);
 };
 
-export const debounce = <T extends (...args: any[]) => any>(func: T, wait: number) => {
+export const debounce = <T extends (...args: unknown[]) => unknown>(func: T, wait: number) => {
   return performanceOptimizer.debounce(func, wait);
 };
 
-export const throttle = <T extends (...args: any[]) => any>(func: T, limit: number) => {
+export const throttle = <T extends (...args: unknown[]) => unknown>(func: T, limit: number) => {
   return performanceOptimizer.throttle(func, limit);
 };

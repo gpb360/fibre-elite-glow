@@ -20,7 +20,7 @@ const nextConfig = {
   // Move serverComponentsExternalPackages to top level
   serverExternalPackages: ['sharp', 'onnxruntime-node'],
   images: {
-    domains: ['venomappdevelopment.com'],
+    domains: ['venomappdevelopment.com', 'images.unsplash.com'],
     formats: ['image/webp', 'image/avif'],
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",

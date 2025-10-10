@@ -148,7 +148,7 @@ const Cart = () => {
                             {/* Product Image */}
                             <div className="flex-shrink-0 relative" data-testid="product-image">
                               <Image
-                                src={item.image || '/placeholder.svg'}
+                                src={item.image || '/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp'}
                                 alt={item.productName}
                                 width={80}
                                 height={80}
@@ -156,7 +156,7 @@ const Cart = () => {
                                 sizes="80px"
                                 onError={(e) => {
                                   const target = e.target as HTMLImageElement;
-                                  target.src = '/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp';
+                                  target.src = '/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp';
                                 }}
                               />
                             </div>

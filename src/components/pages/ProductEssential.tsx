@@ -90,7 +90,7 @@ export function ProductEssential() {
         price: selectedPackage.price,
         originalPrice: selectedPackage.original_price || undefined,
         savings: selectedPackage.savings || undefined,
-        image: '/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp',
+        image: '/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp',
         packageSize: `${selectedPackage.quantity} box${selectedPackage.quantity > 1 ? 'es' : ''} (${selectedPackage.quantity * 15} sachets)`,
       });
 
@@ -229,9 +229,9 @@ export function ProductEssential() {
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
                 <Image
-                  alt="Total Essential Product - Complete fiber supplement for digestive health"
+                  alt="Total Essential Product - Complete fiber supplement for digestive health and gut wellness"
                   className="aspect-square overflow-hidden rounded-xl object-cover object-center sm:w-full"
-                  src="/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp"
+                  src="/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp"
                   width={550}
                   height={550}
                   priority
@@ -293,8 +293,8 @@ export function ProductEssential() {
 
         {/* Ingredients Section */}
         <SplitSection
-          image="/lovable-uploads/webp/d98185ae-142e-45e8-9804-7b3e5aee3680.webp"
-          imageAlt="Total Essential Ingredients"
+          image="/lovable-uploads/webp/digestive-health-benefits-fiber-supplement.webp"
+          imageAlt="Premium natural ingredients in Total Essential fiber supplement - fruit and vegetable fibers"
           title="Premium Natural Ingredients"
           description="Every ingredient in Total Essential is carefully sourced from certified suppliers worldwide and meets the highest quality standards. All components are verified non-GMO (non-genetically modified organism) and certified Gluten-Free, ensuring purity and safety for daily consumption."
           className="bg-gray-50"
@@ -521,8 +521,8 @@ export function ProductEssential() {
 
         {/* How to Use Section */}
         <SplitSection
-          image="/lovable-uploads/webp/a9768c7e-625a-4016-8baa-79cea10189ac.webp"
-          imageAlt="How to use Total Essential"
+          image="/lovable-uploads/webp/prebiotic-fiber-gut-health.webp"
+          imageAlt="How to use Total Essential fiber supplement - simple daily protocol for digestive health"
           title="Simple Daily Protocol"
           description="Total Essential is designed for effortless integration into your daily wellness routine with maximum convenience and effectiveness."
           reverse

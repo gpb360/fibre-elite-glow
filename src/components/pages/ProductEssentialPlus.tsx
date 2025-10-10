@@ -110,7 +110,7 @@ export function ProductEssentialPlus() {
         price: selectedPackage.price,
         originalPrice: selectedPackage.original_price || undefined,
         savings: selectedPackage.savings || undefined,
-        image: '/lovable-uploads/webp/5f8f72e3-397f-47a4-8bce-f15924c32a34.webp',
+        image: '/lovable-uploads/webp/total-essential-plus-fiber-supplement-bottle.webp',
         packageSize: `${selectedPackage.quantity} box${selectedPackage.quantity > 1 ? 'es' : ''} (${selectedPackage.quantity * 15} sachets)`,
       });
 
@@ -251,7 +251,7 @@ export function ProductEssentialPlus() {
                 <Image
                   alt="Total Essential Plus Product - Advanced fiber supplement with enhanced benefits"
                   className="aspect-square overflow-hidden rounded-xl object-cover object-center sm:w-full"
-                  src="/lovable-uploads/webp/5f8f72e3-397f-47a4-8bce-f15924c32a34.webp"
+                  src="/lovable-uploads/webp/total-essential-plus-fiber-supplement-bottle.webp"
                   width={550}
                   height={550}
                   priority
@@ -303,7 +303,7 @@ export function ProductEssentialPlus() {
 
         {/* Ingredients Section */}
         <SplitSection
-          image="/lovable-uploads/webp/d98185ae-142e-45e8-9804-7b3e5aee3680.webp"
+          image="/lovable-uploads/webp/digestive-health-benefits-fiber-supplement.webp"
           imageAlt="Total Essential Plus Ingredients"
           title="Premium Natural Ingredients Plus Superfruits"
           description="Every ingredient in Total Essential Plus is carefully sourced from certified suppliers worldwide and meets the highest quality standards. All components are verified non-GMO and certified Gluten-Free, with the addition of four potent superfruit extracts for enhanced antioxidant protection and skin health benefits."
@@ -560,7 +560,7 @@ export function ProductEssentialPlus() {
               <footer className="mt-8">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
-                    <Image className="h-10 w-10 rounded-full bg-purple-100" src="/placeholder.svg" alt="Tinesja Vanel - Colon Hydro-therapist testimonial for Total Essential Plus fiber supplement" width={40} height={40} />
+                    <Image className="h-10 w-10 rounded-full bg-purple-100" src="/lovable-uploads/webp/fiber-supplement-premium-ingredients.webp" alt="Tinesja Vanel - Colon Hydro-therapist testimonial for Total Essential Plus fiber supplement" width={40} height={40} />
                   </div>
                   <div className="ml-4">
                     <div className="text-base font-semibold text-gray-900">Tinesja Vanel</div>
@@ -574,7 +574,7 @@ export function ProductEssentialPlus() {
 
         {/* How to Use Section */}
         <SplitSection
-          image="/lovable-uploads/webp/c159fdf8-1fcc-418f-a95b-70543b77a5ae.webp"
+          image="/lovable-uploads/webp/fiber-supplement-premium-ingredients.webp"
           imageAlt="How to use Total Essential Plus"
           title="Enhanced Daily Protocol"
           description="Total Essential Plus is designed for effortless integration into your daily beauty and wellness routine with maximum convenience and superior taste experience."

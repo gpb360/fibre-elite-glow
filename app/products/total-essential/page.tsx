@@ -6,7 +6,7 @@ export const metadata = generateMetadata({
   title: 'Total Essential | Premium Daily Fiber Blend',
   description: 'Total Essential: Premium daily fiber blend crafted from 100% fruit & vegetable fibers for gentle, natural digestive health. 15 sachets per box. Best seller with proven results.',
   keywords: 'Total Essential, fiber supplement, daily fiber blend, fruit fiber, vegetable fiber, digestive health, gut health, natural fiber, premium supplement',
-  image: '/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp',
+  image: '/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp',
   url: '/products/total-essential'
 })
 
@@ -15,7 +15,7 @@ const productSchema = generateProductSchema({
   description: 'Premium daily fiber blend crafted from 100% fruit & vegetable fibers for gentle, natural regularity. 15 sachets per box.',
   price: '79.99',
   sku: 'total-essential-base',
-  image: '/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp',
+  image: '/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp',
   rating: 4.8,
   reviewCount: 156,
   url: '/products/total-essential'

@@ -35,7 +35,7 @@ export default function OptimizedImage({
   fill = false,
   sizes = '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw',
   quality = 80,
-  fallbackSrc = '/assets/placeholders/image-placeholder.svg',
+  fallbackSrc = '/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp',
   showRetry = true,
   onError,
   onLoad,

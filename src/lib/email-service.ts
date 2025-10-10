@@ -1,5 +1,6 @@
-// Email service for order confirmations and notifications
+// Email service for order confirmations and notifications using Supabase Resend integration
 import { OrderDetails, OrderItem } from '@/types/order';
+import { supabaseAdmin } from '@/integrations/supabase/client';
 
 interface EmailOptions {
   to: string;
@@ -29,21 +30,12 @@ interface AdminOrderNotification {
   createdAt: string;
 }
 
-// Basic email service implementation
-// In production, you'd want to use a service like SendGrid, Mailgun, or AWS SES
+// Email service implementation using Supabase Resend integration
 export class EmailService {
   private static instance: EmailService;
-  private emailProvider: 'console' | 'smtp' | 'sendgrid' = 'console';
 
   private constructor() {
-    // Initialize email provider based on environment
-    if (process.env.EMAIL_PROVIDER === 'sendgrid' && process.env.SENDGRID_API_KEY) {
-      this.emailProvider = 'sendgrid';
-    } else if (process.env.SMTP_HOST && process.env.SMTP_USER) {
-      this.emailProvider = 'smtp';
-    } else {
-      this.emailProvider = 'console';
-    }
+    // Private constructor for singleton pattern
   }
 
   static getInstance(): EmailService {
@@ -55,42 +47,55 @@ export class EmailService {
 
   async sendEmail(options: EmailOptions): Promise<boolean> {
     try {
-      switch (this.emailProvider) {
-        case 'console':
-          return this.sendConsoleEmail(options);
-        case 'smtp':
-          return this.sendSmtpEmail(options);
-        case 'sendgrid':
-          return this.sendSendGridEmail(options);
-        default:
-          throw new Error(`Unsupported email provider: ${this.emailProvider}`);
+      // Get Supabase URL and service role key from environment
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+      if (!supabaseUrl || !supabaseServiceKey) {
+        console.error('Supabase configuration missing - cannot send email');
+        return this.sendConsoleEmail(options);
       }
+
+      // Call Supabase Edge Function for Resend email
+      const response = await fetch(`${supabaseUrl}/functions/v1/resend-email`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${supabaseServiceKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to: options.to,
+          subject: options.subject,
+          html: options.html,
+          text: options.text
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Failed to send email via Resend Edge Function:', errorData);
+        // Fallback to console logging for development
+        return this.sendConsoleEmail(options);
+      }
+
+      const result = await response.json();
+      console.log('📧 Email sent successfully via Resend Edge Function:', result);
+      return true;
     } catch (error) {
       console.error('Failed to send email:', error);
-      return false;
+      // Fallback to console logging for development
+      return this.sendConsoleEmail(options);
     }
   }
 
   private async sendConsoleEmail(options: EmailOptions): Promise<boolean> {
-    console.log('📧 Email Service (Console Mode)');
+    console.log('📧 Email Service (Console Mode - Fallback)');
     console.log('To:', options.to);
     console.log('Subject:', options.subject);
     console.log('Text:', options.text || 'No text version provided');
     console.log('HTML:', options.html);
     console.log('---');
     return true;
-  }
-
-  private async sendSmtpEmail(options: EmailOptions): Promise<boolean> {
-    // TODO: Implement SMTP email sending
-    console.log('📧 SMTP Email sending not implemented yet');
-    return this.sendConsoleEmail(options);
-  }
-
-  private async sendSendGridEmail(options: EmailOptions): Promise<boolean> {
-    // TODO: Implement SendGrid email sending
-    console.log('📧 SendGrid Email sending not implemented yet');
-    return this.sendConsoleEmail(options);
   }
 
   async sendOrderConfirmation(orderDetails: OrderDetails): Promise<boolean> {

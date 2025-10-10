@@ -39,7 +39,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         
         {/* Only preload the hero image - LCP candidate */}
-        <link rel="preload" href="/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp" as="image" type="image/webp" fetchPriority="high" />
+        <link rel="preload" href="/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp" as="image" type="image/webp" fetchPriority="high" />
         
         {/* DNS prefetch only for critical domains */}
         <link rel="dns-prefetch" href="https://api.stripe.com" />

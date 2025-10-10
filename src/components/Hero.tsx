@@ -98,9 +98,9 @@ export function Hero() {
           >
             <div className="relative">
               <Image
-                alt="Total Essential Product Box - Premium fiber supplement for gut health"
+                alt="Total Essential Product Box - Premium fiber supplement for gut health and digestive wellness"
                 className="aspect-square rounded-xl object-cover object-center hover:scale-105 transition-transform duration-300 shadow-2xl"
-                src="/lovable-uploads/webp/27ca3fa0-24aa-479b-b075-3f11006467c5.webp"
+                src="/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp"
                 width={600}
                 height={600}
                 priority={true}

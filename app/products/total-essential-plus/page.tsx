@@ -11,10 +11,10 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/lovable-uploads/webp/5f8f72e3-397f-47a4-8bce-f15924c32a34.webp',
+        url: '/lovable-uploads/webp/total-essential-plus-fiber-supplement-bottle.webp',
         width: 1200,
         height: 630,
-        alt: 'Total Essential Plus Advanced Fiber Supplement'
+        alt: 'Total Essential Plus Advanced Fiber Supplement with super-fruits and antioxidants'
       }
     ]
   },
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Total Essential Plus | Advanced Fiber Blend with Super-Fruits',
     description: 'Advanced daily fiber blend enhanced with super-fruits for added antioxidants.',
-    images: ['/lovable-uploads/webp/5f8f72e3-397f-47a4-8bce-f15924c32a34.webp']
+    images: ['/lovable-uploads/webp/total-essential-plus-fiber-supplement-bottle.webp']
   }
 }
 
@@ -53,7 +53,7 @@ const ProductSchema = () => {
       "priceValidUntil": "2025-12-31"
     },
     "image": [
-      "https://lbve.ca/lovable-uploads/webp/5f8f72e3-397f-47a4-8bce-f15924c32a34.webp"
+      "https://lbve.ca/lovable-uploads/webp/total-essential-plus-fiber-supplement-bottle.webp"
     ],
     "aggregateRating": {
       "@type": "AggregateRating",

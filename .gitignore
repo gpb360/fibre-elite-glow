@@ -65,3 +65,6 @@ bun.lockb
 # Downloads and temp data
 downloads/
 mcp-test-screenshot.png
+
+.github/instructions/kluster-code-verify.instructions.md
+.kluster
