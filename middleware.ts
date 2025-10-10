@@ -129,17 +129,17 @@ export function middleware(request: NextRequest) {
     response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
     response.headers.set('X-XSS-Protection', '1; mode=block');
     
-    // Content Security Policy
+    // Content Security Policy - Updated to fix Netlify frame blocking
     response.headers.set(
       'Content-Security-Policy',
       [
         "default-src 'self'",
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' *.stripe.com *.supabase.co js.stripe.com",
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' *.stripe.com *.supabase.co js.stripe.com https://www.googletagmanager.com https://www.google-analytics.com",
         "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
-        "img-src 'self' data: blob: *.stripe.com *.supabase.co",
-        "font-src 'self' fonts.gstatic.com",
-        "connect-src 'self' *.stripe.com *.supabase.co api.stripe.com",
-        "frame-src 'self' *.stripe.com",
+        "img-src 'self' data: blob: *.stripe.com *.supabase.co https://www.google-analytics.com",
+        "font-src 'self' fonts.gstatic.com data:",
+        "connect-src 'self' *.stripe.com *.supabase.co api.stripe.com https://www.google-analytics.com https://analytics.google.com",
+        "frame-src 'self' *.stripe.com *.netlify.com *.netlify.app https://app.netlify.com",
         "object-src 'none'",
         "base-uri 'self'",
         "form-action 'self'",

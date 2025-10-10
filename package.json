@@ -22,6 +22,7 @@
     "validate:test-data": "node scripts/validate-test-data.js",
     "perf:audit": "node scripts/performance-audit.js",
     "perf:build": "npm run build && npm run perf:audit",
+    "perf:validate": "node scripts/validate-performance-fixes.js",
     "analyze": "cross-env ANALYZE=true npm run build",
     "postinstall": "echo 'Dependencies installed successfully'",
     "verify:build": "node scripts/verify-build.js"
