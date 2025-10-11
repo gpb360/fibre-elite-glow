@@ -16,7 +16,16 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Loader2, CreditCard, Lock, Wifi, WifiOff, Shield, AlertTriangle, CheckCircle } from 'lucide-react';
 import { ErrorBoundary } from '@/components/error';
-import { FormRateLimiting } from '@/lib/form-validation';
+import {
+  FormSecurityStatus,
+  FormSecurityIndicator,
+  FormValidationSummary,
+  FormErrorRecovery
+} from '@/components/ui/FormValidation';
+import { useFormSecurityStatus } from '@/components/forms/FormSecurityStatus';
+import { useFormErrorRecovery, FormError } from '@/components/forms/FormErrorRecovery';
+import { useFormValidation } from '@/hooks/useFormValidation';
+import { enhancedCheckoutSchema, FormValidationUtils, FormRateLimiting } from '@/lib/form-validation';
 
 // Simple API mutation hook for checkout
 interface UseApiMutationOptions {
@@ -132,10 +141,27 @@ const CheckoutForm: React.FC = () => {
   const { isOnline } = useNetworkStatus();
   const isOffline = !isOnline;
   
-  // Simple validation without complex hooks to prevent infinite loops
-  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
-  const [isValid, setIsValid] = useState(false);
-
+  // Enhanced form validation and error recovery
+  const {
+    errors: validationErrors,
+    isValid,
+    isValidating,
+    validate,
+    clearErrors,
+    resetValidation
+  } = useFormValidation(enhancedCheckoutSchema, {
+    validateOnChange: true,
+    showErrorToast: false
+  });
+  
+  const {
+    errors: formErrors,
+    isRetrying,
+    addError,
+    clearErrors: clearFormErrors,
+    retry: retryFormSubmission
+  } = useFormErrorRecovery();
+  
   // Use the new API mutation hook with retry functionality
   const { mutate: createCheckoutSession, loading: isProcessing, error, retry } = useApiMutation({
     maxRetries: 3,
@@ -157,12 +183,18 @@ const CheckoutForm: React.FC = () => {
     city: '',
     state: '',
     zipCode: '',
-    country: 'CA',
+    country: 'US',
   });
   
+  const [validFields, setValidFields] = useState(0);
   const [csrfToken, setCsrfToken] = useState<string>('');
-
-  // Note: Form validation is called on submit and field changes to prevent infinite loops
+  
+  // Form security status
+  const securityStatus = useFormSecurityStatus(formData, {
+    enablePasswordStrength: false,
+    enableXSSProtection: true,
+    enableRateLimit: true
+  });
 
   // Generate CSRF token on component mount
   useEffect(() => {
@@ -174,51 +206,13 @@ const CheckoutForm: React.FC = () => {
     setCsrfToken(generateCSRFToken());
   }, []);
   
-  // Simple validation function
-  const validateForm = (data: CheckoutFormData) => {
-    const errors: Record<string, string> = {};
-
-    if (!data.email || !data.email.includes('@')) {
-      errors.email = 'Valid email required';
-    }
-    if (!data.firstName || data.firstName.trim().length < 2) {
-      errors.firstName = 'First name required';
-    }
-    if (!data.lastName || data.lastName.trim().length < 2) {
-      errors.lastName = 'Last name required';
-    }
-    if (!data.address || data.address.trim().length < 5) {
-      errors.address = 'Street address required';
-    }
-    if (!data.city || data.city.trim().length < 2) {
-      errors.city = 'City required';
-    }
-    if (!data.state || data.state.trim().length < 2) {
-      errors.state = 'State required';
-    }
-    if (!data.zipCode || !/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/.test(data.zipCode)) {
-      errors.zipCode = 'Valid Canadian postal code required (A1A 1A1)';
-    }
-
-    setValidationErrors(errors);
-    const isValid = Object.keys(errors).length === 0;
-    setIsValid(isValid);
-    return isValid;
-  };
-
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
       ...prev,
       [field]: value,
     }));
-    // Clear error for this field when user starts typing
-    if (validationErrors[field]) {
-      setValidationErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors[field];
-        return newErrors;
-      });
-    }
+    clearErrors();
+    clearFormErrors();
   };
   
   const handleSubmit = async (event: React.FormEvent) => {
@@ -228,86 +222,71 @@ const CheckoutForm: React.FC = () => {
     const rateLimitCheck = FormRateLimiting.isSubmissionAllowed(formData.email || 'anonymous', 3, 15);
     if (!rateLimitCheck.allowed) {
       const resetTime = rateLimitCheck.resetTime;
-      toast({
-        title: "Rate Limit Exceeded",
-        description: `Too many checkout attempts. Please try again ${resetTime ? `at ${resetTime.toLocaleTimeString()}` : 'in 15 minutes'}.`,
-        variant: "destructive"
+      addError({
+        type: 'rate-limit',
+        message: `Too many checkout attempts. Please try again ${resetTime ? `at ${resetTime.toLocaleTimeString()}` : 'in 15 minutes'}.`,
+        retryable: false
       });
       return;
     }
 
     // Extra guard in case Stripe is not initialised due to missing key
     if (!stripePromise) {
-      toast({
-        title: "Payment System Error",
-        description: 'Payment system is not configured correctly. Please contact support.',
-        variant: "destructive"
+      addError({
+        type: 'server',
+        message: 'Payment system is not configured correctly. Please contact support.',
+        retryable: false
       });
       return;
     }
 
     if (cart.items.length === 0) {
-      toast({
-        title: "Empty Cart",
-        description: 'Your cart is empty. Please add items before checking out.',
-        variant: "destructive"
+      addError({
+        type: 'validation',
+        message: 'Your cart is empty. Please add items before checking out.',
+        retryable: false
       });
       router.push('/cart');
       return;
     }
 
-    // Simple form validation
-    const isFormValid = validateForm(formData);
+    // Enhanced form validation
+    const isFormValid = await validate(formData);
     if (!isFormValid) {
-      toast({
-        title: "Validation Error",
-        description: 'Please correct the errors in the form before proceeding.',
-        variant: "destructive"
+      addError({
+        type: 'validation',
+        message: 'Please correct the errors in the form before proceeding.',
+        retryable: false
       });
       return;
     }
-
-    // Simple security validation
-    const hasValidInputs = Object.values(formData).every(value => {
-      if (typeof value === 'string') {
-        return !/<script|javascript:|vbscript:|onload=|onerror=/i.test(value);
-      }
-      return true;
-    });
-
-    if (!hasValidInputs) {
-      toast({
-        title: "Security Error",
-        description: 'Form contains potentially dangerous content. Please review your input.',
-        variant: "destructive"
+    
+    // Security validation
+    const securityScore = FormValidationUtils.getFormSecurityScore(formData);
+    if (!securityScore.isSecure) {
+      addError({
+        type: 'validation',
+        message: 'Form contains potentially dangerous content. Please review your input.',
+        retryable: false
       });
       return;
     }
 
     // Check if offline
     if (isOffline) {
-      toast({
-        title: "Offline",
-        description: 'No internet connection. Please check your connection and try again.',
-        variant: "destructive"
+      addError({
+        type: 'network',
+        message: 'No internet connection. Please check your connection and try again.',
+        retryable: true
       });
       return;
     }
 
     try {
-      // Simple form sanitization
-      const sanitizedData = {
-        ...formData,
-        email: formData.email.trim(),
-        firstName: formData.firstName.trim(),
-        lastName: formData.lastName.trim(),
-        address: formData.address.trim(),
-        city: formData.city.trim(),
-        state: formData.state.trim(),
-        zipCode: formData.zipCode.trim(),
-      };
-
-      // Create checkout session
+      // Sanitize form data
+      const sanitizedData = FormValidationUtils.sanitizeFormData(formData);
+      
+      // Create checkout session with enhanced security
       const response = await createCheckoutSession(
         '/api/create-checkout-session',
         {
@@ -327,12 +306,17 @@ const CheckoutForm: React.FC = () => {
             },
           },
           csrfToken,
+          securityContext: {
+            userAgent: navigator.userAgent,
+            timestamp: Date.now(),
+            formHash: btoa(JSON.stringify(sanitizedData))
+          }
         }
       );
 
       // Record successful attempt
       FormRateLimiting.recordAttempt(formData.email, true);
-
+      
       // Clear form data for security
       setFormData({
         email: '',
@@ -345,7 +329,8 @@ const CheckoutForm: React.FC = () => {
         zipCode: '',
         country: 'US',
       });
-      setValidationErrors({});
+      resetValidation();
+      clearFormErrors();
 
       // Redirect to Stripe Checkout
       if (response.url) {
@@ -359,12 +344,25 @@ const CheckoutForm: React.FC = () => {
       // Record failed attempt
       FormRateLimiting.recordAttempt(formData.email, false);
 
+      // Categorize error type
+      let errorType: FormError['type'] = 'unknown';
       const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+      const errorStatus = (error as { status?: number })?.status;
 
-      toast({
-        title: "Checkout Error",
-        description: errorMessage || 'An unexpected error occurred during checkout. Please try again.',
-        variant: "destructive"
+      if (errorMessage?.includes('network') || errorMessage?.includes('fetch')) {
+        errorType = 'network';
+      } else if (errorMessage?.includes('authentication') || errorMessage?.includes('unauthorized')) {
+        errorType = 'authentication';
+      } else if (errorMessage?.includes('rate') || errorMessage?.includes('limit')) {
+        errorType = 'rate-limit';
+      } else if (errorStatus && errorStatus >= 500) {
+        errorType = 'server';
+      }
+
+      addError({
+        type: errorType,
+        message: errorMessage || 'An unexpected error occurred during checkout. Please try again.',
+        retryable: errorType !== 'rate-limit'
       });
     }
   };
@@ -382,6 +380,33 @@ const CheckoutForm: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6" data-testid="checkout-form">
+      {/* Security Status */}
+      <FormSecurityStatus
+        status={securityStatus.overallStatus === 'secure' ? 'secure' : securityStatus.overallStatus === 'warning' ? 'warning' : 'error'}
+        message={`Form security: ${securityStatus.passedChecks}/${securityStatus.totalChecks} checks passed`}
+      />
+
+      {/* Form validation indicators */}
+      <FormSecurityIndicator
+        score={validFields * 12.5}
+        maxScore={100}
+        issues={validationErrors.map(e => e.message)}
+      />
+
+      {/* Form validation summary */}
+      <FormValidationSummary
+        errors={validationErrors}
+        isValid={isValid}
+      />
+      
+      {/* Form Error Recovery */}
+      {formErrors.length > 0 && (
+        <FormErrorRecovery
+          error={formErrors[0]?.message}
+          onRetry={() => retryFormSubmission(() => Promise.resolve())}
+          onReset={clearFormErrors}
+        />
+      )}
 
       {/* Customer Information */}
       <Card>
@@ -405,11 +430,7 @@ const CheckoutForm: React.FC = () => {
                 placeholder="your@email.com"
                 required
                 data-testid="email-input"
-                className={validationErrors.email ? 'border-red-500' : ''}
               />
-              {validationErrors.email && (
-                <p className="text-sm text-red-600">{validationErrors.email}</p>
-              )}
               <p className="text-sm text-gray-600">We&apos;ll send your order confirmation here</p>
             </div>
             
@@ -424,11 +445,7 @@ const CheckoutForm: React.FC = () => {
                 placeholder="John"
                 required
                 data-testid="first-name-input"
-                className={validationErrors.firstName ? 'border-red-500' : ''}
               />
-              {validationErrors.firstName && (
-                <p className="text-sm text-red-600">{validationErrors.firstName}</p>
-              )}
               <p className="text-sm text-gray-600">Your legal first name</p>
             </div>
 
@@ -443,11 +460,7 @@ const CheckoutForm: React.FC = () => {
                 placeholder="Doe"
                 required
                 data-testid="last-name-input"
-                className={validationErrors.lastName ? 'border-red-500' : ''}
               />
-              {validationErrors.lastName && (
-                <p className="text-sm text-red-600">{validationErrors.lastName}</p>
-              )}
               <p className="text-sm text-gray-600">Your legal last name</p>
             </div>
 
@@ -489,14 +502,10 @@ const CheckoutForm: React.FC = () => {
               placeholder="123 Main Street"
               required
               data-testid="address-line1"
-              className={validationErrors.address ? 'border-red-500' : ''}
             />
-            {validationErrors.address && (
-              <p className="text-sm text-red-600">{validationErrors.address}</p>
-            )}
             <p className="text-sm text-gray-600">Your full street address</p>
           </div>
-
+          
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="city">City *</Label>
@@ -509,50 +518,38 @@ const CheckoutForm: React.FC = () => {
                 placeholder="Los Angeles"
                 required
                 data-testid="city-input"
-                className={validationErrors.city ? 'border-red-500' : ''}
               />
-              {validationErrors.city && (
-                <p className="text-sm text-red-600">{validationErrors.city}</p>
-              )}
               <p className="text-sm text-gray-600">Your city</p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="state">Province *</Label>
+              <Label htmlFor="state">State *</Label>
               <Input
                 id="state"
                 name="state"
                 type="text"
                 value={formData.state}
                 onChange={(e) => handleInputChange('state', e.target.value)}
-                placeholder="ON"
+                placeholder="CA"
                 required
                 data-testid="state-input"
-                className={validationErrors.state ? 'border-red-500' : ''}
               />
-              {validationErrors.state && (
-                <p className="text-sm text-red-600">{validationErrors.state}</p>
-              )}
-              <p className="text-sm text-gray-600">Province abbreviation (ON, BC, AB, etc.)</p>
+              <p className="text-sm text-gray-600">State or province</p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="zipCode">Postal Code *</Label>
+              <Label htmlFor="zipCode">ZIP Code *</Label>
               <Input
                 id="zipCode"
                 name="zipCode"
                 type="text"
                 value={formData.zipCode}
                 onChange={(e) => handleInputChange('zipCode', e.target.value)}
-                placeholder="K1A 0A1"
+                placeholder="90210"
                 required
                 data-testid="zip-input"
-                className={validationErrors.zipCode ? 'border-red-500' : ''}
               />
-              {validationErrors.zipCode && (
-                <p className="text-sm text-red-600">{validationErrors.zipCode}</p>
-              )}
-              <p className="text-sm text-gray-600">Canadian postal code (A1A 1A1)</p>
+              <p className="text-sm text-gray-600">5-digit ZIP code</p>
             </div>
           </div>
         </CardContent>
@@ -631,7 +628,7 @@ const CheckoutForm: React.FC = () => {
       {/* Submit Button */}
       <Button
         type="submit"
-        disabled={isProcessing || isOffline}
+        disabled={isProcessing || isOffline || !isValid || isValidating || formErrors.length > 0}
         className="w-full"
         size="lg"
         data-testid="stripe-submit"
@@ -641,15 +638,20 @@ const CheckoutForm: React.FC = () => {
             <WifiOff className="mr-2 h-4 w-4" />
             Offline
           </>
-        ) : isProcessing ? (
+        ) : isProcessing || isRetrying ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Processing...
+            {isRetrying ? 'Retrying...' : 'Processing...'}
+          </>
+        ) : validFields >= 6 && isValid ? (
+          <>
+            <CheckCircle className="mr-2 h-4 w-4" />
+            Proceed to Secure Payment
           </>
         ) : (
           <>
             <Lock className="mr-2 h-4 w-4" />
-            Checkout
+            Complete Form to Continue
           </>
         )}
       </Button>
