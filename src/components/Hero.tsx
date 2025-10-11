@@ -21,29 +21,28 @@ export function Hero() {
         />
       </div>
       <div className="container mx-auto px-4 md:px-6 max-w-6xl">
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-20 items-center min-h-[500px]">
-          <div className="flex flex-col justify-center space-y-8 text-left">
-            <div className="space-y-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <p className="text-green-500 font-medium text-base mb-2">Natural Balance for Daily Wellness</p>
-                <h1 className="text-5xl font-bold tracking-tight text-gray-900 mb-4">
-                  Restore&nbsp;Your&nbsp;Body&apos;s&nbsp;Natural&nbsp;Rhythm
-                </h1>
-                <p className="text-lg text-gray-600 leading-relaxed max-w-md">
-                  Our plant-based fiber blend supports your body&apos;s natural rhythm
-                </p>
-              </motion.div>
-            </div>
+        <div className="flex flex-col justify-center items-center text-center space-y-8 max-w-4xl mx-auto min-h-[400px]">
+          <div className="space-y-6">
             <motion.div
-              className="flex flex-row gap-4 relative"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              transition={{ duration: 0.5 }}
             >
+              <p className="text-green-500 font-medium text-base mb-2">Natural Balance for Daily Wellness</p>
+              <h1 className="text-5xl font-bold tracking-tight text-gray-900 mb-4">
+                Restore&nbsp;Your&nbsp;Body&apos;s&nbsp;Natural&nbsp;Rhythm
+              </h1>
+              <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
+                Our plant-based fiber blend supports your body&apos;s natural rhythm
+              </p>
+            </motion.div>
+          </div>
+          <motion.div
+            className="flex flex-row gap-4 relative justify-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
               <Link
                 href="/products/total-essential"
                 className={cn(buttonVariants({ size: "lg" }), "bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-md font-medium relative z-20")}
@@ -58,12 +57,12 @@ export function Hero() {
               </Link>
             </motion.div>
 
-            <motion.div
-              className="flex flex-col gap-3 text-sm text-gray-600"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-            >
+        <motion.div
+          className="flex flex-col gap-3 text-sm text-gray-600 items-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
               <div className="flex items-center">
                 <div className="w-4 h-4 rounded-full bg-green-500 mr-3 flex items-center justify-center">
                   <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -89,25 +88,6 @@ export function Hero() {
                 <span className="font-medium">100% Natural</span>
               </div>
             </motion.div>
-          </div>
-          <motion.div
-            className="flex items-center justify-center lg:justify-end relative"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="relative">
-              <Image
-                alt="Total Essential Product Box - Premium fiber supplement for gut health and digestive wellness"
-                className="aspect-square rounded-xl object-cover object-center hover:scale-105 transition-transform duration-300 shadow-2xl"
-                src="/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp"
-                width={600}
-                height={600}
-                priority={true}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl"></div>
-            </div>
-          </motion.div>
         </div>
       </div>
     </section>
