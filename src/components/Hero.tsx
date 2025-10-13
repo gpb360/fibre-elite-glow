@@ -5,14 +5,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
-// Dynamic import framer-motion to prevent SSR issues
-const MotionDiv = React.lazy(() =>
-  import('framer-motion').then(mod => ({ default: mod.motion.div }))
-);
-
-// Simple wrapper that only renders on client side
-function ClientSideMotion({ children, ...props }: any) {
+// Client-side only component to prevent hydration mismatch
+function ClientSideOnly({ children }: { children: React.ReactNode }) {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -20,15 +16,11 @@ function ClientSideMotion({ children, ...props }: any) {
   }, []);
 
   if (!isClient) {
-    // Return static div during SSR
-    return <div {...props}>{children}</div>;
+    // Return children without animation during SSR
+    return <>{children}</>;
   }
 
-  return (
-    <React.Suspense fallback={<div {...props}>{children}</div>}>
-      <MotionDiv {...props}>{children}</MotionDiv>
-    </React.Suspense>
-  );
+  return <>{children}</>;
 }
 
 export function Hero() {
@@ -48,163 +40,88 @@ export function Hero() {
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-20 items-center min-h-[500px]">
           <div className="flex flex-col justify-center space-y-8 text-left">
             <div className="space-y-6">
-              {/* Static content for SSR */}
-              <div className="opacity-100">
-                <p className="text-green-500 font-medium text-base mb-2">Natural Balance for Daily Wellness</p>
-                <h1 className="text-5xl font-bold tracking-tight text-gray-900 mb-4">
-                  Restore&nbsp;Your&nbsp;Body&apos;s&nbsp;Natural&nbsp;Rhythm
-                </h1>
-                <p className="text-lg text-gray-600 leading-relaxed max-w-md">
-                  Our plant-based fiber blend supports your body&apos;s natural rhythm
-                </p>
-              </div>
-              {/* Animated version for client */}
-              <ClientSideMotion
+              <ClientSideOnly>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <p className="text-green-500 font-medium text-base mb-2">Natural Balance for Daily Wellness</p>
+                  <h1 className="text-5xl font-bold tracking-tight text-gray-900 mb-4">
+                    Restore&nbsp;Your&nbsp;Body&apos;s&nbsp;Natural&nbsp;Rhythm
+                  </h1>
+                  <p className="text-lg text-gray-600 leading-relaxed max-w-md">
+                    Our plant-based fiber blend supports your body&apos;s natural rhythm
+                  </p>
+                </motion.div>
+              </ClientSideOnly>
+            </div>
+            <ClientSideOnly>
+              <motion.div
+                className="flex flex-row gap-4 relative"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="absolute inset-0"
+                transition={{ duration: 0.5, delay: 0.2 }}
               >
-                <p className="text-green-500 font-medium text-base mb-2">Natural Balance for Daily Wellness</p>
-                <h1 className="text-5xl font-bold tracking-tight text-gray-900 mb-4">
-                  Restore&nbsp;Your&nbsp;Body&apos;s&nbsp;Natural&nbsp;Rhythm
-                </h1>
-                <p className="text-lg text-gray-600 leading-relaxed max-w-md">
-                  Our plant-based fiber blend supports your body&apos;s natural rhythm
-                </p>
-              </ClientSideMotion>
-            </div>
+                <Link
+                  href="/products/total-essential"
+                  className={cn(buttonVariants({ size: "lg" }), "bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-md font-medium relative z-20")}
+                >
+                  Total Essential
+                </Link>
+                <Link
+                  href="/products/total-essential-plus"
+                  className={cn(buttonVariants({ size: "lg", variant: "premium2" }), "relative z-10")}
+                >
+                  Total Essential Plus
+                </Link>
+              </motion.div>
+            </ClientSideOnly>
 
-            {/* Static buttons for SSR */}
-            <div className="flex flex-row gap-4 relative">
-              <Link
-                href="/products/total-essential"
-                className={cn(buttonVariants({ size: "lg" }), "bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-md font-medium relative z-20")}
+            <ClientSideOnly>
+              <motion.div
+                className="flex flex-col gap-3 text-sm text-gray-600"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
               >
-                Total Essential
-              </Link>
-              <Link
-                href="/products/total-essential-plus"
-                className={cn(buttonVariants({ size: "lg", variant: "premium2" }), "relative z-10")}
-              >
-                Total Essential Plus
-              </Link>
-            </div>
-            {/* Animated buttons for client */}
-            <ClientSideMotion
-              className="flex flex-row gap-4 absolute"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <Link
-                href="/products/total-essential"
-                className={cn(buttonVariants({ size: "lg" }), "bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-md font-medium relative z-20")}
-              >
-                Total Essential
-              </Link>
-              <Link
-                href="/products/total-essential-plus"
-                className={cn(buttonVariants({ size: "lg", variant: "premium2" }), "relative z-10")}
-              >
-                Total Essential Plus
-              </Link>
-            </ClientSideMotion>
-
-            {/* Static features for SSR */}
-            <div className="flex flex-col gap-3 text-sm text-gray-600">
-              <div className="flex items-center">
-                <div className="w-4 h-4 rounded-full bg-green-500 mr-3 flex items-center justify-center">
-                  <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
+                <div className="flex items-center">
+                  <div className="w-4 h-4 rounded-full bg-green-500 mr-3 flex items-center justify-center">
+                    <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <span className="font-medium">Non-GMO Ingredients</span>
                 </div>
-                <span className="font-medium">Non-GMO Ingredients</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-4 h-4 rounded-full bg-green-500 mr-3 flex items-center justify-center">
-                  <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
+                <div className="flex items-center">
+                  <div className="w-4 h-4 rounded-full bg-green-500 mr-3 flex items-center justify-center">
+                    <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <span className="font-medium">Gluten Free</span>
                 </div>
-                <span className="font-medium">Gluten Free</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-4 h-4 rounded-full bg-green-500 mr-3 flex items-center justify-center">
-                  <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
+                <div className="flex items-center">
+                  <div className="w-4 h-4 rounded-full bg-green-500 mr-3 flex items-center justify-center">
+                    <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <span className="font-medium">100% Natural</span>
                 </div>
-                <span className="font-medium">100% Natural</span>
-              </div>
-            </div>
-            {/* Animated features for client */}
-            <ClientSideMotion
-              className="flex flex-col gap-3 text-sm text-gray-600 absolute"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-            >
-              <div className="flex items-center">
-                <div className="w-4 h-4 rounded-full bg-green-500 mr-3 flex items-center justify-center">
-                  <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <span className="font-medium">Non-GMO Ingredients</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-4 h-4 rounded-full bg-green-500 mr-3 flex items-center justify-center">
-                  <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <span className="font-medium">Gluten Free</span>
-              </div>
-              <div className="flex items-center">
-                <div className="w-4 h-4 rounded-full bg-green-500 mr-3 flex items-center justify-center">
-                  <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <span className="font-medium">100% Natural</span>
-              </div>
-            </ClientSideMotion>
+              </motion.div>
+            </ClientSideOnly>
           </div>
-
-          {/* Static image for SSR */}
-          <div className="flex items-center justify-center lg:justify-end relative">
-            <div className="relative">
-              <Image
-                alt="Total Essential Product Box - Premium fiber supplement for gut health and digestive wellness"
-                className="aspect-square rounded-xl object-cover object-center hover:scale-105 transition-transform duration-300 shadow-2xl"
-                src="/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp"
-                width={600}
-                height={600}
-                priority={true}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl"></div>
-            </div>
-          </div>
-          {/* Animated image for client */}
-          <ClientSideMotion
-            className="flex items-center justify-center lg:justify-end absolute"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="relative">
-              <Image
-                alt="Total Essential Product Box - Premium fiber supplement for gut health and digestive wellness"
-                className="aspect-square rounded-xl object-cover object-center hover:scale-105 transition-transform duration-300 shadow-2xl"
-                src="/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp"
-                width={600}
-                height={600}
-                priority={true}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-xl"></div>
-            </div>
-          </ClientSideMotion>
+          <ClientSideOnly>
+            <motion.div
+              className="flex items-center justify-center lg:justify-end relative"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6 }}
+            >
+            
+            </motion.div>
+          </ClientSideOnly>
         </div>
       </div>
     </section>
