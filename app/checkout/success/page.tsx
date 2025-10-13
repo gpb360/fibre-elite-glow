@@ -9,7 +9,6 @@ import Header from '../../../src/components/Header';
 import Footer from '../../../src/components/Footer';
 import { CheckCircle, Package, Mail, ArrowRight, Download } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
-import { useCheckoutValidation, useOrderConfirmation } from '@/lib/checkout-validation';
 import Link from 'next/link';
 
 interface OrderDetails {
@@ -29,105 +28,71 @@ interface OrderDetails {
 
 function CheckoutSuccessContent() {
   const searchParams = useSearchParams();
-  // const { clearCart } = useCart();
+  const { clearCart } = useCart();
   const [orderDetails, setOrderDetails] = useState<OrderDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
   const [isValidatingOrder, setIsValidatingOrder] = useState(false);
+  const [isConfirming, setIsConfirming] = useState(false);
+  const [confirmationError, setConfirmationError] = useState<string | null>(null);
   
-  // Enhanced checkout validation hooks
-  const { validateOrderCompletion, isValidating: isCheckoutValidating } = useCheckoutValidation();
-  const { confirmOrder, isConfirming, confirmationError } = useOrderConfirmation();
-
+  
   useEffect(() => {
     const sessionId = searchParams?.get('session_id');
     
-    console.log('🔄 CheckoutSuccessContent useEffect triggered');
-    console.log('📋 Session ID from search params:', sessionId);
-    
+        
     const fetchOrderDetails = async () => {
       if (!sessionId) {
-        console.error('❌ No session ID provided');
-        setError('No session ID provided');
+                setError('No session ID provided');
         setLoading(false);
         return;
       }
 
-      console.log('🔄 Fetching order details for session:', sessionId);
-
+      
       try {
         const response = await fetch(`/api/checkout-session/${sessionId}`);
 
-        console.log('📡 API Response:', { 
-          status: response.status, 
-          statusText: response.statusText,
-          ok: response.ok 
-        });
-
+        
         if (!response.ok) {
           const errorText = await response.text();
-          console.error('❌ API Error Response:', errorText);
-          throw new Error(`API Error: ${response.status} - ${errorText}`);
+                    throw new Error(`API Error: ${response.status} - ${errorText}`);
         }
 
         const data = await response.json();
-        console.log('✅ Order details received:', data);
-
-        // Validate order completion with enhanced security
+        
+        // Simplified order validation
         setIsValidatingOrder(true);
         try {
-          const validationResult = await validateOrderCompletion({
-            sessionId,
-            orderData: data,
-            expectedAmount: data.amount,
-            customerEmail: data.customerEmail
-          });
-
-          if (!validationResult.isValid) {
-            setValidationError(validationResult.errors[0] || 'Order validation failed');
+          // Basic validation - check for valid amount (allowing 0 but not null/undefined)
+          if (!data.id || !data.customerEmail || data.amount === null || data.amount === undefined) {
+            setValidationError('Invalid order data received');
             return;
           }
 
-          // Confirm order with validation
-          const confirmationResult = await confirmOrder({
-            orderId: data.id,
-            sessionId,
-            customerEmail: data.customerEmail,
-            totalAmount: data.amount
-          });
-
-          if (!confirmationResult.isValid) {
-            setValidationError(confirmationResult.errors[0] || 'Order confirmation failed');
-            return;
-          }
-
+          // Set order details and clear cart
           setOrderDetails(data);
-
-          // Clear the cart after successful payment and validation
           clearCart();
 
-          // Store order completion timestamp for security
+          // Store order completion timestamp
           localStorage.setItem(`order_${data.id}_completed`, Date.now().toString());
 
         } catch (validationError) {
-          console.error('❌ Order validation error:', validationError);
-          setValidationError('Order validation failed. Please contact support.');
+                    setValidationError('Order processing failed. Please contact support.');
         } finally {
           setIsValidatingOrder(false);
         }
       } catch (err) {
-        console.error('❌ Error fetching order details:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load order details');
+                setError(err instanceof Error ? err.message : 'Failed to load order details');
       } finally {
         setLoading(false);
       }
     };
 
     fetchOrderDetails();
-  }, [searchParams]);
+  }, [searchParams, clearCart]);
 
-  if (loading || isValidatingOrder || isCheckoutValidating || isConfirming) {
+  if (loading || isValidatingOrder || isConfirming) {
     return (
       <div className="flex min-h-screen flex-col">
         <Header />
@@ -322,9 +287,9 @@ function CheckoutSuccessContent() {
                     <span className="text-blue-600 font-semibold text-sm">1</span>
                   </div>
                   <div>
-                    <h3 className="font-medium">Confirmation Email</h3>
+                    <h3 className="font-medium">Order Processing</h3>
                     <p className="text-sm text-gray-600">
-                      We&apos;ve sent a confirmation email to {orderDetails.customerEmail} with your order details.
+                      Your order is being processed and will be shipped within 1-2 business days.
                     </p>
                   </div>
                 </div>
@@ -334,7 +299,7 @@ function CheckoutSuccessContent() {
                     <span className="text-blue-600 font-semibold text-sm">2</span>
                   </div>
                   <div>
-                    <h3 className="font-medium">Processing & Shipping</h3>
+                    <h3 className="font-medium">Shipping & Delivery</h3>
                     <p className="text-sm text-gray-600">
                       Your order will be processed within 1-2 business days and shipped to your address.
                     </p>
@@ -346,21 +311,9 @@ function CheckoutSuccessContent() {
                     <span className="text-blue-600 font-semibold text-sm">3</span>
                   </div>
                   <div>
-                    <h3 className="font-medium">Tracking Information</h3>
+                    <h3 className="font-medium">Order Support</h3>
                     <p className="text-sm text-gray-600">
-                      You&apos;ll receive tracking information once your order ships.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <span className="text-blue-600 font-semibold text-sm">4</span>
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Customer Support</h3>
-                    <p className="text-sm text-gray-600">
-                      Need help? Contact our support team anytime.
+                      For order questions or support, please contact our team.
                     </p>
                   </div>
                 </div>

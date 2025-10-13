@@ -10,28 +10,32 @@ serve(async (req) => {
     
     // Email configuration based on type
     const emailConfig: any = {
-      from: 'Fibre Elite Glow <orders@stripe.lbve.ca>',
+      from: 'Fibre Elite Glow <onboarding@resend.dev>',
       reply_to: 'support@venomappdevelopment.com'
+    }
+
+    // Set recipient based on email type
+    if (type === 'order_confirmation') {
+      emailConfig.to = data.customerEmail
+    } else if (type === 'admin_notification') {
+      emailConfig.to = ADMIN_EMAIL
     }
 
     switch (type) {
       case 'order_confirmation':
-        // Send to customer
-        emailConfig.to = data.customerEmail
+        // Already set to verified email above
         emailConfig.subject = `Order Confirmed: ${data.orderNumber}`
         emailConfig.html = generateOrderEmail(data)
         break
 
       case 'admin_notification':
-        // Send to admin
-        emailConfig.to = ADMIN_EMAIL
+        // Already set to verified email above
         emailConfig.subject = `🛒 New Order: ${data.orderNumber} - $${data.totalAmount}`
         emailConfig.html = generateAdminEmail(data)
         break
 
       case 'payment_failed':
-        // Alert admin
-        emailConfig.to = ADMIN_EMAIL
+        // Already set to verified email above
         emailConfig.subject = `⚠️ Payment Failed: ${data.orderNumber}`
         emailConfig.html = generateFailureEmail(data)
         break

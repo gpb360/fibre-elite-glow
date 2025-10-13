@@ -293,7 +293,7 @@ export function ProductEssential() {
 
         {/* Ingredients Section */}
         <SplitSection
-          image="/lovable-uploads/webp/digestive-health-benefits-fiber-supplement.webp"
+          image="/assets/total-essential.png"
           imageAlt="Premium natural ingredients in Total Essential fiber supplement - fruit and vegetable fibers"
           title="Premium Natural Ingredients"
           description="Every ingredient in Total Essential is carefully sourced from certified suppliers worldwide and meets the highest quality standards. All components are verified non-GMO (non-genetically modified organism) and certified Gluten-Free, ensuring purity and safety for daily consumption."
