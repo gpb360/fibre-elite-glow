@@ -286,7 +286,8 @@ const CheckoutForm: React.FC = () => {
       // Sanitize form data
       const sanitizedData = FormValidationUtils.sanitizeFormData(formData);
 
-      // Create checkout session with enhanced security
+  
+      // Create checkout session
       const response = await createCheckoutSession(
         '/api/create-checkout-session',
         {
