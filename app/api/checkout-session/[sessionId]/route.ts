@@ -33,12 +33,10 @@ export async function GET(
 ) {
   const { sessionId } = await params;
 
-  console.log('🔍 Checkout session API called:', { sessionId });
-
+  
   // Validate session ID
   if (!sessionId || typeof sessionId !== 'string') {
-    console.error('❌ Invalid session ID:', sessionId);
-    return NextResponse.json(
+        return NextResponse.json(
       { error: 'Invalid session ID' },
       { status: 400 }
     );
@@ -51,45 +49,30 @@ export async function GET(
       await supabase.auth.getSession() : null;
     const userId = userSession?.data?.session?.user?.id;
 
-    console.log('🔐 User session:', { userId, hasAuth: !!authHeader });
-
     // Retrieve checkout session from Stripe
-    console.log('🔄 Retrieving Stripe session...');
     const stripeSession = await stripe.checkout.sessions.retrieve(
       sessionId,
       { expand: ['payment_intent', 'line_items'] }
     );
 
-    console.log('✅ Stripe session retrieved:', { 
-      id: stripeSession.id, 
-      status: stripeSession.status,
-      amount_total: stripeSession.amount_total,
-      customer_email: stripeSession.customer_details?.email
-    });
-
+    
     if (!stripeSession) {
-      console.error('❌ Checkout session not found in Stripe');
-      return NextResponse.json(
+            return NextResponse.json(
         { error: 'Checkout session not found' },
         { status: 404 }
       );
     }
 
     // Check if we have a record of this session in our database
-    console.log('🔄 Checking Supabase database for session...');
-    const { data: checkoutSession, error: sessionError } = await supabaseAdmin
+        const { data: checkoutSession, error: sessionError } = await supabaseAdmin
       ?.from('checkout_sessions')
       .select('*')
       .eq('session_id', sessionId)
       .single() || { data: null, error: new Error('Supabase admin client not available') };
 
     if (sessionError && 'code' in sessionError && sessionError.code !== 'PGRST116') { // Not found is not a critical error
-      console.error('❌ Error retrieving checkout session from database:', sessionError);
-    } else if (checkoutSession) {
-      console.log('✅ Found checkout session in database:', { id: checkoutSession.id, created_at: checkoutSession.created_at });
-    } else {
-      console.log('⚠️ No checkout session found in database (this is normal for some flows)');
-    }
+          } else if (checkoutSession) {
+          }
 
     // If user is authenticated, verify they own this session
     if (userId && checkoutSession?.user_id && checkoutSession.user_id !== userId) {
@@ -107,8 +90,7 @@ export async function GET(
       .single() || { data: null, error: null };
 
     if (orderError && orderError.code !== 'PGRST116') {
-      console.error('Error retrieving order from database:', orderError);
-    }
+          }
 
     // Parse metadata from Stripe session
     let orderItems: OrderItem[] = [];
@@ -119,8 +101,7 @@ export async function GET(
         orderItems = JSON.parse(stripeSession.metadata.order_items);
       }
     } catch (error) {
-      console.error('Error parsing order items from session metadata:', error);
-    }
+          }
 
     // If we have no items from metadata, try to extract from line_items
     if (orderItems.length === 0 && stripeSession.line_items?.data) {
@@ -135,7 +116,7 @@ export async function GET(
     const orderDetails: OrderDetailsResponse = {
       id: orderData?.id || stripeSession.id,
       orderNumber: orderData?.order_number || `ORD-${sessionId.substring(0, 8)}`,
-      amount: stripeSession.amount_total || 0,
+      amount: stripeSession.amount_total !== null && stripeSession.amount_total !== undefined ? stripeSession.amount_total : (stripeSession.payment_intent as any)?.amount || 0,
       currency: stripeSession.currency || 'usd',
       status: orderData?.status || stripeSession.status || 'completed',
       customerEmail: customerEmail,
@@ -143,18 +124,10 @@ export async function GET(
       createdAt: orderData?.created_at || new Date(stripeSession.created * 1000).toISOString()
     };
 
-    console.log('✅ Returning order details:', { 
-      id: orderDetails.id,
-      orderNumber: orderDetails.orderNumber,
-      amount: orderDetails.amount,
-      itemCount: orderDetails.items.length,
-      customerEmail: orderDetails.customerEmail
-    });
-
+    
     return NextResponse.json(orderDetails);
   } catch (error) {
-    console.error('Error retrieving checkout session:', error);
-    
+        
     // Determine appropriate error response
     if (error instanceof Stripe.errors.StripeError) {
       if (error.type === 'StripeInvalidRequestError') {

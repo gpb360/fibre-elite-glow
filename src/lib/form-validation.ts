@@ -245,10 +245,10 @@ export const enhancedCheckoutSchema = z.object({
     .refine(SecurityValidation.isSecureInput, 'State contains invalid characters')
     .transform(SecurityValidation.sanitizeInput),
   zipCode: z.string()
-    .min(5, 'ZIP code is required')
-    .max(10, 'ZIP code is too long')
-    .regex(/^[\d\-\s]+$/, 'ZIP code must contain only numbers, spaces, and hyphens')
-    .refine(SecurityValidation.isSecureInput, 'ZIP code contains invalid characters')
+    .min(5, 'Postal code is required')
+    .max(10, 'Postal code is too long')
+    .regex(/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/, 'Valid Canadian postal code required (A1A 1A1)')
+    .refine(SecurityValidation.isSecureInput, 'Postal code contains invalid characters')
     .transform(SecurityValidation.sanitizeInput),
   country: z.string()
     .min(2, 'Country is required')

@@ -285,7 +285,7 @@ const CheckoutForm: React.FC = () => {
     try {
       // Sanitize form data
       const sanitizedData = FormValidationUtils.sanitizeFormData(formData);
-      
+
       // Create checkout session with enhanced security
       const response = await createCheckoutSession(
         '/api/create-checkout-session',
@@ -296,14 +296,11 @@ const CheckoutForm: React.FC = () => {
             firstName: sanitizedData.firstName,
             lastName: sanitizedData.lastName,
             phone: sanitizedData.phone,
-            address: {
-              line1: sanitizedData.address,
-              line2: '',
-              city: sanitizedData.city,
-              state: sanitizedData.state,
-              postal_code: sanitizedData.zipCode,
-              country: sanitizedData.country,
-            },
+            address: sanitizedData.address,
+            city: sanitizedData.city,
+            state: sanitizedData.state,
+            zipCode: sanitizedData.zipCode,
+            country: sanitizedData.country,
           },
           csrfToken,
           securityContext: {
@@ -327,7 +324,7 @@ const CheckoutForm: React.FC = () => {
         city: '',
         state: '',
         zipCode: '',
-        country: 'US',
+        country: 'CA',
       });
       resetValidation();
       clearFormErrors();
