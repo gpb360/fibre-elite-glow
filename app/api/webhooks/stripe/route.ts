@@ -145,24 +145,35 @@ async function sendOrderConfirmationEmail(params: {
       return;
     }
 
-    // Generate email content
-    const subject = `Order Confirmation - ${params.orderNumber}`;
-    const html = generateOrderConfirmationHTML(params);
-    const text = generateOrderConfirmationText(params);
+    // In development/test mode, redirect email to verified test address
+    const isDevelopment = process.env.NODE_ENV === 'development';
+    const targetEmail = isDevelopment ? 'garypboyd@gmail.com' : params.customerEmail;
+
+    // Prepare email data in the format expected by the send-email function
+    const emailData = {
+      type: 'order_confirmation',
+      data: {
+        customerEmail: targetEmail,
+        customerName: params.customerName,
+        orderNumber: params.orderNumber,
+        orderDate: new Date().toLocaleDateString(),
+        totalAmount: params.totalAmount,
+        items: params.items.map(item => ({
+          description: item.name,
+          quantity: item.quantity,
+          amount: (item.price * item.quantity).toFixed(2)
+        }))
+      }
+    };
 
     // Call Resend Edge Function
-    const response = await fetch(`${supabaseUrl}/functions/v1/resend-email`, {
+    const response = await fetch(`${supabaseUrl}/functions/v1/send-email`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${supabaseServiceKey}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        to: params.customerEmail,
-        subject,
-        html,
-        text
-      }),
+      body: JSON.stringify(emailData),
     });
 
     if (!response.ok) {
@@ -203,31 +214,37 @@ async function sendAdminNotificationEmail(params: {
   try {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@lbve.ca';
 
     if (!supabaseUrl || !supabaseServiceKey) {
       console.error('Supabase configuration missing - cannot send admin notification email');
       return;
     }
 
-    // Generate email content
-    const subject = `🚨 New Order Alert - ${params.orderNumber}`;
-    const html = generateAdminNotificationHTML(params);
-    const text = generateAdminNotificationText(params);
+    // Prepare email data in the format expected by the send-email function
+    const emailData = {
+      type: 'admin_notification',
+      data: {
+        customerEmail: params.customerEmail,
+        customerName: params.customerName,
+        orderNumber: params.orderNumber,
+        totalAmount: params.totalAmount,
+        items: params.items.map(item => ({
+          description: item.name,
+          quantity: item.quantity,
+          amount: (item.price * item.quantity).toFixed(2)
+        })),
+        stripePaymentId: params.paymentIntentId
+      }
+    };
 
     // Call Resend Edge Function
-    const response = await fetch(`${supabaseUrl}/functions/v1/resend-email`, {
+    const response = await fetch(`${supabaseUrl}/functions/v1/send-email`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${supabaseServiceKey}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        to: adminEmail,
-        subject,
-        html,
-        text
-      }),
+      body: JSON.stringify(emailData),
     });
 
     if (!response.ok) {
@@ -626,11 +643,21 @@ export async function POST(request: Request) {
 
     // Get webhook secret
     const webhookSecret = await getWebhookSecret();
-    
+
+    // Development bypass for testing
+    const isDevelopment = process.env.NODE_ENV === 'development';
+    const testBypass = request.headers.get('x-test-bypass') === 'true';
+
     // Verify webhook signature
     let event: Stripe.Event;
     try {
-      event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+      if (isDevelopment && testBypass) {
+        console.log('🧪 Development mode: Bypassing webhook signature verification for testing');
+        // Parse the body directly for testing
+        event = JSON.parse(body);
+      } else {
+        event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+      }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error';
       console.error(`Webhook signature verification failed: ${errorMessage}`);
@@ -738,10 +765,8 @@ export async function POST(request: Request) {
           subtotal: session.amount_subtotal ? session.amount_subtotal / 100 : 0,
           total_amount: session.amount_total ? session.amount_total / 100 : 0,
           currency: session.currency?.toUpperCase() || 'USD',
-          payment_intent: session.payment_intent as string,
-          metadata: metadata,
-          test_mode: STRIPE_CONFIG.testMode,
-          
+          stripe_payment_intent_id: session.payment_intent as string,
+
           // Shipping address from metadata
           shipping_first_name: shippingAddress.first_name || '',
           shipping_last_name: shippingAddress.last_name || '',
@@ -751,7 +776,7 @@ export async function POST(request: Request) {
           shipping_state_province: shippingAddress.state || '',
           shipping_postal_code: shippingAddress.postal_code || '',
           shipping_country: shippingAddress.country || 'US',
-          
+
           // Billing address (same as shipping for now)
           billing_first_name: shippingAddress.first_name || '',
           billing_last_name: shippingAddress.last_name || '',

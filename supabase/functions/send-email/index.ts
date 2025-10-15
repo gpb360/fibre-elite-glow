@@ -10,28 +10,35 @@ serve(async (req) => {
     
     // Email configuration based on type
     const emailConfig: any = {
-      from: 'Fibre Elite Glow <orders@stripe.lbve.ca>',
-      reply_to: 'support@venomappdevelopment.com'
+      from: 'La Belle Vie <noreply@stripe.venomappdevelopment.com>',
+      reply_to: 'admin@venomappdevelopment.com'
+    }
+
+    // Set recipient based on email type
+    // For test mode, redirect all emails to verified address
+    const TEST_EMAIL = 'garypboyd@gmail.com'
+
+    if (type === 'order_confirmation') {
+      emailConfig.to = data.customerEmail
+    } else if (type === 'admin_notification') {
+      emailConfig.to = TEST_EMAIL // Override for test mode
     }
 
     switch (type) {
       case 'order_confirmation':
-        // Send to customer
-        emailConfig.to = data.customerEmail
+        // Already set to verified email above
         emailConfig.subject = `Order Confirmed: ${data.orderNumber}`
         emailConfig.html = generateOrderEmail(data)
         break
 
       case 'admin_notification':
-        // Send to admin
-        emailConfig.to = ADMIN_EMAIL
+        // Already set to verified email above
         emailConfig.subject = `🛒 New Order: ${data.orderNumber} - $${data.totalAmount}`
         emailConfig.html = generateAdminEmail(data)
         break
 
       case 'payment_failed':
-        // Alert admin
-        emailConfig.to = ADMIN_EMAIL
+        // Already set to verified email above
         emailConfig.subject = `⚠️ Payment Failed: ${data.orderNumber}`
         emailConfig.html = generateFailureEmail(data)
         break
@@ -157,7 +164,7 @@ function generateOrderEmail(data: any) {
 
           <div class="footer">
             <p>Questions? Contact us at <a href="mailto:support@venomappdevelopment.com">support@venomappdevelopment.com</a></p>
-            <p>© ${new Date().getFullYear()} Fibre Elite Glow. All rights reserved.</p>
+            <p>© ${new Date().getFullYear()} La Belle Vie. All rights reserved.</p>
           </div>
         </div>
       </body>

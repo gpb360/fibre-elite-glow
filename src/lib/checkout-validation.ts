@@ -220,11 +220,11 @@ export function useCheckoutValidation(options: CheckoutValidationOptions = {}) {
    */
   const validateOrderCompletion = useCallback(async (orderData: any) => {
     const errors: string[] = []
-    
-    if (!orderData.sessionId) errors.push('Missing session ID')
+
+    if (!orderData.sessionId && !orderData.id) errors.push('Missing session ID')
     if (!orderData.customerEmail) errors.push('Missing customer email')
-    if (!orderData.amount) errors.push('Missing order amount')
-    
+    if (orderData.amount === null || orderData.amount === undefined || orderData.amount === 0) errors.push('Missing order amount')
+
     return {
       isValid: errors.length === 0,
       errors
@@ -375,12 +375,12 @@ export function useOrderConfirmation() {
   const validateOrderConfirmation = useCallback(async (orderData: any) => {
     setIsValidating(true)
     const errors: string[] = []
-    
+
     try {
       // Validate required order fields
-      if (!orderData.sessionId) errors.push('Missing session ID')
+      if (!orderData.sessionId && !orderData.id) errors.push('Missing session ID')
       if (!orderData.customerEmail) errors.push('Missing customer email')
-      if (!orderData.amount) errors.push('Missing order amount')
+      if (orderData.amount === null || orderData.amount === undefined || orderData.amount === 0) errors.push('Missing order amount')
       if (!orderData.currency) errors.push('Missing currency')
       
       // Validate session ID format

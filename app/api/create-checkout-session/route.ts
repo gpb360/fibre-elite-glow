@@ -44,8 +44,7 @@ export async function POST(request: NextRequest) {
     // CSRF Protection
     const csrfResult = CSRFProtection.validateRequest(request);
     if (!csrfResult.valid) {
-      console.warn('CSRF validation failed:', csrfResult.error);
-      return NextResponse.json(
+            return NextResponse.json(
         {
           error: 'Security validation failed',
           code: 'CSRF_ERROR'
@@ -60,8 +59,7 @@ export async function POST(request: NextRequest) {
                      request.headers.get('cf-connecting-ip') || 
                      'unknown';
     
-    console.log(`Checkout request from IP: ${clientIP}`);
-    
+        
     // Additional security: check for bot-like behavior
     const userAgent = request.headers.get('user-agent') || '';
     const suspiciousBots = [
@@ -70,8 +68,7 @@ export async function POST(request: NextRequest) {
     ];
     
     if (suspiciousBots.some(pattern => pattern.test(userAgent))) {
-      console.warn('Suspicious user agent detected:', userAgent);
-      return NextResponse.json(
+            return NextResponse.json(
         {
           error: 'Access denied',
           code: 'BOT_DETECTED'
@@ -90,12 +87,10 @@ export async function POST(request: NextRequest) {
       nodeEnv: process.env.NODE_ENV,
     };
     
-    console.log('Environment check:', debugInfo);
-    
+        
     // Check for required Stripe configuration
     if (!process.env.STRIPE_SECRET_KEY) {
-      console.error('❌ STRIPE_SECRET_KEY environment variable is missing');
-      return NextResponse.json(
+            return NextResponse.json(
         {
           error: 'Server configuration error: Stripe secret key not configured',
           debug: debugInfo
@@ -105,8 +100,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
-      console.error('❌ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY environment variable is missing');
-      return NextResponse.json(
+            return NextResponse.json(
         {
           error: 'Server configuration error: Stripe publishable key not configured',
           debug: debugInfo
@@ -116,17 +110,19 @@ export async function POST(request: NextRequest) {
     }
 
     // Get base URL with fallback for Netlify
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ||
-                   process.env.URL ||
-                   'https://lebve.netlify.app';
+    // For local development, use localhost; for production, use environment variables or Netlify
+    const baseUrl = process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3000'
+      : process.env.NEXT_PUBLIC_BASE_URL ||
+        process.env.URL ||
+        'https://lebve.netlify.app';
     
     // Parse and validate request body with comprehensive Zod validation
     let rawBody: any;
     try {
       rawBody = await request.json();
     } catch (error) {
-      console.error('Invalid JSON in request body:', error);
-      return NextResponse.json(
+            return NextResponse.json(
         { 
           error: 'Invalid request format',
           details: ErrorSanitizer.sanitizeMessage(error)
@@ -139,8 +135,7 @@ export async function POST(request: NextRequest) {
     const validationResult = serverCheckoutSchema.safeParse(rawBody);
     
     if (!validationResult.success) {
-      console.error('Checkout validation failed:', validationResult.error.errors);
-      
+            
       // Format validation errors for client
       const errorMessages = validationResult.error.errors.map(err => {
         const path = err.path.join('.');
@@ -180,12 +175,7 @@ export async function POST(request: NextRequest) {
     });
     
     if (!securityValidation.isSecure) {
-      console.warn('Security validation failed:', {
-        clientIP,
-        issues: securityValidation.issues,
-        score: securityValidation.percentage
-      });
-      return NextResponse.json(
+            return NextResponse.json(
         {
           error: 'Content validation failed',
           details: securityValidation.issues,
@@ -197,8 +187,7 @@ export async function POST(request: NextRequest) {
     
     // Validate CSRF token if provided
     if (body.csrfToken && !CSRFProtection.validateToken(body.csrfToken)) {
-      console.warn('Invalid CSRF token provided');
-      return NextResponse.json(
+            return NextResponse.json(
         {
           error: 'Invalid security token',
           code: 'CSRF_INVALID'
@@ -368,26 +357,17 @@ export async function POST(request: NextRequest) {
           });
         
         if (error) {
-          console.error('Error storing checkout session in Supabase:', error);
-          // Continue with checkout even if storage fails
+                    // Continue with checkout even if storage fails
         } else {
-          console.log(`✅ Checkout session stored: ${session.id} for order ${orderNumber}`);
-        }
+                  }
       } else {
-        console.warn('Supabase admin client not available - skipping session storage');
-      }
+              }
     } catch (dbError) {
       // Log but don't fail the checkout if database storage fails
-      console.error('Failed to store checkout session:', dbError);
-    }
+          }
 
     // Log successful session creation with enhanced details
-    console.log(`✅ Enhanced checkout session created: ${session.id}`);
-    console.log(`📧 Customer: ${body.customerInfo.email}`);
-    console.log(`📦 Order: ${orderNumber}`);
-    console.log(`💰 Total: ${session.amount_total ? (session.amount_total / 100) : 0} ${session.currency?.toUpperCase()}`);
-    console.log(`🎯 Fields collected: billing address, shipping address, phone number, promotion codes`);
-
+    
     // Return the checkout session URL with order information
     return NextResponse.json({ 
       url: session.url,
@@ -402,8 +382,7 @@ export async function POST(request: NextRequest) {
     });
     
   } catch (error) {
-    console.error('❌ Error creating checkout session:', error);
-    
+        
   // Use enhanced error handler with sanitization
     return GlobalErrorHandler.handleApiError(error);
   }

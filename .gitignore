@@ -20,6 +20,7 @@ dist-ssr
 /playwright/.cache/
 /playwright/tests/
 *.spec.js.snap
+.claude/settings.local.json
 
 # Performance reports
 performance-report.json

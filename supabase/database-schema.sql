@@ -184,6 +184,11 @@ CREATE TABLE checkout_sessions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     session_id VARCHAR(255) UNIQUE NOT NULL,
     user_id UUID, -- References auth.users(id)
+    customer_id UUID REFERENCES customers(id),
+    email VARCHAR(255),
+    status VARCHAR(50) DEFAULT 'pending',
+    payment_status VARCHAR(50) DEFAULT 'pending',
+    failure_reason TEXT,
     metadata JSONB,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
