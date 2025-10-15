@@ -10,15 +10,18 @@ serve(async (req) => {
     
     // Email configuration based on type
     const emailConfig: any = {
-      from: 'Fibre Elite Glow <onboarding@resend.dev>',
-      reply_to: 'support@venomappdevelopment.com'
+      from: 'La Belle Vie <noreply@stripe.venomappdevelopment.com>',
+      reply_to: 'admin@venomappdevelopment.com'
     }
 
     // Set recipient based on email type
+    // For test mode, redirect all emails to verified address
+    const TEST_EMAIL = 'garypboyd@gmail.com'
+
     if (type === 'order_confirmation') {
       emailConfig.to = data.customerEmail
     } else if (type === 'admin_notification') {
-      emailConfig.to = ADMIN_EMAIL
+      emailConfig.to = TEST_EMAIL // Override for test mode
     }
 
     switch (type) {
@@ -161,7 +164,7 @@ function generateOrderEmail(data: any) {
 
           <div class="footer">
             <p>Questions? Contact us at <a href="mailto:support@venomappdevelopment.com">support@venomappdevelopment.com</a></p>
-            <p>© ${new Date().getFullYear()} Fibre Elite Glow. All rights reserved.</p>
+            <p>© ${new Date().getFullYear()} La Belle Vie. All rights reserved.</p>
           </div>
         </div>
       </body>

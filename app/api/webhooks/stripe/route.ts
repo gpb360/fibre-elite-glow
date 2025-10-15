@@ -145,11 +145,15 @@ async function sendOrderConfirmationEmail(params: {
       return;
     }
 
+    // In development/test mode, redirect email to verified test address
+    const isDevelopment = process.env.NODE_ENV === 'development';
+    const targetEmail = isDevelopment ? 'garypboyd@gmail.com' : params.customerEmail;
+
     // Prepare email data in the format expected by the send-email function
     const emailData = {
       type: 'order_confirmation',
       data: {
-        customerEmail: params.customerEmail,
+        customerEmail: targetEmail,
         customerName: params.customerName,
         orderNumber: params.orderNumber,
         orderDate: new Date().toLocaleDateString(),
