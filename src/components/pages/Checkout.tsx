@@ -14,7 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { Loader2, CreditCard, Lock, Wifi, WifiOff, Shield, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Loader2, CreditCard, Lock, WifiOff, Shield, AlertTriangle, CheckCircle } from 'lucide-react';
 import { ErrorBoundary } from '@/components/error';
 import {
   FormSecurityStatus,
@@ -183,11 +183,10 @@ const CheckoutForm: React.FC = () => {
     city: '',
     state: '',
     zipCode: '',
-    country: 'US',
+    country: 'CA',
   });
   
-  const [validFields, setValidFields] = useState(0);
-  const [csrfToken, setCsrfToken] = useState<string>('');
+    const [csrfToken, setCsrfToken] = useState<string>('');
   
   // Form security status
   const securityStatus = useFormSecurityStatus(formData, {
@@ -386,7 +385,7 @@ const CheckoutForm: React.FC = () => {
         />
 
         <FormSecurityIndicator
-          score={validFields * 12.5}
+          score={isValid ? 100 : 0}
           maxScore={100}
           issues={validationErrors.map(e => e.message)}
         />
@@ -535,18 +534,18 @@ const CheckoutForm: React.FC = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="zipCode">ZIP Code *</Label>
+              <Label htmlFor="zipCode">Postal Code *</Label>
               <Input
                 id="zipCode"
                 name="zipCode"
                 type="text"
                 value={formData.zipCode}
                 onChange={(e) => handleInputChange('zipCode', e.target.value)}
-                placeholder="90210"
+                placeholder="K1A 0A1"
                 required
                 data-testid="zip-input"
               />
-              <p className="text-sm text-gray-600">5-digit ZIP code</p>
+              <p className="text-sm text-gray-600">Canadian postal code (A1A 1A1)</p>
             </div>
           </div>
         </CardContent>
@@ -625,7 +624,7 @@ const CheckoutForm: React.FC = () => {
       {/* Submit Button */}
       <Button
         type="submit"
-        disabled={isProcessing || isOffline || !isValid || isValidating || formErrors.length > 0}
+        disabled={isProcessing || isOffline || isValidating || formErrors.length > 0}
         className="w-full"
         size="lg"
         data-testid="stripe-submit"
@@ -640,7 +639,7 @@ const CheckoutForm: React.FC = () => {
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             {isRetrying ? 'Retrying...' : 'Processing...'}
           </>
-        ) : validFields >= 6 && isValid ? (
+        ) : isValid ? (
           <>
             <CheckCircle className="mr-2 h-4 w-4" />
             Proceed to Secure Payment
