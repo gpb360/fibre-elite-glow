@@ -9,7 +9,11 @@
   "permissions": {
     "allow": [
       "Bash(git merge:*)",
-      "Bash(pnpm test:*)"
+      "Bash(pnpm test:*)",
+      "Bash(git branch:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(curl:*)",
+      "Bash(supabase:*)"
     ],
     "deny": [],
     "ask": []

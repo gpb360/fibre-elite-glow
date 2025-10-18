@@ -378,33 +378,32 @@ const CheckoutForm: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6" data-testid="checkout-form">
-      {/* Security Status */}
-      <FormSecurityStatus
-        status={securityStatus.overallStatus === 'secure' ? 'secure' : securityStatus.overallStatus === 'warning' ? 'warning' : 'error'}
-        message={`Form security: ${securityStatus.passedChecks}/${securityStatus.totalChecks} checks passed`}
-      />
-
-      {/* Form validation indicators */}
-      <FormSecurityIndicator
-        score={validFields * 12.5}
-        maxScore={100}
-        issues={validationErrors.map(e => e.message)}
-      />
-
-      {/* Form validation summary */}
-      <FormValidationSummary
-        errors={validationErrors}
-        isValid={isValid}
-      />
-      
-      {/* Form Error Recovery */}
-      {formErrors.length > 0 && (
-        <FormErrorRecovery
-          error={formErrors[0]?.message}
-          onRetry={() => retryFormSubmission(() => Promise.resolve())}
-          onReset={clearFormErrors}
+      {/* Hidden security and validation components - functionality preserved but UI hidden */}
+      <div className="hidden">
+        <FormSecurityStatus
+          status={securityStatus.overallStatus === 'secure' ? 'secure' : securityStatus.overallStatus === 'warning' ? 'warning' : 'error'}
+          message={`Form security: ${securityStatus.passedChecks}/${securityStatus.totalChecks} checks passed`}
         />
-      )}
+
+        <FormSecurityIndicator
+          score={validFields * 12.5}
+          maxScore={100}
+          issues={validationErrors.map(e => e.message)}
+        />
+
+        <FormValidationSummary
+          errors={validationErrors}
+          isValid={isValid}
+        />
+
+        {formErrors.length > 0 && (
+          <FormErrorRecovery
+            error={formErrors[0]?.message}
+            onRetry={() => retryFormSubmission(() => Promise.resolve())}
+            onReset={clearFormErrors}
+          />
+        )}
+      </div>
 
       {/* Customer Information */}
       <Card>
