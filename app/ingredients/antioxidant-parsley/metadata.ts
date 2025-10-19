@@ -1,8 +1,8 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Antioxidant Parsley | Detox & Cellular Protection | La Belle Vie',
-  description: 'Discover the power of Antioxidant Parsley, a vibrant herb packed with flavonoids and vitamins to support detoxification, kidney health, and cellular protection.',
+  title: 'Antioxidant Parsley - Detox & Cellular Protection - La Belle Vie',
+  description: 'Harness the natural detoxification power of antioxidant-rich parsley. This concentrated extract provides myricetin and apigenin flavonoids that enhance kidney function, neutralize environmental toxins, and protect cellular membranes from oxidative damage for optimal organ health.',
   keywords: 'antioxidant parsley, detoxification, kidney support, cellular protection, flavonoids, myricetin, apigenin, natural diuretic, vitamin k, vitamin c, natural supplements, parsley benefits',
   openGraph: {
     title: 'Antioxidant Parsley | Natural Detox & Cell Protector',

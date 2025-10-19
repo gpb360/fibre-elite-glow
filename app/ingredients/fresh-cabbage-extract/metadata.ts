@@ -1,8 +1,8 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Fresh Cabbage Extract | Gut Healing & Anti-Inflammatory | La Belle Vie',
-  description: 'Discover the benefits of Fresh Cabbage Extract, rich in L-glutamine and Vitamin K to support a healthy gut lining, reduce inflammation, and aid digestion.',
+  title: 'Fresh Cabbage Extract - Gut Healing & Anti-Inflammatory - La Belle Vie',
+  description: 'Support intestinal healing and reduce inflammation with fresh cabbage extract rich in L-glutamine. This concentrated formula provides essential amino acids that repair damaged gut lining, while vitamin K and sulfur compounds support cellular regeneration and maintain digestive barrier integrity for optimal gut health.',
   keywords: 'fresh cabbage extract, l-glutamine, gut health, digestive support, anti-inflammatory, vitamin k, leaky gut, natural supplements, cabbage benefits, cruciferous vegetables',
   openGraph: {
     title: 'Fresh Cabbage Extract | Natural Support for a Healthy Gut',

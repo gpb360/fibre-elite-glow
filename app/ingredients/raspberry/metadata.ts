@@ -1,8 +1,8 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Raspberry | Fiber & Antioxidant-Rich | La Belle Vie',
-  description: 'Discover the vibrant health benefits of Raspberry, a delicious fruit packed with fiber, vitamins, and antioxidants to support digestive health, weight management, and more.',
+  title: 'Raspberry - Fiber & Antioxidant-Rich - La Belle Vie',
+  description: 'Support digestive wellness and cellular protection with antioxidant-rich raspberry powder. This concentrated formula provides ellagic acid and anthocyanins that neutralize free radicals, while natural dietary fiber promotes satiety and regularity, making it an ideal addition for weight management and overall metabolic health.',
   keywords: 'raspberry, raspberry ketones, dietary fiber, antioxidant, weight management, raspberry benefits, natural fiber, premium raspberry, dietary supplement, ellagic acid',
   openGraph: {
     title: 'Raspberry | A Delicious Boost for Digestive Health & Wellness',

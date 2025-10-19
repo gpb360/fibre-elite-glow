@@ -12,29 +12,38 @@ import Link from 'next/link';
 import Head from 'next/head';
 import Image from 'next/image';
 import { Breadcrumb } from '@/components/ui/breadcrumb';
+import { generateIngredientSchema, generateBreadcrumbSchema } from '@/lib/seo';
 
 // Schema.org JSON-LD structured data for SEO
 const IngredientSchema = () => {
-  const schemaData = {
-    "@context": "https://schema.org",
-    "@type": "MedicalSubstance",
-    "name": "Acai Berry",
-    "description": "A powerful superfood rich in antioxidants that supports cellular health, boosts energy levels, and promotes vibrant skin.",
-    "medicineSystem": "Natural supplement",
-    "relevantSpecialty": [
-      "Dermatology",
-      "Nutrition",
-      "Anti-Aging"
-    ],
-    "activeIngredient": "Anthocyanins, polyphenols, and other antioxidants",
-    "mechanismOfAction": "Neutralizes free radicals, reduces oxidative stress, and supports cellular regeneration"
-  };
+  const ingredientSchema = generateIngredientSchema({
+    name: "Acai Berry",
+    description: "A powerful superfood rich in antioxidants that supports cellular health, boosts energy levels, and promotes vibrant skin.",
+    benefits: ["Antioxidant protection", "Energy boost", "Skin health", "Cellular regeneration", "Immune support"],
+    category: "Superfruit",
+    url: "/ingredients/acai-berry",
+    image: "/lovable-uploads/acai-closeup.jpg",
+    activeCompounds: ["Anthocyanins", "Polyphenols", "Flavonoids", "Vitamin C"],
+    mechanisms: ["Neutralizes free radicals", "Reduces oxidative stress", "Supports cellular regeneration", "Enhances energy metabolism"]
+  });
+
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Ingredients', url: '/ingredients' },
+    { name: 'Acai Berry', url: '/ingredients/acai-berry' }
+  ]);
 
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(ingredientSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+    </>
   );
 };
 

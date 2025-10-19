@@ -1,8 +1,8 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Detoxifying Broccoli Extract | Sulforaphane for Gut Health | La Belle Vie',
-  description: 'Unlock the power of sulforaphane with our Detoxifying Broccoli Extract. Supports natural detoxification, promotes gut health, and provides potent antioxidant benefits.',
+  title: 'Detoxifying Broccoli Extract - Sulforaphane for Gut Health - La Belle Vie',
+  description: 'Activate your body\'s natural detoxification pathways with sulforaphane-rich broccoli extract. This potent compound upregulates phase II detoxification enzymes, supports intestinal barrier function, and provides powerful anti-inflammatory benefits that protect gut lining and enhance immune response.',
   keywords: 'detoxifying broccoli extract, sulforaphane, gut health, detoxification support, antioxidant powerhouse, anti-inflammatory, cellular protection, natural detox, broccoli sprout extract',
   openGraph: {
     title: 'Detoxifying Broccoli Extract | Ultimate Sulforaphane Power',

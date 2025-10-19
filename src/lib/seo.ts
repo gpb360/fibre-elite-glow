@@ -28,9 +28,9 @@ export function generateMetadata(config: SEOConfig): Metadata {
     noIndex = false
   } = config
 
-  const fullTitle = title.includes(defaultConfig.siteName) 
-    ? title 
-    : `${title} | ${defaultConfig.siteName}`
+  const fullTitle = title.includes(defaultConfig.siteName)
+    ? title
+    : `${title} - ${defaultConfig.siteName}`
 
   const fullUrl = url ? `${defaultConfig.domain}${url}` : defaultConfig.domain
   const fullImageUrl = image.startsWith('http') ? image : `${defaultConfig.domain}${image}`
@@ -212,6 +212,96 @@ export function generateFAQSchema(faqs: Array<{ question: string; answer: string
   }
 }
 
+// Ingredient schema generator
+export function generateIngredientSchema(ingredient: {
+  name: string
+  description: string
+  benefits?: string[]
+  category?: string
+  image?: string
+  url?: string
+  activeCompounds?: string[]
+  mechanisms?: string[]
+}) {
+  const {
+    name,
+    description,
+    benefits = [],
+    category = 'Dietary Supplement',
+    image,
+    url,
+    activeCompounds = [],
+    mechanisms = []
+  } = ingredient
+
+  const schema: any = {
+    "@context": "https://schema.org",
+    "@type": ["DietarySupplement", "Substance"],
+    "name": name,
+    "description": description,
+    "category": category,
+    "url": url ? `${defaultConfig.domain}${url}` : defaultConfig.domain,
+    ...(image && {
+      "image": [
+        image.startsWith('http') ? image : `${defaultConfig.domain}${image}`
+      ]
+    })
+  }
+
+  // Add benefits if provided
+  if (benefits.length > 0) {
+    schema.potentialBenefit = benefits.map(benefit => ({
+      "@type": "MedicalBenefit",
+      "name": benefit
+    }))
+  }
+
+  // Add active compounds if provided
+  if (activeCompounds.length > 0) {
+    schema.activeIngredient = activeCompounds.map(compound => ({
+      "@type": "ChemicalSubstance",
+      "name": compound
+    }))
+  }
+
+  // Add mechanisms if provided
+  if (mechanisms.length > 0) {
+    schema.mechanismOfAction = mechanisms.join(', ')
+  }
+
+  return schema
+}
+
+// Ingredients collection schema generator
+export function generateIngredientsCollectionSchema(ingredients: Array<{
+  name: string
+  description: string
+  url: string
+  image?: string
+}>) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Premium Ingredients | La Belle Vie",
+    "description": "Discover our premium, scientifically-backed ingredients that power our fiber supplements for optimal digestive health and overall wellness.",
+    "url": `${defaultConfig.domain}/ingredients`,
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "La Belle Vie",
+      "url": defaultConfig.domain
+    },
+    "about": ingredients.map(ingredient => ({
+      "@type": "Thing",
+      "name": ingredient.name,
+      "description": ingredient.description,
+      "url": ingredient.url.startsWith('http') ? ingredient.url : `${defaultConfig.domain}${ingredient.url}`,
+      ...(ingredient.image && {
+        "image": ingredient.image.startsWith('http') ? ingredient.image : `${defaultConfig.domain}${ingredient.image}`
+      })
+    }))
+  }
+}
+
 // Organization schema generator
 export function generateOrganizationSchema(brandName: string = 'La Belle Vie') {
   return {
@@ -221,9 +311,9 @@ export function generateOrganizationSchema(brandName: string = 'La Belle Vie') {
     "url": defaultConfig.domain,
     "logo": `${defaultConfig.domain}/lovable-uploads/webp/fibre-elite-glow-logo.webp`,
     "sameAs": [
-      "https://facebook.com/fibreeliteglow",
-      "https://instagram.com/fibreeliteglow",
-      "https://twitter.com/fibreeliteglow"
+      "https://facebook.com/labellevie",
+      "https://instagram.com/labellevie",
+      "https://twitter.com/labellevie"
     ],
     "contactPoint": {
       "@type": "ContactPoint",
