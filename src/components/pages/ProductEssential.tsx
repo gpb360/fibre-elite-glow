@@ -246,6 +246,8 @@ export function ProductEssential() {
                   height={550}
                   priority
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 550px"
+                  placeholder="blur"
+                  blurDataURL="data:image/webp;base64,UklGRiQAAABXRUJQVlA4WAoAAAAQAAAA8wAA8wAAQUxQSBIAAAABR0AEmQAP4A/kOw2G7k7I6H7G8N9O8Q9R/T0U1V1W2X3Y4Z5a6b7c8d9e+f/gH+gJ+iP6oL+pQ6pS+pT+pZ+pqPqw6rS6rT6rZ6rqPqw6rS6rT6rZ6rqPqw6rS6rT6rZ6rqPqw6rS6rT6rZ6rqPuw="
                 />
               </motion.div>
             </div>

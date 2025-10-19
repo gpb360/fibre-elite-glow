@@ -68,14 +68,7 @@ export default function PerformanceOptimizer({
       images.forEach(img => imageObserver.observe(img))
     }
 
-    // Preload critical fonts
-    const fontLink = document.createElement('link')
-    fontLink.rel = 'preload'
-    fontLink.href = '/_next/static/fonts/inter-var.woff2'
-    fontLink.as = 'font'
-    fontLink.type = 'font/woff2'
-    fontLink.crossOrigin = 'anonymous'
-    document.head.appendChild(fontLink)
+    // Note: Fonts are preloaded automatically by Next.js via layout.tsx font configuration
     
     // Optimize JavaScript execution
     if ('requestIdleCallback' in window) {

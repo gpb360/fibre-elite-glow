@@ -7,6 +7,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Heading } from "@/components/ui/heading";
+import { generateFAQSchema } from '@/lib/seo';
+import StructuredData from '@/components/seo/StructuredData';
 
 interface FaqItem {
   question: string;
@@ -24,8 +26,13 @@ export function FaqSection({
   description = "Find answers to common questions about our products and services.",
   faqs
 }: FaqSectionProps) {
+  // Generate FAQ schema for SEO
+  const faqSchema = generateFAQSchema(faqs);
+
   return (
-    <section className="py-16 md:py-24 bg-gray-50">
+    <>
+      <StructuredData data={faqSchema} />
+      <section className="py-16 md:py-24 bg-gray-50">
       <div className="container mx-auto px-4 md:px-6 max-w-7xl">
         <Heading
           title={title}
@@ -50,6 +57,7 @@ export function FaqSection({
         </div>
       </div>
     </section>
+    </>
   );
 }
 

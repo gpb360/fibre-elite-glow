@@ -1,8 +1,18 @@
 import Ingredients from '@/components/pages/Ingredients';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { generateMetadata } from '@/lib/seo';
+import { Metadata } from 'next';
 
 export const dynamic = 'force-static';
+
+export const metadata: Metadata = generateMetadata({
+  title: 'Premium Ingredients | La Belle Vie Fiber Supplements',
+  description: 'Discover the premium natural ingredients in our fiber supplements. From superfruits to prebiotic fibers, learn about the science behind our wellness formulas.',
+  keywords: 'natural ingredients, fiber supplement ingredients, prebiotic fiber, superfruits, acai berry, cranberry, digestive health, wellness supplements',
+  image: '/lovable-uploads/webp/digestive-health-benefits-fiber-supplement.webp',
+  url: '/ingredients'
+});
 
 async function getIngredients() {
   const ingredientsDir = path.join(process.cwd(), 'app/ingredients');
