@@ -1,107 +1,61 @@
 import ProductEssentialPlus from '@/components/pages/ProductEssentialPlus'
-import { Metadata } from 'next'
+import { generateMetadata, generateProductSchema, generateOrganizationSchema } from '@/lib/seo'
+import StructuredData from '@/components/seo/StructuredData'
 
-export const metadata: Metadata = {
+export const metadata = generateMetadata({
   title: 'Total Essential Plus | Advanced Fiber with Super-Fruits',
   description: 'Total Essential Plus: Advanced daily fiber blend enhanced with super-fruits for added antioxidants and vibrant glow. Premium digestive wellness with berry power. 15 sachets per box.',
   keywords: 'Total Essential Plus, advanced fiber supplement, super-fruits, antioxidants, berry fiber, digestive health, gut health, premium supplement, acai, goji, cranberry',
-  openGraph: {
-    title: 'Total Essential Plus | Advanced Fiber Blend with Super-Fruits',
-    description: 'Advanced daily fiber blend enhanced with super-fruits for added antioxidants and a vibrant glow.',
-    type: 'website',
-    images: [
-      {
-        url: '/lovable-uploads/webp/total-essential-plus-fiber-supplement-bottle.webp',
-        width: 1200,
-        height: 630,
-        alt: 'Total Essential Plus Advanced Fiber Supplement with super-fruits and antioxidants'
-      }
-    ]
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Total Essential Plus | Advanced Fiber Blend with Super-Fruits',
-    description: 'Advanced daily fiber blend enhanced with super-fruits for added antioxidants.',
-    images: ['/lovable-uploads/webp/total-essential-plus-fiber-supplement-bottle.webp']
-  }
-}
+  image: '/lovable-uploads/webp/total-essential-plus-fiber-supplement-bottle.webp',
+  url: '/products/total-essential-plus'
+})
 
-// Product Schema JSON-LD structured data
-const ProductSchema = () => {
-  const schemaData = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    "name": "Total Essential Plus",
-    "description": "Advanced daily fiber blend enhanced with super-fruits for added antioxidants and a vibrant glow. 15 sachets per box.",
-    "brand": {
-      "@type": "Brand",
-      "name": "Fibre Elite Glow"
+const productSchema = generateProductSchema({
+  name: 'Total Essential Plus',
+  description: 'Advanced daily fiber blend enhanced with super-fruits for added antioxidants and a vibrant glow. Premium digestive wellness with berry power. 15 sachets per box.',
+  price: '84.99',
+  currency: 'USD',
+  sku: 'total-essential-plus-base',
+  gtin: 'FEG-TEP-001',
+  brand: 'Fibre Elite Glow',
+  image: '/lovable-uploads/webp/total-essential-plus-fiber-supplement-bottle.webp',
+  rating: 4.9,
+  reviewCount: 89,
+  availability: 'InStock',
+  url: '/products/total-essential-plus',
+  reviews: [
+    {
+      author: 'Jennifer K.',
+      rating: 5,
+      body: 'Love the berry flavors! Not only improved my digestion but I feel more energized. The antioxidants are a great bonus.'
+    }
+  ],
+  additionalProperties: [
+    {
+      name: 'Special Features',
+      value: 'Enhanced with super-fruits (Acai, Goji Berry, Cranberry)'
     },
-    "category": "Health & Wellness > Vitamins & Supplements > Fiber Supplements",
-    "sku": "total-essential-plus-base",
-    "gtin": "FEG-TEP-001",
-    "offers": {
-      "@type": "Offer",
-      "price": "84.99",
-      "priceCurrency": "USD",
-      "availability": "https://schema.org/InStock",
-      "url": "https://lbve.ca/products/total-essential-plus",
-      "seller": {
-        "@type": "Organization",
-        "name": "Fibre Elite Glow"
-      },
-      "priceValidUntil": "2025-12-31"
+    {
+      name: 'Antioxidant Content',
+      value: 'High antioxidant content from berry extracts'
     },
-    "image": [
-      "https://lbve.ca/lovable-uploads/webp/total-essential-plus-fiber-supplement-bottle.webp"
-    ],
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.9",
-      "reviewCount": "89",
-      "bestRating": "5",
-      "worstRating": "1"
+    {
+      name: 'Serving Size',
+      value: '15 sachets per box'
     },
-    "review": [
-      {
-        "@type": "Review",
-        "reviewRating": {
-          "@type": "Rating",
-          "ratingValue": "5"
-        },
-        "author": {
-          "@type": "Person",
-          "name": "Jennifer K."
-        },
-        "reviewBody": "Love the berry flavors! Not only improved my digestion but I feel more energized. The antioxidants are a great bonus."
-      }
-    ],
-    "additionalProperty": [
-      {
-        "@type": "PropertyValue",
-        "name": "Special Features",
-        "value": "Enhanced with super-fruits (Acai, Goji Berry, Cranberry)"
-      },
-      {
-        "@type": "PropertyValue",
-        "name": "Antioxidant Content",
-        "value": "High antioxidant content from berry extracts"
-      }
-    ]
-  };
+    {
+      name: 'Product Type',
+      value: 'Advanced wellness supplement'
+    }
+  ]
+})
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
-    />
-  );
-};
+const organizationSchema = generateOrganizationSchema('Fibre Elite Glow')
 
 export default function TotalEssentialPlusPage() {
   return (
     <>
-      <ProductSchema />
+      <StructuredData data={[productSchema, organizationSchema]} />
       <ProductEssentialPlus />
     </>
   )
