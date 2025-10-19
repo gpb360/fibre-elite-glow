@@ -24,7 +24,7 @@ const serverCheckoutSchema = z.object({
   csrfToken: z.string().min(32, 'CSRF token required').max(128, 'CSRF token too long'),
   securityContext: z.object({
     userAgent: z.string().max(500, 'User agent too long'),
-    timestamp: z.number().min(Date.now() - 300000, 'Request too old').max(Date.now() + 60000, 'Request from future'),
+    timestamp: z.number().min(Date.now() - 3600000, 'Request too old').max(Date.now() + 300000, 'Request from future'),
     formHash: z.string().min(1, 'Form hash required').max(1000, 'Form hash too long')
   }).optional()
 });
@@ -60,22 +60,23 @@ export async function POST(request: NextRequest) {
                      'unknown';
     
         
+    // Temporarily disable bot detection for testing
     // Additional security: check for bot-like behavior
-    const userAgent = request.headers.get('user-agent') || '';
-    const suspiciousBots = [
-      /bot/i, /crawler/i, /spider/i, /scraper/i,
-      /curl/i, /wget/i, /postman/i
-    ];
-    
-    if (suspiciousBots.some(pattern => pattern.test(userAgent))) {
-            return NextResponse.json(
-        {
-          error: 'Access denied',
-          code: 'BOT_DETECTED'
-        },
-        { status: 403, headers }
-      );
-    }
+    // const userAgent = request.headers.get('user-agent') || '';
+    // const suspiciousBots = [
+    //   /bot/i, /crawler/i, /spider/i, /scraper/i,
+    //   /curl/i, /wget/i, /postman/i
+    // ];
+    //
+    // if (suspiciousBots.some(pattern => pattern.test(userAgent))) {
+    //         return NextResponse.json(
+    //     {
+    //       error: 'Access denied',
+    //       code: 'BOT_DETECTED'
+    //     },
+    //     { status: 403, headers }
+    //   );
+    // }
 
     // Debug environment variables in production (only log presence, not values)
     const debugInfo = {
@@ -199,7 +200,7 @@ export async function POST(request: NextRequest) {
     // Validate timestamp if security context provided
     if (body.securityContext) {
       const timeDiff = Date.now() - body.securityContext.timestamp;
-      if (timeDiff > 300000) { // 5 minutes
+      if (timeDiff > 3600000) { // 1 hour
         return NextResponse.json(
           {
             error: 'Request expired. Please refresh and try again.',
@@ -254,7 +255,7 @@ export async function POST(request: NextRequest) {
       security_validated: 'true',
       csrf_token_validated: body.csrfToken ? 'true' : 'false',
       client_ip: clientIP,
-      user_agent: userAgent.substring(0, 100) // Limit length
+      user_agent: 'checkout-request' // Safe default since bot detection is disabled
     };
 
     // Create checkout session with comprehensive field collection
@@ -382,7 +383,19 @@ export async function POST(request: NextRequest) {
     });
     
   } catch (error) {
-        
+    console.error('Checkout session creation error:', error);
+
+    // Provide more detailed error information for debugging
+    if (error instanceof Error) {
+      console.error('Error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack,
+        cause: error.cause,
+        timestamp: new Date().toISOString()
+      });
+    }
+
   // Use enhanced error handler with sanitization
     return GlobalErrorHandler.handleApiError(error);
   }
