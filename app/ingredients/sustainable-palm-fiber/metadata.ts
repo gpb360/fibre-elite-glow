@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Sustainable Palm Fiber | Balanced Gut & Heart Health | Fibre Elite Glow',
+  title: 'Sustainable Palm Fiber | Balanced Gut & Heart Health | La Belle Vie',
   description: 'Discover the benefits of Sustainable Palm Fiber, a balanced, lignin-rich fiber that supports digestive health, heart health, and detoxification.',
   keywords: 'sustainable palm fiber, balanced fiber, lignin-rich fiber, gut health, heart health, detoxification, cholesterol support, blood sugar regulation, sustainable ingredients, natural fiber',
   openGraph: {

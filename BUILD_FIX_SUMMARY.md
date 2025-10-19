@@ -98,7 +98,7 @@ Your build should now:
 
 ## 🎉 READY FOR PRODUCTION DEPLOYMENT
 
-All build-blocking issues have been resolved. Your Fibre Elite Glow e-commerce site should now build and deploy successfully with:
+All build-blocking issues have been resolved. Your La Belle Vie e-commerce site should now build and deploy successfully with:
 
 - **Stable Next.js configuration** (no experimental breaking changes)
 - **Working Netlify functions** (Stripe webhook processes orders)

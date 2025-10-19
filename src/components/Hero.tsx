@@ -30,7 +30,7 @@ export function Hero() {
       <div className="absolute inset-0 z-0 opacity-20">
         <Image
           src="/lovable-uploads/webp/fruit-veg-bottle.webp"
-          alt="Natural fiber supplement bottles surrounded by fresh fruits and vegetables - Fibre Elite Glow wellness products"
+          alt="Natural fiber supplement bottles surrounded by fresh fruits and vegetables - La Belle Vie wellness products"
           fill
           className="object-cover"
           priority={true}

@@ -1,6 +1,6 @@
-# Fibre Elite Glow - E2E Checkout Testing Suite
+# La Belle Vie - E2E Checkout Testing Suite
 
-This comprehensive testing suite validates the complete Stripe checkout integration for the Fibre Elite Glow e-commerce platform using Playwright.
+This comprehensive testing suite validates the complete Stripe checkout integration for the La Belle Vie e-commerce platform using Playwright.
 
 ## 🎯 Test Coverage
 

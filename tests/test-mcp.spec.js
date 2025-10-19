@@ -9,7 +9,7 @@ test('MCP integration test', async ({ page }) => {
   await page.waitForLoadState('networkidle');
   
   // Check if the page title is correct
-  await expect(page).toHaveTitle(/Fibre Elite Glow/);
+  await expect(page).toHaveTitle(/La Belle Vie/);
   
   // Take a screenshot for MCP testing
   await page.screenshot({ path: 'mcp-test-screenshot.png' });

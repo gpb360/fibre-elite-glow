@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Hydrating Celery | Electrolytes & Anti-Inflammatory | Fibre Elite Glow',
+  title: 'Hydrating Celery | Electrolytes & Anti-Inflammatory | La Belle Vie',
   description: 'Discover the benefits of Hydrating Celery, a refreshing extract packed with electrolytes, water, and antioxidants to support hydration and reduce inflammation.',
   keywords: 'hydrating celery, electrolytes, hydration, anti-inflammatory, apigenin, luteolin, natural diuretic, low calorie, natural supplements, celery benefits',
   openGraph: {

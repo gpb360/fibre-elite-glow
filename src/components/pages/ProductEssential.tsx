@@ -16,6 +16,7 @@ import { Footer } from '@/components/Footer';
 import { usePackages, Package } from '@/hooks/usePackages';
 import { useCart } from '@/contexts/CartContext';
 import { ProductTestimonials, ProductTestimonial } from '@/components/ui/product-testimonials';
+import { Breadcrumb } from '@/components/ui/breadcrumb';
 
 const totalEssentialTestimonials: ProductTestimonial[] = [
   {
@@ -129,6 +130,15 @@ export function ProductEssential() {
   return (
     <>
       <Header />
+      <div className="container px-4 md:px-6 py-4">
+        <Breadcrumb
+          items={[
+            { name: 'Products', url: '/products' },
+            { name: 'Total Essential', url: '/products/total-essential', current: true }
+          ]}
+          className="text-sm"
+        />
+      </div>
       <main className="flex-1">
         {/* Hero Section */}
         <section className="bg-gradient-to-b from-green-50 to-white py-16 md:py-24">
@@ -256,7 +266,7 @@ export function ProductEssential() {
               </p>
               
               <p className="text-lg leading-relaxed mb-6">
-                <strong>Total Essential</strong> represents a breakthrough in nutritional science, meticulously formulated with 100% natural fruit and vegetable extracts, premium oat bran, and sustainably sourced palm tree trunk fiber. This scientifically balanced blend of top-grade soluble and insoluble fiber works synergistically to restore digestive harmony, support cardiovascular health, regulate blood sugar levels, and promote healthy weight management.
+                <strong>Total Essential</strong> represents a breakthrough in nutritional science, meticulously formulated with 100% natural fruit and vegetable extracts, premium oat bran, and sustainably sourced palm tree trunk fiber. <Link href="/ingredients" className="text-green-600 hover:text-green-700 underline">Explore our premium ingredients</Link> to learn more about what makes Total Essential so effective. This scientifically balanced blend of top-grade soluble and insoluble fiber works synergistically to restore digestive harmony, support cardiovascular health, regulate blood sugar levels, and promote healthy weight management.
               </p>
 
               <h3 className="text-2xl font-semibold mb-4 text-green-700">Understanding Fiber Science</h3>
@@ -277,7 +287,7 @@ export function ProductEssential() {
 
               <h3 className="text-2xl font-semibold mb-4 text-green-700">The Critical Importance of Daily Fiber</h3>
               <p className="text-lg leading-relaxed mb-4">
-                While many people associate fiber supplementation solely with digestive regularity, research reveals that adequate fiber intake provides comprehensive health benefits that extend far beyond simple constipation relief. Clinical studies demonstrate that individuals consuming optimal fiber levels experience:
+                While many people associate fiber supplementation solely with digestive regularity, research reveals that adequate fiber intake provides comprehensive health benefits that extend far beyond simple constipation relief. <Link href="/benefits" className="text-green-600 hover:text-green-700 underline">Discover all the health benefits</Link> of our premium fiber supplements. Clinical studies demonstrate that individuals consuming optimal fiber levels experience:
               </p>
               <ul className="list-disc ml-6 space-y-2 text-lg">
                 <li>Reduced risk of cardiovascular disease and improved heart health</li>

@@ -11,10 +11,10 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/lovable-uploads/webp/fruit-veg-bottle.webp',
+        url: '/assets/dual-total-essential-and-plus-together.png',
         width: 1200,
         height: 630,
-        alt: 'Health Benefits of Fiber Supplements'
+        alt: 'La Belle Vie Total Essential and Plus Products Together'
       }
     ]
   },
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Health Benefits of Fiber Supplements | Digestive Wellness',
     description: 'Discover the scientifically-proven health benefits of premium fiber supplements.',
-    images: ['/lovable-uploads/webp/fruit-veg-bottle.webp']
+    images: ['/assets/dual-total-essential-and-plus-together.png']
   }
 }
 

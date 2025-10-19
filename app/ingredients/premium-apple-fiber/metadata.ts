@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Dual-Action Apple Fiber | Gut & Heart Health | Fibre Elite Glow',
+  title: 'Dual-Action Apple Fiber | Gut & Heart Health | La Belle Vie',
   description: 'Experience the benefits of our Dual-Action Apple Fiber. This premium blend of soluble and insoluble fiber supports digestive health, promotes heart health, and aids in weight management.',
   keywords: 'dual-action apple fiber, soluble and insoluble fiber, gut health, heart health support, pectin fiber, cholesterol support, digestive regularity, weight management fiber, natural apple fiber',
   openGraph: {

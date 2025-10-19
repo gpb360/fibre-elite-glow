@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Raspberry | Fiber & Antioxidant-Rich | Fibre Elite Glow',
+  title: 'Raspberry | Fiber & Antioxidant-Rich | La Belle Vie',
   description: 'Discover the vibrant health benefits of Raspberry, a delicious fruit packed with fiber, vitamins, and antioxidants to support digestive health, weight management, and more.',
   keywords: 'raspberry, raspberry ketones, dietary fiber, antioxidant, weight management, raspberry benefits, natural fiber, premium raspberry, dietary supplement, ellagic acid',
   openGraph: {

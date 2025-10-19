@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Beta-Glucan Oat Bran | Cholesterol & Heart Health | Fibre Elite Glow',
+  title: 'Beta-Glucan Oat Bran | Cholesterol & Heart Health | La Belle Vie',
   description: 'Discover the powerful benefits of Beta-Glucan Oat Bran, a premium soluble fiber that helps lower cholesterol levels, regulate blood sugar, and promote heart health naturally.',
   keywords: 'beta-glucan oat bran, soluble fiber, lower cholesterol, heart health, blood sugar regulation, oat fiber benefits, natural cholesterol reduction, cardiovascular health, dietary fiber, premium oat bran',
   openGraph: {

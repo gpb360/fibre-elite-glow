@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Detoxifying Broccoli Extract | Sulforaphane for Gut Health | Fibre Elite Glow',
+  title: 'Detoxifying Broccoli Extract | Sulforaphane for Gut Health | La Belle Vie',
   description: 'Unlock the power of sulforaphane with our Detoxifying Broccoli Extract. Supports natural detoxification, promotes gut health, and provides potent antioxidant benefits.',
   keywords: 'detoxifying broccoli extract, sulforaphane, gut health, detoxification support, antioxidant powerhouse, anti-inflammatory, cellular protection, natural detox, broccoli sprout extract',
   openGraph: {

@@ -15,12 +15,12 @@ const IngredientsSchema = () => {
   const schemaData = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "name": "Premium Ingredients | Fibre Elite Glow",
+    "name": "Premium Ingredients | La Belle Vie",
     "description": "Discover our premium, scientifically-backed ingredients that power our fiber supplements for optimal digestive health and overall wellness.",
     "url": "https://www.fibre-elite-glow.com/ingredients",
     "isPartOf": {
       "@type": "WebSite",
-      "name": "Fibre Elite Glow",
+      "name": "La Belle Vie",
       "url": "https://www.fibre-elite-glow.com"
     }
   };

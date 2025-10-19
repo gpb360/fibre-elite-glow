@@ -119,7 +119,7 @@ export function SignUp({ isOpen, onClose, onSwitchToSignIn }: SignUpProps) {
         }
 
         toast({
-          title: "Welcome to Fibre Elite Glow!",
+          title: "Welcome to La Belle Vie!",
           description: "Your account has been created successfully.",
         });
         
@@ -180,7 +180,7 @@ export function SignUp({ isOpen, onClose, onSwitchToSignIn }: SignUpProps) {
         <DialogHeader>
           <DialogTitle>Create Your Account</DialogTitle>
           <DialogDescription>
-            Join Fibre Elite Glow and start your journey to better gut health.
+            Join La Belle Vie and start your journey to better gut health.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>

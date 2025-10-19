@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Strawberry | Vitamin C & Antioxidant Boost | Fibre Elite Glow',
+  title: 'Strawberry | Vitamin C & Antioxidant Boost | La Belle Vie',
   description: 'Explore the delicious and nutritious benefits of Strawberry, a fruit rich in Vitamin C, antioxidants, and fiber that supports immune health, skin vitality, and more.',
   keywords: 'strawberry, vitamin c, antioxidant, immune support, skin health, strawberry benefits, natural vitamin c, premium strawberry, dietary supplement, fruit fiber',
   openGraph: {

@@ -2,7 +2,7 @@
 
 ## 📋 Overview
 
-This guide provides comprehensive automated browser testing for the Fibre Elite Glow e-commerce Stripe checkout integration using Playwright. The testing suite covers the complete user journey from product selection through payment completion.
+This guide provides comprehensive automated browser testing for the La Belle Vie e-commerce Stripe checkout integration using Playwright. The testing suite covers the complete user journey from product selection through payment completion.
 
 ## 🎯 What's Been Implemented
 
@@ -313,4 +313,4 @@ The testing suite validates:
 - ✅ Payment security and compliance
 - ✅ Performance and accessibility standards
 
-This comprehensive testing implementation ensures the Fibre Elite Glow checkout process is robust, secure, and user-friendly across all scenarios and devices.
+This comprehensive testing implementation ensures the La Belle Vie checkout process is robust, secure, and user-friendly across all scenarios and devices.

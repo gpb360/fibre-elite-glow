@@ -3,7 +3,7 @@ import OrderDetailsPage from '@/components/pages/OrderDetailsPage'
 import { generateMetadata as generateSEOMetadata } from '@/lib/seo'
 
 export const metadata: Metadata = generateSEOMetadata({
-  title: 'Order Details | Tracking & Information | Fibre Elite Glow',
+  title: 'Order Details | Tracking & Information | La Belle Vie',
   description: 'View detailed information about your order including items, shipping, and tracking.',
   keywords: 'order details, order tracking, order status, shipping information',
   url: '/account/orders'

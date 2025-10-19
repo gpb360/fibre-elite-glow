@@ -1,0 +1,87 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "Total Essential",
+  "description": "Premium daily fiber blend for digestive wellness and natural energy. Clean, gentle formula with prebiotic fiber for gut health. 15 sachets per box.",
+  "brand": {
+    "@type": "Brand",
+    "name": "La Belle Vie"
+  },
+  "category": "Health & Wellness > Vitamins & Supplements > Fiber Supplements",
+  "sku": "total-essential-base",
+  "gtin": "FEG-TE-001",
+  "offers": {
+    "@type": "Offer",
+    "price": "74.99",
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock",
+    "url": "https://lbve.ca/products/total-essential",
+    "seller": {
+      "@type": "Organization",
+      "name": "La Belle Vie"
+    },
+    "priceValidUntil": "2025-12-31"
+  },
+  "image": [
+    "https://lbve.ca/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp"
+  ],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.8",
+    "reviewCount": "127",
+    "bestRating": "5",
+    "worstRating": "1"
+  },
+  "review": [
+    {
+      "@type": "Review",
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "5"
+      },
+      "author": {
+        "@type": "Person",
+        "name": "Sarah M."
+      },
+      "reviewBody": "Perfect daily fiber supplement. Gentle on my stomach and gives me natural energy throughout the day."
+    },
+    {
+      "@type": "Review",
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "4"
+      },
+      "author": {
+        "@type": "Person",
+        "name": "Michael R."
+      },
+      "reviewBody": "Great product, helped with my digestion. Mixes easily and has no taste."
+    }
+  ],
+  "additionalProperty": [
+    {
+      "@type": "PropertyValue",
+      "name": "Special Features",
+      "value": "Clean, gentle formula with prebiotic fiber"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Key Benefits",
+      "value": "Digestive wellness and natural energy support"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Serving Size",
+      "value": "15 sachets per box"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Product Type",
+      "value": "Daily wellness supplement"
+    }
+  ],
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://lbve.ca/products/total-essential"
+  }
+}

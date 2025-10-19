@@ -426,7 +426,7 @@ export function ProductManagement() {
                   <FormItem>
                     <FormLabel>Product Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Fibre Elite Glow Essential" {...field} />
+                      <Input placeholder="La Belle Vie Essential" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

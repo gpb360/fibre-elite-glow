@@ -1,4 +1,4 @@
-# Image Optimization Plan - Fibre Elite Glow
+# Image Optimization Plan - La Belle Vie
 
 ## Current Status
 

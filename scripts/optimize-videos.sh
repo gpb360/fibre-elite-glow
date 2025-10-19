@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Video Optimization Script for Fibre Elite Glow
+# Video Optimization Script for La Belle Vie
 # Compresses marketing videos for web delivery with multiple quality variants
 
 set -e
@@ -25,7 +25,7 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-echo -e "${BLUE}🎬 Video Optimization Script for Fibre Elite Glow${NC}"
+echo -e "${BLUE}🎬 Video Optimization Script for La Belle Vie${NC}"
 echo -e "${BLUE}===============================================${NC}"
 
 # Check if FFmpeg is installed

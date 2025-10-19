@@ -2,7 +2,7 @@
 /**
  * Stripe Integration Test Script
  * 
- * This script tests the complete Stripe integration for the Fibre Elite Glow application.
+ * This script tests the complete Stripe integration for the La Belle Vie application.
  * It verifies environment variables, tests connections, and validates the setup.
  * 
  * Usage:

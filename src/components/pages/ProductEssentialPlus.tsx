@@ -15,6 +15,7 @@ import { Footer } from '@/components/Footer';
 import { usePackages, Package } from '@/hooks/usePackages';
 import { useCart } from '@/contexts/CartContext';
 import { ProductTestimonials, ProductTestimonial } from '@/components/ui/product-testimonials';
+import { Breadcrumb } from '@/components/ui/breadcrumb';
 
 const totalEssentialPlusTestimonials: ProductTestimonial[] = [
   {
@@ -149,6 +150,15 @@ export function ProductEssentialPlus() {
   return (
     <>
       <Header />
+      <div className="container px-4 md:px-6 py-4">
+        <Breadcrumb
+          items={[
+            { name: 'Products', url: '/products' },
+            { name: 'Total Essential Plus', url: '/products/total-essential-plus', current: true }
+          ]}
+          className="text-sm"
+        />
+      </div>
       <main className="flex-1">
         {/* Hero Section */}
         <section className="bg-gradient-to-b from-purple-50 to-white py-16 md:py-24">
@@ -272,7 +282,7 @@ export function ProductEssentialPlus() {
             />
             <div className="prose max-w-none">
               <p className="text-lg leading-relaxed mb-6">
-                <strong>Total Essential Plus</strong> represents the next evolution in nutritional wellness, featuring all the powerful digestive benefits of our original formula enhanced with four potent superfruits: Açaí Berry, Strawberry, Cranberry, and Raspberry. This advanced formulation was specifically developed for individuals seeking comprehensive wellness with enhanced beauty benefits and superior antioxidant protection.
+                <strong>Total Essential Plus</strong> represents the next evolution in nutritional wellness, featuring all the powerful digestive benefits of our original formula enhanced with four potent superfruits: Açaí Berry, Strawberry, Cranberry, and Raspberry. <Link href="/ingredients" className="text-purple-600 hover:text-purple-700 underline">Explore our premium superfruit ingredients</Link> to discover what makes this advanced formula so powerful. This advanced formulation was specifically developed for individuals seeking comprehensive wellness with enhanced beauty benefits and superior antioxidant protection.
               </p>
               
               <p className="text-lg leading-relaxed mb-6">

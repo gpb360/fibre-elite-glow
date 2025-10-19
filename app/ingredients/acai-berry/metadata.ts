@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Acai Berry | Antioxidant Powerhouse | Fibre Elite Glow',
+  title: 'Acai Berry | Antioxidant Powerhouse | La Belle Vie',
   description: 'Discover the exceptional health benefits of Acai Berry, a powerful antioxidant that supports cellular health, boosts energy levels, and promotes vibrant skin.',
   keywords: 'acai berry, antioxidant, superfood, cellular health, energy boost, skin health, acai benefits, natural antioxidant, premium acai, dietary supplement',
   openGraph: {

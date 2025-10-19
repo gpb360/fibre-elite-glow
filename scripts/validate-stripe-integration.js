@@ -2,7 +2,7 @@
 /**
  * validate-stripe-integration.js
  * 
- * A lightweight validation script to verify Stripe integration with Fibre Elite Glow.
+ * A lightweight validation script to verify Stripe integration with La Belle Vie.
  * This script performs non-destructive checks to ensure the integration is properly configured.
  * 
  * Features:

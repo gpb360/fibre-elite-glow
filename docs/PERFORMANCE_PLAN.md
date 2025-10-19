@@ -1,4 +1,4 @@
-# Performance Optimization Plan for Fibre Elite Glow
+# Performance Optimization Plan for La Belle Vie
 
 ## 🎯 **Issues Identified from Lighthouse**
 

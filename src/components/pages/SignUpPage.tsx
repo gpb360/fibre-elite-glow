@@ -250,7 +250,7 @@ export default function SignUpPage() {
           <div className="text-center">
             <h1 className="text-3xl font-bold text-gray-900">Create Account</h1>
             <p className="mt-2 text-sm text-gray-600">
-              Join Fibre Elite Glow and start your wellness journey today
+              Join La Belle Vie and start your wellness journey today
             </p>
           </div>
 

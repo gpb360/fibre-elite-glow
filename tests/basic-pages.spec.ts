@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Basic Page Access Tests', () => {
   const pages = [
-    { path: '/', title: 'Fibre Elite Glow' },
+    { path: '/', title: 'La Belle Vie' },
     { path: '/about', title: 'About La Belle Vie' },
     { path: '/contact', title: 'Contact Us' },
     { path: '/terms', title: 'Terms and Conditions' },

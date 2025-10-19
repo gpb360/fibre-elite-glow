@@ -1,6 +1,6 @@
 <!--
   Pull Request Template
-  Fibre Elite Glow – Ingredients Expansion
+  La Belle Vie – Ingredients Expansion
 -->
 
 ## 📋 Summary

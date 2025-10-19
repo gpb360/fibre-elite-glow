@@ -141,7 +141,7 @@ export function AdminLayout({ children, title, subtitle }: AdminLayoutProps) {
             <div className="flex items-center space-x-3">
               <Shield className="w-8 h-8 text-green-600" />
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Fibre Elite Glow</h1>
+                <h1 className="text-xl font-bold text-gray-900">La Belle Vie</h1>
                 <p className="text-sm text-gray-600">Admin Dashboard</p>
               </div>
             </div>
@@ -242,7 +242,7 @@ export function AdminLayout({ children, title, subtitle }: AdminLayoutProps) {
             {/* Footer */}
             <div className="p-4 border-t border-gray-200">
               <div className="text-xs text-gray-500 text-center">
-                <p>Fibre Elite Glow Admin</p>
+                <p>La Belle Vie Admin</p>
                 <p>Version 1.0.0</p>
               </div>
             </div>

@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Nutrient-Dense Spinach Powder | Vitality & Gut Health | Fibre Elite Glow',
+  title: 'Nutrient-Dense Spinach Powder | Vitality & Gut Health | La Belle Vie',
   description: 'Elevate your health with our Nutrient-Dense Spinach Powder. This superfood powerhouse is packed with vitamins, minerals, and antioxidants to boost vitality and support gut health.',
   keywords: 'nutrient-dense spinach, spinach powder, boost vitality, gut health support, superfood powder, natural vitamins, iron-rich, antioxidant support, energy boost, green superfood',
   openGraph: {

@@ -17,7 +17,7 @@ const productSchema = generateProductSchema({
   currency: 'USD',
   sku: 'total-essential-base',
   gtin: 'FEG-TE-001',
-  brand: 'Fibre Elite Glow',
+  brand: 'La Belle Vie',
   image: '/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp',
   rating: 4.8,
   reviewCount: 127,
@@ -55,7 +55,7 @@ const productSchema = generateProductSchema({
   ]
 })
 
-const organizationSchema = generateOrganizationSchema('Fibre Elite Glow')
+const organizationSchema = generateOrganizationSchema('La Belle Vie')
 
 export default function TotalEssentialPage() {
   return (

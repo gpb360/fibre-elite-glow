@@ -28,7 +28,7 @@ test.describe('Full E2E Checkout Flow', () => {
 
     // === PHASE 1: Product Discovery ===
     test.step('Navigate to homepage and browse products', async () => {
-      await expect(page).toHaveTitle(/Fibre Elite Glow/);
+      await expect(page).toHaveTitle(/La Belle Vie/);
       
       // Verify homepage loads correctly
       await expect(page.locator('h1')).toBeVisible();

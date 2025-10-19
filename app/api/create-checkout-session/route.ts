@@ -5,8 +5,7 @@ import {
   STRIPE_CONFIG
 } from '@/lib/stripe';
 import { supabaseAdmin } from '@/integrations/supabase/client';
-import { checkoutFormSchema, cartItemSchema } from '@/lib/validation';
-import { enhancedCheckoutSchema, SecurityValidation, FormValidationUtils } from '@/lib/form-validation';
+import { enhancedCheckoutSchema, FormValidationUtils } from '@/lib/form-validation';
 import { GlobalErrorHandler, ErrorSanitizer } from '@/lib/error-handler';
 import { CSRFProtection } from '@/lib/csrf';
 import { z } from 'zod';
@@ -29,7 +28,6 @@ const serverCheckoutSchema = z.object({
   }).optional()
 });
 
-type CheckoutRequestBody = z.infer<typeof serverCheckoutSchema>;
 
 export async function POST(request: NextRequest) {
   try {
@@ -157,17 +155,7 @@ export async function POST(request: NextRequest) {
 
     // Enhanced security validation for all text fields
     const customerInfo = body.customerInfo;
-    const allTextFields = [
-      customerInfo.firstName,
-      customerInfo.lastName,
-      customerInfo.email,
-      customerInfo.address,
-      customerInfo.city,
-      customerInfo.state,
-      customerInfo.zipCode,
-      customerInfo.phone || '',
-      ...body.items.map(item => item.productName)
-    ];
+    
 
     // Comprehensive security checks
     const securityValidation = FormValidationUtils.getFormSecurityScore({
@@ -287,12 +275,12 @@ export async function POST(request: NextRequest) {
       invoice_creation: {
         enabled: true,
         invoice_data: {
-          description: `Order ${orderNumber} - Fibre Elite Glow Products`,
+          description: `Order ${orderNumber} - La Belle Vie Products`,
           metadata: {
             order_number: orderNumber,
             customer_email: body.customerInfo.email,
           },
-          footer: 'Thank you for choosing Fibre Elite Glow! Questions? Contact support@lbve.ca',
+          footer: 'Thank you for choosing La Belle Vie! Questions? Contact support@lbve.ca',
         },
       },
       
@@ -316,7 +304,7 @@ export async function POST(request: NextRequest) {
           customer_name: `${body.customerInfo.firstName} ${body.customerInfo.lastName}`,
           total_items: body.items.length.toString(),
         },
-        description: `Fibre Elite Glow Order ${orderNumber}`,
+        description: `La Belle Vie Order ${orderNumber}`,
       },
       
       // Session expiration (24 hours)
@@ -330,10 +318,10 @@ export async function POST(request: NextRequest) {
       // Custom text for checkout
       custom_text: {
         shipping_address: {
-          message: 'Please provide accurate shipping information for timely delivery of your Fibre Elite Glow products.',
+          message: 'Please provide accurate shipping information for timely delivery of your La Belle Vie products.',
         },
         submit: {
-          message: 'Complete your order to start your gut health journey with Fibre Elite Glow!',
+          message: 'Complete your order to start your gut health journey with La Belle Vie!',
         },
       },
     });
@@ -391,7 +379,7 @@ export async function POST(request: NextRequest) {
         name: error.name,
         message: error.message,
         stack: error.stack,
-        cause: error.cause,
+       // cause: error.cause,
         timestamp: new Date().toISOString()
       });
     }

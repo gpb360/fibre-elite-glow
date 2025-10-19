@@ -1,5 +1,5 @@
 # Stripe Integration – Completion Report  
-_Fibre Elite Glow – `droid/stripe-implementation` branch_  
+_La Belle Vie – `droid/stripe-implementation` branch_  
 
 ---
 
@@ -198,6 +198,6 @@ Returns `403` if authenticated user tries to access another user’s private ses
 ---
 
 ### Cheers 🥂  
-With this branch merged, Fibre Elite Glow can securely accept online payments end-to-end with confidence, automated tests, and clear operational playbooks.  
+With this branch merged, La Belle Vie can securely accept online payments end-to-end with confidence, automated tests, and clear operational playbooks.  
 Happy shipping!  
 — _Engineering Team_  

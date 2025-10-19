@@ -1,5 +1,5 @@
 # Rollback Plan & Production Deployment Readiness
-**Fibre Elite Glow E-commerce Website**
+**La Belle Vie E-commerce Website**
 
 ---
 
@@ -279,7 +279,7 @@ RESTORE DATABASE FROM BACKUP 'backup_name';
 ### **Phase 1: Pre-Deployment (1 hour before)**
 1. **Team Notification**
    ```
-   DEPLOYMENT NOTICE: Fibre Elite Glow v1.0.0
+   DEPLOYMENT NOTICE: La Belle Vie v1.0.0
    Time: [deployment-time]
    Duration: 30 minutes estimated
    Impact: No downtime expected
@@ -431,7 +431,7 @@ git checkout [last-stable-commit] && vercel --prod
 
 ---
 
-**This rollback plan and deployment readiness validation ensures a safe, monitored, and recoverable production deployment for the Fibre Elite Glow e-commerce website.**
+**This rollback plan and deployment readiness validation ensures a safe, monitored, and recoverable production deployment for the La Belle Vie e-commerce website.**
 
 ---
 

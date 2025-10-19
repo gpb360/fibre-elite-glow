@@ -1,6 +1,6 @@
 # Send Email Edge Function
 
-This Supabase Edge Function handles all transactional emails for Fibre Elite Glow using Resend.
+This Supabase Edge Function handles all transactional emails for La Belle Vie using Resend.
 
 ## Setup Instructions
 

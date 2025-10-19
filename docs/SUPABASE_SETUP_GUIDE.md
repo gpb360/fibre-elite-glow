@@ -1,8 +1,8 @@
-# 🗄️ Supabase Database Setup Guide for Fibre Elite Glow
+# 🗄️ Supabase Database Setup Guide for La Belle Vie
 
 ## 📋 Overview
 
-This guide will help you set up a comprehensive e-commerce database structure for your Fibre Elite Glow platform, including proper tables for products, images, orders, customers, and more.
+This guide will help you set up a comprehensive e-commerce database structure for your La Belle Vie platform, including proper tables for products, images, orders, customers, and more.
 
 ## 🚀 Step 1: Reactivate Your Supabase Project
 

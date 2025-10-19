@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Soothing Aloe Vera | Gut Health & Skin Hydration | Fibre Elite Glow',
+  title: 'Soothing Aloe Vera | Gut Health & Skin Hydration | La Belle Vie',
   description: 'Discover the benefits of Soothing Aloe Vera Powder, a gentle extract that calms the digestive tract, supports hydration, and promotes radiant skin health.',
   keywords: 'soothing aloe vera, aloe vera powder, digestive soothing, gut health, skin hydration, acemannan, anti-inflammatory, natural supplements, aloe vera benefits',
   openGraph: {

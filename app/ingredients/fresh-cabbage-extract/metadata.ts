@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Fresh Cabbage Extract | Gut Healing & Anti-Inflammatory | Fibre Elite Glow',
+  title: 'Fresh Cabbage Extract | Gut Healing & Anti-Inflammatory | La Belle Vie',
   description: 'Discover the benefits of Fresh Cabbage Extract, rich in L-glutamine and Vitamin K to support a healthy gut lining, reduce inflammation, and aid digestion.',
   keywords: 'fresh cabbage extract, l-glutamine, gut health, digestive support, anti-inflammatory, vitamin k, leaky gut, natural supplements, cabbage benefits, cruciferous vegetables',
   openGraph: {

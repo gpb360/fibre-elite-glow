@@ -1,7 +1,7 @@
 # Supabase MCP Setup Guide
 _Last updated: June&nbsp;28&nbsp;2025_
 
-This guide walks you through wiring **Supabase** into the Model-Context-Protocol (MCP) layer used by the Fibre Elite Glow code-base.
+This guide walks you through wiring **Supabase** into the Model-Context-Protocol (MCP) layer used by the La Belle Vie code-base.
 
 ---
 

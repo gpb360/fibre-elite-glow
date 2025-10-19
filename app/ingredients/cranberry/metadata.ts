@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Cranberry | Urinary Tract Health & Antioxidant Support | Fibre Elite Glow',
+  title: 'Cranberry | Urinary Tract Health & Antioxidant Support | La Belle Vie',
   description: 'Discover the powerful benefits of Cranberry, a superfood known for supporting urinary tract health, providing antioxidant protection, and boosting the immune system.',
   keywords: 'cranberry, urinary tract health, UTI prevention, antioxidant, immune support, cranberry benefits, natural urinary support, premium cranberry, dietary supplement, proanthocyanidins',
   openGraph: {

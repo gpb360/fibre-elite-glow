@@ -35,7 +35,7 @@ export async function POST(request: Request) {
         totalAmount: '79.99',
         items: [
           {
-            description: 'Fibre Elite Glow - Total Essential',
+            description: 'La Belle Vie - Total Essential',
             quantity: 1,
             amount: '79.99'
           }
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
         totalAmount: '79.99',
         items: [
           {
-            description: 'Fibre Elite Glow - Total Essential',
+            description: 'La Belle Vie - Total Essential',
             quantity: 1,
             amount: '79.99'
           }

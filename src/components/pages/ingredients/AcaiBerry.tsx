@@ -11,6 +11,7 @@ import { Zap, Shield, Sun, ArrowRight, Microscope, Leaf, BarChart3, Droplets, Br
 import Link from 'next/link';
 import Head from 'next/head';
 import Image from 'next/image';
+import { Breadcrumb } from '@/components/ui/breadcrumb';
 
 // Schema.org JSON-LD structured data for SEO
 const IngredientSchema = () => {
@@ -63,6 +64,9 @@ const AcaiBerryHero = () => (
             </h1>
             <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400 mt-4">
               A potent superfood packed with antioxidants to support cellular health, boost energy, and promote radiant skin. Our premium Acai Berry is sustainably sourced and carefully processed.
+              <Link href="/products/total-essential-plus" className="text-purple-600 hover:text-purple-700 underline font-medium">
+                Experience Acai Berry in Total Essential Plus →
+              </Link>
             </p>
           </motion.div>
           <motion.div 
@@ -189,6 +193,15 @@ const AcaiBerry = () => {
         <IngredientSchema />
       </Head>
       <Header />
+      <div className="container px-4 md:px-6 py-4">
+        <Breadcrumb
+          items={[
+            { name: 'Ingredients', url: '/ingredients' },
+            { name: 'Acai Berry', url: '/ingredients/acai-berry', current: true }
+          ]}
+          className="text-sm"
+        />
+      </div>
       <main className="flex-1">
         <AcaiBerryHero />
         

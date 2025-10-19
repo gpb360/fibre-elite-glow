@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Premium Natural Ingredients | Fiber Supplements | Fibre Elite Glow',
+  title: 'Premium Natural Ingredients | Fiber Supplements | La Belle Vie',
   description: 'Discover the science-backed natural ingredients in our premium fiber supplements. Learn about Oil Palm Fibre, Prebiotic Oligosaccharides, and other high-quality components that support digestive health and overall wellness.',
   keywords: 'natural ingredients, premium fiber supplements, oil palm fibre, prebiotic oligosaccharides, beta-glucan oat bran, digestive health ingredients, gut health supplements, natural fiber sources, sustainable ingredients, science-backed supplements',
   openGraph: {

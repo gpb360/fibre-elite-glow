@@ -2,7 +2,7 @@
 
 ## 📋 Overview
 
-This comprehensive guide covers all aspects of testing video functionality for the Fibre Elite Glow website, ensuring reliable video playback across all browsers, devices, and network conditions.
+This comprehensive guide covers all aspects of testing video functionality for the La Belle Vie website, ensuring reliable video playback across all browsers, devices, and network conditions.
 
 ## 🎯 Testing Objectives
 

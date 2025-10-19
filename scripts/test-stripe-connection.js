@@ -43,7 +43,7 @@ async function testStripeConnection() {
     // Test creating a simple product (will be deleted)
     console.log('\n🛍️ Testing product creation...');
     const testProduct = await stripe.products.create({
-      name: 'Test Product - Fibre Elite Glow',
+      name: 'Test Product - La Belle Vie',
       description: 'This is a test product and will be deleted',
       metadata: {
         test: 'true',
