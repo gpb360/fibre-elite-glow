@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { stripe, STRIPE_CONFIG } from '@/lib/stripe';
+import { stripe } from '@/lib/stripe';
 import { supabaseAdmin } from '@/integrations/supabase/client';
 import { emailService } from '@/lib/email-service';
 import { inventoryService } from '@/lib/inventory-service';
@@ -847,15 +847,34 @@ export async function POST(request: Request) {
           }
         }
 
-        // Send order confirmation email via Resend
+        // Send order confirmation email via Resend with shipping address
         if (order && customerEmail) {
-          await sendOrderConfirmationEmail({
+          const customerFullName = metadata.customer_name || `${shippingAddress.first_name || ''} ${shippingAddress.last_name || ''}`.trim() || 'Valued Customer';
+
+          // Use the email service with shipping address
+          await emailService.sendOrderConfirmationWithAddress({
             orderNumber: order.order_number,
             customerEmail,
-            customerName: metadata.customer_name || `${shippingAddress.first_name || ''} ${shippingAddress.last_name || ''}`.trim() || 'Valued Customer',
-            items: orderItems,
+            customerName: customerFullName,
+            items: orderItems.map(item => ({
+              name: item.name,
+              quantity: item.quantity,
+              price: item.price,
+              product_type: (item.product_type === 'total_essential_plus' ? 'total_essential_plus' : 'total_essential') as 'total_essential' | 'total_essential_plus'
+            })),
             totalAmount: (session.amount_total || 0) / 100,
-            currency: session.currency || 'usd'
+            currency: session.currency || 'usd',
+            shippingAddress: {
+              firstName: shippingAddress.first_name || '',
+              lastName: shippingAddress.last_name || '',
+              addressLine1: shippingAddress.line1 || '',
+              addressLine2: shippingAddress.line2 || '',
+              city: shippingAddress.city || '',
+              state: shippingAddress.state || '',
+              postalCode: shippingAddress.postal_code || '',
+              country: shippingAddress.country || 'US',
+            },
+            createdAt: new Date().toISOString()
           });
         }
 
@@ -863,24 +882,31 @@ export async function POST(request: Request) {
         if (order && customerEmail && orderItems.length > 0) {
           const customerFullName = metadata.customer_name || `${shippingAddress.first_name || ''} ${shippingAddress.last_name || ''}`.trim() || 'Unknown Customer';
 
-          await sendAdminNotificationEmail({
+          // Use the email service for admin notifications
+          await emailService.sendAdminOrderNotification({
             orderNumber: order.order_number,
             customerEmail,
             customerName: customerFullName,
-            items: orderItems,
+            items: orderItems.map(item => ({
+              name: item.name,
+              quantity: item.quantity,
+              price: item.price,
+              product_type: (item.product_type === 'total_essential_plus' ? 'total_essential_plus' : 'total_essential') as 'total_essential' | 'total_essential_plus'
+            })),
             totalAmount: (session.amount_total || 0) / 100,
             currency: session.currency || 'usd',
             shippingAddress: {
               firstName: shippingAddress.first_name || '',
               lastName: shippingAddress.last_name || '',
               addressLine1: shippingAddress.line1 || '',
-              addressLine2: shippingAddress.line2,
+              addressLine2: shippingAddress.line2 || '',
               city: shippingAddress.city || '',
               state: shippingAddress.state || '',
               postalCode: shippingAddress.postal_code || '',
               country: shippingAddress.country || 'US',
             },
-            paymentIntentId: session.payment_intent as string
+            paymentIntentId: session.payment_intent as string,
+            createdAt: new Date().toISOString()
           });
         }
         
