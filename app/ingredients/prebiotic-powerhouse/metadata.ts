@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Prebiotic Powerhouse | Oligosaccharides for Gut Flora | Fibre Elite Glow',
+  title: 'Prebiotic Powerhouse | Oligosaccharides for Gut Flora | La Belle Vie',
   description: 'Nourish your gut’s ecosystem with our Prebiotic Oligosaccharides. These specialized fibers feed your beneficial bacteria, promoting a balanced microbiome and superior digestive health.',
   keywords: 'prebiotic oligosaccharides, gut flora, microbiome support, feed good bacteria, digestive wellness, natural prebiotics, gut ecosystem, short-chain fatty acids, digestive balance',
   openGraph: {

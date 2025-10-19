@@ -1,8 +1,8 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Digestive-Aid Guar Gum | Prebiotic Fiber for Regularity | Fibre Elite Glow',
-  description: 'Discover the benefits of Digestive-Aid Guar Gum, a natural soluble fiber that supports digestive regularity, acts as a prebiotic, and promotes feelings of fullness.',
+  title: 'Digestive-Aid Guar Gum - Prebiotic Fiber for Regularity - La Belle Vie',
+  description: 'Promote digestive regularity and gut health with natural guar gum fiber. This highly soluble prebiotic fiber creates bulk in the digestive tract, nourishes beneficial gut bacteria, slows glucose absorption for blood sugar balance, and provides lasting satiety to support healthy weight management.',
   keywords: 'digestive-aid guar gum, guar gum, soluble fiber, prebiotic, digestive regularity, constipation relief, satiety, blood sugar support, natural supplements, guar bean',
   openGraph: {
     title: 'Digestive-Aid Guar Gum | Natural Fiber for Gut Health',

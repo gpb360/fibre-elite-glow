@@ -1,4 +1,4 @@
--- Fibre Elite Glow E-commerce Database Schema
+-- La Belle Vie E-commerce Database Schema
 -- Comprehensive schema for products, images, categories, orders, and more
 
 -- Enable necessary extensions

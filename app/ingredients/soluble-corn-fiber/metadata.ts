@@ -1,8 +1,8 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Soluble Corn Fiber | Prebiotic for Digestive Health | Fibre Elite Glow',
-  description: 'Discover the benefits of Soluble Corn Fiber, a well-tolerated prebiotic that supports digestive health, promotes satiety, and helps maintain healthy blood sugar levels.',
+  title: 'Soluble Corn Fiber - Prebiotic for Digestive Health - La Belle Vie',
+  description: 'Enhance digestive wellness with gentle soluble corn fiber that serves as an effective prebiotic. This well-tolerated fiber resists digestion in the small intestine, reaching the colon to nourish beneficial gut bacteria, enhance calcium absorption, moderate blood glucose responses, and promote lasting satiety for optimal metabolic health.',
   keywords: 'soluble corn fiber, prebiotic, digestive health, gut microbiome, blood sugar support, satiety, low calorie fiber, calcium absorption, natural supplements, corn fiber benefits',
   openGraph: {
     title: 'Soluble Corn Fiber | Gentle Prebiotic for a Healthy Gut',

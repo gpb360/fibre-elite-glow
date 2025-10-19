@@ -1,6 +1,6 @@
 # 🚀 Stripe MCP Server Setup Guide
 
-This guide will help you set up the Stripe Model Context Protocol (MCP) server for your Fibre Elite Glow e-commerce application.
+This guide will help you set up the Stripe Model Context Protocol (MCP) server for your La Belle Vie e-commerce application.
 
 ## 📋 Prerequisites
 

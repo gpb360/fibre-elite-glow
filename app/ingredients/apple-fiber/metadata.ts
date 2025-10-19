@@ -1,8 +1,8 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Premium Apple Fiber | Digestive & Heart Health | Fibre Elite Glow',
-  description: 'Discover the benefits of Premium Apple Fiber, a gentle yet effective source of both soluble and insoluble fiber that supports digestive regularity and helps maintain healthy cholesterol levels.',
+  title: 'Premium Apple Fiber - Digestive & Heart Health - La Belle Vie',
+  description: 'Support your digestive system and cardiovascular health with our premium apple fiber. This natural source of soluble and insoluble fiber contains pectin that promotes regular bowel movements, feeds beneficial gut bacteria, and helps maintain healthy cholesterol levels for optimal wellness.',
   keywords: 'premium apple fiber, soluble fiber, insoluble fiber, digestive health, heart health, cholesterol management, natural fiber supplement, gut health, weight management, digestive regularity, apple pectin',
   openGraph: {
     title: 'Premium Apple Fiber | Natural Digestive & Heart Health Support',

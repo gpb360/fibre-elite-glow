@@ -49,7 +49,7 @@ export function Breadcrumb({ items, className, showHome = true }: BreadcrumbProp
               ) : (
                 <Link
                   href={item.url}
-                  className="text-blue-600 hover:text-blue-800 transition-colors"
+                  className="text-green-600 hover:text-green-800 transition-colors"
                 >
                   {index === 0 && showHome ? (
                     <Home className="h-4 w-4" />

@@ -2,7 +2,7 @@
 
 ## 📋 Overview
 
-This guide provides a comprehensive implementation plan for integrating professional marketing videos from Google Drive into the Fibre Elite Glow e-commerce website.
+This guide provides a comprehensive implementation plan for integrating professional marketing videos from Google Drive into the La Belle Vie e-commerce website.
 
 ## 🎯 Selected Videos & Strategic Placement
 

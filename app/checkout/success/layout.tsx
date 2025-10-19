@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Order Confirmation | Payment Successful | Fibre Elite Glow',
+  title: 'Order Confirmation | Payment Successful | La Belle Vie',
   description: 'Your order has been successfully processed. Thank you for choosing our premium fiber supplements for your digestive wellness journey.',
   robots: 'noindex, nofollow'
 }

@@ -1,8 +1,19 @@
 import Ingredients from '@/components/pages/Ingredients';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { generateMetadata } from '@/lib/seo';
+import { getIngredientDescription, getIngredientImage, ingredientData } from '@/lib/ingredient-utils';
+import { Metadata } from 'next';
 
 export const dynamic = 'force-static';
+
+export const metadata: Metadata = generateMetadata({
+  title: 'Premium Ingredients - La Belle Vie Fiber Supplements',
+  description: 'Discover the premium natural ingredients in our fiber supplements. From superfruits to prebiotic fibers, learn about the science behind our wellness formulas.',
+  keywords: 'natural ingredients, fiber supplement ingredients, prebiotic fiber, superfruits, acai berry, cranberry, digestive health, wellness supplements',
+  image: '/lovable-uploads/webp/digestive-health-benefits-fiber-supplement.webp',
+  url: '/ingredients'
+});
 
 async function getIngredients() {
   const ingredientsDir = path.join(process.cwd(), 'app/ingredients');
@@ -20,37 +31,37 @@ async function getIngredients() {
         }
       })
       .map(async (dir) => {
+        // Skip metadata directories and system files
+        if (dir === 'prebiotic-powerhouse' || dir.startsWith('.') || !dir.includes('-')) {
+          return null;
+        }
+
         let name = dir.replace(/-/g, ' ');
-        let image = '/lovable-uploads/webp/digestive-health-benefits-fiber-supplement.webp'; // Default fallback
 
-        try {
-          const metadataModule = await import(`./${dir}/metadata`);
-          name = metadataModule.metadata.title || name;
-        } catch {
-          // It's okay if metadata doesn't exist, we'll use the directory name.
-        }
-
-        const imageExtensions = ['jpg', 'jpeg', 'png', 'webp'];
-        const imageNames = ['hero', 'thumbnail', 'image'];
-
-        for (const imgName of imageNames) {
-          for (const ext of imageExtensions) {
-            const imgPath = path.join(process.cwd(), 'public', 'lovable-uploads', `${dir}-${imgName}.${ext}`);
-            try {
-              await fs.access(imgPath);
-              image = `/lovable-uploads/${dir}-${imgName}.${ext}`;
-              break;
-            } catch {
-              // File doesn't exist, continue checking
-            }
+        // Use ingredient data for consistent naming
+        if (ingredientData[dir]) {
+          name = ingredientData[dir].name;
+        } else {
+          // Fallback to metadata if available
+          try {
+            const metadataModule = await import(`./${dir}/metadata`);
+            name = metadataModule.metadata.title.split(' - ')[0] || name;
+          } catch {
+            // Use directory name as fallback
           }
-          if (image !== '/lovable-uploads/webp/digestive-health-benefits-fiber-supplement.webp') break;
         }
+
+        // Use mapped image for consistency
+        const image = getIngredientImage(dir);
+
+        // Use proper description
+        const description = getIngredientDescription(dir);
 
         return {
           name: name,
           path: `/ingredients/${dir}`,
           image: image,
+          description: description,
         };
       })
   );

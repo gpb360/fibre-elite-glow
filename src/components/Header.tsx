@@ -112,7 +112,15 @@ export function Header() {
         </nav>
         
         {/* Mobile menu button */}
-        <div className="flex md:hidden">
+        <div className="flex md:hidden items-center gap-2">
+          <Link href="/cart" className="relative text-gray-700 hover:text-green-600 transition-colors" data-testid="cart-link-mobile">
+            <ShoppingCart className="h-6 w-6" />
+            {cart.totalItems > 0 && (
+              <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-green-500 text-xs text-white font-medium" data-testid="cart-counter-mobile">
+                {cart.totalItems > 99 ? '99+' : cart.totalItems}
+              </span>
+            )}
+          </Link>
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="inline-flex items-center justify-center rounded-md p-2 text-gray-800 hover:bg-gray-100 focus:outline-none"
@@ -125,8 +133,8 @@ export function Header() {
             )}
           </button>
         </div>
-        
-        {/* Cart and action buttons */}
+
+        {/* Cart and action buttons - Desktop only */}
         <div className="hidden md:flex items-center gap-4">
           <Link href="/cart" className="relative text-gray-700 hover:text-green-600 transition-colors" data-testid="cart-link">
             <ShoppingCart className="h-6 w-6" />
@@ -227,26 +235,6 @@ export function Header() {
             >
               Contact
             </Link>
-            <div className="mt-4 flex items-center gap-4">
-              <Link href="/cart" className="relative hover:text-gray-200 transition-colors">
-                <ShoppingCart className="h-6 w-6" />
-                {cart.totalItems > 0 && (
-                  <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-white text-xs text-green-600 font-medium">
-                    {cart.totalItems > 99 ? '99+' : cart.totalItems}
-                  </span>
-                )}
-              </Link>
-              {/* <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  setIsSignInOpen(true);
-                }}
-              >
-                Sign In
-              </Button> */}
-            </div>
           </div>
         </div>
       )}

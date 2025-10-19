@@ -1,5 +1,5 @@
 # 404 / Navigation Audit  
-_Fibre Elite Glow – Next.js (App Router)_
+_La Belle Vie – Next.js (App Router)_
 
 Last reviewed: **28 Jun 2025**  
 Branch: `droid/fix-404-navigation-issues`

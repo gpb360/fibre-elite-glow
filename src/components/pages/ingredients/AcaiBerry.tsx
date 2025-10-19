@@ -11,29 +11,39 @@ import { Zap, Shield, Sun, ArrowRight, Microscope, Leaf, BarChart3, Droplets, Br
 import Link from 'next/link';
 import Head from 'next/head';
 import Image from 'next/image';
+import { Breadcrumb } from '@/components/ui/breadcrumb';
+import { generateIngredientSchema, generateBreadcrumbSchema } from '@/lib/seo';
 
 // Schema.org JSON-LD structured data for SEO
 const IngredientSchema = () => {
-  const schemaData = {
-    "@context": "https://schema.org",
-    "@type": "MedicalSubstance",
-    "name": "Acai Berry",
-    "description": "A powerful superfood rich in antioxidants that supports cellular health, boosts energy levels, and promotes vibrant skin.",
-    "medicineSystem": "Natural supplement",
-    "relevantSpecialty": [
-      "Dermatology",
-      "Nutrition",
-      "Anti-Aging"
-    ],
-    "activeIngredient": "Anthocyanins, polyphenols, and other antioxidants",
-    "mechanismOfAction": "Neutralizes free radicals, reduces oxidative stress, and supports cellular regeneration"
-  };
+  const ingredientSchema = generateIngredientSchema({
+    name: "Acai Berry",
+    description: "A powerful superfood rich in antioxidants that supports cellular health, boosts energy levels, and promotes vibrant skin.",
+    benefits: ["Antioxidant protection", "Energy boost", "Skin health", "Cellular regeneration", "Immune support"],
+    category: "Superfruit",
+    url: "/ingredients/acai-berry",
+    image: "/lovable-uploads/acai-closeup.jpg",
+    activeCompounds: ["Anthocyanins", "Polyphenols", "Flavonoids", "Vitamin C"],
+    mechanisms: ["Neutralizes free radicals", "Reduces oxidative stress", "Supports cellular regeneration", "Enhances energy metabolism"]
+  });
+
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Ingredients', url: '/ingredients' },
+    { name: 'Acai Berry', url: '/ingredients/acai-berry' }
+  ]);
 
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(ingredientSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+    </>
   );
 };
 
@@ -63,6 +73,9 @@ const AcaiBerryHero = () => (
             </h1>
             <p className="max-w-[600px] text-gray-500 md:text-xl dark:text-gray-400 mt-4">
               A potent superfood packed with antioxidants to support cellular health, boost energy, and promote radiant skin. Our premium Acai Berry is sustainably sourced and carefully processed.
+              <Link href="/products/total-essential-plus" className="text-purple-600 hover:text-purple-700 underline font-medium">
+                Experience Acai Berry in Total Essential Plus →
+              </Link>
             </p>
           </motion.div>
           <motion.div 
@@ -189,6 +202,15 @@ const AcaiBerry = () => {
         <IngredientSchema />
       </Head>
       <Header />
+      <div className="container px-4 md:px-6 py-4">
+        <Breadcrumb
+          items={[
+            { name: 'Ingredients', url: '/ingredients' },
+            { name: 'Acai Berry', url: '/ingredients/acai-berry', current: true }
+          ]}
+          className="text-sm"
+        />
+      </div>
       <main className="flex-1">
         <AcaiBerryHero />
         

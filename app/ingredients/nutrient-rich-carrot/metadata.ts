@@ -1,8 +1,8 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Nutrient-Rich Carrot | Beta-Carotene for Vision & Skin | Fibre Elite Glow',
-  description: 'Discover the benefits of Nutrient-Rich Carrot, packed with beta-carotene and fiber to support healthy vision, radiant skin, and optimal digestive wellness.',
+  title: 'Nutrient-Rich Carrot - Beta-Carotene for Vision & Skin - La Belle Vie',
+  description: 'Support vision health and skin radiance with beta-carotene-rich carrot extract. This concentrated formula provides provitamin A that converts to retinol for optimal eye function, while dietary fiber promotes digestive regularity and antioxidants protect cellular membranes for vibrant skin and enhanced visual acuity.',
   keywords: 'nutrient-rich carrot, beta-carotene, vitamin a, vision support, skin health, digestive wellness, antioxidant, natural supplements, carrot benefits, root vegetables',
   openGraph: {
     title: 'Nutrient-Rich Carrot | Support for Vision, Skin & Digestion',

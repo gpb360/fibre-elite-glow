@@ -567,7 +567,7 @@ class GoogleSheetsIntegration {
 
 ## 📊 Executive Summary
 
-This report provides a complete analysis of the image audit and mapping system for the Fibre Elite Glow website.
+This report provides a complete analysis of the image audit and mapping system for the La Belle Vie website.
 
 ### 🗂️ Generated Files
 

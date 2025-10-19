@@ -9,7 +9,8 @@ import { ClientBodyWrapper } from './components/ClientBodyWrapper'
 import GoogleAnalytics from '@/components/analytics/GoogleAnalytics'
 import PerformanceOptimizer from '@/components/performance/PerformanceOptimizer'
 import CriticalCSS from '@/components/performance/CriticalCSS'
-import { ErrorBoundary } from '@/components/error'
+import { generateOrganizationSchema } from '@/lib/seo'
+import StructuredData from '@/components/seo/StructuredData'
 import './globals.css'
 
 const inter = Inter({ 
@@ -20,9 +21,25 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Fibre Elite Glow - Premium Gut Health Supplements',
+  metadataBase: new URL('https://lbve.ca'),
+  title: 'La Belle Vie - Premium Gut Health Supplements',
   description: 'Transform your gut health with our premium fiber supplements. Experience better digestion, increased energy, and overall wellness.',
+  openGraph: {
+    title: 'La Belle Vie - Premium Gut Health Supplements',
+    description: 'Transform your gut health with our premium fiber supplements. Experience better digestion, increased energy, and overall wellness.',
+    type: 'website',
+    siteName: 'La Belle Vie',
+    locale: 'en_CA',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'La Belle Vie - Premium Gut Health Supplements',
+    description: 'Transform your gut health with our premium fiber supplements.',
+  },
 }
+
+// Generate organization schema for global use
+const organizationSchema = generateOrganizationSchema('La Belle Vie')
 
 export default function RootLayout({
   children,
@@ -46,6 +63,7 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://js.stripe.com" />
         
         <GoogleAnalytics />
+        <StructuredData data={organizationSchema} />
       </head>
       <body suppressHydrationWarning className={inter.variable}>
         <a href="#main-content" className="skip-link">Skip to main content</a>

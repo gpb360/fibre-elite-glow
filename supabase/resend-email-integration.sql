@@ -174,7 +174,7 @@ BEGIN
     <div class="container">
         <div class="header">
             <h1>🎉 Order Confirmed!</h1>
-            <p>Thank you for your order. We''re excited to get your Fibre Elite Glow products to you!</p>
+            <p>Thank you for your order. We''re excited to get your La Belle Vie products to you!</p>
         </div>
 
         <div class="order-details">
@@ -209,7 +209,7 @@ BEGIN
 
         <div class="footer">
             <p>Questions? Contact our support team at support@fibreeliteglow.com</p>
-            <p>Fibre Elite Glow - Premium Gut Health Solutions</p>
+            <p>La Belle Vie - Premium Gut Health Solutions</p>
         </div>
     </div>
 </body>
@@ -253,7 +253,7 @@ What''s Next?
 
 Questions? Contact our support team at support@fibreeliteglow.com
 
-Fibre Elite Glow - Premium Gut Health Solutions
+La Belle Vie - Premium Gut Health Solutions
     ',
         p_order_number,
         p_order_number,
@@ -404,7 +404,7 @@ BEGIN
         </div>
 
         <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666;">
-            <p><strong>Fibre Elite Glow Admin Panel</strong></p>
+            <p><strong>La Belle Vie Admin Panel</strong></p>
             <p>Order processing system notification</p>
         </div>
     </div>
@@ -471,7 +471,7 @@ Order Total: $%s
 3. Prepare Shipment: Package items and prepare shipping label
 4. Update Customer: Send tracking information once shipped
 
-Fibre Elite Glow Admin Panel
+La Belle Vie Admin Panel
 Order processing system notification
     ',
         p_order_number,

@@ -1,4 +1,4 @@
--- Sample data for Fibre Elite Glow E-commerce Database
+-- Sample data for La Belle Vie E-commerce Database
 
 -- Insert categories
 INSERT INTO categories (id, name, slug, description, sort_order) VALUES

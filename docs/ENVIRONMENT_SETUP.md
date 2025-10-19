@@ -1,6 +1,6 @@
 # Environment Setup Guide
 
-This guide will help you set up the necessary environment variables for the Fibre Elite Glow application.
+This guide will help you set up the necessary environment variables for the La Belle Vie application.
 
 ## Required Environment Variables
 

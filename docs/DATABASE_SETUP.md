@@ -1,6 +1,6 @@
 # Database Setup Guide
 
-This guide will help you set up the required database tables for the Fibre Elite Glow application.
+This guide will help you set up the required database tables for the La Belle Vie application.
 
 ## Prerequisites
 - Supabase project created and configured

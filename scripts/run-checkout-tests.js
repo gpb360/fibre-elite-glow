@@ -188,7 +188,7 @@ async function generateReport() {
 
 function printUsage() {
   log(`
-${colors.bright}Fibre Elite Glow - Checkout Test Runner${colors.reset}
+${colors.bright}La Belle Vie - Checkout Test Runner${colors.reset}
 
 ${colors.bright}Usage:${colors.reset}
   node scripts/run-checkout-tests.js [test-type] [options]
@@ -244,7 +244,7 @@ async function main() {
   };
 
   try {
-    logHeader('Fibre Elite Glow - Checkout Test Suite');
+    logHeader('La Belle Vie - Checkout Test Suite');
     
     if (options.report) {
       await generateReport();

@@ -30,10 +30,12 @@ export function Hero() {
       <div className="absolute inset-0 z-0 opacity-20">
         <Image
           src="/lovable-uploads/webp/fruit-veg-bottle.webp"
-          alt="Natural fiber supplement bottles surrounded by fresh fruits and vegetables - Fibre Elite Glow wellness products"
+          alt="Natural fiber supplement bottles surrounded by fresh fruits and vegetables - La Belle Vie wellness products"
           fill
           className="object-cover"
           priority={true}
+          placeholder="blur"
+          blurDataURL="data:image/webp;base64,UklGRiQAAABXRUJQVlA4WAoAAAAQAAAA8wAA8wAAQUxQSBIAAAABR0AEmQAP4A/kOw2G7k7I6H7G8N9O8Q9R/T0U1V1W2X3Y4Z5a6b7c8d9e+f/gH+gJ+iP6oL+pQ6pS+pT+pZ+pqPqw6rS6rT6rZ6rqPqw6rS6rT6rZ6rqPqw6rS6rT6rZ6rqPqw6rS6rT6rZ6rqPuw="
         />
       </div>
       <div className="container mx-auto px-4 md:px-6 max-w-6xl">

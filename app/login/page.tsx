@@ -4,7 +4,7 @@ import { generateMetadata as generateSEOMetadata } from '@/lib/seo'
 
 export const metadata: Metadata = generateSEOMetadata({
   title: 'Login to Your Account | Premium Fiber Supplements',
-  description: 'Sign in to your Fibre Elite Glow account to view your orders, manage your profile, and track your wellness journey.',
+  description: 'Sign in to your La Belle Vie account to view your orders, manage your profile, and track your wellness journey.',
   keywords: 'login, sign in, account, user account, customer portal',
   url: '/login'
 })

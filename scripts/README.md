@@ -271,7 +271,7 @@ For issues or questions:
 
 ## 📄 License
 
-This image audit system is part of the Fibre Elite Glow project and follows the same licensing terms.
+This image audit system is part of the La Belle Vie project and follows the same licensing terms.
 
 ---
 

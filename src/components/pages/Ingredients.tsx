@@ -9,27 +9,40 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Head from 'next/head';
 import Image from 'next/image';
+import { generateIngredientsCollectionSchema, generateBreadcrumbSchema, generateOrganizationSchema } from '@/lib/seo';
+import { Breadcrumb } from '@/components/ui/breadcrumb';
 
 // Schema.org JSON-LD structured data for SEO
-const IngredientsSchema = () => {
-  const schemaData = {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    "name": "Premium Ingredients | Fibre Elite Glow",
-    "description": "Discover our premium, scientifically-backed ingredients that power our fiber supplements for optimal digestive health and overall wellness.",
-    "url": "https://www.fibre-elite-glow.com/ingredients",
-    "isPartOf": {
-      "@type": "WebSite",
-      "name": "Fibre Elite Glow",
-      "url": "https://www.fibre-elite-glow.com"
-    }
-  };
+const IngredientsSchema = ({ ingredients }: { ingredients: Ingredient[] }) => {
+  const schemaData = generateIngredientsCollectionSchema(ingredients.map(ingredient => ({
+    name: ingredient.name,
+    description: ingredient.description,
+    url: ingredient.path,
+    image: ingredient.image
+  })));
+
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Ingredients', url: '/ingredients' }
+  ]);
+
+  const organizationSchema = generateOrganizationSchema();
 
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
+    </>
   );
 };
 
@@ -108,16 +121,28 @@ interface Ingredient {
   name: string;
   path: string;
   image: string;
+  description: string;
 }
 
 const Ingredients = ({ ingredients }: { ingredients: Ingredient[] }) => {
   return (
     <div className="flex min-h-screen flex-col">
       <Head>
-        <IngredientsSchema />
+        <IngredientsSchema ingredients={ingredients} />
       </Head>
       <Header />
       <main className="flex-1">
+        {/* Breadcrumb Navigation */}
+        <section className="bg-white border-b">
+          <div className="container px-4 md:px-6 mx-auto py-4">
+            <Breadcrumb
+              items={[
+                { name: 'Ingredients', url: '/ingredients', current: true }
+              ]}
+            />
+          </div>
+        </section>
+
         <IngredientsHero />
         
         {/* Ingredients Grid */}
@@ -135,7 +160,7 @@ const Ingredients = ({ ingredients }: { ingredients: Ingredient[] }) => {
                 <IngredientCard
                   key={ingredient.path}
                   title={ingredient.name}
-                  description={`Learn more about the benefits of ${ingredient.name}.`}
+                  description={ingredient.description}
                   image={ingredient.image}
                   slug={ingredient.path.replace('/ingredients/', '')}
                 />

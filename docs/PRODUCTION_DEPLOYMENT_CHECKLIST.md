@@ -1,4 +1,4 @@
-# Production Deployment Checklist - Fibre Elite Glow
+# Production Deployment Checklist - La Belle Vie
 
 ## 🚀 Pre-Deployment Checklist
 
@@ -424,4 +424,4 @@ Deploy rollback if:
 
 ---
 
-*This checklist ensures a thorough, error-free production deployment for Fibre Elite Glow e-commerce website.*
+*This checklist ensures a thorough, error-free production deployment for La Belle Vie e-commerce website.*

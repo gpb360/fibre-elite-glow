@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide helps you troubleshoot and resolve authentication issues in the Fibre Elite Glow Next.js application using Supabase Auth.
+This guide helps you troubleshoot and resolve authentication issues in the La Belle Vie Next.js application using Supabase Auth.
 
 ## Common Issues and Solutions
 

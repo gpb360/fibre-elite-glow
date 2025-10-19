@@ -1,8 +1,8 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Enzyme-Rich Papaya | Natural Digestive Aid | Fibre Elite Glow',
-  description: 'Harness the power of papain from Enzyme-Rich Papaya to support protein digestion, reduce bloating, and enhance nutrient absorption for optimal gut health.',
+  title: 'Enzyme-Rich Papaya - Natural Digestive Aid - La Belle Vie',
+  description: 'Enhance protein digestion and nutrient absorption with enzyme-rich papaya extract. The natural papain protease enzymes break down difficult proteins, reduce digestive discomfort and bloating, while supporting pancreatic function and improving the bioavailability of essential nutrients for optimal gut health.',
   keywords: 'enzyme-rich papaya, papain, digestive enzymes, protein digestion, reduce bloating, anti-inflammatory, natural supplements, papaya benefits, gut health, nutrient absorption',
   openGraph: {
     title: 'Enzyme-Rich Papaya | Your Natural Digestive Enzyme Boost',

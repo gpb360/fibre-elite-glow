@@ -2,7 +2,7 @@
 /**
  * complete-stripe-setup.js
  * 
- * A comprehensive setup script for Stripe integration with Fibre Elite Glow.
+ * A comprehensive setup script for Stripe integration with La Belle Vie.
  * This script automates the setup process for Stripe integration with Supabase.
  * 
  * Features:
@@ -438,7 +438,7 @@ async function setupWebhooks(stripe) {
       const webhook = await stripe.webhookEndpoints.create({
         url: webhookUrl,
         enabled_events: STRIPE_WEBHOOK_EVENTS,
-        description: 'Fibre Elite Glow webhook (created by setup script)',
+        description: 'La Belle Vie webhook (created by setup script)',
       });
       
       log.success(`Webhook created with ID: ${webhook.id}`);

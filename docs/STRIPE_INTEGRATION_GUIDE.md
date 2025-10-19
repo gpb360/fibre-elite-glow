@@ -4,7 +4,7 @@ _Last updated: June 28 2025_
 
 ## 1. Overview
 
-This guide explains how the new, **end-to-end Stripe Checkout integration** was added to the Fibre Elite Glow (Next.js / Supabase) code-base and how to configure it for local development, staging and production.
+This guide explains how the new, **end-to-end Stripe Checkout integration** was added to the La Belle Vie (Next.js / Supabase) code-base and how to configure it for local development, staging and production.
 
 Key features implemented:
 
@@ -196,4 +196,4 @@ Secrets are automatically injected into the Lambda / Edge runtime environment wh
 ---
 
 Happy building & stay secure!  
-— _Fibre Elite Glow Engineering_
+— _La Belle Vie Engineering_
