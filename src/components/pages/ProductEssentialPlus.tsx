@@ -313,7 +313,7 @@ export function ProductEssentialPlus() {
 
         {/* Ingredients Section */}
         <SplitSection
-          image="/lovable-uploads/webp/digestive-health-benefits-fiber-supplement.webp"
+          image="/assets/total-essential-plus-box.png"
           imageAlt="Total Essential Plus Ingredients"
           title="Premium Natural Ingredients Plus Superfruits"
           description="Every ingredient in Total Essential Plus is carefully sourced from certified suppliers worldwide and meets the highest quality standards. All components are verified non-GMO and certified Gluten-Free, with the addition of four potent superfruit extracts for enhanced antioxidant protection and skin health benefits."
