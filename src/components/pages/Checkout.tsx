@@ -366,9 +366,15 @@ const CheckoutForm: React.FC = () => {
     }
   };
 
-  // Redirect to cart if empty
+  // Redirect to cart if empty (but not if we just came from success page)
   useEffect(() => {
-    if (cart.items.length === 0) {
+    if (cart.items.length === 0 && typeof window !== 'undefined') {
+      // Check if we just came from checkout success to prevent redirect loop
+      const fromSuccess = sessionStorage.getItem('from_checkout_success');
+      if (fromSuccess) {
+        sessionStorage.removeItem('from_checkout_success');
+        return; // Don't redirect to cart if we just completed checkout
+      }
       router.push('/cart');
     }
   }, [cart.items.length, router]);

@@ -40,68 +40,58 @@ const OrderHistory: React.FC = () => {
   }, [user])
 
   const fetchOrders = async () => {
-    if (!user?.id) return
+    if (!user) return
 
     try {
       setLoading(true)
       setError(null)
 
-      // For now, we'll simulate order data since the actual schema might not be fully set up
-      // In production, this would be a proper database query
-      const mockOrders: Order[] = [
-        {
-          id: '1',
-          total_amount: 59.99,
-          status: 'delivered',
-          created_at: '2024-07-15T10:30:00Z',
-          shipping_address: {
-            name: 'John Doe',
-            line1: '123 Main St',
-            city: 'Vancouver',
-            state: 'BC',
-            postal_code: 'V6B 1A1',
-            country: 'Canada'
-          },
-          order_items: [
-            {
-              id: '1',
-              product_id: 'total-essential',
-              quantity: 1,
-              price: 59.99,
-              product_name: 'Total Essential',
-              product_image_url: '/images/total-essential.jpg'
-            }
-          ]
-        },
-        {
-          id: '2',
-          total_amount: 79.99,
-          status: 'processing',
-          created_at: '2024-07-14T14:20:00Z',
-          shipping_address: {
-            name: 'John Doe',
-            line1: '123 Main St',
-            city: 'Vancouver',
-            state: 'BC',
-            postal_code: 'V6B 1A1',
-            country: 'Canada'
-          },
-          order_items: [
-            {
-              id: '2',
-              product_id: 'total-essential-plus',
-              quantity: 1,
-              price: 79.99,
-              product_name: 'Total Essential Plus',
-              product_image_url: '/images/total-essential-plus.jpg'
-            }
-          ]
-        }
-      ]
+      // Get Supabase session for the auth token
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        throw new Error('No active session')
+      }
 
-      setOrders(mockOrders)
+      // Call the Supabase Edge Function
+      const { data, error } = await supabase.functions.invoke('get-orders', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      })
+
+      if (error) {
+        console.error('Edge Function error:', error)
+        throw new Error(error.message || 'Failed to fetch orders')
+      }
+
+      // Transform the data to match the expected Order interface
+      const transformedOrders: Order[] = (data.orders || []).map((order: any) => ({
+        id: order.id,
+        total_amount: order.total_amount,
+        status: order.status,
+        created_at: order.created_at,
+        shipping_address: {
+          name: `${order.shipping_first_name} ${order.shipping_last_name}`,
+          line1: order.shipping_address_line_1,
+          line2: order.shipping_address_line_2,
+          city: order.shipping_city,
+          state: order.shipping_state_province,
+          postal_code: order.shipping_postal_code,
+          country: order.shipping_country
+        },
+        order_items: (order.order_items || []).map((item: any) => ({
+          id: item.id,
+          product_id: item.product_type,
+          quantity: item.quantity,
+          price: item.unit_price,
+          product_name: item.product_name,
+          product_image_url: `/images/${item.product_type}.jpg` // Fallback image
+        }))
+      }))
+
+      setOrders(transformedOrders)
     } catch (error) {
-      setError('An unexpected error occurred.')
+      setError(error.message || 'Failed to fetch orders')
       console.error('Fetch orders error:', error)
     } finally {
       setLoading(false)
@@ -165,7 +155,7 @@ const OrderHistory: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600" data-testid="loading-spinner"></div>
             <span className="ml-2 text-gray-600">Loading orders...</span>
           </div>
         </CardContent>
@@ -181,8 +171,8 @@ const OrderHistory: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="text-center py-8">
-            <p className="text-red-600 mb-4">{error}</p>
-            <Button onClick={fetchOrders} variant="outline">
+            <p className="text-red-600 mb-4" data-testid="error-message">{error}</p>
+            <Button onClick={fetchOrders} variant="outline" data-testid="retry-button">
               Try Again
             </Button>
           </div>
@@ -200,11 +190,11 @@ const OrderHistory: React.FC = () => {
         <CardContent>
           <div className="text-center py-12">
             <ShoppingBag className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No orders yet</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-2" data-testid="no-orders-message">No orders yet</h3>
             <p className="text-gray-600 mb-6">
               Your order history will appear here once you make your first purchase.
             </p>
-            <Button asChild>
+            <Button asChild data-testid="start-shopping-button">
               <a href="/products">Start Shopping</a>
             </Button>
           </div>
@@ -214,7 +204,7 @@ const OrderHistory: React.FC = () => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-testid="order-history-container">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">Order History</h2>
         <p className="text-sm text-gray-600">{orders.length} orders</p>
@@ -222,15 +212,15 @@ const OrderHistory: React.FC = () => {
 
       <div className="space-y-4">
         {orders.map((order) => (
-          <Card key={order.id} className="hover:shadow-md transition-shadow">
+          <Card key={order.id} className="hover:shadow-md transition-shadow" data-testid="order-card">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
                   <div className="flex items-center space-x-2">
                     {getStatusIcon(order.status)}
-                    <span className="font-medium">Order #{order.id.slice(-8)}</span>
+                    <span className="font-medium" data-testid="order-number">Order #{order.id.slice(-8)}</span>
                   </div>
-                  <Badge className={getStatusColor(order.status)}>
+                  <Badge className={getStatusColor(order.status)} data-testid="order-status">
                     {order.status}
                   </Badge>
                 </div>
@@ -239,6 +229,7 @@ const OrderHistory: React.FC = () => {
                   size="sm"
                   onClick={() => handleOrderClick(order.id)}
                   className="text-green-600 hover:text-green-700"
+                  data-testid="view-details-button"
                 >
                   View Details
                   <ChevronRight className="h-4 w-4 ml-1" />
@@ -248,7 +239,7 @@ const OrderHistory: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <div className="flex items-center space-x-2">
                   <Calendar className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-gray-600" data-testid="order-date">
                     {new Date(order.created_at).toLocaleDateString('en-US', {
                       year: 'numeric',
                       month: 'short',
@@ -258,7 +249,7 @@ const OrderHistory: React.FC = () => {
                 </div>
                 <div className="flex items-center space-x-2">
                   <CreditCard className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-gray-600" data-testid="order-total">
                     Total: ${order.total_amount.toFixed(2)}
                   </span>
                 </div>

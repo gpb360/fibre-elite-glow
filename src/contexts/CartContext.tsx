@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, useMemo, useCallback } from 'react';
 import { CartItem, CartState, CartContextType } from '@/types/cart';
 import { toast } from '@/hooks/use-toast';
 import { ErrorBoundary } from '@/components/error';
@@ -157,8 +157,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [cart.items]);
 
-  // Cart actions
-  const addToCart = async (item: Omit<CartItem, 'quantity'>, quantity: number = 1) => {
+  // Cart actions - memoized to prevent re-renders
+  const addToCart = useCallback(async (item: Omit<CartItem, 'quantity'>, quantity: number = 1) => {
     setIsLoading(true);
 
     try {
@@ -187,9 +187,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  const removeFromCart = (itemId: string) => {
+  const removeFromCart = useCallback((itemId: string) => {
     dispatch({ type: 'REMOVE_FROM_CART', payload: { itemId } });
 
     try {
@@ -199,13 +199,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
     } catch (toastError) {
     }
-  };
+  }, []);
 
-  const updateQuantity = (itemId: string, quantity: number) => {
+  const updateQuantity = useCallback((itemId: string, quantity: number) => {
     dispatch({ type: 'UPDATE_QUANTITY', payload: { itemId, quantity } });
-  };
+  }, []);
 
-  const clearCart = () => {
+  const clearCart = useCallback(() => {
     dispatch({ type: 'CLEAR_CART' });
 
     try {
@@ -215,16 +215,17 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
     } catch (toastError) {
     }
-  };
+  }, []);
 
-  const contextValue: CartContextType & { isLoading: boolean } = {
+  // Memoize context value to prevent unnecessary re-renders
+  const contextValue = useMemo(() => ({
     cart,
     addToCart,
     removeFromCart,
     updateQuantity,
     clearCart,
     isLoading,
-  };
+  }), [cart, addToCart, removeFromCart, updateQuantity, clearCart, isLoading]);
 
   return (
     <ErrorBoundary
@@ -237,7 +238,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
           console.warn('Failed to clear cart storage:', e)
         }
       }}
-      resetKeys={[cart.items.length]}
+      resetKeys={[]} // Remove automatic reset on cart changes to prevent re-renders
     >
       <CartContext.Provider value={contextValue}>
         {children}

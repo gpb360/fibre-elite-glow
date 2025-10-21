@@ -40,57 +40,71 @@ function CheckoutSuccessContent() {
   
   useEffect(() => {
     const sessionId = searchParams?.get('session_id');
-    
-        
-    const fetchOrderDetails = async () => {
-      if (!sessionId) {
-                setError('No session ID provided');
-        setLoading(false);
-        return;
-      }
 
-      
+    // Prevent multiple executions
+    if (!sessionId || typeof window === 'undefined') return;
+
+    // Check if we've already processed this session
+    const processedKey = `session_${sessionId}_processed`;
+    if (sessionStorage.getItem(processedKey)) {
+      setLoading(false);
+      return;
+    }
+
+    const fetchOrderDetails = async () => {
       try {
         const response = await fetch(`/api/checkout-session/${sessionId}`);
 
-        
         if (!response.ok) {
           const errorText = await response.text();
-                    throw new Error(`API Error: ${response.status} - ${errorText}`);
+          throw new Error(`API Error: ${response.status} - ${errorText}`);
         }
 
         const data = await response.json();
-        
-        // Simplified order validation
-        setIsValidatingOrder(true);
-        try {
-          // Basic validation - check for valid amount (allowing 0 but not null/undefined)
-          if (!data.id || !data.customerEmail || data.amount === null || data.amount === undefined) {
-            setValidationError('Invalid order data received');
-            return;
-          }
 
-          // Set order details and clear cart
-          setOrderDetails(data);
-          clearCart();
-
-          // Store order completion timestamp
-          localStorage.setItem(`order_${data.id}_completed`, Date.now().toString());
-
-        } catch (validationError) {
-                    setValidationError('Order processing failed. Please contact support.');
-        } finally {
-          setIsValidatingOrder(false);
+        // Basic validation - check for valid amount (allowing 0 but not null/undefined)
+        if (!data.id || !data.customerEmail || data.amount === null || data.amount === undefined) {
+          setValidationError('Invalid order data received');
+          return;
         }
+
+        // Set order details
+        setOrderDetails(data);
+
+        // Mark session as processed to prevent re-execution
+        sessionStorage.setItem(processedKey, 'true');
+
+        // Set flag to prevent redirect loop when clearing cart
+        sessionStorage.setItem('from_checkout_success', 'true');
+
+        // Store order completion timestamp
+        localStorage.setItem(`order_${data.id}_completed`, Date.now().toString());
+
       } catch (err) {
-                setError(err instanceof Error ? err.message : 'Failed to load order details');
+        setError(err instanceof Error ? err.message : 'Failed to load order details');
       } finally {
         setLoading(false);
       }
     };
 
     fetchOrderDetails();
-  }, [searchParams, clearCart]);
+  }, [searchParams]); // Remove clearCart from dependencies
+
+  // Separate effect for clearing cart with delay to prevent re-render loops
+  useEffect(() => {
+    if (orderDetails && typeof window !== 'undefined') {
+      // Add a small delay to ensure the success state is fully rendered
+      const timer = setTimeout(() => {
+        try {
+          clearCart();
+        } catch (error) {
+          console.warn('Failed to clear cart:', error);
+        }
+      }, 2000); // 2 second delay
+
+      return () => clearTimeout(timer);
+    }
+  }, [orderDetails?.id]); // Only depend on order ID to prevent re-renders
 
   if (loading || isValidatingOrder || isConfirming) {
     return (

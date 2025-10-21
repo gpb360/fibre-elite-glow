@@ -107,6 +107,7 @@ export default function AccountPage() {
                 variant="outline"
                 onClick={handleSignOut}
                 className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                data-testid="sign-out-button"
               >
                 <LogOut className="h-4 w-4 mr-2" />
                 Sign Out
@@ -116,7 +117,7 @@ export default function AccountPage() {
 
           {/* Account Overview Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <Card>
+            <Card data-testid="total-orders-card">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
                 <Package className="h-4 w-4 text-muted-foreground" />
@@ -129,7 +130,7 @@ export default function AccountPage() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card data-testid="total-spent-card">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Total Spent</CardTitle>
                 <CreditCard className="h-4 w-4 text-muted-foreground" />
@@ -142,7 +143,7 @@ export default function AccountPage() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card data-testid="account-status-card">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Account Status</CardTitle>
                 <User className="h-4 w-4 text-muted-foreground" />
@@ -163,17 +164,17 @@ export default function AccountPage() {
           {/* Main Content Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-5">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="orders">Orders</TabsTrigger>
-              <TabsTrigger value="subscriptions">Subscriptions</TabsTrigger>
-              <TabsTrigger value="profile">Profile</TabsTrigger>
-              <TabsTrigger value="settings">Settings</TabsTrigger>
+              <TabsTrigger value="overview" data-testid="overview-tab">Overview</TabsTrigger>
+              <TabsTrigger value="orders" data-testid="orders-tab">Orders</TabsTrigger>
+              <TabsTrigger value="subscriptions" data-testid="subscriptions-tab">Subscriptions</TabsTrigger>
+              <TabsTrigger value="profile" data-testid="profile-tab">Profile</TabsTrigger>
+              <TabsTrigger value="settings" data-testid="settings-tab">Settings</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="overview" className="space-y-6">
+            <TabsContent value="overview" className="space-y-6" data-testid="overview-content">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Recent Orders */}
-                <Card>
+                <Card data-testid="recent-orders-section">
                   <CardHeader>
                     <CardTitle className="flex items-center">
                       <ShoppingBag className="h-5 w-5 mr-2" />
@@ -224,7 +225,7 @@ export default function AccountPage() {
                 </Card>
 
                 {/* Profile Summary */}
-                <Card>
+                <Card data-testid="profile-summary-section">
                   <CardHeader>
                     <CardTitle className="flex items-center">
                       <User className="h-5 w-5 mr-2" />
@@ -273,7 +274,7 @@ export default function AccountPage() {
               </div>
             </TabsContent>
 
-            <TabsContent value="orders">
+            <TabsContent value="orders" data-testid="orders-content">
               <Card>
                 <CardHeader>
                   <CardTitle>Order History</CardTitle>
@@ -301,7 +302,7 @@ export default function AccountPage() {
               </Card>
             </TabsContent>
 
-            <TabsContent value="profile">
+            <TabsContent value="profile" data-testid="profile-content">
               <Card>
                 <CardHeader>
                   <CardTitle>Profile Management</CardTitle>
@@ -315,7 +316,7 @@ export default function AccountPage() {
               </Card>
             </TabsContent>
 
-            <TabsContent value="settings">
+            <TabsContent value="settings" data-testid="settings-content">
               <div className="space-y-6">
                 <Card>
                   <CardHeader>

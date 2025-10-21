@@ -59,54 +59,56 @@ export default function OrderDetailsPage({ orderId }: OrderDetailsPageProps) {
   }, [user, orderId, router])
 
   const fetchOrderDetails = async () => {
-    if (!user?.id) return
+    if (!user) return
     
     try {
       setLoading(true)
       setError(null)
 
-      // For now, we'll simulate order details since the actual schema might not be fully set up
-      // In production, this would be a proper database query
-      const mockOrder: Order = {
-        id: orderId,
-        total_amount: 59.99,
-        status: 'delivered',
-        created_at: '2024-07-15T10:30:00Z',
-        updated_at: '2024-07-16T14:20:00Z',
-        shipping_address: {
-          name: 'John Doe',
-          line1: '123 Main St',
-          city: 'Vancouver',
-          state: 'BC',
-          postal_code: 'V6B 1A1',
-          country: 'Canada'
-        },
-        billing_address: {
-          name: 'John Doe',
-          line1: '123 Main St',
-          city: 'Vancouver',
-          state: 'BC',
-          postal_code: 'V6B 1A1',
-          country: 'Canada'
-        },
-        order_items: [
-          {
-            id: '1',
-            product_id: 'total-essential',
-            quantity: 1,
-            price: 59.99,
-            product_name: 'Total Essential',
-            product_image_url: '/images/total-essential.jpg',
-            product_description: 'Premium fiber supplement for optimal digestive health'
-          }
-        ],
-        tracking_number: 'TRK123456789',
-        notes: 'Handle with care'
+      // Get Supabase session for the auth token
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        throw new Error('No active session')
       }
 
-      setOrder(mockOrder)
+      // Call the Supabase Edge Function with orderId in the URL
+      const { data, error } = await supabase.functions.invoke(`get-order-details?id=${orderId}`, {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      })
+
+      if (error) {
+        console.error('Edge Function error:', error)
+        throw new Error(error.message || 'Failed to fetch order details')
+      }
+
+      // Transform the data to match the expected Order interface
+      const transformedOrder: Order = {
+        id: data.id,
+        total_amount: data.total_amount,
+        status: data.status,
+        created_at: data.created_at,
+        updated_at: data.updated_at,
+        shipping_address: data.shipping_address,
+        billing_address: data.billing_address,
+        order_items: (data.order_items || []).map((item: any) => ({
+          id: item.id,
+          product_id: item.product_type,
+          quantity: item.quantity,
+          price: item.unit_price,
+          product_name: item.product_name,
+          product_image_url: `/images/${item.product_type}.jpg`, // Fallback image
+          product_description: item.package_details?.product_name || 'Premium health supplement'
+        })),
+        stripe_session_id: data.stripe_payment_intent_id,
+        tracking_number: data.tracking_number,
+        notes: data.notes
+      }
+
+      setOrder(transformedOrder)
     } catch (error) {
-      setError('An unexpected error occurred.')
+      setError(error.message || 'Failed to fetch order details')
       console.error('Fetch order error:', error)
     } finally {
       setLoading(false)
@@ -253,11 +255,11 @@ export default function OrderDetailsPage({ orderId }: OrderDetailsPageProps) {
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-3xl font-bold text-gray-900">Order Details</h1>
-                <p className="text-gray-600 mt-1">Order #{order.id.slice(-8)}</p>
+                <p className="text-gray-600 mt-1" data-testid="order-number-header">Order #{order.id.slice(-8)}</p>
               </div>
               <div className="flex items-center space-x-3">
                 {getStatusIcon(order.status)}
-                <Badge className={getStatusColor(order.status)}>
+                <Badge className={getStatusColor(order.status)} data-testid="order-status-badge">
                   {order.status}
                 </Badge>
               </div>
@@ -265,14 +267,14 @@ export default function OrderDetailsPage({ orderId }: OrderDetailsPageProps) {
           </div>
 
           {/* Order Status Timeline */}
-          <Card className="mb-8">
+          <Card className="mb-8" data-testid="order-status-timeline">
             <CardHeader>
               <CardTitle>Order Status</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
                 {statusSteps.map((step, index) => (
-                  <div key={step.key} className="flex flex-col items-center">
+                  <div key={step.key} className="flex flex-col items-center" data-testid="timeline-step">
                     <div className={`flex items-center justify-center w-10 h-10 rounded-full ${
                       step.completed ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400'
                     }`}>
@@ -293,7 +295,7 @@ export default function OrderDetailsPage({ orderId }: OrderDetailsPageProps) {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Order Items */}
             <div className="lg:col-span-2">
-              <Card>
+              <Card data-testid="order-items">
                 <CardHeader>
                   <CardTitle>Order Items</CardTitle>
                   <CardDescription>
@@ -303,7 +305,7 @@ export default function OrderDetailsPage({ orderId }: OrderDetailsPageProps) {
                 <CardContent>
                   <div className="space-y-4">
                     {order.order_items.map((item) => (
-                      <div key={item.id} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                      <div key={item.id} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg" data-testid="order-item">
                         {item.product_image_url && (
                           <Image
                             src={item.product_image_url}
@@ -314,13 +316,13 @@ export default function OrderDetailsPage({ orderId }: OrderDetailsPageProps) {
                           />
                         )}
                         <div className="flex-1">
-                          <h3 className="font-medium text-gray-900">{item.product_name}</h3>
+                          <h3 className="font-medium text-gray-900" data-testid="item-name">{item.product_name}</h3>
                           {item.product_description && (
                             <p className="text-sm text-gray-600 mt-1">{item.product_description}</p>
                           )}
                           <div className="flex items-center space-x-4 mt-2">
-                            <span className="text-sm text-gray-500">Qty: {item.quantity}</span>
-                            <span className="text-sm text-gray-500">Price: ${item.price.toFixed(2)}</span>
+                            <span className="text-sm text-gray-500" data-testid="item-quantity">Qty: {item.quantity}</span>
+                            <span className="text-sm text-gray-500" data-testid="item-price">Price: ${item.price.toFixed(2)}</span>
                           </div>
                         </div>
                         <div className="text-right">
@@ -336,27 +338,27 @@ export default function OrderDetailsPage({ orderId }: OrderDetailsPageProps) {
             {/* Order Summary & Details */}
             <div className="space-y-6">
               {/* Order Summary */}
-              <Card>
+              <Card data-testid="order-summary">
                 <CardHeader>
                   <CardTitle>Order Summary</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
                     <div className="flex justify-between text-sm">
-                      <span>Subtotal</span>
+                      <span data-testid="subtotal">Subtotal</span>
                       <span>${subtotal.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span>Shipping</span>
+                      <span data-testid="shipping">Shipping</span>
                       <span>{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span>Tax</span>
+                      <span data-testid="tax">Tax</span>
                       <span>${tax.toFixed(2)}</span>
                     </div>
                     <Separator />
                     <div className="flex justify-between font-medium">
-                      <span>Total</span>
+                      <span data-testid="total">Total</span>
                       <span>${order.total_amount.toFixed(2)}</span>
                     </div>
                   </div>
@@ -405,7 +407,7 @@ export default function OrderDetailsPage({ orderId }: OrderDetailsPageProps) {
 
               {/* Shipping Address */}
               {order.shipping_address && (
-                <Card>
+                <Card data-testid="shipping-address">
                   <CardHeader>
                     <CardTitle>Shipping Address</CardTitle>
                   </CardHeader>
@@ -432,11 +434,11 @@ export default function OrderDetailsPage({ orderId }: OrderDetailsPageProps) {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    <Button onClick={handleReorder} className="w-full">
+                    <Button onClick={handleReorder} className="w-full" data-testid="reorder-button">
                       <RefreshCw className="h-4 w-4 mr-2" />
                       Reorder Items
                     </Button>
-                    <Button variant="outline" className="w-full">
+                    <Button variant="outline" className="w-full" data-testid="contact-support-button">
                       <Mail className="h-4 w-4 mr-2" />
                       Contact Support
                     </Button>

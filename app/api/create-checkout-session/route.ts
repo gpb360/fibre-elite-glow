@@ -111,10 +111,20 @@ export async function POST(request: NextRequest) {
     // Get base URL with fallback for Netlify
     // For local development, use localhost; for production, use environment variables or Netlify
     const baseUrl = process.env.NODE_ENV === 'development'
-      ? 'http://localhost:3000'
+      ? process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3003' // Use the configured port
       : process.env.NEXT_PUBLIC_BASE_URL ||
+        process.env.NEXT_PUBLIC_APP_URL ||
         process.env.URL ||
         'https://lebve.netlify.app';
+
+    // Log base URL for debugging
+    console.log('🔗 Base URL configuration:', {
+      NODE_ENV: process.env.NODE_ENV,
+      NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+      NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
+      URL: process.env.URL,
+      finalBaseUrl: baseUrl
+    });
     
     // Parse and validate request body with comprehensive Zod validation
     let rawBody: any;
@@ -245,12 +255,36 @@ export async function POST(request: NextRequest) {
     };
 
     // Create checkout session with comprehensive field collection
+    const successUrl = `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`;
+    const cancelUrl = `${baseUrl}/cart?cancelled=true`;
+
+    // Log URLs for debugging
+    console.log('🔗 Checkout URLs:', {
+      baseUrl,
+      successUrl,
+      cancelUrl
+    });
+
+    // Validate that the success URL is properly formatted
+    try {
+      const successUrlObj = new URL(successUrl);
+      if (successUrlObj.hostname === 'localhost' || successUrlObj.hostname === '127.0.0.1') {
+        console.log('⚠️ Using localhost URL for Stripe - ensure Stripe accepts this domain');
+      }
+    } catch (error) {
+      console.error('❌ Invalid success URL:', successUrl, error);
+      return NextResponse.json(
+        { error: 'Invalid success URL configuration' },
+        { status: 500 }
+      );
+    }
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: lineItems,
       mode: STRIPE_CONFIG.mode,
-      success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl}/cart?cancelled=true`,
+      success_url: successUrl,
+      cancel_url: cancelUrl,
       
       // Customer information
       customer_email: body.customerInfo.email,
