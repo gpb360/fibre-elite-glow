@@ -77,6 +77,15 @@ const nextConfig = {
             value: 'public, s-maxage=60, stale-while-revalidate=300'
           }
         ]
+      },
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Permissions-Policy',
+            value: 'payment=(self), camera=(), microphone=(), geolocation=(), usb=(), magnetometer=(), accelerometer=(), gyroscope=()'
+          }
+        ]
       }
     ];
   },
