@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
     // Get base URL with fallback for Netlify
     // For local development, use localhost; for production, use environment variables or Netlify
     const baseUrl = process.env.NODE_ENV === 'development'
-      ? process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3003' // Use the configured port
+      ? process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3010' // Use the configured port from .env.local
       : process.env.NEXT_PUBLIC_BASE_URL ||
         process.env.NEXT_PUBLIC_APP_URL ||
         process.env.URL ||
