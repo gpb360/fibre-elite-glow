@@ -72,7 +72,7 @@ test.describe('Email Flow Integration', () => {
     expect(emailResult.customerEmailResult.success).toBe(true);
 
     // Admin email might fail due to Resend restrictions, but should be processed
-    expect(emailResult.adminEmailResult).success).toBeDefined();
+    expect(emailResult.adminEmailResult.success).toBeDefined();
   });
 });
 
