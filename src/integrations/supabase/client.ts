@@ -2,9 +2,9 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@/types/supabase';
 
-// Use environment variables with fallbacks for development
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://lyynavswxtzhsmwetgtn.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx5eW5hdnN3eHR6aHNtd2V0Z3RuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgwOTQ1ODEsImV4cCI6MjA2MzY3MDU4MX0.bm7UieeTN7W9RHw7yDxMP9K8zi3GPu2iAnu_iUeHKdM";
+// Use environment variables - required for security
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 // Service-role key (server-side only ‑ NEVER expose to the browser!)
 // This key bypasses RLS, so keep it secure in Supabase secrets / server env.
