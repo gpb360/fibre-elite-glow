@@ -111,11 +111,11 @@ export async function POST(request: NextRequest) {
     // Get base URL with fallback for Netlify
     // For local development, use localhost; for production, use environment variables or Netlify
     const baseUrl = process.env.NODE_ENV === 'development'
-      ? process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3003' // Use the configured port
+      ? process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3010' // Use the configured port from .env.local
       : process.env.NEXT_PUBLIC_BASE_URL ||
         process.env.NEXT_PUBLIC_APP_URL ||
         process.env.URL ||
-        'https://lebve.netlify.app';
+        'https://lbve.venomappdevelopment.com'; // Fixed to match actual deployment URL
 
     // Log base URL for debugging
     console.log('🔗 Base URL configuration:', {
@@ -130,9 +130,27 @@ export async function POST(request: NextRequest) {
     let rawBody: any;
     try {
       rawBody = await request.json();
+      // DEBUG: Log the received payload (remove sensitive data in production)
+      console.log('🔍 DEBUG: Received request payload:', {
+        itemsCount: rawBody.items?.length || 0,
+        customerFields: Object.keys(rawBody.customerInfo || {}),
+        hasCsrfToken: !!rawBody.csrfToken,
+        hasSecurityContext: !!rawBody.securityContext,
+        // Sanitize customer info for logging
+        customerInfo: rawBody.customerInfo ? {
+          email: rawBody.customerInfo.email,
+          firstName: rawBody.customerInfo.firstName,
+          lastName: rawBody.customerInfo.lastName,
+          address: rawBody.customerInfo.address,
+          city: rawBody.customerInfo.city,
+          state: rawBody.customerInfo.state,
+          zipCode: rawBody.customerInfo.zipCode,
+          country: rawBody.customerInfo.country,
+        } : null
+      });
     } catch (error) {
             return NextResponse.json(
-        { 
+        {
           error: 'Invalid request format',
           details: ErrorSanitizer.sanitizeMessage(error)
         },
@@ -144,13 +162,22 @@ export async function POST(request: NextRequest) {
     const validationResult = serverCheckoutSchema.safeParse(rawBody);
     
     if (!validationResult.success) {
-            
+      // DEBUG: Log detailed validation errors
+      console.log('❌ DEBUG: Validation failed:', {
+        errors: validationResult.error.errors.map(err => ({
+          path: err.path.join('.'),
+          message: err.message,
+          code: err.code,
+          received: err.received
+        }))
+      });
+
       // Format validation errors for client
       const errorMessages = validationResult.error.errors.map(err => {
         const path = err.path.join('.');
         return `${path}: ${err.message}`;
       });
-      
+
       return NextResponse.json(
         {
           error: 'Validation failed',

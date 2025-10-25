@@ -76,36 +76,71 @@ export class EmailService {
         return this.sendConsoleEmail(options);
       }
 
-      // Call Supabase Edge Function for Resend email
-      const response = await fetch(`${supabaseUrl}/functions/v1/resend-email`, {
+      console.log('📧 Attempting to send email via Supabase Edge Function:', {
+        to: options.to,
+        subject: options.subject,
+        supabaseUrl: `${supabaseUrl}/functions/v1/send-email`
+      });
+
+      // Call the existing Supabase Edge Function for email
+      // Note: The existing function expects a different structure, so we need to adapt
+      const response = await fetch(`${supabaseUrl}/functions/v1/send-email`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${supabaseServiceKey}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          to: options.to,
-          subject: options.subject,
-          html: options.html,
-          text: options.text
+          type: 'order_confirmation',
+          data: {
+            customerEmail: options.to,
+            subject: options.subject,
+            htmlContent: options.html,
+            textContent: options.text,
+            orderNumber: this.extractOrderNumber(options.subject),
+            customerName: this.extractCustomerName(options.to),
+            totalAmount: this.extractAmount(options.subject),
+            orderDate: new Date().toISOString().split('T')[0],
+            items: [] // Items will be populated by calling methods
+          }
         }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Failed to send email via Resend Edge Function:', errorData);
+        console.error('Failed to send email via Supabase Edge Function:', errorData);
+        console.error('Response status:', response.status);
+        console.error('Response text:', await response.text());
         // Fallback to console logging for development
         return this.sendConsoleEmail(options);
       }
 
       const result = await response.json();
-      console.log('📧 Email sent successfully via Resend Edge Function:', result);
+      console.log('📧 Email sent successfully via Supabase Edge Function:', result);
       return true;
     } catch (error) {
       console.error('Failed to send email:', error);
       // Fallback to console logging for development
       return this.sendConsoleEmail(options);
     }
+  }
+
+  // Helper methods to extract information for compatibility with existing Edge Function
+  private extractOrderNumber(subject: string): string {
+    const match = subject.match(/Order\s+(?:Confirmation\s+)?-?\s*([A-Z0-9-]+)/i);
+    return match ? match[1] : 'Unknown';
+  }
+
+  private extractCustomerName(email: string): string {
+    // Extract name from email or use a default
+    const namePart = email.split('@')[0];
+    return namePart.charAt(0).toUpperCase() + namePart.slice(1);
+  }
+
+  private extractAmount(subject: string): string {
+    // Try to extract amount from subject, return default if not found
+    const match = subject.match(/\$(\d+\.?\d*)/);
+    return match ? match[1] : '0.00';
   }
 
   private async sendConsoleEmail(options: EmailOptions): Promise<boolean> {
@@ -132,30 +167,166 @@ export class EmailService {
   }
 
   async sendOrderConfirmationWithAddress(orderDetails: CustomerOrderConfirmation): Promise<boolean> {
-    const subject = `Order Confirmation - ${orderDetails.orderNumber}`;
-    const html = this.generateOrderConfirmationHTMLWithAddress(orderDetails);
-    const text = this.generateOrderConfirmationTextWithAddress(orderDetails);
+    try {
+      // Get Supabase URL and service role key from environment
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    return this.sendEmail({
-      to: orderDetails.customerEmail,
-      subject,
-      html,
-      text,
-    });
+      if (!supabaseUrl || !supabaseServiceKey) {
+        console.error('Supabase configuration missing - cannot send email');
+        return this.sendConsoleEmail({
+          to: orderDetails.customerEmail,
+          subject: `Order Confirmation - ${orderDetails.orderNumber}`,
+          html: this.generateOrderConfirmationHTMLWithAddress(orderDetails),
+          text: this.generateOrderConfirmationTextWithAddress(orderDetails),
+        });
+      }
+
+      console.log('📧 Sending order confirmation with address:', {
+        orderNumber: orderDetails.orderNumber,
+        customerEmail: orderDetails.customerEmail,
+        customerName: `${orderDetails.shippingAddress.firstName} ${orderDetails.shippingAddress.lastName}`,
+        itemCount: orderDetails.items.length
+      });
+
+      // Prepare data in the format expected by the existing send-email Edge Function
+      const emailData = {
+        type: 'order_confirmation',
+        data: {
+          customerEmail: orderDetails.customerEmail,
+          customerName: `${orderDetails.shippingAddress.firstName} ${orderDetails.shippingAddress.lastName}`,
+          orderNumber: orderDetails.orderNumber,
+          totalAmount: orderDetails.totalAmount.toString(),
+          items: orderDetails.items.map(item => ({
+            description: item.name,
+            quantity: item.quantity,
+            amount: (item.price * item.quantity).toFixed(2)
+          })),
+          orderDate: new Date(orderDetails.createdAt).toLocaleDateString(),
+          stripePaymentId: undefined // Will be added if available
+        }
+      };
+
+      // Call the existing Supabase Edge Function
+      const response = await fetch(`${supabaseUrl}/functions/v1/send-email`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${supabaseServiceKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(emailData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Failed to send order confirmation email:', errorData);
+        console.error('Response status:', response.status);
+        console.error('Response text:', await response.text());
+        // Fallback to console logging for development
+        return this.sendConsoleEmail({
+          to: orderDetails.customerEmail,
+          subject: `Order Confirmation - ${orderDetails.orderNumber}`,
+          html: this.generateOrderConfirmationHTMLWithAddress(orderDetails),
+          text: this.generateOrderConfirmationTextWithAddress(orderDetails),
+        });
+      }
+
+      const result = await response.json();
+      console.log('📧 Order confirmation email sent successfully:', result);
+      return true;
+    } catch (error) {
+      console.error('Failed to send order confirmation email:', error);
+      // Fallback to console logging for development
+      return this.sendConsoleEmail({
+        to: orderDetails.customerEmail,
+        subject: `Order Confirmation - ${orderDetails.orderNumber}`,
+        html: this.generateOrderConfirmationHTMLWithAddress(orderDetails),
+        text: this.generateOrderConfirmationTextWithAddress(orderDetails),
+      });
+    }
   }
 
   async sendAdminOrderNotification(notification: AdminOrderNotification): Promise<boolean> {
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@lbve.ca';
-    const subject = `New Order Alert - ${notification.orderNumber}`;
-    const html = this.generateAdminNotificationHTML(notification);
-    const text = this.generateAdminNotificationText(notification);
+    try {
+      // Get Supabase URL and service role key from environment
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    return this.sendEmail({
-      to: adminEmail,
-      subject,
-      html,
-      text,
-    });
+      const adminEmail = process.env.ADMIN_EMAIL || 'admin@lbve.ca';
+
+      if (!supabaseUrl || !supabaseServiceKey) {
+        console.error('Supabase configuration missing - cannot send admin notification');
+        return this.sendConsoleEmail({
+          to: adminEmail,
+          subject: `New Order Alert - ${notification.orderNumber}`,
+          html: this.generateAdminNotificationHTML(notification),
+          text: this.generateAdminNotificationText(notification),
+        });
+      }
+
+      console.log('📧 Sending admin order notification:', {
+        orderNumber: notification.orderNumber,
+        customerEmail: notification.customerEmail,
+        customerName: notification.customerName,
+        totalAmount: notification.totalAmount,
+        itemCount: notification.items.length
+      });
+
+      // Prepare data in the format expected by the existing send-email Edge Function
+      const emailData = {
+        type: 'admin_notification',
+        data: {
+          customerEmail: notification.customerEmail,
+          customerName: notification.customerName,
+          orderNumber: notification.orderNumber,
+          totalAmount: (notification.totalAmount / 100).toFixed(2), // Convert from cents
+          items: notification.items.map(item => ({
+            description: item.name,
+            quantity: item.quantity,
+            amount: (item.price * item.quantity / 100).toFixed(2) // Convert from cents
+          })),
+          stripePaymentId: notification.paymentIntentId
+        }
+      };
+
+      // Call the existing Supabase Edge Function
+      const response = await fetch(`${supabaseUrl}/functions/v1/send-email`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${supabaseServiceKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(emailData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Failed to send admin notification email:', errorData);
+        console.error('Response status:', response.status);
+        console.error('Response text:', await response.text());
+        // Fallback to console logging for development
+        return this.sendConsoleEmail({
+          to: adminEmail,
+          subject: `New Order Alert - ${notification.orderNumber}`,
+          html: this.generateAdminNotificationHTML(notification),
+          text: this.generateAdminNotificationText(notification),
+        });
+      }
+
+      const result = await response.json();
+      console.log('📧 Admin notification email sent successfully:', result);
+      return true;
+    } catch (error) {
+      console.error('Failed to send admin notification email:', error);
+      // Fallback to console logging for development
+      const adminEmail = process.env.ADMIN_EMAIL || 'admin@lbve.ca';
+      return this.sendConsoleEmail({
+        to: adminEmail,
+        subject: `New Order Alert - ${notification.orderNumber}`,
+        html: this.generateAdminNotificationHTML(notification),
+        text: this.generateAdminNotificationText(notification),
+      });
+    }
   }
 
   private generateOrderConfirmationHTML(order: OrderDetails): string {
