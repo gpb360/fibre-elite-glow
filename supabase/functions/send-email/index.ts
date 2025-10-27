@@ -2,7 +2,7 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 
 const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')!
-const ADMIN_EMAIL = Deno.env.get('ADMIN_EMAIL') || 'admin@venomappdevelopment.com'
+const ADMIN_EMAIL = Deno.env.get('ADMIN_EMAIL') || 'admin@lbve.ca'
 
 serve(async (req) => {
   try {
@@ -10,8 +10,8 @@ serve(async (req) => {
     
     // Email configuration based on type
     const emailConfig: any = {
-      from: 'La Belle Vie <noreply@stripe.venomappdevelopment.com>',
-      reply_to: 'admin@venomappdevelopment.com'
+      from: 'La Belle Vie <noreply@lbve.ca>',
+      reply_to: 'admin@lbve.ca'
     }
 
     // Set recipient based on email type
@@ -21,7 +21,7 @@ serve(async (req) => {
     if (type === 'order_confirmation') {
       emailConfig.to = data.customerEmail
     } else if (type === 'admin_notification') {
-      emailConfig.to = TEST_EMAIL // Override for test mode
+      emailConfig.to = ADMIN_EMAIL // FIX: Send to actual admin email from environment
     }
 
     switch (type) {
@@ -163,7 +163,7 @@ function generateOrderEmail(data: any) {
           <p>Your order has been confirmed and will be processed shortly. You'll receive a shipping notification once your order is on its way!</p>
 
           <div class="footer">
-            <p>Questions? Contact us at <a href="mailto:support@venomappdevelopment.com">support@venomappdevelopment.com</a></p>
+            <p>Questions? Contact us at <a href="mailto:support@lbve.ca">support@lbve.ca</a></p>
             <p>© ${new Date().getFullYear()} La Belle Vie. All rights reserved.</p>
           </div>
         </div>

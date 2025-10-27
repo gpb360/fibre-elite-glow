@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { supabaseAdmin } from '@/integrations/supabase/client';
-import { emailService } from '@/lib/email-service';
 import { inventoryService } from '@/lib/inventory-service';
+import { simpleEmailService } from '@/lib/simple-email-service';
 import { GlobalErrorHandler, ErrorSanitizer } from '@/lib/error-handler';
 import { emailSchema } from '@/lib/validation';
 import { z } from 'zod';
@@ -122,141 +122,6 @@ function generateOrderNumber(): string {
   return `FEG-${timestamp}-${random}`;
 }
 
-// Helper functions for sending emails via Resend Edge Function
-async function sendOrderConfirmationEmail(params: {
-  orderNumber: string;
-  customerEmail: string;
-  customerName: string;
-  items: Array<{
-    name: string;
-    quantity: number;
-    price: number;
-    product_type?: string;
-  }>;
-  totalAmount: number;
-  currency: string;
-}): Promise<void> {
-  try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    if (!supabaseUrl || !supabaseServiceKey) {
-      console.error('Supabase configuration missing - cannot send order confirmation email');
-      return;
-    }
-
-    // In development/test mode, redirect email to verified test address
-    const isDevelopment = process.env.NODE_ENV === 'development';
-    const targetEmail = isDevelopment ? 'garypboyd@gmail.com' : params.customerEmail;
-
-    // Prepare email data in the format expected by the send-email function
-    const emailData = {
-      type: 'order_confirmation',
-      data: {
-        customerEmail: targetEmail,
-        customerName: params.customerName,
-        orderNumber: params.orderNumber,
-        orderDate: new Date().toLocaleDateString(),
-        totalAmount: params.totalAmount,
-        items: params.items.map(item => ({
-          description: item.name,
-          quantity: item.quantity,
-          amount: (item.price * item.quantity).toFixed(2)
-        }))
-      }
-    };
-
-    // Call Resend Edge Function
-    const response = await fetch(`${supabaseUrl}/functions/v1/send-email`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${supabaseServiceKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(emailData),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Failed to send order confirmation email:', errorData);
-    } else {
-      console.log(`Order confirmation email sent to ${params.customerEmail}`);
-    }
-  } catch (error) {
-    console.error('Error sending order confirmation email:', error);
-  }
-}
-
-async function sendAdminNotificationEmail(params: {
-  orderNumber: string;
-  customerEmail: string;
-  customerName: string;
-  items: Array<{
-    name: string;
-    quantity: number;
-    price: number;
-    product_type?: string;
-  }>;
-  totalAmount: number;
-  currency: string;
-  shippingAddress: {
-    firstName: string;
-    lastName: string;
-    addressLine1: string;
-    addressLine2?: string;
-    city: string;
-    state: string;
-    postalCode: string;
-    country: string;
-  };
-  paymentIntentId?: string;
-}): Promise<void> {
-  try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    if (!supabaseUrl || !supabaseServiceKey) {
-      console.error('Supabase configuration missing - cannot send admin notification email');
-      return;
-    }
-
-    // Prepare email data in the format expected by the send-email function
-    const emailData = {
-      type: 'admin_notification',
-      data: {
-        customerEmail: params.customerEmail,
-        customerName: params.customerName,
-        orderNumber: params.orderNumber,
-        totalAmount: params.totalAmount,
-        items: params.items.map(item => ({
-          description: item.name,
-          quantity: item.quantity,
-          amount: (item.price * item.quantity).toFixed(2)
-        })),
-        stripePaymentId: params.paymentIntentId
-      }
-    };
-
-    // Call Resend Edge Function
-    const response = await fetch(`${supabaseUrl}/functions/v1/send-email`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${supabaseServiceKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(emailData),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Failed to send admin notification email:', errorData);
-    } else {
-      console.log(`Admin notification email sent for order: ${params.orderNumber}`);
-    }
-  } catch (error) {
-    console.error('Error sending admin notification email:', error);
-  }
-}
 
 // Email content generation functions
 function generateOrderConfirmationHTML(params: {
@@ -847,67 +712,83 @@ export async function POST(request: Request) {
           }
         }
 
-        // Send order confirmation email via Resend with shipping address
+        // Send order confirmation email via simple email service
         if (order && customerEmail) {
           const customerFullName = metadata.customer_name || `${shippingAddress.first_name || ''} ${shippingAddress.last_name || ''}`.trim() || 'Valued Customer';
 
-          // Use the email service with shipping address
-          await emailService.sendOrderConfirmationWithAddress({
-            orderNumber: order.order_number,
-            customerEmail,
-            customerName: customerFullName,
-            items: orderItems.map(item => ({
-              name: item.name,
-              quantity: item.quantity,
-              price: item.price,
-              product_type: (item.product_type === 'total_essential_plus' ? 'total_essential_plus' : 'total_essential') as 'total_essential' | 'total_essential_plus'
-            })),
-            totalAmount: (session.amount_total || 0) / 100,
-            currency: session.currency || 'usd',
-            shippingAddress: {
-              firstName: shippingAddress.first_name || '',
-              lastName: shippingAddress.last_name || '',
-              addressLine1: shippingAddress.line1 || '',
-              addressLine2: shippingAddress.line2 || '',
-              city: shippingAddress.city || '',
-              state: shippingAddress.state || '',
-              postalCode: shippingAddress.postal_code || '',
-              country: shippingAddress.country || 'US',
-            },
-            createdAt: new Date().toISOString()
-          });
+          console.log(`📧 Sending order confirmation to: ${customerEmail}`);
+          try {
+            const orderConfirmationSent = await simpleEmailService.sendOrderConfirmation({
+              orderNumber: order.order_number,
+              customerEmail,
+              customerName: customerFullName,
+              items: orderItems.map(item => ({
+                name: item.name,
+                quantity: item.quantity,
+                price: item.price
+              })),
+              totalAmount: (session.amount_total || 0) / 100,
+              currency: session.currency?.toUpperCase() || 'USD',
+              shippingAddress: shippingAddress ? {
+                firstName: shippingAddress.first_name || '',
+                lastName: shippingAddress.last_name || '',
+                addressLine1: shippingAddress.line1 || '',
+                addressLine2: shippingAddress.line2 || '',
+                city: shippingAddress.city || '',
+                state: shippingAddress.state || '',
+                postalCode: shippingAddress.postal_code || '',
+                country: shippingAddress.country || 'US'
+              } : undefined
+            });
+
+            if (orderConfirmationSent) {
+              console.log(`✅ Order confirmation email sent to: ${customerEmail}`);
+            } else {
+              console.error(`❌ Failed to send order confirmation to: ${customerEmail}`);
+            }
+          } catch (emailError) {
+            console.error('Error sending order confirmation email:', emailError);
+          }
         }
 
-        // Send admin notification email via Resend
+        // Send admin notification email via simple email service
         if (order && customerEmail && orderItems.length > 0) {
           const customerFullName = metadata.customer_name || `${shippingAddress.first_name || ''} ${shippingAddress.last_name || ''}`.trim() || 'Unknown Customer';
 
-          // Use the email service for admin notifications
-          await emailService.sendAdminOrderNotification({
-            orderNumber: order.order_number,
-            customerEmail,
-            customerName: customerFullName,
-            items: orderItems.map(item => ({
-              name: item.name,
-              quantity: item.quantity,
-              price: item.price,
-              product_type: (item.product_type === 'total_essential_plus' ? 'total_essential_plus' : 'total_essential') as 'total_essential' | 'total_essential_plus'
-            })),
-            totalAmount: (session.amount_total || 0) / 100,
-            currency: session.currency || 'usd',
-            shippingAddress: {
-              firstName: shippingAddress.first_name || '',
-              lastName: shippingAddress.last_name || '',
-              addressLine1: shippingAddress.line1 || '',
-              addressLine2: shippingAddress.line2 || '',
-              city: shippingAddress.city || '',
-              state: shippingAddress.state || '',
-              postalCode: shippingAddress.postal_code || '',
-              country: shippingAddress.country || 'US',
-            },
-            paymentIntentId: session.payment_intent as string,
-            createdAt: new Date().toISOString()
-          });
+          console.log(`📧 Sending admin notification for order: ${order.order_number}`);
+          try {
+            const adminNotificationSent = await simpleEmailService.sendAdminNotification({
+              orderNumber: order.order_number,
+              customerEmail,
+              customerName: customerFullName,
+              items: orderItems.map(item => ({
+                name: item.name,
+                quantity: item.quantity,
+                price: item.price
+              })),
+              totalAmount: (session.amount_total || 0) / 100,
+              currency: session.currency?.toUpperCase() || 'USD',
+              shippingAddress: shippingAddress ? {
+                firstName: shippingAddress.first_name || '',
+                lastName: shippingAddress.last_name || '',
+                addressLine1: shippingAddress.line1 || '',
+                addressLine2: shippingAddress.line2 || '',
+                city: shippingAddress.city || '',
+                state: shippingAddress.state || '',
+                postalCode: shippingAddress.postal_code || '',
+                country: shippingAddress.country || 'US'
+              } : undefined,
+              paymentIntentId: session.payment_intent as string
+            });
+
+            if (adminNotificationSent) {
+              console.log(`✅ Admin notification sent for order: ${order.order_number}`);
+            } else {
+              console.error(`❌ Failed to send admin notification for order: ${order.order_number}`);
+            }
+          } catch (emailError) {
+            console.error('Error sending admin notification email:', emailError);
+          }
         }
         
         break;
