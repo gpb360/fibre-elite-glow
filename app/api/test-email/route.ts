@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/integrations/supabase/client';
+import { simpleEmailService } from '@/lib/simple-email-service';
 
 export async function POST(request: Request) {
   try {
+    console.log('📧 Testing email configuration with simple email service...');
+
     const { customerEmail, customerName } = await request.json();
 
     if (!customerEmail) {
@@ -12,102 +14,88 @@ export async function POST(request: Request) {
       );
     }
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    if (!supabaseUrl || !supabaseServiceKey) {
-      return NextResponse.json(
-        { error: 'Supabase configuration missing' },
-        { status: 500 }
-      );
-    }
-
     // Prepare test order data
     const orderNumber = `TEST-${Date.now()}`;
+    const testItems = [{
+      name: 'La Belle Vie - Total Essential',
+      quantity: 1,
+      price: 79.99
+    }];
 
-    const emailData = {
-      type: 'order_confirmation',
-      data: {
-        customerEmail,
-        customerName: customerName || 'Test Customer',
-        orderNumber,
-        orderDate: new Date().toLocaleDateString(),
-        totalAmount: '79.99',
-        items: [
-          {
-            description: 'La Belle Vie - Total Essential',
-            quantity: 1,
-            amount: '79.99'
-          }
-        ]
+    // Test customer confirmation email
+    console.log(`Testing order confirmation to: ${customerEmail}`);
+    const orderResult = await simpleEmailService.sendOrderConfirmation({
+      orderNumber,
+      customerEmail,
+      customerName: customerName || 'Test Customer',
+      items: testItems,
+      totalAmount: 79.99,
+      currency: 'USD',
+      shippingAddress: {
+        firstName: customerName?.split(' ')[0] || 'Test',
+        lastName: customerName?.split(' ').slice(1).join(' ') || 'Customer',
+        addressLine1: '123 Test Street',
+        city: 'Test City',
+        state: 'TS',
+        postalCode: '12345',
+        country: 'US'
       }
-    };
-
-    // Also send admin notification
-    const adminEmailData = {
-      type: 'admin_notification',
-      data: {
-        customerEmail,
-        customerName: customerName || 'Test Customer',
-        orderNumber,
-        totalAmount: '79.99',
-        items: [
-          {
-            description: 'La Belle Vie - Total Essential',
-            quantity: 1,
-            amount: '79.99'
-          }
-        ],
-        stripePaymentId: 'test_payment_intent_id'
-      }
-    };
-
-    // Send customer confirmation email
-    const response = await fetch(`${supabaseUrl}/functions/v1/send-email`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${supabaseServiceKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(emailData),
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Failed to send test email:', errorData);
-      return NextResponse.json(
-        { error: 'Failed to send test email', details: errorData },
-        { status: 500 }
-      );
-    }
-
-    const result = await response.json();
-
-    // Send admin notification
-    const adminResponse = await fetch(`${supabaseUrl}/functions/v1/send-email`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${supabaseServiceKey}`,
-        'Content-Type': 'application/json',
+    // Test admin notification email
+    console.log(`Testing admin notification for order: ${orderNumber}`);
+    const adminResult = await simpleEmailService.sendAdminNotification({
+      orderNumber,
+      customerEmail,
+      customerName: customerName || 'Test Customer',
+      items: testItems,
+      totalAmount: 79.99,
+      currency: 'USD',
+      shippingAddress: {
+        firstName: customerName?.split(' ')[0] || 'Test',
+        lastName: customerName?.split(' ').slice(1).join(' ') || 'Customer',
+        addressLine1: '123 Test Street',
+        city: 'Test City',
+        state: 'TS',
+        postalCode: '12345',
+        country: 'US'
       },
-      body: JSON.stringify(adminEmailData),
+      paymentIntentId: 'pi_test_12345'
     });
 
-    const adminResult = adminResponse.ok ? await adminResponse.json() : { error: 'Failed to send admin email' };
+    console.log(`Test results - Order: ${orderResult}, Admin: ${adminResult}`);
 
     return NextResponse.json({
       success: true,
-      message: `Test order confirmation email sent to ${customerEmail}`,
+      message: `Email test completed for ${customerEmail}`,
       orderNumber,
-      customerEmailResult: result,
-      adminEmailResult: adminResult
+      results: {
+        orderConfirmation: orderResult,
+        adminNotification: adminResult
+      },
+      details: {
+        customerEmail,
+        orderNumber,
+        timestamp: new Date().toISOString()
+      }
     });
 
   } catch (error) {
     console.error('Test email error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      {
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     );
   }
+}
+
+export async function GET() {
+  return NextResponse.json({
+    message: 'Email test endpoint using simple email service',
+    usage: 'POST /api/test-email with { customerEmail, customerName }',
+    note: 'In development, customer emails are redirected to garypboyd@gmail.com'
+  });
 }

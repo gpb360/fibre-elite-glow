@@ -12,7 +12,7 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Heading } from '@/components/ui/heading';
 import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from 'lucide-react';
-import { EmptyCart, LoadingSpinner } from '@/components/loading';
+import { LoadingSpinner } from '@/components/loading';
 import { ErrorBoundary } from '@/components/error';
 
 const Cart = () => {
