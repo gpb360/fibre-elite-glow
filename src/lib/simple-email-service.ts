@@ -19,6 +19,7 @@ interface OrderConfirmationData {
   }>;
   totalAmount: number;
   currency: string;
+  customerPhone?: string;
   shippingAddress?: {
     firstName: string;
     lastName: string;
@@ -42,6 +43,7 @@ interface AdminNotificationData {
   }>;
   totalAmount: number;
   currency: string;
+  customerPhone?: string;
   shippingAddress?: {
     firstName: string;
     lastName: string;
@@ -189,6 +191,7 @@ class SimpleEmailService {
                 <p style="margin: 5px 0;"><strong>Order Number:</strong> ${data.orderNumber}</p>
                 <p style="margin: 5px 0;"><strong>Order Date:</strong> ${new Date().toLocaleDateString()}</p>
                 <p style="margin: 5px 0;"><strong>Status:</strong> <span style="color: #28a745; font-weight: bold;">Confirmed</span></p>
+                ${data.customerPhone ? `<p style="margin: 5px 0;"><strong>Phone:</strong> ${data.customerPhone}</p>` : ''}
               </div>
 
               ${shippingHtml}
@@ -280,6 +283,7 @@ class SimpleEmailService {
               <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
                 <p style="margin: 5px 0;"><strong>Order Number:</strong> ${data.orderNumber}</p>
                 <p style="margin: 5px 0;"><strong>Customer:</strong> ${data.customerName} (${data.customerEmail})</p>
+                ${data.customerPhone ? `<p style="margin: 5px 0;"><strong>Phone:</strong> ${data.customerPhone}</p>` : ''}
                 <p style="margin: 5px 0;"><strong>Order Date:</strong> ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
                 ${data.paymentIntentId ? `<p style="margin: 5px 0;"><strong>Payment Intent:</strong> ${data.paymentIntentId}</p>` : ''}
               </div>
