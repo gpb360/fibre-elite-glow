@@ -600,6 +600,7 @@ export async function POST(request: Request) {
         // Ensure customer exists in database
         const customerEmail = session.customer_details?.email || metadata.customer_email || '';
         const customerName = metadata.customer_name || session.customer_details?.name || undefined;
+        const customerPhone = metadata.customer_phone || session.customer_details?.phone || undefined;
         const customerId = await ensureCustomerExists(customerEmail, customerName);
 
         // Update checkout session status in database
@@ -729,6 +730,7 @@ export async function POST(request: Request) {
               })),
               totalAmount: (session.amount_total || 0) / 100,
               currency: session.currency?.toUpperCase() || 'USD',
+              customerPhone: customerPhone,
               shippingAddress: shippingAddress ? {
                 firstName: shippingAddress.first_name || '',
                 lastName: shippingAddress.last_name || '',
@@ -768,6 +770,7 @@ export async function POST(request: Request) {
               })),
               totalAmount: (session.amount_total || 0) / 100,
               currency: session.currency?.toUpperCase() || 'USD',
+              customerPhone: customerPhone,
               shippingAddress: shippingAddress ? {
                 firstName: shippingAddress.first_name || '',
                 lastName: shippingAddress.last_name || '',
