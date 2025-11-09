@@ -5,12 +5,6 @@
 [[plugins]]
 package = "@netlify/plugin-nextjs"
 
-# Configure sitemap plugin to prevent build errors
-[[plugins]]
-  package = "netlify-plugin-submit-sitemap"
-  [plugins.inputs]
-    baseUrl = "https://lbve.venomappdevelopment.com"
-    sitemapPath = "/sitemap.xml"
 
 [build.environment]
   NODE_VERSION = "20.18.0"
