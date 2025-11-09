@@ -1,14 +1,5 @@
 [build]
-  command = "npm install -g pnpm && pnpm install && pnpm build"
-  publish = ".next"
-
-[build.environment]
-  NODE_VERSION = "20.18.0"
-  NPM_CONFIG_FUND = "false"
-  NPM_CONFIG_AUDIT = "false"
-  NEXT_TELEMETRY_DISABLED = "1"
-  NODE_ENV = "production"
-  PNPM_HOME = "/opt/buildhome/.pnpm"
+  command = "corepack enable && corepack prepare pnpm@8.15.0 --activate && pnpm install --prod=false --frozen-lockfile && pnpm build"
 
 # Use Netlify's Essential Next.js plugin for proper Next.js support
 [[plugins]]
@@ -20,6 +11,15 @@ package = "@netlify/plugin-nextjs"
   [plugins.inputs]
     baseUrl = "https://lbve.venomappdevelopment.com"
     sitemapPath = "/sitemap.xml"
+
+[build.environment]
+  NEXT_TELEMETRY_DISABLED = "1"
+  NODE_ENV = "production"
+  NODE_VERSION = "20.18.0"
+  COREPACK_ENABLE_STRICT = "0"
+  PNPM_VERSION = "8.15.0"
+  NPM_CONFIG_FUND = "false"
+  NPM_CONFIG_AUDIT = "false"
 
 # Functions configuration for Netlify Functions
 [functions]

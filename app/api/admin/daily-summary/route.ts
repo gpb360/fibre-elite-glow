@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/integrations/supabase/client';
-import { emailService } from '@/lib/email-service';
 
 // API route for daily admin summary (can be triggered by cron)
 export async function GET(request: Request) {
@@ -77,15 +76,13 @@ export async function GET(request: Request) {
       createdAt: order.created_at || new Date().toISOString(),
     }));
 
-    // Send daily summary email
-    await emailService.sendDailyOrderSummary(adminNotificationData);
+    // Daily summary email functionality removed for simplicity
+    console.log(`📈 Daily summary: ${orders.length} orders, ${totalRevenue} ${orders[0]?.currency || 'USD'} revenue`);
 
     const totalRevenue = orders.reduce((sum, order) => sum + order.total_amount, 0);
 
-    console.log(`📈 Daily summary sent: ${orders.length} orders, ${totalRevenue} ${orders[0]?.currency || 'USD'} revenue`);
-
     return NextResponse.json({
-      message: 'Daily summary sent successfully',
+      message: 'Daily summary retrieved successfully',
       orders: orders.length,
       revenue: totalRevenue,
       currency: orders[0]?.currency || 'USD'

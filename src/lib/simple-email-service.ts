@@ -113,8 +113,8 @@ class SimpleEmailService {
   async sendOrderConfirmation(data: OrderConfirmationData): Promise<boolean> {
     const html = this.generateOrderConfirmationHTML(data);
 
-    // In development, send to test email for testing
-    const targetEmail = this.isDevelopment ? 'garypboyd@gmail.com' : data.customerEmail;
+    // Send to actual customer email
+    const targetEmail = data.customerEmail;
 
     return this.sendEmail({
       to: targetEmail,
