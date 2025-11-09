@@ -268,14 +268,14 @@ class SimpleEmailService {
           <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
 
             <!-- Alert Header -->
-            <div style="background: #dc3545; color: white; padding: 25px 20px; text-align: center;">
+            <div style="background: #9ED458; color: white; padding: 25px 20px; text-align: center;">
               <h1 style="margin: 0; font-size: 28px; font-weight: bold;">🚨 New Order Alert</h1>
               <p style="margin: 10px 0 0; font-size: 16px;">Order ${data.orderNumber} requires processing</p>
             </div>
 
             <!-- Order Details -->
             <div style="padding: 30px 20px;">
-              <h2 style="margin-top: 0; color: #333; border-bottom: 2px solid #dc3545; padding-bottom: 10px;">Order Summary</h2>
+              <h2 style="margin-top: 0; color: #333; border-bottom: 2px solid #9ED458; padding-bottom: 10px;">Order Summary</h2>
 
               <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
                 <p style="margin: 5px 0;"><strong>Order Number:</strong> ${data.orderNumber}</p>
@@ -302,7 +302,7 @@ class SimpleEmailService {
               </table>
 
               <!-- Total -->
-              <div style="background: #dc3545; color: white; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
+              <div style="background: #9ED458; color: white; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
                 <div style="font-size: 20px; font-weight: bold;">Order Total: $${data.totalAmount.toFixed(2)}</div>
               </div>
 
