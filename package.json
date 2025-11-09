@@ -101,7 +101,7 @@
     "@types/yargs-parser": "^21.0.3",
     "autoprefixer": "^10.4.20",
     "dotenv": "^16.5.0",
-    "eslint": "^8.57.0",
+    "eslint": "^8.57.1",
     "eslint-config-next": "^15.1.6",
     "intersection-observer": "^0.12.2",
     "jsdom": "^26.1.0",
