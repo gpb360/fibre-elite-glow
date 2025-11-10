@@ -13,7 +13,6 @@ package = "@netlify/plugin-nextjs"
     baseUrl = "https://lbve.venomappdevelopment.com"
     sitemapPath = "/sitemap.xml"
 
-
 [build.environment]
   NODE_VERSION = "20.18.0"
   NPM_CONFIG_FUND = "false"
@@ -21,6 +20,10 @@ package = "@netlify/plugin-nextjs"
   NEXT_TELEMETRY_DISABLED = "1"
   NODE_ENV = "production"
   NETLIFY_USE_PNPM = "true"
+
+# Use Netlify's Essential Next.js plugin for proper Next.js support
+[[plugins]]
+package = "@netlify/plugin-nextjs"
 
 # Functions configuration for Netlify Functions
 [functions]
