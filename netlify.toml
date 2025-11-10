@@ -1,5 +1,5 @@
 [build]
-  command = "pnpm install && pnpm run build"
+  command = "pnpm install --frozen-lockfile && pnpm run build"
   publish = ".next"
 
 [build.environment]
@@ -8,6 +8,7 @@
   NPM_CONFIG_AUDIT = "false"
   NEXT_TELEMETRY_DISABLED = "1"
   NODE_ENV = "production"
+  NETLIFY_USE_PNPM = "true"
 
 # Use Netlify's Essential Next.js plugin for proper Next.js support
 [[plugins]]
