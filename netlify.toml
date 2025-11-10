@@ -1,5 +1,5 @@
 [build]
-  command = "pnpm install && pnpm build"
+  command = "pnpm install --frozen-lockfile && pnpm build"
 
 # Use Netlify's Essential Next.js plugin for proper Next.js support
 [[plugins]]
