@@ -31,6 +31,7 @@ export async function POST(request: Request) {
       items: testItems,
       totalAmount: 79.99,
       currency: 'USD',
+      customerPhone: '+1-555-123-4567',
       shippingAddress: {
         firstName: customerName?.split(' ')[0] || 'Test',
         lastName: customerName?.split(' ').slice(1).join(' ') || 'Customer',
@@ -51,6 +52,7 @@ export async function POST(request: Request) {
       items: testItems,
       totalAmount: 79.99,
       currency: 'USD',
+      customerPhone: '+1-555-123-4567',
       shippingAddress: {
         firstName: customerName?.split(' ')[0] || 'Test',
         lastName: customerName?.split(' ').slice(1).join(' ') || 'Customer',

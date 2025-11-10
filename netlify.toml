@@ -1,6 +1,5 @@
 [build]
-  command = "pnpm install --frozen-lockfile && pnpm run build"
-  publish = ".next"
+  command = "pnpm install --frozen-lockfile && pnpm build"
 
 [build.environment]
   NODE_VERSION = "20.18.0"
@@ -13,13 +12,6 @@
 # Use Netlify's Essential Next.js plugin for proper Next.js support
 [[plugins]]
 package = "@netlify/plugin-nextjs"
-
-# Configure sitemap plugin to prevent build errors
-[[plugins]]
-  package = "netlify-plugin-submit-sitemap"
-  [plugins.inputs]
-    baseUrl = "https://lbve.venomappdevelopment.com"
-    sitemapPath = "/sitemap.xml"
 
 # Functions configuration for Netlify Functions
 [functions]
