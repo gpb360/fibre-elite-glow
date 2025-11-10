@@ -99,7 +99,7 @@ export default function AdminDashboard() {
             </div>
             <button
               onClick={logout}
-              className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-200"
+              className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition duration-200"
             >
               Logout
             </button>

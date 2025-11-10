@@ -70,6 +70,15 @@ exports.handler = async (event, context) => {
 // Send admin notification for new orders
 async function sendAdminNotification(session) {
   try {
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@lbve.ca';
+    
+    console.log(`🚀 Preparing admin notification for order:`, {
+      sessionId: session.id,
+      adminEmail: adminEmail,
+      customerEmail: session.customer_details?.email,
+      amount: session.amount_total
+    });
+
     const orderData = {
       orderId: session.id,
       customerName: session.customer_details?.name || 'N/A',
@@ -85,23 +94,35 @@ async function sendAdminNotification(session) {
 
     // Send email using your preferred service
     await sendEmail({
-      to: process.env.ADMIN_EMAIL || 'admin@lbve.ca',
+      to: adminEmail,
       subject: `🛒 New Order: ${orderData.orderId.substring(8)} - $${orderData.amount}`,
       html: generateOrderEmailHTML(orderData),
       text: generateOrderEmailText(orderData)
     });
 
-    console.log('Admin notification sent successfully');
+    console.log('✅ Admin notification sent successfully to:', adminEmail);
   } catch (error) {
-    console.error('Error sending admin notification:', error);
+    console.error('❌ Error sending admin notification:', {
+      error: error.message,
+      stack: error.stack,
+      adminEmail: process.env.ADMIN_EMAIL
+    });
   }
 }
 
 // Send notification for payment failures
 async function sendPaymentFailureNotification(paymentIntent) {
   try {
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@lbve.ca';
+    
+    console.log(`⚠️ Preparing payment failure notification:`, {
+      paymentIntentId: paymentIntent.id,
+      adminEmail: adminEmail,
+      amount: paymentIntent.amount
+    });
+
     await sendEmail({
-      to: process.env.ADMIN_EMAIL || 'admin@lbve.ca',
+      to: adminEmail,
       subject: `⚠️ Payment Failed: ${paymentIntent.id}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -118,8 +139,14 @@ async function sendPaymentFailureNotification(paymentIntent) {
       `,
       text: `Payment Failed: ${paymentIntent.id}\nAmount: $${(paymentIntent.amount / 100).toFixed(2)}\nError: ${paymentIntent.last_payment_error?.message || 'Unknown error'}`
     });
+
+    console.log('✅ Payment failure notification sent successfully to:', adminEmail);
   } catch (error) {
-    console.error('Error sending payment failure notification:', error);
+    console.error('❌ Error sending payment failure notification:', {
+      error: error.message,
+      stack: error.stack,
+      adminEmail: process.env.ADMIN_EMAIL
+    });
   }
 }
 
@@ -280,7 +307,21 @@ async function sendEmail({ to, subject, html, text }) {
     // Resend email provider
     try {
       const { Resend } = require('resend');
+      
+      // Check if API key is properly configured
+      if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY.length < 10) {
+        throw new Error('Resend API key is not properly configured');
+      }
+      
       const resend = new Resend(process.env.RESEND_API_KEY);
+
+      console.log(`📧 Attempting to send email via Resend:`, {
+        from: process.env.FROM_EMAIL || 'noreply@lbve.ca',
+        to: to,
+        subject: subject,
+        hasHtml: !!html,
+        hasText: !!text
+      });
 
       const result = await resend.emails.send({
         from: process.env.FROM_EMAIL || 'noreply@lbve.ca',
@@ -290,16 +331,30 @@ async function sendEmail({ to, subject, html, text }) {
         html: html
       });
 
-      console.log('Email sent successfully via Resend:', result);
+      console.log('✅ Email sent successfully via Resend:', result);
       return result;
     } catch (error) {
-      console.error('Resend error:', error);
+      console.error('❌ Resend error details:', {
+        message: error.message,
+        status: error.statusCode,
+        name: error.name,
+        from: process.env.FROM_EMAIL || 'noreply@lbve.ca',
+        to: to
+      });
+      
+      // Provide more specific guidance for common issues
+      if (error.message.includes('API key is invalid') || error.statusCode === 401) {
+        console.error('🔧 Suggested fix: Check Resend API key in Netlify environment variables');
+      } else if (error.message.includes('domain')) {
+        console.error('🔧 Suggested fix: Verify sending domain is configured in Resend dashboard');
+      }
+      
       // Fallback to console if Resend fails
-      console.log('=== EMAIL FALLBACK ===');
+      console.log('=== EMAIL FALLBACK (CONSOLE MODE) ===');
       console.log('To:', to);
       console.log('Subject:', subject);
       console.log('Text:', text);
-      console.log('===================');
+      console.log('====================================');
     }
   }
 
