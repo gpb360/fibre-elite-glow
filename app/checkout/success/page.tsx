@@ -199,8 +199,8 @@ function CheckoutSuccessContent() {
     });
   };
 
-  const formatCurrency = (amount: number, currency: string = 'USD') => {
-    return new Intl.NumberFormat('en-US', {
+  const formatCurrency = (amount: number, currency: string = 'CAD') => {
+    return new Intl.NumberFormat('en-CA', {
       style: 'currency',
       currency: currency.toUpperCase(),
     }).format(amount / 100);

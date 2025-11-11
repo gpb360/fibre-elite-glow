@@ -1,6 +1,8 @@
 // Simple email service that calls Resend directly - bypassing complex Supabase Edge Function
 // This fixes the admin email redirect issue and simplifies the email workflow
 
+import { BUILD_TIMESTAMP } from './build-cache-buster';
+
 interface EmailData {
   to: string;
   subject: string;
@@ -66,6 +68,13 @@ class SimpleEmailService {
     this.resendApiKey = process.env.RESEND_API_KEY || '';
     this.adminEmail = process.env.ADMIN_EMAIL || 'admin@lbve.ca';
     this.isDevelopment = process.env.NODE_ENV === 'development';
+
+    // Debug logging to identify admin email issue
+    console.log('🔍 SimpleEmailService Debug:');
+    console.log('  BUILD_TIMESTAMP:', BUILD_TIMESTAMP);
+    console.log('  ADMIN_EMAIL from env:', process.env.ADMIN_EMAIL);
+    console.log('  Final adminEmail:', this.adminEmail);
+    console.log('  Is development:', this.isDevelopment);
   }
 
   private async sendEmail(emailData: EmailData): Promise<boolean> {
@@ -128,6 +137,9 @@ class SimpleEmailService {
     const html = this.generateAdminNotificationHTML(data);
 
     // ALWAYS send to actual admin email - no development redirect!
+    console.log(`📧 Sending admin notification to: ${this.adminEmail}`);
+    console.log(`  Order: ${data.orderNumber}, Total: $${data.totalAmount.toFixed(2)}`);
+
     return this.sendEmail({
       to: this.adminEmail, // This fixes the admin email redirect issue
       subject: `🛒 New Order: ${data.orderNumber} - $${data.totalAmount.toFixed(2)}`,
@@ -246,11 +258,11 @@ class SimpleEmailService {
       `)
       .join('');
 
-    const shippingHtml = data.shippingAddress ? `
+     const shippingHtml = data.shippingAddress ? `
       <div style="background: #fff3cd; border-left: 4px solid #9ED458; padding: 15px; margin: 15px 0; font-family: Arial, sans-serif;">
         <h4 style="margin-top: 0; color: #333;">Shipping Address</h4>
         <p style="margin: 5px 0; color: #555;">
-          ${data.shippingAddress.firstName} ${data.shippingAddress.lastName}<br>
+          ${data.customerName}<br>
           ${data.shippingAddress.addressLine1}<br>
           ${data.shippingAddress.addressLine2 ? data.shippingAddress.addressLine2 + '<br>' : ''}
           ${data.shippingAddress.city}, ${data.shippingAddress.state} ${data.shippingAddress.postalCode}<br>
