@@ -93,7 +93,7 @@ export const getStripe = () => {
 
 // Stripe configuration
 export const STRIPE_CONFIG = {
-  currency: 'usd',
+  currency: 'cad',
   payment_method_types: ['card'] as Stripe.Checkout.SessionCreateParams.PaymentMethodType[],
   mode: 'payment' as const,
   success_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,

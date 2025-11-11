@@ -258,11 +258,11 @@ class SimpleEmailService {
       `)
       .join('');
 
-    const shippingHtml = data.shippingAddress ? `
+     const shippingHtml = data.shippingAddress ? `
       <div style="background: #fff3cd; border-left: 4px solid #9ED458; padding: 15px; margin: 15px 0; font-family: Arial, sans-serif;">
         <h4 style="margin-top: 0; color: #333;">Shipping Address</h4>
         <p style="margin: 5px 0; color: #555;">
-          ${data.shippingAddress.firstName} ${data.shippingAddress.lastName}<br>
+          ${data.customerName}<br>
           ${data.shippingAddress.addressLine1}<br>
           ${data.shippingAddress.addressLine2 ? data.shippingAddress.addressLine2 + '<br>' : ''}
           ${data.shippingAddress.city}, ${data.shippingAddress.state} ${data.shippingAddress.postalCode}<br>

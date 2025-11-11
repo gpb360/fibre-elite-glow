@@ -454,8 +454,8 @@ Order processing system notification
   `;
 }
 
-function formatCurrency(amount: number, currency: string = 'USD'): string {
-  return new Intl.NumberFormat('en-US', {
+function formatCurrency(amount: number, currency: string = 'CAD'): string {
+  return new Intl.NumberFormat('en-CA', {
     style: 'currency',
     currency: currency.toUpperCase(),
   }).format(amount);
@@ -630,7 +630,7 @@ export async function POST(request: Request) {
           payment_status: session.payment_status === 'paid' ? 'paid' as const : 'pending' as const,
           subtotal: session.amount_subtotal ? session.amount_subtotal / 100 : 0,
           total_amount: session.amount_total ? session.amount_total / 100 : 0,
-          currency: session.currency?.toUpperCase() || 'USD',
+          currency: session.currency?.toUpperCase() || 'CAD',
           stripe_payment_intent_id: session.payment_intent as string,
 
           // Shipping address from metadata
@@ -729,7 +729,7 @@ export async function POST(request: Request) {
                 price: item.price
               })),
               totalAmount: (session.amount_total || 0) / 100,
-              currency: session.currency?.toUpperCase() || 'USD',
+              currency: session.currency?.toUpperCase() || 'CAD',
               customerPhone: customerPhone,
               shippingAddress: shippingAddress ? {
                 firstName: shippingAddress.first_name || '',
@@ -769,7 +769,7 @@ export async function POST(request: Request) {
                 price: item.price
               })),
               totalAmount: (session.amount_total || 0) / 100,
-              currency: session.currency?.toUpperCase() || 'USD',
+              currency: session.currency?.toUpperCase() || 'CAD',
               customerPhone: customerPhone,
               shippingAddress: shippingAddress ? {
                 firstName: shippingAddress.first_name || '',

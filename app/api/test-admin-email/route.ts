@@ -18,7 +18,7 @@ export async function GET() {
         price: 79.99
       }],
       totalAmount: 79.99,
-      currency: 'USD',
+      currency: 'CAD',
       customerPhone: '+1-555-123-4567',
       shippingAddress: {
         firstName: 'Test',

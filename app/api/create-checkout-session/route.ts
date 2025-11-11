@@ -394,7 +394,7 @@ export async function POST(request: NextRequest) {
             session_id: session.id,
             customer_email: body.customerInfo.email,
             amount_total: session.amount_total ? session.amount_total / 100 : 0, // Convert from cents
-            currency: session.currency || 'USD',
+            currency: session.currency || 'CAD',
             payment_intent: session.payment_intent as string,
             metadata: metadata,
             status: session.status,
