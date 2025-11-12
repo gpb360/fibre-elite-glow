@@ -13,11 +13,15 @@ import { generateOrganizationSchema } from '@/lib/seo'
 import StructuredData from '@/components/seo/StructuredData'
 import './globals.css'
 
-const inter = Inter({ 
+// Optimized font loading with display: swap and proper subsets
+const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   preload: true,
-  variable: '--font-inter'
+  variable: '--font-inter',
+  // Optimize font loading for performance
+  adjustFontFallbacks: true,
+  fallback: ['system-ui', 'arial', 'sans-serif']
 })
 
 export const metadata: Metadata = {
@@ -36,6 +40,24 @@ export const metadata: Metadata = {
     title: 'La Belle Vie - Premium Gut Health Supplements',
     description: 'Transform your gut health with our premium fiber supplements.',
   },
+  // Performance optimizations
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon-16x16.png',
+    apple: '/apple-touch-icon.png',
+  },
+  manifest: '/site.webmanifest',
 }
 
 // Generate organization schema for global use
@@ -49,25 +71,69 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        {/* Critical viewport meta tag */}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+        {/* Performance critical CSS */}
         <CriticalCSS />
-        {/* Keep only essential preloads */}
+
+        {/* Preconnect to critical external domains */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        
-        {/* Only preload the hero image - LCP candidate */}
+        <link rel="preconnect" href="https://api.stripe.com" />
+        <link rel="preconnect" href="https://js.stripe.com" />
+
+        {/* DNS prefetch for less critical domains */}
+        <link rel="dns-prefetch" href="https://resend.com" />
+        <link rel="dns-prefetch" href="https://supabase.com" />
+
+        {/* Preload critical resources */}
         <link rel="preload" href="/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp" as="image" type="image/webp" fetchPriority="high" />
-        
-        {/* DNS prefetch only for critical domains */}
-        <link rel="dns-prefetch" href="https://api.stripe.com" />
-        <link rel="dns-prefetch" href="https://js.stripe.com" />
-        
+        <link rel="preload" href="/_next/static/css/app/layout.css" as="style" />
+
+        {/* Resource hints for performance */}
+        <link rel="modulepreload" href="/_next/static/chunks/main-app.js" />
+        <link rel="modulepreload" href="/_next/static/chunks/webpack.js" />
+        <link rel="modulepreload" href="/_next/static/chunks/app/_not-found.js" />
+
+        {/* Optimized font loading hints */}
+        <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossOrigin="" />
+
+        {/* Analytics and structured data */}
         <GoogleAnalytics />
         <StructuredData data={organizationSchema} />
+
+        {/* Canonical URL */}
+        <link rel="canonical" href={`${process.env.NEXT_PUBLIC_BASE_URL || 'https://lbve.ca'}`} />
+
+        {/* Security and performance headers */}
+        <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
+        <meta httpEquiv="X-Frame-Options" content="DENY" />
+        <meta httpEquiv="X-XSS-Protection" content="1; mode=block" />
+
+        {/* Theme color for better UX */}
+        <meta name="theme-color" content="#9ED458" />
+        <meta name="msapplication-TileColor" content="#9ED458" />
       </head>
-      <body suppressHydrationWarning className={inter.variable}>
-        <a href="#main-content" className="skip-link">Skip to main content</a>
-        <PerformanceOptimizer />
+      <body
+        suppressHydrationWarning
+        className={inter.variable}
+        // Performance optimizations
+        style={{
+          fontFamily: 'var(--font-inter), system-ui, sans-serif',
+        }}
+      >
+        {/* Skip link for accessibility */}
+        <a
+          href="#main-content"
+          className="skip-link sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-green-500 text-white px-4 py-2 rounded-md z-50"
+        >
+          Skip to main content
+        </a>
+
+        {/* Performance optimizer with minimal reporting */}
+        <PerformanceOptimizer enableReporting={false} enablePrefetch={true} />
+
         <ClientBodyWrapper fontClassName={inter.className}>
           <Providers>
             <CartProvider>

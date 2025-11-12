@@ -69,7 +69,7 @@ export default function SubscriptionManagement() {
           next_delivery: '2024-08-15',
           status: 'active',
           created_at: '2024-07-15T00:00:00Z',
-          product_image_url: '/images/total-essential.jpg',
+          product_image_url: '/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp',
           stripe_subscription_id: 'sub_123'
         },
         {
@@ -82,7 +82,7 @@ export default function SubscriptionManagement() {
           next_delivery: '2024-08-30',
           status: 'paused',
           created_at: '2024-06-15T00:00:00Z',
-          product_image_url: '/images/total-essential-plus.jpg',
+          product_image_url: '/lovable-uploads/webp/total-essential-plus-fiber-supplement-bottle.webp',
           stripe_subscription_id: 'sub_456'
         }
       ]

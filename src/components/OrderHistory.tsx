@@ -85,7 +85,9 @@ const OrderHistory: React.FC = () => {
           quantity: item.quantity,
           price: item.unit_price,
           product_name: item.product_name,
-          product_image_url: `/images/${item.product_type}.jpg` // Fallback image
+          product_image_url: item.product_type === 'total_essential_plus'
+            ? '/lovable-uploads/webp/total-essential-plus-fiber-supplement-bottle.webp'
+            : '/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp' // Fallback image
         }))
       }))
 

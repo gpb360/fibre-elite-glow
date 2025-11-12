@@ -193,8 +193,8 @@ const PremiumAppleFiber = () => {
         
         {/* What is Premium Apple Fiber */}
         <SplitSection
-          image="/lovable-uploads/apple-pomace.jpg"
-          imageAlt="Apple Pomace"
+          image="/lovable-uploads/apple-fiber-realistic-v1.jpg"
+          imageAlt="Premium Apple Fiber - Natural soluble and insoluble fiber source from Canadian apple pomace for digestive wellness"
           title="What is Premium Apple Fiber?"
           description="A natural fiber source derived from apple pomace with a perfect balance of soluble and insoluble fiber."
           className="bg-white"
@@ -299,8 +299,8 @@ const PremiumAppleFiber = () => {
         
         {/* How It Works */}
         <SplitSection
-          image="/lovable-uploads/digestive-system.jpg"
-          imageAlt="Digestive System Illustration"
+          image="/lovable-uploads/digestive-system-diagram.jpg"
+          imageAlt="Digestive System Diagram - Shows how premium apple fiber supports gut health and digestion for Canadian wellness"
           title="How Premium Apple Fiber Works"
           description="The science behind this gentle yet effective natural fiber"
           reverse

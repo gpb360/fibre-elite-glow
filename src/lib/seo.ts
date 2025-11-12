@@ -309,7 +309,7 @@ export function generateOrganizationSchema(brandName: string = 'La Belle Vie') {
     "@type": "Organization",
     "name": brandName,
     "url": defaultConfig.domain,
-    "logo": `${defaultConfig.domain}/lovable-uploads/webp/fibre-elite-glow-logo.webp`,
+    "logo": `${defaultConfig.domain}/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp`,
     "sameAs": [
       "https://facebook.com/labellevie",
       "https://instagram.com/labellevie",

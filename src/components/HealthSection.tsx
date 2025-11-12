@@ -97,7 +97,7 @@ export function HealthSection() {
         reverse
         title="Perfect for the Whole Family"
         description="From children to adults, our delicious fiber drink is suitable for everyone. Easy to prepare and enjoy daily for ongoing health benefits."
-        image="/lovable-uploads/webp/fiber-supplement-health-benefits.webp"
+        image="/lovable-uploads/webp/digestive-health-benefits-fiber-supplement.webp"
         imageAlt="Child drinking healthy juice"
         className="mt-20"
       >

@@ -81,7 +81,7 @@ export function ProductCard({
       <div className="aspect-square overflow-hidden relative">
         <Image
           src={image}
-          alt={`${title} - ${description} - La Belle Vie Premium Fiber Supplement`}
+          alt={`${title} - ${description} - La Belle Vie Canadian Premium Fiber Supplement - Available Canada-wide`}
           fill
           className="object-cover transition-transform duration-300 group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
