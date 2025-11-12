@@ -77,27 +77,17 @@ export default function RootLayout({
         {/* Performance critical CSS */}
         <CriticalCSS />
 
-        {/* Preconnect to critical external domains */}
+        {/* Resource hints to reduce critical request chains */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link rel="preconnect" href="https://api.stripe.com" />
-        <link rel="preconnect" href="https://js.stripe.com" />
-
-        {/* DNS prefetch for less critical domains */}
+        <link rel="preconnect" href="https://api.stripe.com" crossOrigin="" />
+        <link rel="preconnect" href="https://checkout.stripe.com" crossOrigin="" />
+        <link rel="preconnect" href="https://supabase.co" crossOrigin="" />
         <link rel="dns-prefetch" href="https://resend.com" />
-        <link rel="dns-prefetch" href="https://supabase.com" />
 
         {/* Preload critical resources */}
-        <link rel="preload" href="/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp" as="image" type="image/webp" fetchPriority="high" />
-        <link rel="preload" href="/_next/static/css/app/layout.css" as="style" />
-
-        {/* Resource hints for performance */}
-        <link rel="modulepreload" href="/_next/static/chunks/main-app.js" />
-        <link rel="modulepreload" href="/_next/static/chunks/webpack.js" />
-        <link rel="modulepreload" href="/_next/static/chunks/app/_not-found.js" />
-
-        {/* Optimized font loading hints */}
-        <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossOrigin="" />
+        <link rel="preload" href="/_next/static/chunks/main-app.js" as="script" />
+        <link rel="preload" href="/_next/static/chunks/webpack.js" as="script" />
 
         {/* Analytics and structured data */}
         <GoogleAnalytics />
