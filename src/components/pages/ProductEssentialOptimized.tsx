@@ -1,0 +1,381 @@
+'use client';
+
+import React, { useState, Suspense, lazy, useMemo } from 'react';
+import { OptimizedMotion, fadeInUp, fadeIn, scaleIn } from '@/components/performance/OptimizedMotion';
+import { IntersectionLazy } from '@/components/performance/LazyComponent';
+import { Button } from '@/components/ui/button';
+import { Heading } from '@/components/ui/heading';
+import { SplitSection } from '@/components/ui/split-section';
+import { PackageSelector } from '@/components/ui/package-selector';
+import { Link } from 'next/link';
+import Image from 'next/image';
+import { ExternalLink, Loader2, Check } from 'lucide-react';
+import { usePackages, Package } from '@/hooks/usePackages';
+import { useCart } from '@/contexts/CartContext';
+import { Breadcrumb } from '@/components/ui/breadcrumb';
+
+// Lazy load heavy sections
+const LazyFaqSection = lazy(() => import('@/components/FaqSection'));
+const LazyProductTestimonials = lazy(() => import('@/components/ui/product-testimonials'));
+
+// Optimized loading fallback
+const OptimizedLoadingFallback = () => (
+  <div className="animate-pulse">
+    <div className="bg-gray-100 rounded-lg h-48 w-full mb-4"></div>
+    <div className="space-y-2">
+      <div className="bg-gray-100 rounded h-4 w-3/4"></div>
+      <div className="bg-gray-100 rounded h-4 w-1/2"></div>
+    </div>
+  </div>
+);
+
+// Optimized benefit card component
+const OptimizedBenefitCard = React.memo(({
+  title,
+  description,
+  icon: Icon
+}: {
+  title: string;
+  description: string;
+  icon: React.ComponentType<{ className?: string }>
+}) => (
+  <OptimizedMotion
+    className="bg-white p-6 rounded-lg shadow-sm border border-gray-100"
+    {...fadeInUp}
+  >
+    <div className="h-12 w-12 flex items-center justify-center rounded-full bg-green-100 mb-4">
+      <Icon className="h-6 w-6 text-green-600" />
+    </div>
+    <h3 className="text-lg font-semibold mb-2">{title}</h3>
+    <p className="text-gray-600">{description}</p>
+  </OptimizedMotion>
+));
+
+OptimizedBenefitCard.displayName = 'OptimizedBenefitCard';
+
+// Memoized testimonials data to prevent recalculation
+const totalEssentialTestimonials = [
+  {
+    id: '1',
+    name: 'Celine C',
+    rating: 5,
+    text: 'I simply love this product... I took it at night before I go to bed and when I woke up, I got the best release ever.',
+    verified: true
+  },
+  {
+    id: '2',
+    name: 'Nina',
+    rating: 5,
+    text: 'I have used 5 days only and can feel the result of losing weight',
+    verified: true
+  },
+  {
+    id: '3',
+    name: 'Jamie',
+    rating: 5,
+    text: 'I used to feel so bloated after a long flight... after taking this product, it\'s totally changed my life',
+    verified: true
+  },
+  {
+    id: '4',
+    name: 'G Normandeau',
+    location: 'Nova Scotia',
+    rating: 5,
+    text: 'I cannot believe how great Total Essential is working for me... I endured 6 years of Dr\'s prescriptions that did not work. Imagine the relief I am finally experiencing.'
+  },
+  {
+    id: '5',
+    name: 'R Nunnikhoven',
+    location: 'Maple Ridge, BC',
+    rating: 5,
+    text: 'The Total Essential Program is simply wonderful. It tastes great, is easy to take and works as promised.'
+  },
+  {
+    id: '6',
+    name: 'J Neels',
+    location: 'Chilliwack, BC',
+    rating: 5,
+    text: 'I have been using the Total Essential Detox program for about 2 years now. It has been life changing for me... After taking the detox I was able to be regular, gain extra energy and feel really great.'
+  }
+];
+
+export function ProductEssentialOptimized() {
+  const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
+  const { data: packages, isLoading } = usePackages('total_essential');
+  const { addToCart, isLoading: cartLoading } = useCart();
+  const [isAdding, setIsAdding] = useState(false);
+  const [justAdded, setJustAdded] = useState(false);
+
+  // Set default package to the most popular one when data loads
+  React.useEffect(() => {
+    if (packages && !selectedPackage) {
+      const popularPackage = packages.find(pkg => pkg.is_popular) || packages[0];
+      setSelectedPackage(popularPackage);
+    }
+  }, [packages, selectedPackage]);
+
+  const handleAddToCart = async () => {
+    if (!selectedPackage) return;
+
+    setIsAdding(true);
+
+    try {
+      await addToCart({
+        id: selectedPackage.id,
+        productName: selectedPackage.product_name,
+        productType: selectedPackage.product_type,
+        price: selectedPackage.price,
+        originalPrice: selectedPackage.original_price || undefined,
+        savings: selectedPackage.savings || undefined,
+        image: '/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp',
+        packageSize: `${selectedPackage.quantity} box${selectedPackage.quantity > 1 ? 'es' : ''} (${selectedPackage.quantity * 15} sachets)`,
+      });
+
+      setJustAdded(true);
+      setTimeout(() => setJustAdded(false), 2000); // Reduced timeout
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
+  // Memoize FAQ data to prevent recreation
+  const faqData = useMemo(() => [
+    {
+      question: "What's the difference between prebiotics and probiotics?",
+      answer: "Prebiotics are specialized plant fibers that feed the beneficial bacteria already living in your gut, while probiotics are live bacteria that you add to your digestive system. Our Total Essential contains oligosaccharides, which are prebiotics that nourish your existing beneficial gut bacteria, supporting a naturally healthy digestive ecosystem without introducing foreign bacteria."
+    },
+    {
+      question: "How long should I take Total Essential?",
+      answer: "Total Essential is designed as a comprehensive 15-day wellness program. For optimal results, take one sachet daily for the complete 15-day cycle. Many customers incorporate this program into their monthly wellness routine or use it seasonally for ongoing digestive health maintenance and detoxification support."
+    },
+    {
+      question: "What makes Total Essential uniquely effective?",
+      answer: "Total Essential combines both soluble and insoluble fiber from premium natural sources in scientifically balanced ratios. This dual-fiber approach ensures comprehensive digestive support: soluble fiber helps regulate blood sugar and cholesterol while insoluble fiber promotes healthy elimination and detoxification. The addition of oligosaccharides provides prebiotic support for optimal gut microbiome health."
+    },
+    {
+      question: "Is Total Essential safe for daily use and long-term consumption?",
+      answer: "Yes, Total Essential is formulated with 100% natural, food-grade ingredients and is certified non-GMO and gluten-free. Our gentle fiber blend is well-tolerated by most individuals. However, as with any nutritional supplement, we recommend consulting with your healthcare practitioner before beginning any new wellness program, especially if you have existing health conditions."
+    },
+    {
+      question: "Can I take Total Essential if I have dietary restrictions or allergies?",
+      answer: "Total Essential is gluten-free, non-GMO, and made exclusively with natural plant-based ingredients. It contains no artificial preservatives, colors, or synthetic additives. If you have specific food allergies or dietary restrictions, please review our complete ingredient list and consult with your healthcare provider to ensure compatibility with your individual needs."
+    }
+  ], []);
+
+  // Memoize benefits data
+  const benefitsData = useMemo(() => [
+    {
+      title: "Normalizes Bowel Movements",
+      description: "Dietary fiber increases the weight and size of your stool and softens it. A bulky stool is easier to pass, decreasing your chance of constipation.",
+      icon: ExternalLink
+    },
+    {
+      title: "Heart Health",
+      description: "Research shows that those eating a high-fiber diet have a 40 percent lower risk of heart disease, reducing blood pressure and inflammation.",
+      icon: ExternalLink
+    },
+    {
+      title: "Blood Sugar Control",
+      description: "Soluble fiber may help to slow your body's breakdown of carbohydrates and the absorption of sugar, helping with blood sugar control.",
+      icon: ExternalLink
+    },
+    {
+      title: "Weight Management",
+      description: "Fiber supplements have been shown to enhance weight loss, likely because fiber increases feelings of fullness and takes longer to eat.",
+      icon: ExternalLink
+    },
+    {
+      title: "Prevents Digestive Issues",
+      description: "Dietary fiber may reduce your risk of diverticulitis, hemorrhoids, and provide relief from irritable bowel syndrome (IBS).",
+      icon: ExternalLink
+    },
+    {
+      title: "Prevents Stones",
+      description: "A high-fiber diet may reduce the risk of gallstones and kidney stones, likely because of its ability to help regulate blood sugar.",
+      icon: ExternalLink
+    }
+  ], []);
+
+  return (
+    <>
+      {/* Hero Section - Critical for LCP, keep optimized */}
+      <section className="bg-gradient-to-b from-green-50 to-white py-16 md:py-24">
+        <div className="container px-4 md:px-6">
+          <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
+            <OptimizedMotion className="flex flex-col justify-center space-y-4" {...fadeInUp}>
+              <div className="space-y-2">
+                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
+                  Total Essential
+                </h1>
+                {selectedPackage && (
+                  <p className="text-green-500 text-xl font-semibold">
+                    ${selectedPackage.price}
+                    {selectedPackage.savings && selectedPackage.savings > 0 && (
+                      <span className="ml-2 text-sm text-gray-500 line-through">
+                        ${selectedPackage.original_price}
+                      </span>
+                    )}
+                  </p>
+                )}
+                <div className="flex items-center">
+                  {[...Array(5)].map((_, i) => (
+                    <svg
+                      key={i}
+                      className="h-5 w-5 text-yellow-400"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                  <span className="ml-2 text-sm text-gray-600">(3 customer reviews)</span>
+                </div>
+                <p className="max-w-[600px] text-zinc-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                  PREMIUM DAILY FIBER BLEND - 15 SACHETS PER BOX
+                </p>
+              </div>
+
+              {/* Package Selection */}
+              <div className="mt-6">
+                {isLoading ? (
+                  <OptimizedLoadingFallback />
+                ) : packages && (
+                  <PackageSelector
+                    packages={packages}
+                    selectedPackage={selectedPackage}
+                    onSelectPackage={setSelectedPackage}
+                    variant="green"
+                  />
+                )}
+              </div>
+
+              {/* Serving Information */}
+              <div className="mt-4 text-gray-700 text-sm leading-6">
+                <p><strong>1 Box</strong> = 15 Sachets</p>
+                <p><strong>1 Sachet</strong> = 1 Serving</p>
+                <p>15-Day Supply per Box</p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4 mt-6">
+                <Button
+                  variant="premium"
+                  size="lg"
+                  disabled={!selectedPackage || isAdding || cartLoading}
+                  onClick={handleAddToCart}
+                >
+                  {isAdding ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      Adding to Cart...
+                    </>
+                  ) : justAdded ? (
+                    <>
+                      <Check className="h-4 w-4 mr-2" />
+                      Added to Cart!
+                    </>
+                  ) : (
+                    `Add to Cart - $${selectedPackage?.price || '0.00'}`
+                  )}
+                </Button>
+                <Link href="/products">
+                  <Button variant="outline" size="lg">
+                    Back to Products
+                  </Button>
+                </Link>
+              </div>
+            </OptimizedMotion>
+
+            <OptimizedMotion className="mx-auto flex items-center justify-center" {...scaleIn}>
+              <Image
+                alt="Total Essential Product - Canadian-made premium fiber supplement for digestive health and gut wellness - Available in Canada"
+                className="aspect-square overflow-hidden rounded-xl object-cover object-center sm:w-full"
+                src="/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp"
+                width={550}
+                height={550}
+                priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 550px"
+                placeholder="blur"
+                blurDataURL="data:image/webp;base64,UklGRiQAAABXRUJQVlA4WAoAAAAQAAAA8wAA8wAAQUxQSBIAAAABR0AEmQAP4A/kOw2G7k7I6H7G8N9O8Q9R/T0U1V1W2X3Y4Z5a6b7c8d9e+f/gH+gJ+iP6oL+pQ6pS+pT+pZ+pqPqw6rS6rT6rZ6rqPqw6rS6rT6rZ6rqPqw6rS6rT6rZ6rqPqw6rS6rT6rZ6rqPuw="
+              />
+            </OptimizedMotion>
+          </div>
+        </div>
+      </section>
+
+      {/* Product Description - Keep this critical content above the fold */}
+      <section className="py-12 md:py-20">
+        <div className="container px-4 md:px-6">
+          <Heading
+            title="Revolutionary Fiber Technology"
+            description="Scientifically formulated for optimal digestive health and wellness"
+            className="mb-10"
+          />
+          <div className="prose max-w-none">
+            <p className="text-lg leading-relaxed mb-6">
+              In today's fast-paced world, modern dietary habits consisting of processed foods, refined sugars, and nutrient-poor options have created a widespread fiber deficiency crisis. These high-fat, low-fiber diets severely disrupt intestinal function, leading to digestive irregularity, weight gain, insulin resistance, cardiovascular stress, and numerous metabolic complications.
+            </p>
+
+            <p className="text-lg leading-relaxed mb-6">
+              <strong>Total Essential</strong> represents a breakthrough in nutritional science, meticulously formulated with 100% natural fruit and vegetable extracts, premium oat bran, and sustainably sourced palm tree trunk fiber. <Link href="/ingredients" className="text-green-600 hover:text-green-700 underline">Explore our premium ingredients</Link> to learn more about what makes Total Essential so effective. This scientifically balanced blend of top-grade soluble and insoluble fiber works synergistically to restore digestive harmony, support cardiovascular health, regulate blood sugar levels, and promote healthy weight management.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Health Benefits - Lazy load these as they're below the fold */}
+      <IntersectionLazy rootMargin="100px">
+        <section className="py-12 md:py-20">
+          <div className="container px-4 md:px-6">
+            <Heading
+              title="Health Benefits of Fiber"
+              description="A high-fiber diet has many benefits for your overall health"
+              centered
+              className="mb-12"
+            />
+
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {benefitsData.map((benefit, index) => (
+                <OptimizedBenefitCard
+                  key={benefit.title}
+                  title={benefit.title}
+                  description={benefit.description}
+                  icon={benefit.icon}
+                />
+              ))}
+            </div>
+
+            <div className="mt-12 text-center">
+              <a
+                href="https://www.mayoclinic.org/healthy-lifestyle/nutrition-and-healthy-eating/in-depth/fiber/art-20043983"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-green-600 hover:text-green-800"
+              >
+                Learn more about fiber benefits from Mayo Clinic
+                <ExternalLink className="ml-2 h-4 w-4" />
+              </a>
+            </div>
+          </div>
+        </section>
+      </IntersectionLazy>
+
+      {/* Lazy load heavy sections */}
+      <IntersectionLazy rootMargin="200px">
+        <Suspense fallback={<OptimizedLoadingFallback />}>
+          <LazyProductTestimonials testimonials={totalEssentialTestimonials} />
+        </Suspense>
+      </IntersectionLazy>
+
+      <IntersectionLazy rootMargin="200px">
+        <Suspense fallback={<OptimizedLoadingFallback />}>
+          <LazyFaqSection faqs={faqData} />
+        </Suspense>
+      </IntersectionLazy>
+    </>
+  );
+}
+
+export default ProductEssentialOptimized;

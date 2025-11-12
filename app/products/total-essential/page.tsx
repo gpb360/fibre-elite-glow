@@ -14,7 +14,7 @@ const productSchema = generateProductSchema({
   name: 'Total Essential',
   description: 'Premium daily fiber blend for digestive wellness and natural energy. Clean, gentle formula with prebiotic fiber for gut health. 15 sachets per box.',
   price: '74.99',
-  currency: 'USD',
+  currency: 'CAD', // Fixed: Changed from USD to CAD as per git status
   sku: 'total-essential-base',
   gtin: 'FEG-TE-001',
   brand: 'La Belle Vie',
