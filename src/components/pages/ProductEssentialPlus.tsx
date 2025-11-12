@@ -259,7 +259,7 @@ export function ProductEssentialPlus() {
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
                 <Image
-                  alt="Total Essential Plus Product - Advanced fiber supplement with enhanced benefits"
+                  alt="Total Essential Plus Product - Canadian advanced fiber supplement with enhanced benefits - Available across Canada"
                   className="aspect-square overflow-hidden rounded-xl object-cover object-center sm:w-full"
                   src="/lovable-uploads/webp/total-essential-plus-fiber-supplement-bottle.webp"
                   width={550}
@@ -570,7 +570,7 @@ export function ProductEssentialPlus() {
               <footer className="mt-8">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
-                    <Image className="h-10 w-10 rounded-full bg-purple-100" src="/lovable-uploads/webp/fiber-supplement-premium-ingredients.webp" alt="Tinesja Vanel - Colon Hydro-therapist testimonial for Total Essential Plus fiber supplement" width={40} height={40} />
+                    <Image className="h-10 w-10 rounded-full bg-purple-100" src="/lovable-uploads/webp/prebiotic-fiber-gut-health.webp" alt="Tinesja Vanel - Colon Hydro-therapist testimonial for Total Essential Plus fiber supplement" width={40} height={40} />
                   </div>
                   <div className="ml-4">
                     <div className="text-base font-semibold text-gray-900">Tinesja Vanel</div>
@@ -584,7 +584,7 @@ export function ProductEssentialPlus() {
 
         {/* How to Use Section */}
         <SplitSection
-          image="/lovable-uploads/webp/fiber-supplement-premium-ingredients.webp"
+          image="/lovable-uploads/webp/prebiotic-fiber-gut-health.webp"
           imageAlt="How to use Total Essential Plus"
           title="Enhanced Daily Protocol"
           description="Total Essential Plus is designed for effortless integration into your daily beauty and wellness routine with maximum convenience and superior taste experience."

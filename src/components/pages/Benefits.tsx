@@ -41,7 +41,7 @@ const BenefitsHero = () => (
     <div className="absolute inset-0 z-0 opacity-20">
       <Image
         src="/assets/dual-total-essential-and-plus-together.png"
-        alt="Total Essential and Total Essential Plus fiber supplement bottles displayed together"
+        alt="Total Essential and Total Essential Plus Canadian fiber supplement bottles - Premium gut health products available Canada-wide"
         fill
         className="object-cover"
         priority={false}

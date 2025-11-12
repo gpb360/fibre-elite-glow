@@ -239,7 +239,7 @@ export function ProductEssential() {
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
                 <Image
-                  alt="Total Essential Product - Complete fiber supplement for digestive health and gut wellness"
+                  alt="Total Essential Product - Canadian-made premium fiber supplement for digestive health and gut wellness - Available in Canada"
                   className="aspect-square overflow-hidden rounded-xl object-cover object-center sm:w-full"
                   src="/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp"
                   width={550}

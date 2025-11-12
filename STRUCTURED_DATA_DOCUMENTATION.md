@@ -184,7 +184,7 @@ Expected results:
   "@type": "Organization",
   "name": "La Belle Vie",
   "url": "https://lbve.ca",
-  "logo": "https://lbve.ca/lovable-uploads/webp/fibre-elite-glow-logo.webp",
+  "logo": "https://lbve.ca/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp",
   "sameAs": [
     "https://facebook.com/fibreeliteglow",
     "https://instagram.com/fibreeliteglow",

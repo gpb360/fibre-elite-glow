@@ -64,6 +64,8 @@ export default function RootLayout({
         
         <GoogleAnalytics />
         <StructuredData data={organizationSchema} />
+        {/* Canonical URL - Dynamic based on environment */}
+        <link rel="canonical" href={`${process.env.NEXT_PUBLIC_BASE_URL || 'https://lbve.ca'}`} />
       </head>
       <body suppressHydrationWarning className={inter.variable}>
         <a href="#main-content" className="skip-link">Skip to main content</a>

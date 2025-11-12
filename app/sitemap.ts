@@ -4,7 +4,7 @@ import path from 'path';
 
 export const dynamic = 'force-static';
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://lbve.ca';
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://lbve.ca';
 
   // Static pages
   const staticRoutes = [
@@ -28,6 +28,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: route === '' ? 1 : route.startsWith('/products/') ? 0.9 : 0.8,
   }));
 
   // Dynamic ingredient pages
@@ -39,6 +41,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const ingredientRoutes = ingredientSubDirs.map((dir) => ({
     url: `${baseUrl}/ingredients/${dir}`,
     lastModified: new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
   }));
 
   return [...staticRoutes, ...ingredientRoutes];
