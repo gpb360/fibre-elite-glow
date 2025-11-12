@@ -146,18 +146,19 @@ const nextConfig = {
 
     // Aggressive performance optimizations for production builds
     if (!dev && !isServer) {
-      // Enhanced chunk splitting strategy
+      // Optimized chunk splitting to reduce HTTP requests
       config.optimization.splitChunks = {
         ...config.optimization.splitChunks,
         chunks: 'all',
-        minSize: 20000,
-        maxSize: 244000,
+        minSize: 30000,
+        maxSize: 300000, // Increased to reduce number of chunks
         cacheGroups: {
           default: {
-            minChunks: 2,
+            minChunks: 3, // Increased to reduce chunks
             priority: -20,
             reuseExistingChunk: true,
           },
+          // Combine more vendors together to reduce HTTP requests
           vendor: {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
@@ -165,7 +166,7 @@ const nextConfig = {
             chunks: 'all',
             enforce: true,
           },
-          // Split heavy libraries into separate chunks
+          // Only split the heaviest libraries
           framer: {
             test: /[\\/]node_modules[\\/]framer-motion[\\/]/,
             name: 'framer-motion',
@@ -173,34 +174,10 @@ const nextConfig = {
             chunks: 'all',
             enforce: true,
           },
-          lucide: {
-            test: /[\\/]node_modules[\\/]lucide-react[\\/]/,
-            name: 'lucide-react',
-            priority: 25,
-            chunks: 'all',
-            enforce: true,
-          },
-          // Split radix UI components
-          radix: {
-            test: /[\\/]node_modules[\\/]@radix-ui[\\/]/,
-            name: 'radix-ui',
-            priority: 20,
-            chunks: 'all',
-            enforce: true,
-          },
-          // Split Stripe for better caching
           stripe: {
             test: /[\\/]node_modules[\\/]@stripe[\\/]/,
             name: 'stripe',
-            priority: 22,
-            chunks: 'all',
-            enforce: true,
-          },
-          // Split Supabase
-          supabase: {
-            test: /[\\/]node_modules[\\/]@supabase[\\/]/,
-            name: 'supabase',
-            priority: 21,
+            priority: 25,
             chunks: 'all',
             enforce: true,
           },
