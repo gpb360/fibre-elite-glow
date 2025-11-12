@@ -11,6 +11,7 @@ import PerformanceOptimizer from '@/components/performance/PerformanceOptimizer'
 import CriticalCSS from '@/components/performance/CriticalCSS'
 import { generateOrganizationSchema } from '@/lib/seo'
 import StructuredData from '@/components/seo/StructuredData'
+import ServiceWorkerRegister from '@/components/pwa/ServiceWorkerRegister'
 import './globals.css'
 
 // Optimized font loading with display: swap and proper subsets
@@ -123,6 +124,9 @@ export default function RootLayout({
 
         {/* Performance optimizer with minimal reporting */}
         <PerformanceOptimizer enableReporting={false} enablePrefetch={true} />
+
+        {/* PWA Service Worker Registration */}
+        <ServiceWorkerRegister />
 
         <ClientBodyWrapper fontClassName={inter.className}>
           <Providers>
