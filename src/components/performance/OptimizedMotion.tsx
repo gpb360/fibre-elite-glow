@@ -43,18 +43,28 @@ const useAnimationPerformance = () => {
 };
 
 // Performance-optimized motion component with reduced blocking time
-export const OptimizedMotion = forwardRef<HTMLDivElement, OptimizedMotionProps>(
-  ({ children, disabled = false, reducedMotion, ...motionProps }, ref) => {
+export const OptimizedMotion = forwardRef<HTMLDivElement, OptimizedMotionProps & React.HTMLAttributes<HTMLDivElement>>(
+  ({ children, disabled = false, reducedMotion, className, style, ...motionProps }, ref) => {
     const shouldReduceAnimations = useAnimationPerformance();
 
     // Disable animations based on multiple factors
     if (disabled || reducedMotion || shouldReduceAnimations) {
-      return <div ref={ref}>{children}</div>;
+      return (
+        <div
+          ref={ref}
+          className={className}
+          style={style}
+        >
+          {children}
+        </div>
+      );
     }
 
     // Highly optimized animation defaults to minimize blocking time
     const optimizedProps = {
       ...motionProps,
+      className,
+      style,
       transition: {
         duration: 0.15, // Further reduced from 0.2 to minimize blocking time
         ease: 'easeOut',

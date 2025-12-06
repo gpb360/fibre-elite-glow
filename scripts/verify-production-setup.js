@@ -1,5 +1,5 @@
-const https = require('https');
-const readline = require('readline');
+import https from 'https';
+import readline from 'readline';
 
 const rl = readline.createInterface({
     input: process.stdin,
