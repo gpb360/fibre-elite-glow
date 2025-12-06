@@ -1,6 +1,6 @@
 // Service Worker for La Belle Vie PWA
-const CACHE_NAME = 'la-belle-vie-v1';
-const RUNTIME_CACHE = 'la-belle-vie-runtime-v1';
+const CACHE_NAME = 'la-belle-vie-v2';
+const RUNTIME_CACHE = 'la-belle-vie-runtime-v2';
 
 // Assets to cache immediately for offline functionality (only files that actually exist)
 const STATIC_CACHE_ASSETS = [
