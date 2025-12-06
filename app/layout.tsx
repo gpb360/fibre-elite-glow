@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Playfair_Display } from 'next/font/google'
 import { Toaster } from "@/components/ui/toaster"
 import { Toaster as Sonner } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
@@ -21,9 +21,15 @@ const inter = Inter({
   preload: true,
   variable: '--font-inter',
   // Optimize font loading for performance
-  adjustFontFallbacks: true,
   fallback: ['system-ui', 'arial', 'sans-serif']
 })
+
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-playfair',
+})
+
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://lbve.ca'),
@@ -108,7 +114,7 @@ export default function RootLayout({
       </head>
       <body
         suppressHydrationWarning
-        className={inter.variable}
+        className={`${inter.variable} ${playfair.variable}`}
         // Performance optimizations
         style={{
           fontFamily: 'var(--font-inter), system-ui, sans-serif',

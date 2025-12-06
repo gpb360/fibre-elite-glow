@@ -102,3 +102,21 @@ If you're still seeing Stripe configuration errors:
 - **"Server configuration error: Stripe publishable key not configured"**: `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` is missing
 - **"Could not create Stripe client"**: Invalid `STRIPE_SECRET_KEY` format
 - **"Failed to create checkout session"**: Check function logs for specific Stripe API errors
+
+## Going Live Checklist
+
+Before launching your production site, ensure you have completed these steps:
+
+1.  **Disable Test Mode**:
+    *   Set `NEXT_PUBLIC_STRIPE_TEST_MODE` to `false` in Netlify Site Settings.
+
+2.  **Update Stripe Keys**:
+    *   Replace `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` with your **Live** Publishable Key (`pk_live_...`).
+    *   Replace `STRIPE_SECRET_KEY` with your **Live** Secret Key (`sk_live_...`).
+    *   Update `STRIPE_WEBHOOK_SECRET` if you created a separate live webhook endpoint.
+
+3.  **Verify Domain**:
+    *   Ensure `NEXT_PUBLIC_BASE_URL` matches your custom domain (e.g., `https://www.yourdomain.com`).
+
+4.  **Redeploy**:
+    *   Trigger a new deployment in Netlify for these variable changes to take effect.
