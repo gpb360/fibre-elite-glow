@@ -61,8 +61,8 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: '/favicon.ico',
-    shortcut: '/favicon-16x16.png',
-    apple: '/apple-touch-icon.png',
+    // shortcut: '/favicon-16x16.png', // Generated at build time or missing
+    // apple: '/apple-touch-icon.png', // Generated at build time or missing
   },
   manifest: '/site.webmanifest',
 }
@@ -92,10 +92,6 @@ export default function RootLayout({
         <link rel="preconnect" href="https://supabase.co" crossOrigin="" />
         <link rel="dns-prefetch" href="https://resend.com" />
 
-        {/* Preload critical resources */}
-        <link rel="preload" href="/_next/static/chunks/main-app.js" as="script" />
-        <link rel="preload" href="/_next/static/chunks/webpack.js" as="script" />
-
         {/* Analytics and structured data */}
         <GoogleAnalytics />
         <StructuredData data={organizationSchema} />
@@ -103,9 +99,8 @@ export default function RootLayout({
         {/* Canonical URL */}
         <link rel="canonical" href={`${process.env.NEXT_PUBLIC_BASE_URL || 'https://lbve.ca'}`} />
 
-        {/* Security and performance headers */}
+        {/* Security headers are handled by next.config.js / netlify.toml */}
         <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
-        <meta httpEquiv="X-Frame-Options" content="DENY" />
         <meta httpEquiv="X-XSS-Protection" content="1; mode=block" />
 
         {/* Theme color for better UX */}

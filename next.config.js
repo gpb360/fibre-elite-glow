@@ -95,7 +95,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Permissions-Policy',
-            value: 'payment=(self), camera=(), microphone=(), geolocation=(), usb=(), magnetometer=(), accelerometer=(), gyroscope=()'
+            value: 'payment=*, camera=(), microphone=(), geolocation=(), usb=(), magnetometer=(), accelerometer=(), gyroscope=()'
           },
           {
             key: 'X-DNS-Prefetch-Control',
