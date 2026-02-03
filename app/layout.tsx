@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Playfair_Display } from 'next/font/google'
 import { Toaster } from "@/components/ui/toaster"
 import { Toaster as Sonner } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
@@ -21,9 +21,15 @@ const inter = Inter({
   preload: true,
   variable: '--font-inter',
   // Optimize font loading for performance
-  adjustFontFallbacks: true,
   fallback: ['system-ui', 'arial', 'sans-serif']
 })
+
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-playfair',
+})
+
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://lbve.ca'),
@@ -55,8 +61,8 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: '/favicon.ico',
-    shortcut: '/favicon-16x16.png',
-    apple: '/apple-touch-icon.png',
+    // shortcut: '/favicon-16x16.png', // Generated at build time or missing
+    // apple: '/apple-touch-icon.png', // Generated at build time or missing
   },
   manifest: '/site.webmanifest',
 }
@@ -86,10 +92,6 @@ export default function RootLayout({
         <link rel="preconnect" href="https://supabase.co" crossOrigin="" />
         <link rel="dns-prefetch" href="https://resend.com" />
 
-        {/* Preload critical resources */}
-        <link rel="preload" href="/_next/static/chunks/main-app.js" as="script" />
-        <link rel="preload" href="/_next/static/chunks/webpack.js" as="script" />
-
         {/* Analytics and structured data */}
         <GoogleAnalytics />
         <StructuredData data={organizationSchema} />
@@ -97,9 +99,8 @@ export default function RootLayout({
         {/* Canonical URL */}
         <link rel="canonical" href={`${process.env.NEXT_PUBLIC_BASE_URL || 'https://lbve.ca'}`} />
 
-        {/* Security and performance headers */}
+        {/* Security headers are handled by next.config.js / netlify.toml */}
         <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
-        <meta httpEquiv="X-Frame-Options" content="DENY" />
         <meta httpEquiv="X-XSS-Protection" content="1; mode=block" />
 
         {/* Theme color for better UX */}
@@ -108,7 +109,7 @@ export default function RootLayout({
       </head>
       <body
         suppressHydrationWarning
-        className={inter.variable}
+        className={`${inter.variable} ${playfair.variable}`}
         // Performance optimizations
         style={{
           fontFamily: 'var(--font-inter), system-ui, sans-serif',

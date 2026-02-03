@@ -95,7 +95,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Permissions-Policy',
-            value: 'payment=(self), camera=(), microphone=(), geolocation=(), usb=(), magnetometer=(), accelerometer=(), gyroscope=()'
+            value: 'payment=*, camera=(), microphone=(), geolocation=(), usb=(), magnetometer=(), accelerometer=(), gyroscope=()'
           },
           {
             key: 'X-DNS-Prefetch-Control',
@@ -109,7 +109,7 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
               "img-src 'self' data: blob: *.unsplash.com *.googleapis.com",
               "font-src 'self' fonts.gstatic.com",
-              "connect-src 'self' *.stripe.com *.supabase.co api.stripe.com *.google-analytics.com ingesteer.services-prod.nsvcs.net",
+              "connect-src 'self' *.stripe.com *.supabase.co api.stripe.com *.google-analytics.com *.nsvcs.net ingesteer.services-prod.nsvcs.net",
               "frame-src 'self' js.stripe.com checkout.stripe.com",
               "object-src 'none'",
               "base-uri 'self'",

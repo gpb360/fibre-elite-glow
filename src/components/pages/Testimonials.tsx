@@ -12,7 +12,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Video, Star, Gift, Shield, Users, Award } from 'lucide-react';
+import { ReviewSubmissionForm } from '@/components/ReviewSubmissionForm';
+import { Star, Gift, Shield, Users, Award } from 'lucide-react';
 
 const Testimonials = () => {
   const [formData, setFormData] = useState({
@@ -113,7 +114,7 @@ const Testimonials = () => {
                 size="xl"
                 className="mb-8"
               />
-              
+
               <div className="flex flex-wrap justify-center gap-6 mb-8">
                 <div className="flex items-center gap-2">
                   <Users className="h-5 w-5 text-green-600" />
@@ -151,55 +152,6 @@ const Testimonials = () => {
           </div>
         </section>
 
-        {/* Video Testimonials */}
-        <section className="py-16 bg-gray-50">
-          <div className="container px-4 md:px-6">
-            <Heading
-              title="Customer Video Stories"
-              description="Watch real customers share their transformation stories"
-              centered
-              className="mb-12"
-            />
-
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {videoTestimonials.map((video, index) => (
-                <motion.div
-                  key={video.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                >
-                  <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group">
-                    <div className="relative">
-                      <Image
-                        src={video.thumbnail}
-                        alt={video.title}
-                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                        width={400}
-                        height={192}
-                      />
-                      <div className="absolute inset-0 bg-black/20 flex items-center justify-center group-hover:bg-black/30 transition-colors">
-                        <div className="bg-white/90 rounded-full p-3 group-hover:scale-110 transition-transform">
-                          <Video className="h-8 w-8 text-green-600" />
-                        </div>
-                      </div>
-                      <Badge className="absolute top-2 right-2 bg-black/70 text-white">
-                        {video.duration}
-                      </Badge>
-                      <Badge className="absolute bottom-2 left-2 bg-green-600">
-                        {video.product}
-                      </Badge>
-                    </div>
-                    <CardContent className="p-4">
-                      <h3 className="font-semibold text-lg">{video.title}</h3>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
 
         {/* Written Testimonials */}
         <section className="py-16">
@@ -260,102 +212,7 @@ const Testimonials = () => {
                 className="mb-8"
               />
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Award className="h-5 w-5 text-green-600" />
-                    Leave a Verified Review
-                  </CardTitle>
-                  <div className="bg-blue-50 p-3 rounded-lg">
-                    <p className="text-sm text-blue-800">
-                      <Shield className="h-4 w-4 inline mr-1" />
-                      <strong>Verification Process:</strong> Reviews are only accepted from verified customers. 
-                      We require honest, truthful feedback to help us improve and provide you with the premium quality you deserve.
-                    </p>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div>
-                        <label className="block text-sm font-medium mb-1">Name</label>
-                        <Input
-                          name="name"
-                          value={formData.name}
-                          onChange={handleInputChange}
-                          placeholder="Your full name"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1">Email</label>
-                        <Input
-                          name="email"
-                          type="email"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                          placeholder="Your email address"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1">Product Used</label>
-                      <select
-                        name="product"
-                        value={formData.product}
-                        onChange={handleInputChange}
-                        className="w-full p-2 border border-gray-300 rounded-md"
-                        required
-                      >
-                        <option value="">Select Product</option>
-                        <option value="Total Essential">Total Essential</option>
-                        <option value="Total Essential Plus">Total Essential Plus</option>
-                        <option value="Both Products">Both Products</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1">Rating</label>
-                      <div className="flex gap-1">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <button
-                            key={star}
-                            type="button"
-                            onClick={() => setFormData(prev => ({ ...prev, rating: star }))}
-                            className={`p-1 ${star <= formData.rating ? 'text-yellow-400' : 'text-gray-300'}`}
-                          >
-                            <Star className="h-6 w-6 fill-current" />
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium mb-1">Your Review</label>
-                      <textarea
-                        name="review"
-                        value={formData.review}
-                        onChange={handleInputChange}
-                        rows={4}
-                        className="w-full p-2 border border-gray-300 rounded-md resize-none"
-                        placeholder="Share your honest experience with our products..."
-                        required
-                      />
-                    </div>
-
-                    <Button type="submit" className="w-full bg-green-600 hover:bg-green-700">
-                      Submit Review & Get 15% Off
-                    </Button>
-
-                    <p className="text-xs text-gray-600 text-center">
-                      By submitting this review, you confirm that you are a verified customer and that your review is honest and truthful.
-                      Discount code will be sent to your email after verification.
-                    </p>
-                  </form>
-                </CardContent>
-              </Card>
+              <ReviewSubmissionForm />
             </motion.div>
           </div>
         </section>

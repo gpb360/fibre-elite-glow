@@ -45,8 +45,8 @@ export function Hero() {
             <div className="space-y-6">
               <OptimizedMotion {...fadeInUp}>
                 <p className="text-green-500 font-medium text-base mb-2">Natural Balance for Daily Wellness</p>
-                <h1 className="text-5xl font-bold tracking-tight text-gray-900 mb-4">
-                  Restore&nbsp;Your&nbsp;Body&apos;s&nbsp;Natural&nbsp;Rhythm
+                <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-gray-900 mb-6 font-serif leading-tight">
+                  Restore Your Body&apos;s <span className="text-green-600">Natural Rhythm</span>
                 </h1>
                 <p className="text-lg text-gray-600 leading-relaxed max-w-md">
                   Our plant-based fiber blend supports your body&apos;s natural rhythm
@@ -109,10 +109,16 @@ export function Hero() {
             className="flex items-center justify-center lg:justify-end relative"
             {...scaleIn}
           >
-            {/* Optimized: Image content removed for performance - consider adding back with proper optimization */}
-            <div className="relative">
-              {/* Placeholder for hero image if needed in future */}
-              <div className="w-64 h-64 bg-green-100 rounded-lg opacity-50"></div>
+            <div className="relative w-full max-w-[500px] aspect-square">
+              <div className="absolute inset-0 bg-green-200 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
+              <Image
+                src="/lovable-uploads/webp/fruit-veg-bottle.webp"
+                alt="Total Essential Fiber Supplement with fresh fruits and vegetables"
+                fill
+                className="object-contain drop-shadow-2xl relative z-10"
+                priority
+                sizes="(max-width: 768px) 100vw, 500px"
+              />
             </div>
           </OptimizedMotion>
         </div>
