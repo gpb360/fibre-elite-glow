@@ -368,10 +368,15 @@ export async function POST(request: NextRequest) {
       
       // Session expiration (24 hours)
       expires_at: Math.floor(Date.now() / 1000) + (24 * 60 * 60),
-      
-      // Automatic tax calculation (enable if configured)
+
+      // Automatic tax calculation - Stripe Tax enabled
       automatic_tax: {
-        enabled: false, // Set to true if you have tax calculation configured in Stripe
+        enabled: true, // Automatically calculate tax based on customer location and registrations
+      },
+
+      // Tax ID collection for B2B customers (reverse charge / zero-rated supplies)
+      tax_id_collection: {
+        enabled: true, // Allow customers with valid tax IDs to provide them during checkout
       },
       
       // Custom text for checkout
