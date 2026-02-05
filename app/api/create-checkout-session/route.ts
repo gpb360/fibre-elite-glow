@@ -29,6 +29,65 @@ const serverCheckoutSchema = z.object({
 });
 
 
+// Helper function to calculate total boxes from cart items
+function calculateTotalBoxes(items: Array<{id: string; quantity: number}>): number {
+  return items.reduce((total, item) => {
+    // Extract box count from package ID
+    // Format: "total-essential-1-box" or "total-essential-plus-2-boxes"
+    const match = item.id.match(/-(\d+)-boxe?s?$/);
+    if (match) {
+      const boxesPerPackage = parseInt(match[1], 10);
+      return total + (boxesPerPackage * item.quantity);
+    }
+    return total;
+  }, 0);
+}
+
+// Get shipping options based on box count tier
+function getShippingOptions(boxes: number) {
+  if (boxes <= 2) {
+    // 1-2 boxes: $12
+    return [
+      {
+        shipping_rate_data: {
+          type: 'fixed_amount',
+          fixed_amount: {
+            amount: 1200, // $12.00 in cents
+            currency: 'cad',
+          },
+          display_name: 'Shipping (3-5 business days)',
+          delivery_estimate: {
+            minimum: { unit: 'business_day', value: 3 },
+            maximum: { unit: 'business_day', value: 5 },
+          },
+          tax_behavior: 'exclusive',
+          tax_code: 'txcd_92010001', // Shipping tax code
+        },
+      },
+    ];
+  } else {
+    // 3-4 boxes: $20
+    return [
+      {
+        shipping_rate_data: {
+          type: 'fixed_amount',
+          fixed_amount: {
+            amount: 2000, // $20.00 in cents
+            currency: 'cad',
+          },
+          display_name: 'Shipping (3-5 business days)',
+          delivery_estimate: {
+            minimum: { unit: 'business_day', value: 3 },
+            maximum: { unit: 'business_day', value: 5 },
+          },
+          tax_behavior: 'exclusive',
+          tax_code: 'txcd_92010001',
+        },
+      },
+    ];
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     // Enhanced security headers
@@ -234,10 +293,15 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Calculate total boxes for shipping tier determination
+    const totalBoxes = calculateTotalBoxes(body.items);
+    console.log('📦 Total boxes calculated:', totalBoxes);
+
     // Format line items for Stripe with enhanced product data
     const lineItems = body.items.map(item => ({
       price_data: {
         currency: STRIPE_CONFIG.currency,
+        tax_behavior: 'exclusive', // Add this for proper tax calculation
         product_data: {
           name: item.productName,
           description: `Premium gut health supplement - Quantity: ${item.quantity}`,
@@ -312,7 +376,10 @@ export async function POST(request: NextRequest) {
       mode: STRIPE_CONFIG.mode,
       success_url: successUrl,
       cancel_url: cancelUrl,
-      
+
+      // Shipping options based on box count tier
+      shipping_options: getShippingOptions(totalBoxes),
+
       // Customer information
       customer_email: body.customerInfo.email,
       
