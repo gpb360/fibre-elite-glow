@@ -30,14 +30,16 @@ const serverCheckoutSchema = z.object({
 
 
 // Helper function to calculate total boxes from cart items
-function calculateTotalBoxes(items: Array<{id: string; quantity: number}>): number {
+function calculateTotalBoxes(items: Array<{id?: string; quantity?: number}>): number {
   return items.reduce((total, item) => {
     // Extract box count from package ID
     // Format: "total-essential-1-box" or "total-essential-plus-2-boxes"
-    const match = item.id.match(/-(\d+)-boxe?s?$/);
-    if (match) {
-      const boxesPerPackage = parseInt(match[1], 10);
-      return total + (boxesPerPackage * item.quantity);
+    if (item.id) {
+      const match = item.id.match(/-(\d+)-boxe?s?$/);
+      if (match && item.quantity) {
+        const boxesPerPackage = parseInt(match[1], 10);
+        return total + (boxesPerPackage * item.quantity);
+      }
     }
     return total;
   }, 0);
@@ -55,11 +57,7 @@ function getShippingOptions(boxes: number) {
             amount: 1200, // $12.00 in cents
             currency: 'cad',
           },
-          display_name: 'Shipping (3-5 business days)',
-          delivery_estimate: {
-            minimum: { unit: 'business_day', value: 3 },
-            maximum: { unit: 'business_day', value: 5 },
-          },
+          display_name: 'Shipping (one to two boxes)',
           tax_behavior: 'exclusive',
           tax_code: 'txcd_92010001', // Shipping tax code
         },
@@ -75,11 +73,7 @@ function getShippingOptions(boxes: number) {
             amount: 2000, // $20.00 in cents
             currency: 'cad',
           },
-          display_name: 'Shipping (3-5 business days)',
-          delivery_estimate: {
-            minimum: { unit: 'business_day', value: 3 },
-            maximum: { unit: 'business_day', value: 5 },
-          },
+          display_name: 'Shipping (three to four boxes)',
           tax_behavior: 'exclusive',
           tax_code: 'txcd_92010001',
         },
