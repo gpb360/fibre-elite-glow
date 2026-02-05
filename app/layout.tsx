@@ -100,8 +100,6 @@ export default function RootLayout({
         <link rel="canonical" href={`${process.env.NEXT_PUBLIC_BASE_URL || 'https://lbve.ca'}`} />
 
         {/* Security headers are handled by next.config.js / netlify.toml */}
-        <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
-        <meta httpEquiv="X-XSS-Protection" content="1; mode=block" />
 
         {/* Theme color for better UX */}
         <meta name="theme-color" content="#9ED458" />
