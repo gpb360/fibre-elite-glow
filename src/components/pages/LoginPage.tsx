@@ -1,16 +1,14 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import React, { useState, useEffect, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { ValidatedInput, FormSecurityIndicator, FormValidationSummary } from '@/components/ui/FormValidation'
-import { useFormValidation } from '@/hooks/useFormValidation'
-import { loginSchema } from '@/lib/validation'
-import { Eye, EyeOff, Mail, Lock, ArrowRight, AlertCircle, Shield } from 'lucide-react'
+import { Eye, EyeOff, ArrowRight, AlertCircle, Leaf } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/integrations/supabase/client'
 import Header from '@/components/Header'
@@ -22,62 +20,69 @@ interface LoginForm {
 }
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <>
+        <Header />
+        <div className="min-h-screen bg-gradient-to-b from-green-50/60 to-white flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-10 w-10 border-2 border-green-600 border-t-transparent mx-auto mb-4" />
+            <p className="text-gray-500 text-sm">Loading...</p>
+          </div>
+        </div>
+        <Footer />
+      </>
+    }>
+      <LoginPageInner />
+    </Suspense>
+  )
+}
+
+function LoginPageInner() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { user, loading } = useAuth()
   const [form, setForm] = useState<LoginForm>({ email: '', password: '' })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [validFields, setValidFields] = useState(0)
-  
-  // Use enhanced form validation
-  const {
-    errors,
-    isValid,
-    isValidating,
-    validate,
-    clearErrors,
-    resetValidation
-  } = useFormValidation(loginSchema, {
-    validateOnChange: true,
-    showErrorToast: false
-  })
+  const [showPassword, setShowPassword] = useState(false)
+  const [touched, setTouched] = useState<Record<string, boolean>>({})
+
+  const redirectTo = searchParams.get('redirectTo') || '/account'
 
   // Redirect if already logged in
   useEffect(() => {
     if (user && !loading) {
-      router.push('/account')
+      router.push(redirectTo)
     }
-  }, [user, loading, router])
+  }, [user, loading, router, redirectTo])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
-    
-    // Validate form data
-    const validation = await validate(form)
-    if (!validation) {
-      setError('Please fix the validation errors above.')
+
+    // Basic client validation
+    if (!form.email.trim() || !form.password) {
+      setError('Please enter your email and password.')
+      setTouched({ email: true, password: true })
       return
     }
-    
+
     setIsSubmitting(true)
 
     try {
-      // Additional security checks
       const sanitizedEmail = form.email.trim().toLowerCase()
-      
-      // Check for suspicious patterns
+
       if (sanitizedEmail.includes('<') || sanitizedEmail.includes('>')) {
         throw new Error('Invalid email format')
       }
-      
+
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email: sanitizedEmail,
         password: form.password,
       })
 
       if (signInError) {
-        // Enhanced error handling with security awareness
         if (signInError.message.includes('Invalid login credentials')) {
           setError('Invalid email or password. Please check your credentials and try again.')
         } else if (signInError.message.includes('Email not confirmed')) {
@@ -85,21 +90,17 @@ export default function LoginPage() {
         } else if (signInError.message.includes('Too many requests')) {
           setError('Too many login attempts. Please wait a few minutes before trying again.')
         } else if (signInError.message.includes('User not found')) {
-          setError('No account found with this email address. Please check your email or sign up.')
+          setError('No account found with this email. Please check your email or sign up.')
         } else {
-          setError('Login failed. Please try again or contact support if the problem persists.')
+          setError('Login failed. Please try again or contact support.')
         }
         return
       }
 
-      // Clear form data for security
+      // Clear form for security
       setForm({ email: '', password: '' })
-      resetValidation()
-      
-      // Successful login - redirect will happen via useEffect
-      router.push('/account')
-    } catch (error) {
-      console.error('Login error:', error)
+      router.push(redirectTo)
+    } catch {
       setError('An unexpected error occurred. Please try again.')
     } finally {
       setIsSubmitting(false)
@@ -108,30 +109,24 @@ export default function LoginPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    setForm(prev => ({
-      ...prev,
-      [name]: value
-    }))
+    setForm(prev => ({ ...prev, [name]: value }))
     if (error) setError(null)
-    clearErrors()
   }
-  
-  const handleValidationChange = (field: string) => (isValid: boolean, error?: string) => {
-    setValidFields(prev => {
-      const newCount = isValid ? prev + 1 : Math.max(0, prev - 1)
-      return Math.min(2, newCount) // Maximum 2 fields (email, password)
-    })
+
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setTouched(prev => ({ ...prev, [e.target.name]: true }))
   }
 
   const handleForgotPassword = async () => {
     if (!form.email) {
       setError('Please enter your email address first.')
+      setTouched(prev => ({ ...prev, email: true }))
       return
     }
 
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(form.email, {
-        redirectTo: `${window.location.origin}/reset-password`
+        redirectTo: `${window.location.origin}/reset-password`,
       })
 
       if (error) {
@@ -140,20 +135,20 @@ export default function LoginPage() {
         setError(null)
         alert('Password reset email sent! Check your inbox.')
       }
-    } catch (error) {
+    } catch {
       setError('Failed to send reset email. Please try again.')
     }
   }
 
-  // Show loading state while checking auth
+  // Loading state
   if (loading) {
     return (
       <>
         <Header />
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="min-h-screen bg-gradient-to-b from-green-50/60 to-white flex items-center justify-center">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading...</p>
+            <div className="animate-spin rounded-full h-10 w-10 border-2 border-green-600 border-t-transparent mx-auto mb-4" />
+            <p className="text-gray-500 text-sm">Loading...</p>
           </div>
         </div>
         <Footer />
@@ -161,128 +156,144 @@ export default function LoginPage() {
     )
   }
 
-  // Don't render if user is already logged in
-  if (user) {
-    return null
-  }
+  if (user) return null
+
+  // Inline field errors — only after blur
+  const emailError = touched.email && !form.email.trim() ? 'Email is required' : null
+  const passwordError = touched.password && !form.password ? 'Password is required' : null
 
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8">
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900">Welcome back</h1>
-            <p className="mt-2 text-sm text-gray-600">
-              Sign in to your account to view your orders and manage your profile
+      <div className="min-h-screen bg-gradient-to-b from-green-50/60 to-white flex items-center justify-center py-16 px-4">
+        <div className="w-full max-w-[420px] space-y-6">
+
+          {/* Branding header */}
+          <div className="text-center space-y-2">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-100 mb-2">
+              <Leaf className="h-6 w-6 text-green-600" />
+            </div>
+            <h1 className="text-2xl font-bold tracking-tight text-gray-900">Welcome back</h1>
+            <p className="text-sm text-gray-500">
+              Sign in to view your orders and manage your profile
             </p>
           </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Sign In</CardTitle>
-              <CardDescription>
-                Enter your email and password to access your account
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6" data-testid="login-form">
-                {/* Security and validation indicators */}
-                <FormSecurityIndicator
-                  score={validFields * 50}
-                  maxScore={100}
-                  issues={!isValid ? ['Form validation incomplete'] : []}
-                />
-                
-                {/* Form validation summary */}
-                <FormValidationSummary
-                  errors={errors}
-                  isValid={isValid}
-                />
-                
-                {/* General error alert */}
+          {/* Login card */}
+          <Card className="shadow-sm border-gray-200/80">
+            <CardContent className="pt-6 pb-6 px-6">
+              <form onSubmit={handleSubmit} className="space-y-5" data-testid="login-form">
+
+                {/* Error alert */}
                 {error && (
-                  <Alert variant="destructive">
+                  <Alert variant="destructive" className="border-red-200 bg-red-50">
                     <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>{error}</AlertDescription>
+                    <AlertDescription className="text-sm">{error}</AlertDescription>
                   </Alert>
                 )}
 
-                {/* Email field with validation */}
-                <ValidatedInput
-                  id="email"
-                  name="email"
-                  type="email"
-                  label="Email Address"
-                  schema={loginSchema}
-                  fieldName="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  onValidationChange={handleValidationChange('email')}
-                  showSecurityIndicator={true}
-                  helperText="Enter the email address associated with your account"
-                  required
-                  placeholder="your@email.com"
-                  data-testid="email-input"
-                />
-
-                {/* Password field with validation */}
-                <ValidatedInput
-                  id="password"
-                  name="password"
-                  type="password"
-                  label="Password"
-                  schema={loginSchema}
-                  fieldName="password"
-                  value={form.password}
-                  onChange={handleChange}
-                  onValidationChange={handleValidationChange('password')}
-                  showSecurityIndicator={true}
-                  helperText="Enter your account password"
-                  required
-                  placeholder="Enter your password"
-                  data-testid="password-input"
-                />
-
-                <div className="flex items-center justify-between">
-                  <button
-                    type="button"
-                    onClick={handleForgotPassword}
-                    className="text-sm text-green-600 hover:text-green-700"
-                    data-testid="forgot-password-link"
-                  >
-                    Forgot password?
-                  </button>
+                {/* Email */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+                    Email Address
+                  </Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    placeholder="you@example.com"
+                    value={form.email}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className={`h-11 ${emailError ? 'border-red-400 focus-visible:ring-red-400' : ''}`}
+                    data-testid="email-input"
+                  />
+                  {emailError && (
+                    <p className="text-xs text-red-500 mt-1">{emailError}</p>
+                  )}
                 </div>
 
+                {/* Password */}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+                      Password
+                    </Label>
+                    <button
+                      type="button"
+                      onClick={handleForgotPassword}
+                      className="text-xs text-green-600 hover:text-green-700 font-medium transition-colors"
+                      data-testid="forgot-password-link"
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
+                  <div className="relative">
+                    <Input
+                      id="password"
+                      name="password"
+                      type={showPassword ? 'text' : 'password'}
+                      autoComplete="current-password"
+                      placeholder="Enter your password"
+                      value={form.password}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      className={`h-11 pr-10 ${passwordError ? 'border-red-400 focus-visible:ring-red-400' : ''}`}
+                      data-testid="password-input"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(prev => !prev)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                      tabIndex={-1}
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                  {passwordError && (
+                    <p className="text-xs text-red-500 mt-1">{passwordError}</p>
+                  )}
+                </div>
+
+                {/* Submit */}
                 <Button
                   type="submit"
-                  disabled={isSubmitting || !isValid || isValidating}
-                  className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50"
+                  disabled={isSubmitting}
+                  className="w-full h-11 bg-green-600 hover:bg-green-700 text-white font-medium shadow-sm transition-all duration-150"
                   data-testid="login-button"
                 >
                   {isSubmitting ? (
-                    "Signing in..."
+                    <span className="flex items-center gap-2">
+                      <span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Signing in…
+                    </span>
                   ) : (
-                    <>
-                      <Shield className="mr-2 h-4 w-4" />
-                      Sign In Securely
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </>
+                    <span className="flex items-center gap-2">
+                      Sign In
+                      <ArrowRight className="h-4 w-4" />
+                    </span>
                   )}
                 </Button>
               </form>
 
-              <div className="mt-6 text-center">
-                <p className="text-sm text-gray-600">
-                  Don't have an account?{' '}
-                  <Link href="/signup" className="text-green-600 hover:text-green-700 font-medium">
-                    Sign up here
+              {/* Divider + sign-up link */}
+              <div className="mt-6 pt-5 border-t border-gray-100 text-center">
+                <p className="text-sm text-gray-500">
+                  Don&apos;t have an account?{' '}
+                  <Link href="/signup" className="text-green-600 hover:text-green-700 font-medium transition-colors">
+                    Create one
                   </Link>
                 </p>
               </div>
             </CardContent>
           </Card>
+
+          {/* Trust footer */}
+          <p className="text-center text-xs text-gray-400">
+            Secured with SSL encryption · Your data is never shared
+          </p>
         </div>
       </div>
       <Footer />

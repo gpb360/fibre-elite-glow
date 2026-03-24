@@ -8,11 +8,11 @@ export class BasePage {
   constructor(protected page: Page) {}
 
   async goto(url: string) {
-    await this.page.goto(url, { waitUntil: 'networkidle' });
+    await this.page.goto(url, { waitUntil: 'domcontentloaded' });
   }
 
   async waitForPageLoad() {
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('domcontentloaded');
   }
 
   async takeScreenshot(name: string) {

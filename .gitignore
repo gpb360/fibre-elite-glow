@@ -72,3 +72,4 @@ mcp-test-screenshot.png
 
 .github/instructions/kluster-code-verify.instructions.md
 .kluster
+.env.local.cloud-backup

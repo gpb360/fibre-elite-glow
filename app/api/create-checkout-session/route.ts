@@ -20,6 +20,7 @@ const serverCheckoutSchema = z.object({
     imageUrl: z.string().url('Invalid image URL').optional(),
   })).min(1, 'Cart cannot be empty').max(50, 'Too many items in cart'),
   customerInfo: enhancedCheckoutSchema,
+  affiliateCode: z.string().max(50).optional(),
   csrfToken: z.string().min(32, 'CSRF token required').max(128, 'CSRF token too long'),
   securityContext: z.object({
     userAgent: z.string().max(500, 'User agent too long'),
@@ -314,7 +315,7 @@ export async function POST(request: NextRequest) {
     const orderNumber = `FEG-${Date.now()}-${Math.random().toString(36).substring(2, 11).toUpperCase()}`;
 
   // Create metadata for the order with enhanced security logging
-    const metadata = {
+    const metadata: Record<string, string> = {
       order_number: orderNumber,
       customer_name: `${body.customerInfo.firstName} ${body.customerInfo.lastName}`.substring(0, 500),
       customer_email: body.customerInfo.email,
@@ -338,6 +339,11 @@ export async function POST(request: NextRequest) {
       client_ip: clientIP,
       user_agent: 'checkout-request' // Safe default since bot detection is disabled
     };
+
+    // Add affiliate code to metadata if provided
+    if ((rawBody as any).affiliateCode) {
+      metadata.affiliate_code = String((rawBody as any).affiliateCode).toUpperCase().trim();
+    }
 
     // Create checkout session with comprehensive field collection
     const successUrl = `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`;

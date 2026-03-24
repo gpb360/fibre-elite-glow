@@ -17,7 +17,7 @@ import {
 test.describe('Full E2E Checkout Flow', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
   });
 
   test('Complete user journey: Browse → Add to Cart → Checkout → Success', async ({ page }) => {
@@ -35,7 +35,7 @@ test.describe('Full E2E Checkout Flow', () => {
       
       // Navigate to products section
       await page.locator('text=Shop Now').first().click();
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('domcontentloaded');
     });
 
     // === PHASE 2: Product Selection ===

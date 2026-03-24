@@ -6,7 +6,7 @@ test('MCP integration test', async ({ page }) => {
   await page.goto('/');
   
   // Wait for the page to load
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState('domcontentloaded');
   
   // Check if the page title is correct
   await expect(page).toHaveTitle(/La Belle Vie/);

@@ -690,6 +690,34 @@ export async function POST(request: Request) {
 
         console.log(`Order created successfully: ${order?.id} (${order?.order_number})`);
 
+        // Track affiliate commission if an affiliate code was used
+        const affiliateCode = metadata.affiliate_code;
+        if (affiliateCode && order) {
+          try {
+            const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+            const affiliateRes = await fetch(`${baseUrl}/api/affiliate/validate`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                affiliate_code: affiliateCode,
+                order_id: order.id,
+                order_number: order.order_number,
+                customer_email: customerEmail,
+                sale_amount: (session.amount_total || 0) / 100,
+              }),
+            });
+            if (affiliateRes.ok) {
+              const affData = await affiliateRes.json();
+              console.log(`✅ Affiliate commission recorded: ${affiliateCode} — $${affData.commission_amount}`);
+            } else {
+              console.warn(`⚠️ Affiliate commission tracking failed for code: ${affiliateCode}`);
+            }
+          } catch (affiliateError) {
+            console.error('Error tracking affiliate commission:', affiliateError);
+            // Don't fail the webhook if affiliate tracking fails
+          }
+        }
+
         // Update inventory for order items
         if (orderItems.length > 0) {
           try {

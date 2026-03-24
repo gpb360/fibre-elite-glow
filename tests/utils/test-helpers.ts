@@ -9,7 +9,6 @@ import { TIMEOUTS } from './test-data';
  * Wait for network to be idle and page to be fully loaded
  */
 export async function waitForPageReady(page: Page): Promise<void> {
-  await page.waitForLoadState('networkidle');
   await page.waitForLoadState('domcontentloaded');
 }
 

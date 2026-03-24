@@ -188,7 +188,33 @@ const CheckoutForm: React.FC = () => {
   });
   
     const [csrfToken, setCsrfToken] = useState<string>('');
+
+  // Affiliate code state
+  const [affiliateCode, setAffiliateCode] = useState('');
+  const [affiliateValidated, setAffiliateValidated] = useState(false);
+  const [affiliateValidating, setAffiliateValidating] = useState(false);
+  const [affiliateName, setAffiliateName] = useState('');
   
+  const validateAffiliateCode = async () => {
+    if (!affiliateCode.trim()) return;
+    setAffiliateValidating(true);
+    try {
+      const res = await fetch(`/api/affiliate/validate?code=${encodeURIComponent(affiliateCode.trim())}`);
+      const data = await res.json();
+      if (data.valid) {
+        setAffiliateValidated(true);
+        setAffiliateName(data.affiliate_name || '');
+        toast({ title: 'Referral code applied', description: `Referred by ${data.affiliate_name}` });
+      } else {
+        toast({ title: 'Invalid code', description: 'This referral code is not valid.', variant: 'destructive' });
+      }
+    } catch {
+      toast({ title: 'Error', description: 'Could not validate referral code.', variant: 'destructive' });
+    } finally {
+      setAffiliateValidating(false);
+    }
+  };
+
   // Form security status
   const securityStatus = useFormSecurityStatus(formData, {
     enablePasswordStrength: false,
@@ -304,6 +330,7 @@ const CheckoutForm: React.FC = () => {
             zipCode: sanitizedData.zipCode,
             country: sanitizedData.country,
           },
+          affiliateCode: affiliateValidated ? affiliateCode : undefined,
           csrfToken: csrfToken || 'checkout-token', // Fallback for production
           securityContext: {
             userAgent: navigator.userAgent,
@@ -578,6 +605,47 @@ const CheckoutForm: React.FC = () => {
                 <span data-testid="order-total">${cart.subtotal.toFixed(2)}</span>
               </div>
             </div>
+          </div>
+
+          {/* Affiliate / Referral Code */}
+          <div className="mt-4 pt-4 border-t">
+            <Label htmlFor="affiliateCode" className="text-sm text-gray-600">Referral Code (Optional)</Label>
+            <div className="flex gap-2 mt-1">
+              <Input
+                id="affiliateCode"
+                type="text"
+                value={affiliateCode}
+                onChange={e => setAffiliateCode(e.target.value.toUpperCase())}
+                placeholder="Enter referral code"
+                className="flex-1"
+                disabled={affiliateValidated}
+              />
+              {!affiliateValidated ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={!affiliateCode.trim() || affiliateValidating}
+                  onClick={validateAffiliateCode}
+                >
+                  {affiliateValidating ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Apply'}
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => { setAffiliateCode(''); setAffiliateValidated(false); setAffiliateName(''); }}
+                >
+                  Remove
+                </Button>
+              )}
+            </div>
+            {affiliateValidated && affiliateName && (
+              <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                <CheckCircle className="h-3 w-3" /> Referred by {affiliateName}
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>

@@ -28,7 +28,7 @@ const nextConfig = {
       },
     ],
     formats: ['image/webp', 'image/avif'],
-    dangerouslyAllowSVG: true,
+    dangerouslyAllowSVG: false,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
@@ -95,29 +95,13 @@ const nextConfig = {
         headers: [
           {
             key: 'Permissions-Policy',
-            value: 'payment=*, camera=(), microphone=(), geolocation=(), usb=(), magnetometer=(), accelerometer=(), gyroscope=()'
+            value: 'payment=(self "https://js.stripe.com"), camera=(), microphone=(), geolocation=(), usb=(), magnetometer=(), accelerometer=(), gyroscope=()'
           },
           {
             key: 'X-DNS-Prefetch-Control',
             value: 'on'
-          },
-          {
-            key: 'Content-Security-Policy',
-            value: [
-              "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' *.googletagmanager.com *.google-analytics.com",
-              "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
-              "img-src 'self' data: blob: *.unsplash.com *.googleapis.com",
-              "font-src 'self' fonts.gstatic.com",
-              "connect-src 'self' *.stripe.com *.supabase.co api.stripe.com *.google-analytics.com *.nsvcs.net ingesteer.services-prod.nsvcs.net",
-              "frame-src 'self' js.stripe.com checkout.stripe.com",
-              "object-src 'none'",
-              "base-uri 'self'",
-              "form-action 'self'",
-              "frame-ancestors 'none'",
-              "upgrade-insecure-requests"
-            ].join('; ')
           }
+          // CSP is managed in middleware.ts — single source of truth
         ]
       }
     ];
@@ -125,9 +109,10 @@ const nextConfig = {
 
   // Core compiler settings with performance focus
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
+    // Keep error/warn in production for debugging; strip console.log/info/debug
+    removeConsole: process.env.NODE_ENV === 'production' ? { exclude: ['error', 'warn'] } : false,
     reactRemoveProperties: process.env.NODE_ENV === 'production',
-    styledComponents: true
+    // styledComponents removed — project uses Tailwind CSS
   },
 
   // Performance optimizations
@@ -211,7 +196,7 @@ const nextConfig = {
     // Configure webpack for better performance
     if (!dev) {
       config.optimization.usedExports = true;
-      config.optimization.sideEffects = false;
+      // sideEffects handled per-package in package.json — not globally
     }
 
     return config;

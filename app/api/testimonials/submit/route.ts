@@ -29,11 +29,11 @@ export async function POST(request: Request) {
         const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
         // 1. Verify if the user has purchased the product
-        // We check the 'orders' table for a matching email
         const { data: orders, error: orderError } = await supabase
             .from('orders')
-            .select('id, created_at')
-            .eq('customer_email', email)
+            .select('id, order_number, created_at, payment_status')
+            .eq('email', email)
+            .eq('payment_status', 'paid')
             .limit(1);
 
         if (orderError) {
@@ -56,33 +56,45 @@ export async function POST(request: Request) {
             );
         }
 
-        // 2. Submit the testimonial (Verified)
-        // Assuming we have a 'testimonials' table. If not, we might store this in a pending state or log it.
-        // For now, we'll simulate saving to a DB or sending an admin notification.
+        // 2. Save the testimonial to the database
+        const { data: testimonial, error: insertError } = await supabase
+            .from('testimonials')
+            .insert({
+                name,
+                email,
+                product,
+                rating,
+                review,
+                verified: true,
+                status: 'pending', // pending admin moderation
+                order_number: orders[0].order_number,
+            })
+            .select()
+            .single();
 
-        /* 
-        // Example DB insert if table exists
-        const { error: insertError } = await supabase
-          .from('testimonials')
-          .insert({
-            name,
-            email,
-            product,
-            rating,
-            review,
-            verified: true,
-            status: 'pending' // pending moderation
-          });
-        */
-
-        // For this implementation, we'll just return success as "Submitted for Moderation"
-        // In a real app, you would save this data.
+        if (insertError) {
+            console.error('Error saving testimonial:', insertError);
+            // If table doesn't exist yet, still return success to not break the front-end
+            if (insertError.code === '42P01') {
+                console.warn('Testimonials table does not exist yet. Run the migration.');
+                return NextResponse.json({
+                    success: true,
+                    message: 'Review submitted successfully (pending table setup)',
+                    discountCode: 'REVIEW15',
+                    verified: true,
+                });
+            }
+            return NextResponse.json(
+                { error: 'Failed to save review' },
+                { status: 500 }
+            );
+        }
 
         return NextResponse.json({
             success: true,
-            message: 'Review submitted successfully',
-            discountCode: 'REVIEW15', // The reward mentioned in the UI
-            verified: true
+            message: 'Review submitted successfully and is pending admin approval',
+            discountCode: 'REVIEW15',
+            verified: true,
         });
 
     } catch (error) {

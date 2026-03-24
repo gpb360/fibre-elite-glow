@@ -8,7 +8,7 @@ test.describe('Basic Authentication Tests', () => {
     await expect(page).toHaveURL(/\/login$/);
     
     // Wait for the page to load completely
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     
     // Check for basic page elements
     await expect(page.locator('header')).toBeVisible();
@@ -32,7 +32,7 @@ test.describe('Basic Authentication Tests', () => {
     await expect(page).toHaveURL(/\/signup$/);
     
     // Wait for the page to load completely
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     
     // Check for basic page elements
     await expect(page.locator('header')).toBeVisible();
@@ -62,7 +62,7 @@ test.describe('Basic Authentication Tests', () => {
   test('should navigate between auth pages', async ({ page }) => {
     // Start at login page
     await page.goto('/login');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     
     // Look for signup link
     const signupLink = page.locator('a[href="/signup"]');

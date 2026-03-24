@@ -41,7 +41,7 @@ test.describe('Stripe Integration', () => {
   test.beforeEach(async ({ page }) => {
     // Start with a fresh session for each test
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     
     // Generate unique customer data for this test run
     testData.customerEmail = generateRandomEmail();

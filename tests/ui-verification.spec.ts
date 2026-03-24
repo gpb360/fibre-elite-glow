@@ -5,7 +5,7 @@ test.describe('UI Verification Tests', () => {
     await page.goto('http://localhost:3001');
     
     // Wait for page to load
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     
     // Check if products dropdown button exists
     const productsButton = page.getByTestId('products-dropdown');
@@ -34,7 +34,7 @@ test.describe('UI Verification Tests', () => {
     await page.goto('http://localhost:3001');
     
     // Wait for page to load
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     
     // Check if hero section exists
     const heroSection = page.getByTestId('hero-section');
@@ -66,7 +66,7 @@ test.describe('UI Verification Tests', () => {
     await page.goto('http://localhost:3001');
     
     // Wait for page to load
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     
     // Check header visibility
     const header = page.locator('header');
