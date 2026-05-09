@@ -5,6 +5,7 @@ import { inventoryService } from '@/lib/inventory-service';
 import { simpleEmailService } from '@/lib/simple-email-service';
 import { GlobalErrorHandler, ErrorSanitizer } from '@/lib/error-handler';
 import { emailSchema } from '@/lib/validation';
+import { getDeploymentBaseUrl } from '@/lib/base-url';
 import { z } from 'zod';
 import Stripe from 'stripe';
 
@@ -38,7 +39,7 @@ async function getWebhookSecret(): Promise<string> {
         .single();
 
       if (!error && data) {
-        return data.value;
+        return String(data.value).trim();
       }
     }
 
@@ -47,7 +48,7 @@ async function getWebhookSecret(): Promise<string> {
     if (!envSecret) {
       throw new Error('Stripe webhook secret not found in Supabase secrets or environment variables');
     }
-    return envSecret;
+    return envSecret.trim();
   } catch (error) {
     console.error('Error retrieving webhook secret:', error);
     // Fall back to environment variable
@@ -55,7 +56,7 @@ async function getWebhookSecret(): Promise<string> {
     if (!envSecret) {
       throw new Error('Stripe webhook secret not found');
     }
-    return envSecret;
+    return envSecret.trim();
   }
 }
 
@@ -120,6 +121,32 @@ function generateOrderNumber(): string {
   const timestamp = Date.now().toString();
   const random = Math.random().toString(36).substring(2, 8).toUpperCase();
   return `FEG-${timestamp}-${random}`;
+}
+
+function resolveOrderTimeZone(metadata: Stripe.Metadata, shippingAddress: { state?: string; country?: string }): string {
+  if (metadata.client_timezone) return metadata.client_timezone;
+
+  const country = shippingAddress.country;
+  const state = shippingAddress.state;
+
+  if (country === 'CA') {
+    if (state === 'BC') return 'America/Vancouver';
+    if (state === 'AB') return 'America/Edmonton';
+    if (state === 'MB') return 'America/Winnipeg';
+    if (state === 'SK') return 'America/Regina';
+    if (['NB', 'NS', 'PE'].includes(state || '')) return 'America/Halifax';
+    if (state === 'NL') return 'America/St_Johns';
+    return 'America/Toronto';
+  }
+
+  if (country === 'US') {
+    if (['CA', 'WA', 'OR', 'NV'].includes(state || '')) return 'America/Los_Angeles';
+    if (['AZ', 'CO', 'ID', 'MT', 'NM', 'UT', 'WY'].includes(state || '')) return 'America/Denver';
+    if (['AL', 'AR', 'IL', 'IA', 'LA', 'MN', 'MS', 'MO', 'OK', 'TX', 'WI'].includes(state || '')) return 'America/Chicago';
+    return 'America/New_York';
+  }
+
+  return 'America/Toronto';
 }
 
 
@@ -619,6 +646,15 @@ export async function POST(request: Request) {
 
         // Generate order number if not present in metadata
         const orderNumber = metadata.order_number || generateOrderNumber();
+        const existingOrderResult = await supabaseAdmin
+          .from('orders')
+          .select('id, order_number')
+          .eq('session_id', session.id)
+          .maybeSingle();
+
+        if (existingOrderResult.error) {
+          console.error('Error checking existing order:', existingOrderResult.error);
+        }
 
         // Create comprehensive order record
         const orderData = {
@@ -629,6 +665,8 @@ export async function POST(request: Request) {
           status: 'pending' as const,
           payment_status: session.payment_status === 'paid' ? 'paid' as const : 'pending' as const,
           subtotal: session.amount_subtotal ? session.amount_subtotal / 100 : 0,
+          tax_amount: session.total_details?.amount_tax ? session.total_details.amount_tax / 100 : 0,
+          shipping_amount: session.total_details?.amount_shipping ? session.total_details.amount_shipping / 100 : 0,
           total_amount: session.amount_total ? session.amount_total / 100 : 0,
           currency: session.currency?.toUpperCase() || 'CAD',
           stripe_payment_intent_id: session.payment_intent as string,
@@ -654,11 +692,20 @@ export async function POST(request: Request) {
           billing_country: shippingAddress.country || 'US',
         };
 
-        const { data: order, error: orderError } = await supabaseAdmin
-          .from('orders')
-          .insert(orderData)
-          .select('id, order_number')
-          .single();
+        const orderMutation = existingOrderResult.data
+          ? supabaseAdmin
+              .from('orders')
+              .update(orderData)
+              .eq('id', existingOrderResult.data.id)
+              .select('id, order_number')
+              .single()
+          : supabaseAdmin
+              .from('orders')
+              .insert(orderData)
+              .select('id, order_number')
+              .single();
+
+        const { data: order, error: orderError } = await orderMutation;
 
         if (orderError) {
           console.error('Error creating order record:', orderError);
@@ -670,6 +717,17 @@ export async function POST(request: Request) {
 
         // Create order items
         if (orderItems.length > 0 && order) {
+          if (existingOrderResult.data) {
+            const { error: deleteItemsError } = await supabaseAdmin
+              .from('order_items')
+              .delete()
+              .eq('order_id', order.id);
+
+            if (deleteItemsError) {
+              console.error('Error replacing existing order items:', deleteItemsError);
+            }
+          }
+
           const orderItemsData = orderItems.map(item => ({
             order_id: order.id,
             product_name: item.name,
@@ -694,10 +752,13 @@ export async function POST(request: Request) {
         const affiliateCode = metadata.affiliate_code;
         if (affiliateCode && order) {
           try {
-            const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+            const baseUrl = getDeploymentBaseUrl(request.url);
             const affiliateRes = await fetch(`${baseUrl}/api/affiliate/validate`, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: {
+                'Content-Type': 'application/json',
+                'x-internal-affiliate-secret': process.env.AFFILIATE_INTERNAL_SECRET || process.env.STRIPE_WEBHOOK_SECRET || '',
+              },
               body: JSON.stringify({
                 affiliate_code: affiliateCode,
                 order_id: order.id,
@@ -741,9 +802,17 @@ export async function POST(request: Request) {
           }
         }
 
+        // Retrieve full session to get complete total_details with tax/shipping
+        const fullSession = await stripe.checkout.sessions.retrieve(session.id);
+        
         // Send order confirmation email via simple email service
         if (order && customerEmail) {
           const customerFullName = metadata.customer_name || `${shippingAddress.first_name || ''} ${shippingAddress.last_name || ''}`.trim() || 'Valued Customer';
+          const subtotalAmount = (fullSession.amount_subtotal || fullSession.total_details?.amount_subtotal || 0) / 100;
+          const shippingAmount = (fullSession.total_details?.amount_shipping || 0) / 100;
+          const taxAmount = (fullSession.total_details?.amount_tax || 0) / 100;
+          const orderDate = new Date(session.created * 1000);
+          const timeZone = resolveOrderTimeZone(metadata, shippingAddress);
 
           console.log(`📧 Sending order confirmation to: ${customerEmail}`);
           try {
@@ -756,8 +825,13 @@ export async function POST(request: Request) {
                 quantity: item.quantity,
                 price: item.price
               })),
+              orderDate,
+              subtotalAmount,
+              shippingAmount,
+              taxAmount,
               totalAmount: (session.amount_total || 0) / 100,
               currency: session.currency?.toUpperCase() || 'CAD',
+              timeZone,
               customerPhone: customerPhone,
               shippingAddress: shippingAddress ? {
                 firstName: shippingAddress.first_name || '',
@@ -784,6 +858,11 @@ export async function POST(request: Request) {
         // Send admin notification email via simple email service
         if (order && customerEmail && orderItems.length > 0) {
           const customerFullName = metadata.customer_name || `${shippingAddress.first_name || ''} ${shippingAddress.last_name || ''}`.trim() || 'Unknown Customer';
+          const subtotalAmount = (fullSession.amount_subtotal || fullSession.total_details?.amount_subtotal || 0) / 100;
+          const shippingAmount = (fullSession.total_details?.amount_shipping || 0) / 100;
+          const taxAmount = (fullSession.total_details?.amount_tax || 0) / 100;
+          const orderDate = new Date(session.created * 1000);
+          const timeZone = resolveOrderTimeZone(metadata, shippingAddress);
 
           console.log(`📧 Sending admin notification for order: ${order.order_number}`);
           try {
@@ -796,8 +875,13 @@ export async function POST(request: Request) {
                 quantity: item.quantity,
                 price: item.price
               })),
+              orderDate,
+              subtotalAmount,
+              shippingAmount,
+              taxAmount,
               totalAmount: (session.amount_total || 0) / 100,
               currency: session.currency?.toUpperCase() || 'CAD',
+              timeZone,
               customerPhone: customerPhone,
               shippingAddress: shippingAddress ? {
                 firstName: shippingAddress.first_name || '',
