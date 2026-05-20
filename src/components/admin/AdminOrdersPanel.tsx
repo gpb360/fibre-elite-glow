@@ -36,6 +36,8 @@ interface Order {
   status: string;
   payment_status: string;
   subtotal: number;
+  shipping_amount: number | null;
+  tax_amount: number | null;
   total_amount: number;
   currency: string;
   stripe_payment_intent_id: string | null;
@@ -348,6 +350,18 @@ export default function AdminOrdersPanel() {
                     <span className="font-medium">{fmt(item.total_price, selectedOrder.currency)}</span>
                   </div>
                 ))}
+                <div className="border-t mt-2 pt-2 flex justify-between font-medium">
+                  <span>Subtotal</span>
+                  <span>{fmt(selectedOrder.subtotal || 0, selectedOrder.currency)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Shipping</span>
+                  <span>{fmt(selectedOrder.shipping_amount || 0, selectedOrder.currency)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Tax</span>
+                  <span>{fmt(selectedOrder.tax_amount || 0, selectedOrder.currency)}</span>
+                </div>
                 <div className="border-t mt-2 pt-2 flex justify-between font-medium">
                   <span>Total</span>
                   <span>{fmt(selectedOrder.total_amount, selectedOrder.currency)}</span>

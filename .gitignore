@@ -54,6 +54,11 @@ performance-report.json
 # Local Netlify folder
 .netlify
 .browser-data/
+.vercel/
+.vercel-auth/
+.artifacts/
+.bg-shell/
+.restore/
 
 # Generated/temporary scripts
 test-*.ts

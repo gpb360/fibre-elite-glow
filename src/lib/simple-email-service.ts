@@ -18,9 +18,16 @@ interface OrderConfirmationData {
     name: string;
     quantity: number;
     price: number;
+    packageSize?: string;
+    totalBoxes?: number;
   }>;
+  orderDate?: Date;
+  subtotalAmount?: number;
+  shippingAmount?: number;
+  taxAmount?: number;
   totalAmount: number;
   currency: string;
+  timeZone?: string;
   customerPhone?: string;
   shippingAddress?: {
     firstName: string;
@@ -42,9 +49,16 @@ interface AdminNotificationData {
     name: string;
     quantity: number;
     price: number;
+    packageSize?: string;
+    totalBoxes?: number;
   }>;
+  orderDate?: Date;
+  subtotalAmount?: number;
+  shippingAmount?: number;
+  taxAmount?: number;
   totalAmount: number;
   currency: string;
+  timeZone?: string;
   customerPhone?: string;
   shippingAddress?: {
     firstName: string;
@@ -75,6 +89,56 @@ class SimpleEmailService {
     console.log('  ADMIN_EMAIL from env:', process.env.ADMIN_EMAIL);
     console.log('  Final adminEmail:', this.adminEmail);
     console.log('  Is development:', this.isDevelopment);
+  }
+
+  private formatCurrency(amount: number | undefined, currency: string): string {
+    return new Intl.NumberFormat('en-CA', {
+      style: 'currency',
+      currency: currency || 'CAD',
+    }).format(amount || 0);
+  }
+
+  private formatOrderDate(date: Date | undefined, timeZone?: string): string {
+    return new Intl.DateTimeFormat('en-CA', {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+      timeZone: timeZone || 'America/Toronto',
+    }).format(date || new Date());
+  }
+
+  private generateTotalsHtml(data: {
+    subtotalAmount?: number;
+    shippingAmount?: number;
+    taxAmount?: number;
+    totalAmount: number;
+    currency: string;
+  }): string {
+    const subtotal = data.subtotalAmount ?? data.totalAmount;
+    const shipping = data.shippingAmount ?? 0;
+    const tax = data.taxAmount ?? 0;
+
+    return `
+      <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-family: Arial, sans-serif;">
+        <tbody>
+          <tr>
+            <td style="padding: 6px 0; text-align: right; color: #555;">Subtotal</td>
+            <td style="padding: 6px 0 6px 20px; text-align: right; width: 120px;">${this.formatCurrency(subtotal, data.currency)}</td>
+          </tr>
+          <tr>
+            <td style="padding: 6px 0; text-align: right; color: #555;">Shipping</td>
+            <td style="padding: 6px 0 6px 20px; text-align: right;">${this.formatCurrency(shipping, data.currency)}</td>
+          </tr>
+          <tr>
+            <td style="padding: 6px 0; text-align: right; color: #555;">Tax</td>
+            <td style="padding: 6px 0 6px 20px; text-align: right;">${this.formatCurrency(tax, data.currency)}</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px 0 0; text-align: right; font-weight: bold; border-top: 1px solid #ddd;">Total</td>
+            <td style="padding: 10px 0 0 20px; text-align: right; font-weight: bold; border-top: 1px solid #ddd;">${this.formatCurrency(data.totalAmount, data.currency)}</td>
+          </tr>
+        </tbody>
+      </table>
+    `;
   }
 
   private async sendEmail(emailData: EmailData): Promise<boolean> {
@@ -142,7 +206,7 @@ class SimpleEmailService {
 
     return this.sendEmail({
       to: this.adminEmail, // This fixes the admin email redirect issue
-      subject: `🛒 New Order: ${data.orderNumber} - $${data.totalAmount.toFixed(2)}`,
+      subject: `New Order: ${data.orderNumber} - ${this.formatCurrency(data.totalAmount, data.currency)}`,
       html,
       from: 'La Belle Vie <orders@stripe.venomappdevelopment.com>'
     });
@@ -150,19 +214,25 @@ class SimpleEmailService {
 
   private generateOrderConfirmationHTML(data: OrderConfirmationData): string {
     const itemsHtml = data.items
-      .map(item => `
+      .map(item => {
+        const quantityLabel = item.totalBoxes
+          ? `${item.totalBoxes} box${item.totalBoxes === 1 ? '' : 'es'}`
+          : String(item.quantity);
+        return `
         <tr>
           <td style="padding: 12px; border-bottom: 1px solid #eee; font-family: Arial, sans-serif;">
             <strong>${item.name}</strong>
+            ${item.packageSize ? `<br><span style="color: #666; font-size: 12px;">${item.packageSize}</span>` : ''}
           </td>
           <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: center; font-family: Arial, sans-serif;">
-            ${item.quantity}
+            ${quantityLabel}
           </td>
           <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right; font-family: Arial, sans-serif;">
-            $${(item.price * item.quantity).toFixed(2)}
+            ${this.formatCurrency(item.price * item.quantity, data.currency)}
           </td>
         </tr>
-      `)
+      `;
+      })
       .join('');
 
     const shippingHtml = data.shippingAddress ? `
@@ -191,7 +261,7 @@ class SimpleEmailService {
 
             <!-- Header -->
             <div style="background: linear-gradient(135deg, #9ED458 0%, #7FB835 100%); padding: 30px 20px; text-align: center;">
-              <h1 style="margin: 0; color: white; font-size: 28px; font-weight: bold;">🎉 Order Confirmed!</h1>
+              <h1 style="margin: 0; color: white; font-size: 28px; font-weight: bold;">Order Confirmed</h1>
               <p style="margin: 10px 0 0; color: white; font-size: 16px;">Thank you for your order, ${data.customerName}!</p>
             </div>
 
@@ -201,7 +271,7 @@ class SimpleEmailService {
 
               <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
                 <p style="margin: 5px 0;"><strong>Order Number:</strong> ${data.orderNumber}</p>
-                <p style="margin: 5px 0;"><strong>Order Date:</strong> ${new Date().toLocaleDateString()}</p>
+                <p style="margin: 5px 0;"><strong>Order Date:</strong> ${this.formatOrderDate(data.orderDate, data.timeZone)}</p>
                 <p style="margin: 5px 0;"><strong>Status:</strong> <span style="color: #28a745; font-weight: bold;">Confirmed</span></p>
                 ${data.customerPhone ? `<p style="margin: 5px 0;"><strong>Phone:</strong> ${data.customerPhone}</p>` : ''}
               </div>
@@ -214,7 +284,7 @@ class SimpleEmailService {
                 <thead>
                   <tr style="background: #f8f9fa;">
                     <th style="padding: 12px; text-align: left; border-bottom: 2px solid #ddd; color: #333;">Product</th>
-                    <th style="padding: 12px; text-align: center; border-bottom: 2px solid #ddd; color: #333;">Quantity</th>
+                    <th style="padding: 12px; text-align: center; border-bottom: 2px solid #ddd; color: #333;">Boxes</th>
                     <th style="padding: 12px; text-align: right; border-bottom: 2px solid #ddd; color: #333;">Price</th>
                   </tr>
                 </thead>
@@ -223,10 +293,7 @@ class SimpleEmailService {
                 </tbody>
               </table>
 
-              <!-- Total -->
-              <div style="background: #9ED458; color: white; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
-                <div style="font-size: 18px; font-weight: bold;">Order Total: $${data.totalAmount.toFixed(2)}</div>
-              </div>
+              ${this.generateTotalsHtml(data)}
             </div>
 
             <!-- Footer -->
@@ -243,19 +310,25 @@ class SimpleEmailService {
 
   private generateAdminNotificationHTML(data: AdminNotificationData): string {
     const itemsHtml = data.items
-      .map(item => `
+      .map(item => {
+        const quantityLabel = item.totalBoxes
+          ? `${item.totalBoxes} box${item.totalBoxes === 1 ? '' : 'es'}`
+          : String(item.quantity);
+        return `
         <tr>
           <td style="padding: 12px; border-bottom: 1px solid #eee; font-family: Arial, sans-serif;">
             <strong>${item.name}</strong>
+            ${item.packageSize ? `<br><span style="color: #666; font-size: 12px;">${item.packageSize}</span>` : ''}
           </td>
           <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: center; font-family: Arial, sans-serif;">
-            ${item.quantity}
+            ${quantityLabel}
           </td>
           <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right; font-family: Arial, sans-serif;">
-            $${(item.price * item.quantity).toFixed(2)}
+            ${this.formatCurrency(item.price * item.quantity, data.currency)}
           </td>
         </tr>
-      `)
+      `;
+      })
       .join('');
 
      const shippingHtml = data.shippingAddress ? `
@@ -284,7 +357,7 @@ class SimpleEmailService {
 
             <!-- Alert Header -->
             <div style="background: #9ED458; color: white; padding: 25px 20px; text-align: center;">
-              <h1 style="margin: 0; font-size: 28px; font-weight: bold;">🚨 New Order Alert</h1>
+              <h1 style="margin: 0; font-size: 28px; font-weight: bold;">New Order Alert</h1>
               <p style="margin: 10px 0 0; font-size: 16px;">Order ${data.orderNumber} requires processing</p>
             </div>
 
@@ -296,7 +369,7 @@ class SimpleEmailService {
                 <p style="margin: 5px 0;"><strong>Order Number:</strong> ${data.orderNumber}</p>
                 <p style="margin: 5px 0;"><strong>Customer:</strong> ${data.customerName} (${data.customerEmail})</p>
                 ${data.customerPhone ? `<p style="margin: 5px 0;"><strong>Phone:</strong> ${data.customerPhone}</p>` : ''}
-                <p style="margin: 5px 0;"><strong>Order Date:</strong> ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
+                <p style="margin: 5px 0;"><strong>Order Date:</strong> ${this.formatOrderDate(data.orderDate, data.timeZone)}</p>
                 ${data.paymentIntentId ? `<p style="margin: 5px 0;"><strong>Payment Intent:</strong> ${data.paymentIntentId}</p>` : ''}
               </div>
 
@@ -308,7 +381,7 @@ class SimpleEmailService {
                 <thead>
                   <tr style="background: #f8f9fa;">
                     <th style="padding: 12px; text-align: left; border-bottom: 2px solid #ddd; color: #333;">Product</th>
-                    <th style="padding: 12px; text-align: center; border-bottom: 2px solid #ddd; color: #333;">Quantity</th>
+                    <th style="padding: 12px; text-align: center; border-bottom: 2px solid #ddd; color: #333;">Boxes</th>
                     <th style="padding: 12px; text-align: right; border-bottom: 2px solid #ddd; color: #333;">Total</th>
                   </tr>
                 </thead>
@@ -317,10 +390,7 @@ class SimpleEmailService {
                 </tbody>
               </table>
 
-              <!-- Total -->
-              <div style="background: #9ED458; color: white; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
-                <div style="font-size: 20px; font-weight: bold;">Order Total: $${data.totalAmount.toFixed(2)}</div>
-              </div>
+              ${this.generateTotalsHtml(data)}
 
               <!-- Action Items -->
               <div style="background: #e7f3ff; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #007bff;">

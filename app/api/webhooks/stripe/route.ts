@@ -15,6 +15,9 @@ const orderItemSchema = z.object({
   name: z.string(),
   quantity: z.number(),
   price: z.number(),
+  package_size: z.string().optional(),
+  boxes_per_package: z.number().optional(),
+  total_boxes: z.number().optional(),
   product_type: z.string().optional(),
 });
 
@@ -573,6 +576,9 @@ export async function POST(request: Request) {
           name: string;
           quantity: number;
           price: number;
+          package_size?: string;
+          boxes_per_package?: number;
+          total_boxes?: number;
           product_type?: string;
         }> = [];
         
@@ -581,7 +587,16 @@ export async function POST(request: Request) {
             const parsed = JSON.parse(metadata.order_items);
             const validation = z.array(orderItemSchema).safeParse(parsed);
             if (validation.success) {
-              orderItems = validation.data;
+              orderItems = validation.data.map(item => ({
+                id: item.id,
+                name: item.name,
+                quantity: item.quantity,
+                price: item.price,
+                package_size: item.package_size,
+                boxes_per_package: item.boxes_per_package,
+                total_boxes: item.total_boxes,
+                product_type: item.product_type,
+              }));
             } else {
               console.warn('Invalid order items in webhook metadata');
             }
@@ -614,6 +629,19 @@ export async function POST(request: Request) {
           } catch (error) {
             console.warn('Failed to parse shipping address JSON in webhook metadata');
           }
+        }
+
+        const stripeShippingAddress = session.customer_details?.address;
+        if (stripeShippingAddress) {
+          shippingAddress = {
+            ...shippingAddress,
+            line1: stripeShippingAddress.line1 || shippingAddress.line1,
+            line2: stripeShippingAddress.line2 || shippingAddress.line2,
+            city: stripeShippingAddress.city || shippingAddress.city,
+            state: stripeShippingAddress.state || shippingAddress.state,
+            postal_code: stripeShippingAddress.postal_code || shippingAddress.postal_code,
+            country: stripeShippingAddress.country || shippingAddress.country,
+          };
         }
 
         if (!supabaseAdmin) {
@@ -808,7 +836,7 @@ export async function POST(request: Request) {
         // Send order confirmation email via simple email service
         if (order && customerEmail) {
           const customerFullName = metadata.customer_name || `${shippingAddress.first_name || ''} ${shippingAddress.last_name || ''}`.trim() || 'Valued Customer';
-          const subtotalAmount = (fullSession.amount_subtotal || fullSession.total_details?.amount_subtotal || 0) / 100;
+          const subtotalAmount = (fullSession.amount_subtotal || 0) / 100;
           const shippingAmount = (fullSession.total_details?.amount_shipping || 0) / 100;
           const taxAmount = (fullSession.total_details?.amount_tax || 0) / 100;
           const orderDate = new Date(session.created * 1000);
@@ -823,7 +851,9 @@ export async function POST(request: Request) {
               items: orderItems.map(item => ({
                 name: item.name,
                 quantity: item.quantity,
-                price: item.price
+                price: item.price,
+                packageSize: item.package_size,
+                totalBoxes: item.total_boxes
               })),
               orderDate,
               subtotalAmount,
@@ -858,7 +888,7 @@ export async function POST(request: Request) {
         // Send admin notification email via simple email service
         if (order && customerEmail && orderItems.length > 0) {
           const customerFullName = metadata.customer_name || `${shippingAddress.first_name || ''} ${shippingAddress.last_name || ''}`.trim() || 'Unknown Customer';
-          const subtotalAmount = (fullSession.amount_subtotal || fullSession.total_details?.amount_subtotal || 0) / 100;
+          const subtotalAmount = (fullSession.amount_subtotal || 0) / 100;
           const shippingAmount = (fullSession.total_details?.amount_shipping || 0) / 100;
           const taxAmount = (fullSession.total_details?.amount_tax || 0) / 100;
           const orderDate = new Date(session.created * 1000);
@@ -873,7 +903,9 @@ export async function POST(request: Request) {
               items: orderItems.map(item => ({
                 name: item.name,
                 quantity: item.quantity,
-                price: item.price
+                price: item.price,
+                packageSize: item.package_size,
+                totalBoxes: item.total_boxes
               })),
               orderDate,
               subtotalAmount,

@@ -8,6 +8,7 @@ import { supabaseAdmin } from '@/integrations/supabase/client';
 import { enhancedCheckoutSchema, FormValidationUtils } from '@/lib/form-validation';
 import { GlobalErrorHandler, ErrorSanitizer } from '@/lib/error-handler';
 import { CSRFProtection } from '@/lib/csrf';
+import { PRODUCT_PACKAGES, ProductPackage } from '@/lib/package-catalog';
 import { z } from 'zod';
 
 // Enhanced server-side validation schema for checkout with CSRF protection
@@ -15,9 +16,12 @@ const serverCheckoutSchema = z.object({
   items: z.array(z.object({
     id: z.string().min(1, 'Product ID is required').max(100, 'Product ID too long'),
     productName: z.string().min(1, 'Product name is required').max(200, 'Product name too long'),
+    productType: z.enum(['total_essential', 'total_essential_plus']).optional(),
     price: z.number().min(0.01, 'Price must be positive').max(9999.99, 'Price too high'),
     quantity: z.number().int().min(1, 'Quantity must be at least 1').max(10, 'Maximum 10 items per product'),
     imageUrl: z.string().url('Invalid image URL').optional(),
+    image: z.string().optional(),
+    packageSize: z.string().max(100).optional(),
   })).min(1, 'Cart cannot be empty').max(50, 'Too many items in cart'),
   customerInfo: enhancedCheckoutSchema,
   affiliateCode: z.string().max(50).optional(),
@@ -29,10 +33,83 @@ const serverCheckoutSchema = z.object({
   }).optional()
 });
 
+type CheckoutItem = z.infer<typeof serverCheckoutSchema>['items'][number];
+type NormalizedCheckoutItem = ProductPackage & {
+  quantity: number;
+  boxesPerPackage: number;
+};
+
+function inferProductType(item: CheckoutItem): ProductPackage['productType'] {
+  if (item.productType) return item.productType;
+  const catalogItem = PRODUCT_PACKAGES.find(pkg => pkg.id === item.id);
+  if (catalogItem) return catalogItem.productType;
+  return item.productName.toLowerCase().includes('plus') ? 'total_essential_plus' : 'total_essential';
+}
+
+function boxesForItem(item: CheckoutItem): number {
+  const catalogItem = PRODUCT_PACKAGES.find(pkg => pkg.id === item.id);
+  if (catalogItem) {
+    const match = catalogItem.id.match(/-(\d+)-boxe?s?$/);
+    return match ? Number(match[1]) : 1;
+  }
+
+  const idMatch = item.id.match(/-(\d+)-boxe?s?$/);
+  if (idMatch) return Number(idMatch[1]);
+
+  const sizeMatch = item.packageSize?.match(/(\d+)\s*box/i);
+  if (sizeMatch) return Number(sizeMatch[1]);
+
+  return 1;
+}
+
+function getPackageForBoxes(productType: ProductPackage['productType'], boxes: number): ProductPackage {
+  const catalogPackage = PRODUCT_PACKAGES.find(pkg => pkg.productType === productType && pkg.id.endsWith(`${boxes}-${boxes === 1 ? 'box' : 'boxes'}`));
+  if (!catalogPackage) {
+    throw new Error(`Missing catalog package for ${productType} ${boxes} box${boxes === 1 ? '' : 'es'}`);
+  }
+  return catalogPackage;
+}
+
+function normalizeCartItems(items: CheckoutItem[]): NormalizedCheckoutItem[] {
+  const boxTotals = new Map<ProductPackage['productType'], number>();
+
+  items.forEach(item => {
+    const productType = inferProductType(item);
+    const boxes = boxesForItem(item) * item.quantity;
+    boxTotals.set(productType, (boxTotals.get(productType) || 0) + boxes);
+  });
+
+  const normalized: NormalizedCheckoutItem[] = [];
+  boxTotals.forEach((boxTotal, productType) => {
+    let remaining = boxTotal;
+    ([4, 2, 1] as const).forEach(boxesPerPackage => {
+      const packageQuantity = Math.floor(remaining / boxesPerPackage);
+      if (packageQuantity <= 0) return;
+      const pkg = getPackageForBoxes(productType, boxesPerPackage);
+      normalized.push({ ...pkg, quantity: packageQuantity, boxesPerPackage });
+      remaining -= packageQuantity * boxesPerPackage;
+    });
+  });
+
+  return normalized;
+}
+
+function resolveStripeImageUrl(image: string | undefined, baseUrl: string): string[] | undefined {
+  if (!image) return undefined;
+
+  try {
+    return [new URL(image, baseUrl).toString()];
+  } catch {
+    return undefined;
+  }
+}
 
 // Helper function to calculate total boxes from cart items
-function calculateTotalBoxes(items: Array<{id?: string; quantity?: number}>): number {
+function calculateTotalBoxes(items: Array<{id?: string; quantity?: number; boxesPerPackage?: number}>): number {
   return items.reduce((total, item) => {
+    if (item.boxesPerPackage && item.quantity) {
+      return total + item.boxesPerPackage * item.quantity;
+    }
     // Extract box count from package ID
     // Format: "total-essential-1-box" or "total-essential-plus-2-boxes"
     if (item.id) {
@@ -222,7 +299,7 @@ export async function POST(request: NextRequest) {
           path: err.path.join('.'),
           message: err.message,
           code: err.code,
-          received: err.received
+          received: 'received' in err ? err.received : undefined
         }))
       });
 
@@ -289,18 +366,19 @@ export async function POST(request: NextRequest) {
     }
 
     // Calculate total boxes for shipping tier determination
-    const totalBoxes = calculateTotalBoxes(body.items);
+    const normalizedItems = normalizeCartItems(body.items);
+    const totalBoxes = calculateTotalBoxes(normalizedItems);
     console.log('📦 Total boxes calculated:', totalBoxes);
 
     // Format line items for Stripe with enhanced product data
-    const lineItems = body.items.map(item => ({
+    const lineItems = normalizedItems.map(item => ({
       price_data: {
         currency: STRIPE_CONFIG.currency,
         tax_behavior: 'exclusive', // Add this for proper tax calculation
         product_data: {
           name: item.productName,
           description: `Premium gut health supplement - Quantity: ${item.quantity}`,
-          images: item.imageUrl ? [item.imageUrl] : undefined,
+          images: resolveStripeImageUrl(item.image, baseUrl),
           metadata: {
             product_type: item.productName.toLowerCase().includes('plus') ? 'total_essential_plus' : 'total_essential',
             category: 'gut_health_supplement'
@@ -327,12 +405,23 @@ export async function POST(request: NextRequest) {
         country: body.customerInfo.country
       }),
       customer_phone: body.customerInfo.phone || '',
-      order_items: JSON.stringify(body.items.map(item => ({
+      order_items: JSON.stringify(normalizedItems.map(item => ({
         id: item.id,
         name: item.productName,
         quantity: item.quantity,
         price: item.price,
-        product_type: item.productName.toLowerCase().includes('plus') ? 'total_essential_plus' : 'total_essential'
+        package_size: item.packageSize,
+        boxes_per_package: item.boxesPerPackage,
+        total_boxes: item.boxesPerPackage * item.quantity,
+        product_type: item.productType
+      }))),
+      original_cart_items: JSON.stringify(body.items.map(item => ({
+        id: item.id,
+        name: item.productName,
+        quantity: item.quantity,
+        price: item.price,
+        product_type: inferProductType(item),
+        boxes_per_package: boxesForItem(item)
       }))),
       security_validated: 'true',
       csrf_token_validated: body.csrfToken ? 'true' : 'false',
