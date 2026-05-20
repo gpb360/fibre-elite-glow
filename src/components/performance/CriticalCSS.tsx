@@ -89,14 +89,7 @@ const CriticalCSS = memo(() => (
       border-radius: 0.75rem;
     }
 
-    /* Font display optimization */
-    @font-face {
-      font-family: 'Inter';
-      font-style: normal;
-      font-weight: 100 900;
-      font-display: swap;
-      src: url('/_next/static/media/inter-latin.woff2') format('woff2');
-    }
+    /* Font display optimization — handled by next/font, no self-hosted override needed */
 
     /* Reduce layout shift for navigation */
     .nav-item {

@@ -17,7 +17,7 @@ test.describe('Checkout Flow - Positive Scenarios', () => {
   test.beforeEach(async ({ page }) => {
     // Start with a clean state
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
   });
 
   test('Complete successful purchase flow - Total Essential', async ({ page }) => {

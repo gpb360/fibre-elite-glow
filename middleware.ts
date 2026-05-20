@@ -23,8 +23,6 @@ const PROTECTED_ROUTES = [
 
 // Define admin routes that require elevated permissions
 const ADMIN_ROUTES = [
-  '/admin',
-  '/admin/',
   '/dev/auth-setup',
 ];
 
@@ -138,7 +136,7 @@ export function middleware(request: NextRequest) {
         "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
         "img-src 'self' data: blob: *.stripe.com *.supabase.co",
         "font-src 'self' fonts.gstatic.com",
-        "connect-src 'self' *.stripe.com *.supabase.co api.stripe.com",
+        "connect-src 'self' *.stripe.com *.supabase.co api.stripe.com http://127.0.0.1:* http://localhost:*",
         "frame-src 'self' *.stripe.com",
         "object-src 'none'",
         "base-uri 'self'",
@@ -162,7 +160,7 @@ export function middleware(request: NextRequest) {
         'camera=()',
         'microphone=()',
         'geolocation=()',
-        'payment=(self "*.stripe.com")',
+        'payment=(self "https://js.stripe.com")',
         'usb=()',
         'magnetometer=()',
         'accelerometer=()',

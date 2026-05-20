@@ -110,7 +110,7 @@ test.describe('404 and Navigation Tests', () => {
   test.describe('404 Page', () => {
     for (const route of NONEXISTENT_ROUTES) {
       test(`should show 404 page for ${route}`, async ({ page }) => {
-        await page.goto(route, { waitUntil: 'networkidle' });
+        await page.goto(route, { waitUntil: 'domcontentloaded' });
         
         // Verify the 404 page is shown
         await expect(page.getByText('404')).toBeVisible();

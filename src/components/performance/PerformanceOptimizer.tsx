@@ -63,23 +63,8 @@ export default function PerformanceOptimizer({
         setTimeout(schedulePrefetch, 1000)
       }
 
-      // Preload critical WebP images with high priority
-      const criticalImages = [
-        '/lovable-uploads/webp/total-essential-fiber-supplement-bottle.webp',
-        '/lovable-uploads/webp/total-essential-plus-fiber-supplement-bottle.webp'
-      ]
-
-      criticalImages.forEach((src, index) => {
-        setTimeout(() => {
-          const link = document.createElement('link')
-          link.rel = 'preload'
-          link.href = src
-          link.as = 'image'
-          link.type = 'image/webp'
-          link.fetchPriority = index === 0 ? 'high' : 'auto'
-          document.head.appendChild(link)
-        }, index * 100)
-      })
+      // Product image preloading removed — Next.js Image with priority={true}
+      // handles preloading for above-fold images automatically
     }
 
     // Enhanced lazy loading with intersection observer
@@ -161,32 +146,7 @@ export default function PerformanceOptimizer({
 
     registerServiceWorker()
 
-    // Optimize font loading
-    const optimizeFonts = () => {
-      if ('fonts' in document && 'load' in document.fonts) {
-        // Preload critical fonts
-        const fontUrls = [
-          '/fonts/inter-latin-400.woff2',
-          '/fonts/inter-latin-700.woff2'
-        ]
-
-        fontUrls.forEach(url => {
-          const font = new FontFace('Inter', `url(${url})`, {
-            style: 'normal',
-            weight: url.includes('700') ? '700' : '400',
-            display: 'swap'
-          })
-
-          font.load().then(loadedFont => {
-            document.fonts.add(loadedFont)
-          }).catch(err => {
-            console.warn('Failed to load font:', url, err)
-          })
-        })
-      }
-    }
-
-    optimizeFonts()
+    // Font loading is handled by next/font — no manual preloading needed
 
     // Monitor and optimize layout shifts
     const optimizeLayoutShifts = () => {
@@ -207,19 +167,7 @@ export default function PerformanceOptimizer({
       optimizeLayoutShifts()
     }
 
-    // Preload critical CSS
-    const preloadCriticalCSS = () => {
-      const criticalCSSLink = document.createElement('link')
-      criticalCSSLink.rel = 'preload'
-      criticalCSSLink.href = '/_next/static/css/critical.css'
-      criticalCSSLink.as = 'style'
-      criticalCSSLink.onload = function() {
-        this.rel = 'stylesheet'
-      }
-      document.head.appendChild(criticalCSSLink)
-    }
-
-    preloadCriticalCSS()
+    // Critical CSS is inlined by CriticalCSS component — no external preload needed
 
   }, [enableReporting, enablePrefetch])
 

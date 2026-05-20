@@ -54,6 +54,11 @@ performance-report.json
 # Local Netlify folder
 .netlify
 .browser-data/
+.vercel/
+.vercel-auth/
+.artifacts/
+.bg-shell/
+.restore/
 
 # Generated/temporary scripts
 test-*.ts
@@ -72,3 +77,4 @@ mcp-test-screenshot.png
 
 .github/instructions/kluster-code-verify.instructions.md
 .kluster
+.env.local.cloud-backup

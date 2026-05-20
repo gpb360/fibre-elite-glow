@@ -6,9 +6,10 @@ export const dynamic = 'force-static';
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://lbve.ca';
 
-  // Static pages
+  // Static pages — only public, indexable content
   const staticRoutes = [
     '',
+    '/products',
     '/products/total-essential',
     '/products/total-essential-plus',
     '/ingredients',
@@ -19,12 +20,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/about',
     '/terms',
     '/privacy',
-    '/cart',
-    '/checkout',
-    '/login',
-    '/signup',
-    '/account',
-    '/reset-password',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),

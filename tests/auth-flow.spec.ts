@@ -8,7 +8,7 @@ test.describe('Authentication Flow Tests', () => {
     await expect(page).toHaveURL(/\/login$/);
     
     // Wait for the page to load and check for basic elements
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     
     // Check for login form elements using more flexible selectors
     await expect(page.locator('input[type="email"]')).toBeVisible();

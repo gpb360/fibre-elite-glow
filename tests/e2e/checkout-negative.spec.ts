@@ -17,7 +17,7 @@ test.describe('Checkout Flow - Negative Scenarios', () => {
   test.beforeEach(async ({ page }) => {
     // Start with a clean state
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
   });
 
   test('Payment declined - Generic decline', async ({ page }) => {

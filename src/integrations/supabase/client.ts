@@ -23,14 +23,15 @@ if (process.env.NODE_ENV === 'development' && !SUPABASE_SERVICE_ROLE_KEY) {
   );
 }
 
-// Enhanced client configuration with debugging
+// Enhanced client configuration
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: {
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: true,
     flowType: 'pkce',
-    debug: process.env.NODE_ENV === 'development',
+    // Debug logging disabled — enable with NEXT_PUBLIC_SUPABASE_DEBUG=true if needed
+    debug: process.env.NEXT_PUBLIC_SUPABASE_DEBUG === 'true',
   },
   global: {
     headers: {
@@ -71,12 +72,11 @@ export const supabaseAdmin = SUPABASE_SERVICE_ROLE_KEY
     })
   : undefined;
 
-// Development debugging
-if (process.env.NODE_ENV === 'development') {
+// Development debugging — gated behind explicit flag to avoid console noise
+if (process.env.NEXT_PUBLIC_SUPABASE_DEBUG === 'true') {
   console.log('🔧 Supabase Client Configuration:', {
     url: SUPABASE_URL,
     hasKey: !!SUPABASE_PUBLISHABLE_KEY,
-    keyPrefix: SUPABASE_PUBLISHABLE_KEY.substring(0, 20) + '...',
     hasServiceRoleKey: !!SUPABASE_SERVICE_ROLE_KEY,
   });
 }

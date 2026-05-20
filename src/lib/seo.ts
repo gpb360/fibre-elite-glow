@@ -131,7 +131,7 @@ export function generateProductSchema(product: {
         "@type": "Organization",
         "name": brand
       },
-      "priceValidUntil": "2025-12-31"
+      "priceValidUntil": "2026-12-31"
     },
     ...(image && {
       "image": [
