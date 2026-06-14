@@ -260,6 +260,10 @@ function CheckoutSuccessContent() {
                     {formatCurrency(orderDetails.amount, orderDetails.currency)}
                   </span>
                 </div>
+
+                <p className="text-xs text-gray-500">
+                  Final total from Stripe — includes taxes and shipping.
+                </p>
               </CardContent>
             </Card>
 

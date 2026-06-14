@@ -272,13 +272,22 @@ const Cart = () => {
                           <span>Shipping</span>
                           <span>Calculated at checkout</span>
                         </div>
-                        
+
+                        <div className="flex justify-between text-sm text-gray-600">
+                          <span>Taxes</span>
+                          <span>Applied at checkout</span>
+                        </div>
+
                         <Separator />
-                        
+
                         <div className="flex justify-between text-lg font-semibold" data-testid="total-amount">
-                          <span>Total</span>
+                          <span>Subtotal</span>
                           <span>${cart.subtotal.toFixed(2)}</span>
                         </div>
+
+                        <p className="text-xs text-gray-500">
+                          Final order total — including taxes and shipping — is calculated by Stripe at checkout.
+                        </p>
                         
                         <Link href="/checkout" className="block">
                           <Button 
