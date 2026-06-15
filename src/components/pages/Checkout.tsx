@@ -599,12 +599,23 @@ const CheckoutForm: React.FC = () => {
                 <span>${(item.price * item.quantity).toFixed(2)}</span>
               </div>
             ))}
-            <div className="border-t pt-2 mt-2">
-              <div className="flex justify-between font-semibold">
-                <span>Total</span>
+            <div className="border-t pt-2 mt-2 space-y-1">
+              <div className="flex justify-between text-sm text-gray-600">
+                <span>Shipping</span>
+                <span>Calculated at checkout</span>
+              </div>
+              <div className="flex justify-between text-sm text-gray-600">
+                <span>Taxes</span>
+                <span>Applied at checkout</span>
+              </div>
+              <div className="flex justify-between font-semibold pt-1">
+                <span>Order Total</span>
                 <span data-testid="order-total">${cart.subtotal.toFixed(2)}</span>
               </div>
             </div>
+            <p className="text-xs text-gray-500 mt-2">
+              Taxes and shipping are calculated by Stripe at checkout. Your final total will be shown before payment.
+            </p>
           </div>
 
           {/* Affiliate / Referral Code */}
