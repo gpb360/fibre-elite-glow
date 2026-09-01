@@ -55,12 +55,25 @@ async function sourceFiles(directory: string): Promise<string[]> {
   return files.flat();
 }
 
+async function allFiles(directory: string): Promise<string[]> {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const files = await Promise.all(entries.map(async (entry) => {
+    const entryPath = path.join(directory, entry.name);
+    return entry.isDirectory() ? allFiles(entryPath) : [entryPath];
+  }));
+  return files.flat();
+}
+
 test('every literal public image reference resolves to a tracked asset', async () => {
   const repositoryRoot = process.cwd();
   const files = [
     ...(await sourceFiles(path.join(repositoryRoot, 'app'))),
     ...(await sourceFiles(path.join(repositoryRoot, 'src'))),
   ];
+  const publicDirectory = path.join(repositoryRoot, 'public');
+  const exactAssetPaths = new Set((await allFiles(publicDirectory)).map((file) =>
+    `/${path.relative(publicDirectory, file).split(path.sep).join('/')}`
+  ));
   const assetPattern = /["'](\/(?:assets|images|lovable-uploads)\/[^"']+)["']/g;
   const missing: string[] = [];
 
@@ -68,11 +81,7 @@ test('every literal public image reference resolves to a tracked asset', async (
     const source = await readFile(file, 'utf8');
 
     for (const match of source.matchAll(assetPattern)) {
-      const assetPath = path.join(repositoryRoot, 'public', ...match[1].split('/').filter(Boolean));
-
-      try {
-        await readFile(assetPath);
-      } catch {
+      if (!exactAssetPaths.has(match[1])) {
         missing.push(`${path.relative(repositoryRoot, file)} -> ${match[1]}`);
       }
     }

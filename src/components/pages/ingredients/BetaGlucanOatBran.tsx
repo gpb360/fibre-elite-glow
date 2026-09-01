@@ -42,7 +42,7 @@ const BetaGlucanHero = () => (
     <div
       className="absolute inset-0 z-0 bg-cover bg-center opacity-20"
       style={{
-        backgroundImage: `url('/assets/webp/16x9_a_pile_of_oats_and_oat_straws_ar.webp')`,
+              backgroundImage: `url('/assets/webp/16x9_A_pile_of_oats_and_oat_straws_ar.webp')`,
         width: '100%'
       }}
     />
@@ -108,7 +108,7 @@ const BetaGlucanHero = () => (
           transition={{ duration: 0.7 }}
         >
           <Image
-            src="/assets/webp/16x9_a_pile_of_oats_and_oat_straws_ar.webp"
+                  src="/assets/webp/16x9_A_pile_of_oats_and_oat_straws_ar.webp"
             alt="Beta-Glucan Oat Bran - Heart-healthy fiber for cholesterol management"
             className="rounded-lg shadow-xl"
             width={1280}
@@ -192,7 +192,7 @@ const BetaGlucanOatBran = () => {
         
         {/* What is Beta-Glucan Oat Bran */}
         <SplitSection
-          image="/assets/webp/16x9_a_pile_of_oats_and_oat_straws_ar.webp"
+              image="/assets/webp/16x9_A_pile_of_oats_and_oat_straws_ar.webp"
           imageAlt="Beta-Glucan Oat Bran - Premium oats and oat straws"
           title="What is Beta-Glucan Oat Bran?"
           description="A powerful soluble fiber with exceptional health benefits, backed by extensive scientific research."
@@ -301,7 +301,7 @@ const BetaGlucanOatBran = () => {
         
         {/* How It Works */}
         <SplitSection
-          image="/assets/webp/16x9_a_pile_of_oats_and_oat_straws_ar.webp"
+          image="/assets/webp/16x9_A_pile_of_oats_and_oat_straws_ar.webp"
           imageAlt="Beta-Glucan Oat Bran - Scientific mechanism illustration"
           title="How Beta-Glucan Works"
           description="The science behind this powerful soluble fiber"
