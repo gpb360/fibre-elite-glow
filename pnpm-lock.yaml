@@ -121,6 +121,12 @@ importers:
       embla-carousel-react:
         specifier: ^8.3.0
         version: 8.6.0(react@18.3.1)
+      eslint:
+        specifier: ^8.57.1
+        version: 8.57.1
+      eslint-config-next:
+        specifier: 15.5.25
+        version: 15.5.25(eslint@8.57.1)(typescript@5.9.3)
       express:
         specifier: ^5.2.1
         version: 5.2.1
@@ -227,12 +233,6 @@ importers:
       dotenv:
         specifier: ^16.5.0
         version: 16.6.1
-      eslint:
-        specifier: ^8.57.1
-        version: 8.57.1
-      eslint-config-next:
-        specifier: 15.5.25
-        version: 15.5.25(eslint@8.57.1)(typescript@5.9.3)
       intersection-observer:
         specifier: ^0.12.2
         version: 0.12.2
