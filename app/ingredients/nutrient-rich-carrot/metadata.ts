@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description: 'Packed with beta-carotene and fiber, our nutrient-rich carrot extract supports vibrant vision, radiant skin, and optimal digestive health.',
     images: [
       {
-        url: '/lovable-uploads/carrot-extract.jpg',
+        url: '/assets/webp/16x9_a_plump_organic_carrot_with_inte.webp',
         width: 1200,
         height: 630,
         alt: 'Nutrient-Rich Carrot',
@@ -21,6 +21,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Nutrient-Rich Carrot | Support for Vision, Skin & Digestion',
     description: 'Packed with beta-carotene and fiber, our nutrient-rich carrot extract supports vibrant vision, radiant skin, and optimal digestive health.',
-    images: ['/lovable-uploads/carrot-extract.jpg'],
+    images: ['/assets/webp/16x9_a_plump_organic_carrot_with_inte.webp'],
   }
 }

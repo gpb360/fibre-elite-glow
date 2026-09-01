@@ -5,7 +5,7 @@ export const metadata = generateMetadata({
   title: 'Acai Berry | Antioxidant-Rich Superfruit for Energy & Recovery',
   description: 'Premium acai berry powder loaded with antioxidants, anthocyanins, and Vitamin C. Supports energy levels, cellular health, and natural vitality.',
   keywords: 'acai berry, antioxidants, anthocyanins, vitamin C, energy boost, cellular health, superfruit, natural energy, Canadian supplement',
-  image: '/assets/webp/16x9_A_cluster_of_acai_berries.webp',
+  image: '/lovable-uploads/acai-closeup.jpg',
   url: '/ingredients/acai-berry'
 })
 

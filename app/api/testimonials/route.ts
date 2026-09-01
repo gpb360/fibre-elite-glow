@@ -8,11 +8,8 @@ export async function GET() {
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
     if (!supabaseUrl || !supabaseServiceKey) {
-      console.error('Missing Supabase configuration');
-      return NextResponse.json(
-        { error: 'Server configuration error' },
-        { status: 500 }
-      );
+      console.warn('Testimonials database is not configured; returning the public fallback set.');
+      return NextResponse.json({ testimonials: [], count: 0, fallback: true });
     }
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
@@ -30,11 +27,10 @@ export async function GET() {
         console.warn('Testimonials table does not exist yet. Returning fallback data.');
         return NextResponse.json({ testimonials: [], fallback: true });
       }
-      console.error('Error fetching testimonials:', error);
-      return NextResponse.json(
-        { error: 'Failed to fetch testimonials' },
-        { status: 500 }
-      );
+      console.warn('Testimonials database is unavailable; returning the public fallback set.', {
+        code: error.code,
+      });
+      return NextResponse.json({ testimonials: [], count: 0, fallback: true });
     }
 
     return NextResponse.json({
@@ -42,10 +38,10 @@ export async function GET() {
       count: testimonials?.length || 0,
     });
   } catch (error) {
-    console.error('Testimonials fetch error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
+    console.warn(
+      'Testimonials database request failed; returning the public fallback set.',
+      error instanceof Error ? error.message : 'Unknown error'
     );
+    return NextResponse.json({ testimonials: [], count: 0, fallback: true });
   }
 }

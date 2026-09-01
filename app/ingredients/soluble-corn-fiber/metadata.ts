@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description: 'A gentle, effective prebiotic fiber for superior digestive health, blood sugar support, and enhanced satiety.',
     images: [
       {
-        url: '/lovable-uploads/soluble-corn-fiber.jpg',
+        url: '/lovable-uploads/corn-field.jpg',
         width: 1200,
         height: 630,
         alt: 'Soluble Corn Fiber',
@@ -21,6 +21,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Soluble Corn Fiber | Gentle Prebiotic for a Healthy Gut',
     description: 'A gentle, effective prebiotic fiber for superior digestive health, blood sugar support, and enhanced satiety.',
-    images: ['/lovable-uploads/soluble-corn-fiber.jpg'],
+    images: ['/lovable-uploads/corn-field.jpg'],
   }
 }

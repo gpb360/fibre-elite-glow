@@ -1,12 +1,22 @@
 'use client';
 
-import { motion, MotionProps } from 'framer-motion';
+import { motion, type HTMLMotionProps, type MotionProps, type Transition } from 'framer-motion';
 import React, { forwardRef, useEffect, useState } from 'react';
 
-interface OptimizedMotionProps extends MotionProps {
+interface OptimizedMotionProps extends Omit<HTMLMotionProps<'div'>, 'ref'> {
   children: React.ReactNode;
   disabled?: boolean;
   reducedMotion?: boolean;
+}
+
+interface NetworkInformation {
+  effectiveType?: string;
+}
+
+interface NavigatorWithConnection extends Navigator {
+  connection?: NetworkInformation;
+  mozConnection?: NetworkInformation;
+  webkitConnection?: NetworkInformation;
 }
 
 // Performance monitoring for animations
@@ -24,7 +34,8 @@ const useAnimationPerformance = () => {
       /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
     // Check for slow connections
-    const connection = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
+    const browserNavigator = navigator as NavigatorWithConnection;
+    const connection = browserNavigator.connection || browserNavigator.mozConnection || browserNavigator.webkitConnection;
     const isSlowConnection = connection && (connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g');
 
     if (isLowEndDevice || isSlowConnection) {
@@ -43,46 +54,42 @@ const useAnimationPerformance = () => {
 };
 
 // Performance-optimized motion component with reduced blocking time
-export const OptimizedMotion = forwardRef<HTMLDivElement, OptimizedMotionProps & React.HTMLAttributes<HTMLDivElement>>(
+export const OptimizedMotion = forwardRef<HTMLDivElement, OptimizedMotionProps>(
   ({ children, disabled = false, reducedMotion, className, style, ...motionProps }, ref) => {
     const shouldReduceAnimations = useAnimationPerformance();
 
     // Disable animations based on multiple factors
     if (disabled || reducedMotion || shouldReduceAnimations) {
       return (
-        <div
+        <motion.div
           ref={ref}
           className={className}
           style={style}
         >
           {children}
-        </div>
+        </motion.div>
       );
     }
 
     // Highly optimized animation defaults to minimize blocking time
-    const optimizedProps = {
-      ...motionProps,
-      className,
-      style,
-      transition: {
-        duration: 0.15, // Further reduced from 0.2 to minimize blocking time
-        ease: 'easeOut',
-        type: 'tween',
-        ...motionProps.transition,
-      },
-      // Use transform instead of layout changes for better performance
-      layout: false,
-      // Disable expensive features on low-end devices
-      drag: false,
-      whileTap: undefined,
-      whileHover: undefined,
+    const optimizedTransition: Transition = {
+      duration: 0.15,
+      ease: 'easeOut',
+      type: 'tween',
+      ...motionProps.transition,
     };
 
     return (
       <motion.div
         ref={ref}
-        {...optimizedProps}
+        {...motionProps}
+        className={className}
+        style={style}
+        transition={optimizedTransition}
+        layout={false}
+        drag={false}
+        whileTap={undefined}
+        whileHover={undefined}
       >
         {children}
       </motion.div>
@@ -101,7 +108,7 @@ export const fadeInUp = {
     ease: 'easeOut',
     type: 'tween'
   },
-};
+} satisfies MotionProps;
 
 export const fadeIn = {
   initial: { opacity: 0 },
@@ -111,7 +118,7 @@ export const fadeIn = {
     ease: 'easeOut',
     type: 'tween'
   },
-};
+} satisfies MotionProps;
 
 export const scaleIn = {
   initial: { opacity: 0, scale: 0.98 }, // Reduced scale change
@@ -121,7 +128,7 @@ export const scaleIn = {
     ease: 'easeOut',
     type: 'tween'
   },
-};
+} satisfies MotionProps;
 
 // Stagger animation for lists with optimized performance
 export const staggerContainer = {
@@ -133,7 +140,7 @@ export const staggerContainer = {
       delayChildren: 0.1,
     },
   },
-};
+} satisfies MotionProps;
 
 export const staggerItem = {
   initial: { opacity: 0, y: 10 },
@@ -143,4 +150,4 @@ export const staggerItem = {
     ease: 'easeOut',
     type: 'tween'
   },
-};
+} satisfies MotionProps;

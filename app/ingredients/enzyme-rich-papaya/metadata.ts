@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description: 'Harness the power of natural digestive enzymes to break down proteins, reduce bloating, and enhance nutrient absorption.',
     images: [
       {
-        url: '/lovable-uploads/papaya-extract.jpg',
+        url: '/assets/webp/16x9_a_close_up_shot_of_a_papaya_frui.webp',
         width: 1200,
         height: 630,
         alt: 'Enzyme-Rich Papaya',
@@ -21,6 +21,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Enzyme-Rich Papaya | Your Natural Digestive Enzyme Boost',
     description: 'Harness the power of natural digestive enzymes to break down proteins, reduce bloating, and enhance nutrient absorption.',
-    images: ['/lovable-uploads/papaya-extract.jpg'],
+    images: ['/assets/webp/16x9_a_close_up_shot_of_a_papaya_frui.webp'],
   }
 }

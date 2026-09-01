@@ -2,10 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { headers } from 'next/headers';
 import Stripe from 'stripe';
+import { getDiagnosticAccessFailureStatus } from '@/lib/admin-auth';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-06-20',
-});
+function getStripeClient(): Stripe {
+  const secretKey = process.env.STRIPE_SECRET_KEY;
+  if (!secretKey) throw new Error('Stripe is not configured');
+  return new Stripe(secretKey, { apiVersion: '2025-08-27.basil' });
+}
 
 // Validation schema for payment recovery
 const recoverySchema = z.object({
@@ -60,7 +63,7 @@ async function attemptPaymentIntentRecovery(paymentIntentId: string, customerEma
     console.log('🔄 Attempting payment intent recovery:', paymentIntentId);
     
     // Retrieve payment intent
-    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+    const paymentIntent = await getStripeClient().paymentIntents.retrieve(paymentIntentId);
     
     // Check if recovery is possible
     if (paymentIntent.status === 'succeeded') {
@@ -144,7 +147,7 @@ async function attemptSessionRecovery(sessionId: string, customerEmail: string) 
     console.log('🔄 Attempting session recovery:', sessionId);
     
     // Retrieve the session
-    const session = await stripe.checkout.sessions.retrieve(sessionId, {
+    const session = await getStripeClient().checkout.sessions.retrieve(sessionId, {
       expand: ['payment_intent']
     });
     
@@ -212,6 +215,14 @@ async function attemptSessionRecovery(sessionId: string, customerEmail: string) 
 }
 
 export async function POST(request: NextRequest) {
+  const accessFailure = getDiagnosticAccessFailureStatus(request);
+  if (accessFailure) {
+    return NextResponse.json(
+      { error: accessFailure === 404 ? 'Not found' : 'Unauthorized' },
+      { status: accessFailure }
+    );
+  }
+
   try {
     const headersList = await headers();
     const forwardedFor = headersList.get('x-forwarded-for');

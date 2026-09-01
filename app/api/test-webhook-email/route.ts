@@ -1,8 +1,17 @@
 import { NextResponse } from 'next/server';
 import { simpleEmailService } from '@/lib/simple-email-service';
+import { getDiagnosticAccessFailureStatus } from '@/lib/admin-auth';
 
 // Test endpoint to simulate the exact email sending from a Stripe webhook
-export async function GET() {
+export async function GET(request: Request) {
+  const accessFailure = getDiagnosticAccessFailureStatus(request);
+  if (accessFailure) {
+    return NextResponse.json(
+      { error: accessFailure === 404 ? 'Not found' : 'Unauthorized' },
+      { status: accessFailure }
+    );
+  }
+
   try {
     console.log('🧪 Testing webhook email flow...');
 

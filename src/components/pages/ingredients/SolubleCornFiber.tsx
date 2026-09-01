@@ -41,7 +41,7 @@ const SolubleCornFiberHero = () => (
   <section className="relative overflow-hidden bg-white pt-20 pb-12 md:pt-32 md:pb-20">
     <div className="absolute inset-0 z-0 opacity-20">
       <Image
-        src="/assets/webp/16x9_A_close_up_of_a_corn_plant_with_.webp"
+        src="/lovable-uploads/corn-field.jpg"
         alt="Natural corn plant - sustainable source of gentle prebiotic fiber for gut health and blood sugar support"
         fill
         className="object-cover"
@@ -110,7 +110,7 @@ const SolubleCornFiberHero = () => (
           transition={{ duration: 0.7 }}
         >
           <Image 
-            src="/assets/webp/16x9_A_close_up_of_a_corn_plant_with_.webp"
+            src="/lovable-uploads/corn-field.jpg"
             alt="Soluble Corn Fiber - Prebiotic fiber for gut health and digestive balance" 
             className="rounded-lg shadow-xl"
             width={1280}

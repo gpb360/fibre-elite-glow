@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description: 'Support your digestive and cardiovascular health with our premium apple fiber, a perfect blend of soluble and insoluble fibers.',
     images: [
       {
-        url: '/lovable-uploads/apple-fiber-hero.jpg',
+        url: '/assets/webp/16x9_apple_fibre.webp',
         width: 1200,
         height: 630,
         alt: 'Premium Apple Fiber',
@@ -21,6 +21,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Dual-Action Apple Fiber | For a Healthy Gut & Heart',
     description: 'Support your digestive and cardiovascular health with our premium apple fiber, a perfect blend of soluble and insoluble fibers.',
-    images: ['/lovable-uploads/apple-fiber-hero.jpg'],
+    images: ['/assets/webp/16x9_apple_fibre.webp'],
   }
 }

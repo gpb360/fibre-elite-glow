@@ -48,9 +48,19 @@ function useApiMutation(options: UseApiMutationOptions = {}): UseApiMutationRetu
   const [lastRequest, setLastRequest] = useState<{ url: string; data: any } | null>(null);
 
   const mutate = async (url: string, data: any) => {
+    const checkoutRequestId = data.checkoutRequestId || crypto.randomUUID();
+    const receiptAccessToken = data.receiptAccessToken || createBrowserReceiptToken();
+    const checkoutRequestedAt = data.checkoutRequestedAt || Date.now();
+    const requestData = {
+      ...data,
+      checkoutRequestId,
+      receiptAccessToken,
+      checkoutRequestedAt,
+    };
+
     setLoading(true);
     setError(null);
-    setLastRequest({ url, data });
+    setLastRequest({ url, data: requestData });
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
@@ -58,9 +68,10 @@ function useApiMutation(options: UseApiMutationOptions = {}): UseApiMutationRetu
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-Token': data.csrfToken || 'checkout-token',
+            'X-CSRF-Token': requestData.csrfToken || 'checkout-token',
+            'Idempotency-Key': checkoutRequestId,
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify(requestData),
         });
 
         if (!response.ok) {
@@ -90,6 +101,12 @@ function useApiMutation(options: UseApiMutationOptions = {}): UseApiMutationRetu
   };
 
   return { mutate, loading, error, retry };
+}
+
+function createBrowserReceiptToken(): string {
+  const bytes = crypto.getRandomValues(new Uint8Array(32));
+  const binary = Array.from(bytes, byte => String.fromCharCode(byte)).join('');
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
 }
 
 /**

@@ -22,14 +22,10 @@ test.describe('Testimonials Page', () => {
     await page.waitForTimeout(2000);
 
     // Should have customer review cards visible
-    await expect(page.getByText('Customer Reviews')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Customer Reviews' })).toBeVisible();
 
-    // Should show at least one testimonial (from fallback or backend)
-    const testimonialCards = page.locator('[class*="testimonial"], [class*="card"]').filter({
-      hasText: /Total Essential/
-    });
-    const count = await testimonialCards.count();
-    expect(count).toBeGreaterThan(0);
+    // The public fallback remains visible when the demo database is unavailable.
+    await expect(page.getByText('G Normandeau')).toBeVisible();
   });
 
   test('should show verified badges on testimonials', async ({ page }) => {
@@ -42,23 +38,16 @@ test.describe('Testimonials Page', () => {
     expect(count).toBeGreaterThan(0);
   });
 
-  test('should display review submission form', async ({ page }) => {
+  test('should hide review submission while the demo database is disabled', async ({ page }) => {
     await page.goto('/testimonials');
-
-    // Scroll to the form section
-    await page.getByText('Share Your Story').scrollIntoViewIfNeeded();
-
-    // Check form elements exist
-    await expect(page.getByText('Leave a Verified Review')).toBeVisible();
-    await expect(page.getByPlaceholder('Your full name')).toBeVisible();
-    await expect(page.getByPlaceholder('Your email address')).toBeVisible();
-    await expect(page.getByText('Select Product')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Leave a Verified Review' })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: /Submit Review/i })).toHaveCount(0);
   });
 
-  test('should display discount banner', async ({ page }) => {
+  test('should hide the reviewer discount while submissions are disabled', async ({ page }) => {
     await page.goto('/testimonials');
-    await expect(page.getByText('Special Offer for Reviewers!')).toBeVisible();
-    await expect(page.getByText('REVIEW15')).toBeVisible();
+    await expect(page.getByText('Special Offer for Reviewers!')).toHaveCount(0);
+    await expect(page.getByText('REVIEW15')).toHaveCount(0);
   });
 
   test('should display trust section', async ({ page }) => {
@@ -70,19 +59,6 @@ test.describe('Testimonials Page', () => {
     await expect(page.getByText('Trust & Transparency')).toBeVisible();
   });
 
-  test('should validate form requires all fields', async ({ page }) => {
-    await page.goto('/testimonials');
-
-    // Scroll to the form
-    await page.getByText('Share Your Story').scrollIntoViewIfNeeded();
-
-    // Try to submit empty form — HTML5 validation should prevent it
-    const submitButton = page.getByRole('button', { name: /Submit Review/i });
-    await submitButton.click();
-
-    // The form should still be visible (not submitted)
-    await expect(page.getByPlaceholder('Your full name')).toBeVisible();
-  });
 });
 
 test.describe('Testimonials API', () => {
@@ -106,10 +82,7 @@ test.describe('Testimonials API', () => {
       },
     });
 
-    // Should return 400 for missing fields
-    expect(response.status()).toBe(400);
-    const data = await response.json();
-    expect(data.error).toBeTruthy();
+    expect(response.status()).toBe(404);
   });
 
   test('POST /api/testimonials/submit should reject unverified email', async ({ request }) => {
@@ -123,7 +96,6 @@ test.describe('Testimonials API', () => {
       },
     });
 
-    // Should return 403 for unverified purchase
-    expect([403, 500]).toContain(response.status());
+    expect(response.status()).toBe(404);
   });
 });

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { onCLS, onFCP, onINP, onLCP, onTTFB } from 'web-vitals'
+import { onCLS, onFCP, onINP, onLCP, onTTFB, type Metric } from 'web-vitals'
 
 interface PerformanceOptimizer {
   enableReporting?: boolean
@@ -19,15 +19,15 @@ export default function PerformanceOptimizer({
 
     // Measure and report Core Web Vitals
     if (enableReporting) {
-      const sendToAnalytics = (metric: any) => {
+      const sendToAnalytics = (metric: Metric) => {
         // Only log in development for debugging
         if (process.env.NODE_ENV === 'development') {
           console.log(`[Performance] ${metric.name}:`, metric.value, metric)
         }
 
         // In production, send to analytics service
-        if (process.env.NODE_ENV === 'production' && gtag) {
-          gtag('event', metric.name, {
+        if (process.env.NODE_ENV === 'production' && typeof window.gtag === 'function') {
+          window.gtag('event', metric.name, {
             value: Math.round(metric.name === 'CLS' ? metric.value * 1000 : metric.value),
             event_category: 'Web Vitals',
             event_label: metric.id,
@@ -73,7 +73,7 @@ export default function PerformanceOptimizer({
       const images = document.querySelectorAll('img[data-src]')
 
       if ('IntersectionObserver' in window) {
-        const imageObserver = new IntersectionObserver((entries, observer) => {
+        const imageObserver = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
             if (entry.isIntersecting) {
               const img = entry.target as HTMLImageElement
@@ -151,7 +151,7 @@ export default function PerformanceOptimizer({
     // Monitor and optimize layout shifts
     const optimizeLayoutShifts = () => {
       // Add dimension attributes to images that don't have them
-      const imagesWithoutDimensions = document.querySelectorAll('img:not([width]):not([height])')
+      const imagesWithoutDimensions = document.querySelectorAll<HTMLImageElement>('img:not([width]):not([height])')
       imagesWithoutDimensions.forEach(img => {
         // Add placeholder dimensions to prevent layout shift
         img.setAttribute('width', '300')

@@ -41,7 +41,7 @@ const RaspberryHero = () => (
   <section className="relative overflow-hidden bg-white pt-20 pb-12 md:pt-32 md:pb-20">
     <div className="absolute inset-0 z-0 opacity-20">
       <Image
-        src="/assets/webp/16x9_A_close_up_shot_of_a_cluster_of_.webp"
+        src="/lovable-uploads/raspberry-closeup.jpg"
         alt="Fresh ripe raspberries - high-fiber antioxidant superfruit for digestive health and immune support"
         fill
         className="object-cover"
@@ -110,7 +110,7 @@ const RaspberryHero = () => (
           transition={{ duration: 0.7 }}
         >
           <Image 
-            src="/assets/webp/16x9_A_close_up_shot_of_a_cluster_of_.webp"
+            src="/lovable-uploads/raspberry-closeup.jpg"
             alt="Raspberry - High-fiber superfruit for digestive health and antioxidant support" 
             className="rounded-lg shadow-xl"
             width={1280}

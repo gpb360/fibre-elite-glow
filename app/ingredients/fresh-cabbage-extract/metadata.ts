@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description: 'A powerhouse of gut-healing nutrients, supporting a healthy digestive lining and reducing inflammation.',
     images: [
       {
-        url: '/lovable-uploads/cabbage-extract.jpg',
+        url: '/assets/webp/16x9_a_close_up_shot_of_cabbage.webp',
         width: 1200,
         height: 630,
         alt: 'Fresh Cabbage Extract',
@@ -21,6 +21,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Fresh Cabbage Extract | Natural Support for a Healthy Gut',
     description: 'A powerhouse of gut-healing nutrients, supporting a healthy digestive lining and reducing inflammation.',
-    images: ['/lovable-uploads/cabbage-extract.jpg'],
+    images: ['/assets/webp/16x9_a_close_up_shot_of_cabbage.webp'],
   }
 }

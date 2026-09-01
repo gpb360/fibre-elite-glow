@@ -365,42 +365,66 @@ ALTER TABLE checkout_sessions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE secrets ENABLE ROW LEVEL SECURITY;
 ALTER TABLE user_roles ENABLE ROW LEVEL SECURITY;
 
+-- Resolve admin membership without recursively invoking user_roles RLS.
+CREATE OR REPLACE FUNCTION public.has_user_role(requested_role TEXT)
+RETURNS BOOLEAN
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+    SELECT EXISTS (
+        SELECT 1
+        FROM public.user_roles
+        WHERE user_id = auth.uid()
+          AND role = requested_role
+    );
+$$;
+
+REVOKE ALL ON FUNCTION public.has_user_role(TEXT) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.has_user_role(TEXT) TO authenticated, service_role;
+
 -- Create policy for checkout_sessions
 -- Users can view their own checkout sessions
-CREATE POLICY IF NOT EXISTS checkout_sessions_select_policy ON checkout_sessions
+DROP POLICY IF EXISTS checkout_sessions_select_policy ON checkout_sessions;
+CREATE POLICY checkout_sessions_select_policy ON checkout_sessions
     FOR SELECT
     USING (
         auth.uid() = user_id
         OR 
-        EXISTS (SELECT 1 FROM user_roles WHERE user_id = auth.uid() AND role = 'admin')
+        public.has_user_role('admin')
     );
 
 -- Admin users can insert/update/delete checkout sessions
-CREATE POLICY IF NOT EXISTS checkout_sessions_admin_policy ON checkout_sessions
+DROP POLICY IF EXISTS checkout_sessions_admin_policy ON checkout_sessions;
+CREATE POLICY checkout_sessions_admin_policy ON checkout_sessions
     FOR ALL
     USING (
-        EXISTS (SELECT 1 FROM user_roles WHERE user_id = auth.uid() AND role = 'admin')
+        public.has_user_role('admin')
     );
 
 -- Server-side functions can manage checkout sessions (for webhooks)
-CREATE POLICY IF NOT EXISTS checkout_sessions_service_policy ON checkout_sessions
+DROP POLICY IF EXISTS checkout_sessions_service_policy ON checkout_sessions;
+CREATE POLICY checkout_sessions_service_policy ON checkout_sessions
     FOR ALL
     USING (auth.role() = 'service_role');
 
 -- Create policy for secrets - only admins and service role can access
-CREATE POLICY IF NOT EXISTS secrets_admin_policy ON secrets
+DROP POLICY IF EXISTS secrets_admin_policy ON secrets;
+CREATE POLICY secrets_admin_policy ON secrets
     FOR ALL
     USING (
-        EXISTS (SELECT 1 FROM user_roles WHERE user_id = auth.uid() AND role = 'admin')
+        public.has_user_role('admin')
         OR
         auth.role() = 'service_role'
     );
 
 -- Create policy for user_roles - only admins can manage roles
-CREATE POLICY IF NOT EXISTS user_roles_admin_policy ON user_roles
+DROP POLICY IF EXISTS user_roles_admin_policy ON user_roles;
+CREATE POLICY user_roles_admin_policy ON user_roles
     FOR ALL
     USING (
-        EXISTS (SELECT 1 FROM user_roles WHERE user_id = auth.uid() AND role = 'admin')
+        public.has_user_role('admin')
         OR
         auth.role() = 'service_role'
     );
@@ -458,9 +482,10 @@ LEFT JOIN
 -- PERMISSIONS
 -- =========================================================
 
--- Grant appropriate permissions
+-- Payment reports contain customer PII and are server-admin only.
 GRANT SELECT ON checkout_sessions TO authenticated;
-GRANT SELECT ON payment_reports TO authenticated;
+REVOKE ALL ON payment_reports FROM PUBLIC, anon, authenticated;
+GRANT SELECT ON payment_reports TO service_role;
 GRANT ALL ON secrets TO service_role;
 
 -- =========================================================

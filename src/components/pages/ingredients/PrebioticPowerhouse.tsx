@@ -7,7 +7,7 @@ import { Heading } from '@/components/ui/heading';
 import { SplitSection } from '@/components/ui/split-section';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
-import { Heart, Shield, Leaf, ArrowRight, Microscope, BarChart3, Droplets, Brain, Check, Zap, Flame } from 'lucide-react';
+import { Heart, Shield, Leaf, BarChart3, Droplets, Brain, Check } from 'lucide-react';
 import Link from 'next/link';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -193,7 +193,7 @@ const PrebioticPowerhouse = () => {
         <PrebioticPowerhouseHero />
         
         <SplitSection
-          image="/lovable-uploads/prebiotic-foods.jpg"
+          image="/assets/webp/16x9_a_prebiotic-powerhouse.webp"
           imageAlt="Prebiotic Foods"
           title="What is the Prebiotic Powerhouse?"
           description="A synergistic blend of nature's best prebiotic fibers."

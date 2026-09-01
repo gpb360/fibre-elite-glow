@@ -1,11 +1,10 @@
 "use client";
 
 import React, { useState, useMemo, Suspense } from 'react';
-import { OptimizedMotion, fadeInUp, fadeIn, scaleIn } from '@/components/performance/OptimizedMotion';
+import { OptimizedMotion, fadeInUp, scaleIn } from '@/components/performance/OptimizedMotion';
 import { IntersectionLazy } from '@/components/performance/LazyComponent';
 import { Button } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
-import { SplitSection } from '@/components/ui/split-section';
 import { PackageSelector } from '@/components/ui/package-selector';
 import { FaqSection } from '@/components/FaqSection';
 import Link from 'next/link';
@@ -222,7 +221,7 @@ export function ProductEssentialPlus() {
                       packages={packages}
                       selectedPackage={selectedPackage}
                       onSelectPackage={setSelectedPackage}
-                      variant="premium2"
+                      variant="purple"
                     />
                   )}
                 </div>
@@ -328,7 +327,7 @@ export function ProductEssentialPlus() {
               />
 
               <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                {benefitsData.map((benefit, index) => (
+                {benefitsData.map((benefit) => (
                   <OptimizedMotion key={benefit.title} {...fadeInUp}>
                     <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 hover:shadow-lg transition-shadow">
                       <div className="h-12 w-12 flex items-center justify-center rounded-full bg-purple-100 mb-4">

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -22,7 +22,7 @@ import { Database } from "@/integrations/supabase/types";
 type ProductImage = Database['public']['Tables']['product_images']['Row'];
 
 interface ImageUploadProps {
-  packageId: string;
+  productId: string;
   onImagesUploaded?: (images: ProductImage[]) => void;
   maxImages?: number;
   existingImages?: ProductImage[];
@@ -38,7 +38,7 @@ interface UploadingFile {
 }
 
 export function ImageUpload({ 
-  packageId, 
+  productId,
   onImagesUploaded, 
   maxImages = 10,
   existingImages = []
@@ -48,7 +48,7 @@ export function ImageUpload({
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileSelect = useCallback((files: FileList | null) => {
+  const handleFileSelect = (files: FileList | null) => {
     if (!files) return;
 
     const fileArray = Array.from(files);
@@ -106,7 +106,7 @@ export function ImageUpload({
     newUploadingFiles.forEach(uploadingFile => {
       uploadFile(uploadingFile);
     });
-  }, [packageId, maxImages, existingImages.length, uploadingFiles.length]);
+  };
 
   const uploadFile = async (uploadingFile: UploadingFile) => {
     try {
@@ -114,7 +114,7 @@ export function ImageUpload({
       const compressedFile = await StorageService.compressImage(uploadingFile.file);
       
       // Generate unique file path
-      const filePath = StorageService.generateFilePath(packageId, uploadingFile.file.name);
+      const filePath = StorageService.generateFilePath(productId, uploadingFile.file.name);
 
       // Simulate progress updates
       const progressInterval = setInterval(() => {
@@ -140,7 +140,7 @@ export function ImageUpload({
       const { data: imageData, error: dbError } = await supabase
         .from('product_images')
         .insert({
-          package_id: packageId,
+          product_id: productId,
           image_url: uploadResult.url!,
           alt_text: uploadingFile.file.name.split('.')[0],
           sort_order: existingImages.length + uploadingFiles.filter(f => f.status === 'success').length,
@@ -173,20 +173,21 @@ export function ImageUpload({
         description: "Image has been successfully uploaded.",
       });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Upload error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to upload image. Please try again.';
       
       setUploadingFiles(prev => 
         prev.map(f => 
           f.id === uploadingFile.id 
-            ? { ...f, status: 'error', error: error.message }
+            ? { ...f, status: 'error', error: errorMessage }
             : f
         )
       );
 
       toast({
         title: "Upload failed",
-        description: error.message || "Failed to upload image. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     }
@@ -202,21 +203,21 @@ export function ImageUpload({
     });
   };
 
-  const handleDragOver = useCallback((e: React.DragEvent) => {
+  const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(true);
-  }, []);
+  };
 
-  const handleDragLeave = useCallback((e: React.DragEvent) => {
+  const handleDragLeave = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
-  }, []);
+  };
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
+  const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
     handleFileSelect(e.dataTransfer.files);
-  }, [handleFileSelect]);
+  };
 
   const openFileDialog = () => {
     fileInputRef.current?.click();

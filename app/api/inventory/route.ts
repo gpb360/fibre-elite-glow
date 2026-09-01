@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { inventoryService } from '@/lib/inventory-service';
 import { GlobalErrorHandler } from '@/lib/error-handler';
+import { verifyAdminRequest } from '@/lib/admin-auth';
 import { z } from 'zod';
 
 // Validation schemas
@@ -42,6 +43,10 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  if (!verifyAdminRequest(request)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     // Security headers
     const headers = new Headers();
@@ -89,7 +94,13 @@ export async function POST(request: Request) {
       );
     }
 
-    const { operations } = validation.data;
+    // Zod has validated every required field. The explicit shape avoids the
+    // optional-property inference produced by this project's non-strict TS mode.
+    const operations = validation.data.operations as Array<{
+      packageId: string;
+      operation: 'add' | 'subtract' | 'set';
+      quantity: number;
+    }>;
 
     // Perform bulk stock update
     const result = await inventoryService.bulkUpdateStock(operations);

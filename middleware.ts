@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { CSRFProtection, RateLimiter } from '@/lib/csrf';
+import { CSRFProtection } from '@/lib/csrf';
 
 // Define old routes that should be redirected
 const REDIRECTS: Record<string, string> = {
@@ -10,30 +10,6 @@ const REDIRECTS: Record<string, string> = {
   '/essential': '/products/total-essential',
   '/essential-plus': '/products/total-essential-plus',
 };
-
-// Define protected routes that require authentication
-const PROTECTED_ROUTES = [
-  '/account',
-  '/account/',
-  '/orders',
-  '/orders/',
-  '/dev',
-  '/dev/',
-];
-
-// Define admin routes that require elevated permissions
-const ADMIN_ROUTES = [
-  '/dev/auth-setup',
-];
-
-// Simple auth token validation for Edge Runtime compatibility
-function validateAuthToken(request: NextRequest): boolean {
-  const token = request.cookies.get('sb-access-token')?.value;
-  const refreshToken = request.cookies.get('sb-refresh-token')?.value;
-  
-  // Basic token presence check (in production, you'd validate JWT structure)
-  return !!(token && refreshToken);
-}
 
 /**
  * Middleware for handling:
@@ -47,19 +23,8 @@ export function middleware(request: NextRequest) {
     const url = request.nextUrl.clone();
     const { pathname } = url;
     
-    // 0. Rate limiting
-    const clientIP = request.headers.get('x-forwarded-for') || 
-                     request.headers.get('x-real-ip') || 
-                     request.headers.get('cf-connecting-ip') ||
-                     'unknown';
-    if (!RateLimiter.isAllowed(clientIP)) {
-      return NextResponse.json(
-        { error: 'Too many requests' },
-        { status: 429 }
-      );
-    }
-    
-    // 0.5. CSRF Protection
+    // 0. CSRF protection for state-changing page requests. API routes enforce
+    // their own authorization and are excluded by the matcher below.
     const csrfResponse = CSRFProtection.middleware(request);
     if (csrfResponse) {
       return csrfResponse;
@@ -77,31 +42,10 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(url, 308);
     }
     
-    // 2.5. Authentication checks for protected routes
-    const isProtectedRoute = PROTECTED_ROUTES.some(route => 
-      pathname === route || pathname.startsWith(route)
-    );
-    const isAdminRoute = ADMIN_ROUTES.some(route => 
-      pathname === route || pathname.startsWith(route)
-    );
-    
-    if (isProtectedRoute || isAdminRoute) {
-      // Check authentication using simple token validation
-      if (!validateAuthToken(request)) {
-        // Not authenticated, redirect to login
-        const loginUrl = new URL('/login', request.url);
-        loginUrl.searchParams.set('redirectTo', pathname);
-        return NextResponse.redirect(loginUrl);
-      }
-      
-      // For admin routes, additional checks would go here
-      // (In production, you'd validate admin role from the JWT token)
-      if (isAdminRoute) {
-        // For now, just ensure they're authenticated
-        // In production, decode JWT and check roles
-      }
-    }
-    
+    // Customer auth lives in the Supabase browser session, and protected data
+    // APIs verify the bearer token. Do not redirect a valid local-storage
+    // session based on cookies this application never writes.
+
     // 3. Block access to dev routes in production
     if (
       process.env.NODE_ENV === 'production' &&
@@ -112,8 +56,9 @@ export function middleware(request: NextRequest) {
     }
     
     // 4. Handle case sensitivity - redirect uppercase URLs to lowercase
+    const isPublicFile = /\/[^/]+\.[^/]+$/.test(pathname);
     const lowercasePath = pathname.toLowerCase();
-    if (pathname !== lowercasePath) {
+    if (!isPublicFile && pathname !== lowercasePath) {
       url.pathname = lowercasePath;
       return NextResponse.redirect(url, 308);
     }
@@ -183,6 +128,6 @@ export const config = {
     // - API routes
     // - Static files (images, etc.)
     // - Favicon
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)',
   ],
 };

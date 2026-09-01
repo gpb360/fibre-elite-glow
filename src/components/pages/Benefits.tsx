@@ -10,7 +10,7 @@ import Footer from '@/components/Footer';
 import { Heading } from '@/components/ui/heading';
 import { Card, CardContent } from '@/components/ui/card';
 import { Heart, Brain, Weight, BookCheck, Star, Award } from 'lucide-react';
-import { OptimizedMotion, fadeInUp, fadeIn, scaleIn, staggerContainer, staggerItem } from '@/components/performance/OptimizedMotion';
+import { OptimizedMotion, fadeInUp, scaleIn, staggerContainer, staggerItem } from '@/components/performance/OptimizedMotion';
 import { IntersectionLazy } from '@/components/performance/LazyComponent';
 
 // Optimized benefit card with React.memo to prevent unnecessary re-renders
@@ -195,7 +195,7 @@ const Benefits = () => {
               className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
               {...staggerContainer}
             >
-              {benefitsData.map((benefit, index) => (
+              {benefitsData.map((benefit) => (
                 <OptimizedMotion key={benefit.title} {...staggerItem}>
                   <BenefitCard
                     title={benefit.title}

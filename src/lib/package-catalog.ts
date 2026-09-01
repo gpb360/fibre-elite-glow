@@ -47,7 +47,7 @@ export const PRODUCT_PACKAGES: ProductPackage[] = [
     price: 84.99,
     originalPrice: 94.99,
     savings: 10,
-    image: '/lovable-uploads/webp/total-essential-plus-fiber-superfruits-bottle.webp',
+    image: '/lovable-uploads/webp/total-essential-plus-fiber-supplement-bottle.webp',
     packageSize: '1 box (15 sachets)',
   },
   {
@@ -57,7 +57,7 @@ export const PRODUCT_PACKAGES: ProductPackage[] = [
     price: 159.99,
     originalPrice: 189.98,
     savings: 29.99,
-    image: '/lovable-uploads/webp/total-essential-plus-fiber-superfruits-bottle.webp',
+    image: '/lovable-uploads/webp/total-essential-plus-fiber-supplement-bottle.webp',
     packageSize: '2 boxes (30 sachets)',
   },
   {
@@ -67,7 +67,7 @@ export const PRODUCT_PACKAGES: ProductPackage[] = [
     price: 299.99,
     originalPrice: 379.96,
     savings: 79.97,
-    image: '/lovable-uploads/webp/total-essential-plus-fiber-superfruits-bottle.webp',
+    image: '/lovable-uploads/webp/total-essential-plus-fiber-supplement-bottle.webp',
     packageSize: '4 boxes (60 sachets)',
   },
 ];

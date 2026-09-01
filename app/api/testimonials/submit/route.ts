@@ -2,6 +2,10 @@ import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
+    if (process.env.NEXT_PUBLIC_ENABLE_TESTIMONIAL_SUBMISSIONS !== 'true') {
+        return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    }
+
     try {
         const body = await request.json();
         const { name, email, product, rating, review } = body;

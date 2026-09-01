@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { verifyAdminRequest } from '@/lib/admin-auth';
 
 function getAdminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -10,14 +11,9 @@ function getAdminClient() {
   });
 }
 
-function verifyAdmin(request: Request): boolean {
-  const authHeader = request.headers.get('x-admin-auth');
-  return authHeader === 'true';
-}
-
 // GET /api/admin/orders — fetch orders from Supabase with Stripe metadata
 export async function GET(request: Request) {
-  if (!verifyAdmin(request)) {
+  if (!verifyAdminRequest(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -91,7 +87,7 @@ export async function GET(request: Request) {
 
 // PATCH /api/admin/orders — update order status
 export async function PATCH(request: Request) {
-  if (!verifyAdmin(request)) {
+  if (!verifyAdminRequest(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

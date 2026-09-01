@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description: 'A revolutionary, balanced dietary fiber source with exceptional health benefits, extracted from sustainable oil palm trunks.',
     images: [
       {
-        url: '/lovable-uploads/oil-palm-fibre-hero.jpg',
+        url: '/assets/webp/sustainable-palm-fiber.webp',
         width: 1200,
         height: 630,
         alt: 'Sustainable Palm Fiber',
@@ -21,6 +21,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Sustainable Palm Fiber | The Balanced Fiber for Total Wellness',
     description: 'A revolutionary, balanced dietary fiber source with exceptional health benefits, extracted from sustainable oil palm trunks.',
-    images: ['/lovable-uploads/oil-palm-fibre-hero.jpg'],
+    images: ['/assets/webp/sustainable-palm-fiber.webp'],
   }
 }

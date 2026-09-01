@@ -167,7 +167,7 @@ export default function SignUpPage() {
             last_name: form.lastName.trim(),
             phone: form.phone.trim(),
             marketing_consent: form.acceptMarketing,
-            newsletter_consent: form.acceptMarketing
+            newsletter_subscription: form.acceptMarketing
           })
 
         if (profileError) {
@@ -205,7 +205,7 @@ export default function SignUpPage() {
     clearErrors()
   }
   
-  const [fieldValidationState, setFieldValidationState] = useState<Record<string, boolean>>({})
+  const [, setFieldValidationState] = useState<Record<string, boolean>>({})
 
   const handleValidationChange = (field: string) => (isValid: boolean) => {
     setFieldValidationState(prev => {

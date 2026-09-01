@@ -18,7 +18,7 @@ import {
 import { Switch } from '@/components/ui/switch';
 import {
   Star, Shield, MessageSquare, CheckCircle, XCircle, Clock, Loader2, RefreshCw,
-  Eye, Edit, Trash2, Plus,
+  Eye, Trash2, Plus,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -90,7 +90,7 @@ export default function AdminTestimonialsPanel() {
       if (statusFilter !== 'all') params.set('status', statusFilter);
 
       const res = await fetch(`/api/admin/testimonials?${params}`, {
-        headers: { 'x-admin-auth': 'true' },
+        credentials: 'same-origin',
       });
       const data = await res.json();
       if (res.ok) {
@@ -120,7 +120,8 @@ export default function AdminTestimonialsPanel() {
     try {
       const res = await fetch('/api/admin/testimonials', {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'x-admin-auth': 'true' },
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
         body: JSON.stringify({
           id: selectedTestimonial.id,
           status: editStatus,
@@ -144,7 +145,8 @@ export default function AdminTestimonialsPanel() {
     try {
       const res = await fetch('/api/admin/testimonials', {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'x-admin-auth': 'true' },
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
         body: JSON.stringify({ id, status }),
       });
       if (res.ok) {
@@ -161,7 +163,7 @@ export default function AdminTestimonialsPanel() {
     try {
       const res = await fetch(`/api/admin/testimonials?id=${id}`, {
         method: 'DELETE',
-        headers: { 'x-admin-auth': 'true' },
+        credentials: 'same-origin',
       });
       if (res.ok) {
         toast({ title: 'Deleted', description: 'Testimonial deleted.' });
@@ -181,7 +183,8 @@ export default function AdminTestimonialsPanel() {
     try {
       const res = await fetch('/api/admin/testimonials', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-admin-auth': 'true' },
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
         body: JSON.stringify({
           name: newName,
           email: newEmail,

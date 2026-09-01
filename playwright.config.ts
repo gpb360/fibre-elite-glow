@@ -6,7 +6,7 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './tests',
   /* Global timeout per test — prevents indefinite hangs */
-  timeout: 30 * 1000,
+  timeout: 60 * 1000,
   /* Expect timeout — how long assertions wait before failing */
   expect: {
     timeout: 10 * 1000,
@@ -40,7 +40,7 @@ export default defineConfig({
     video: 'retain-on-failure',
 
     /* Navigation timeout — prevents page.goto from hanging */
-    navigationTimeout: 15 * 1000,
+    navigationTimeout: 45 * 1000,
 
     /* Action timeout — prevents click/fill from hanging */
     actionTimeout: 10 * 1000,

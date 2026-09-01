@@ -7,7 +7,7 @@ import { Heading } from '@/components/ui/heading';
 import { SplitSection } from '@/components/ui/split-section';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
-import { Heart, Shield, Award, ArrowRight, Microscope, Leaf, BarChart3, Droplets, Brain, Check } from 'lucide-react';
+import { Heart, Shield, Award, ArrowRight, Microscope, BarChart3, Droplets, Brain, Check } from 'lucide-react';
 import Link from 'next/link';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -40,7 +40,7 @@ const SustainablePalmFiberHero = () => (
   <section className="relative overflow-hidden bg-white pt-20 pb-12 md:pt-32 md:pb-20">
     <div className="absolute inset-0 z-0 opacity-20">
       <Image
-        src="/assets/webp/16x9_A_photorealistic_palme-oil.webp"
+        src="/assets/webp/sustainable-palm-fiber.webp"
         alt="Sustainable oil palm plantation - eco-friendly source of lignin-rich fiber for digestive health and detox"
         fill
         className="object-cover"
@@ -109,7 +109,7 @@ const SustainablePalmFiberHero = () => (
           transition={{ duration: 0.7 }}
         >
           <Image 
-            src="/assets/webp/16x9_A_photorealistic_palme-oil.webp"
+            src="/assets/webp/sustainable-palm-fiber.webp"
             alt="Sustainable Palm Fiber - Natural dietary fiber from oil palm trunks for digestive health"
             className="rounded-lg shadow-xl"
             width={1280}
@@ -193,7 +193,7 @@ const SustainablePalmFiber = () => {
         
         {/* What is Sustainable Palm Fiber */}
         <SplitSection
-          image="/lovable-uploads/oil-palm-trunk.jpg"
+          image="/assets/webp/sustainable-palm-fiber.webp"
           imageAlt="Oil Palm Trunk Cross Section"
           title="What is Sustainable Palm Fiber?"
           description="A revolutionary, balanced dietary fiber source extracted from the trunks of mature oil palm trees."
@@ -299,7 +299,7 @@ const SustainablePalmFiber = () => {
         
         {/* How It Works */}
         <SplitSection
-          image="/lovable-uploads/digestive-system.jpg"
+          image="/lovable-uploads/digestive-system-diagram.jpg"
           imageAlt="Digestive System Illustration"
           title="How Sustainable Palm Fiber Works"
           description="The science behind this powerful natural fiber supplement"

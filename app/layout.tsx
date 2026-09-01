@@ -87,11 +87,6 @@ export default function RootLayout({
         {/* Resource hints to reduce critical request chains */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link rel="preconnect" href="https://api.stripe.com" crossOrigin="" />
-        <link rel="preconnect" href="https://checkout.stripe.com" crossOrigin="" />
-        <link rel="preconnect" href="https://supabase.co" crossOrigin="" />
-        <link rel="dns-prefetch" href="https://resend.com" />
-
         {/* Analytics and structured data */}
         <GoogleAnalytics />
         <StructuredData data={organizationSchema} />

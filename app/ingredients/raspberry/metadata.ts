@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description: 'Rich in fiber and antioxidants, our premium Raspberry powder supports digestive health, aids in weight management, and provides a wealth of essential nutrients.',
     images: [
       {
-        url: '/lovable-uploads/raspberry.jpg',
+        url: '/lovable-uploads/raspberry-closeup.jpg',
         width: 1200,
         height: 630,
         alt: 'Raspberry',
@@ -21,6 +21,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Raspberry | The Tasty Way to Support Your Digestive System',
     description: 'Our premium Raspberry powder is a delicious and effective way to boost your fiber intake, support digestive health, and protect your body with powerful antioxidants.',
-    images: ['/lovable-uploads/raspberry-hero.jpg'],
+    images: ['/lovable-uploads/raspberry-closeup.jpg'],
   }
 }

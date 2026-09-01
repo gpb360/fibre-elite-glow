@@ -14,11 +14,8 @@ import {
   Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
 } from '@/components/ui/dialog';
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from '@/components/ui/select';
-import {
   Users, DollarSign, TrendingUp, Copy, Plus, Edit, Trash2, ExternalLink,
-  Loader2, RefreshCw, Eye, Percent, Link2, CreditCard,
+  Loader2, RefreshCw, Eye, Percent, CreditCard,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -88,7 +85,7 @@ export default function AdminAffiliatesPanel() {
     setLoading(true);
     try {
       const res = await fetch('/api/admin/affiliates', {
-        headers: { 'x-admin-auth': 'true' },
+        credentials: 'same-origin',
       });
       const data = await res.json();
       if (res.ok) {
@@ -108,7 +105,7 @@ export default function AdminAffiliatesPanel() {
     setSalesLoading(true);
     try {
       const res = await fetch(`/api/admin/affiliates?id=${id}`, {
-        headers: { 'x-admin-auth': 'true' },
+        credentials: 'same-origin',
       });
       const data = await res.json();
       if (res.ok) {
@@ -147,7 +144,8 @@ export default function AdminAffiliatesPanel() {
     try {
       const res = await fetch('/api/admin/affiliates', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-admin-auth': 'true' },
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
         body: JSON.stringify({
           name: newName,
           email: newEmail,
@@ -178,7 +176,8 @@ export default function AdminAffiliatesPanel() {
     try {
       const res = await fetch('/api/admin/affiliates', {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'x-admin-auth': 'true' },
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
         body: JSON.stringify({
           id: selectedAffiliate.id,
           name: editName,
@@ -206,7 +205,7 @@ export default function AdminAffiliatesPanel() {
     try {
       const res = await fetch(`/api/admin/affiliates?id=${id}`, {
         method: 'DELETE',
-        headers: { 'x-admin-auth': 'true' },
+        credentials: 'same-origin',
       });
       if (res.ok) {
         toast({ title: 'Deleted', description: 'Affiliate removed.' });

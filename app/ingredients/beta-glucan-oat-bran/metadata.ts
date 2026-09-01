@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description: 'A powerful soluble fiber that helps lower cholesterol levels, regulate blood sugar, and promote heart health with scientifically proven benefits.',
     images: [
       {
-        url: '/lovable-uploads/oat-bran.jpg',
+        url: '/assets/webp/16x9_A_pile_of_oats_and_oat_straws_ar.webp',
         width: 1200,
         height: 630,
         alt: 'Beta-Glucan Oat Bran',
@@ -21,6 +21,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Beta-Glucan Oat Bran | Heart Health & Cholesterol Support',
     description: 'A powerful soluble fiber that helps lower cholesterol levels, regulate blood sugar, and promote heart health. Our premium oat bran is carefully processed to preserve maximum nutritional benefits.',
-    images: ['/lovable-uploads/oat-bran-hero.jpg'],
+    images: ['/assets/webp/16x9_A_pile_of_oats_and_oat_straws_ar.webp'],
   }
 }

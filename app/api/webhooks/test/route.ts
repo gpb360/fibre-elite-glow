@@ -1,7 +1,16 @@
 import { NextResponse } from 'next/server';
+import { getDiagnosticAccessFailureStatus } from '@/lib/admin-auth';
 
 // Simple test endpoint to verify webhook accessibility
 export async function POST(request: Request) {
+  const accessFailure = getDiagnosticAccessFailureStatus(request);
+  if (accessFailure) {
+    return NextResponse.json(
+      { error: accessFailure === 404 ? 'Not found' : 'Unauthorized' },
+      { status: accessFailure }
+    );
+  }
+
   try {
     console.log('🎯 Webhook test endpoint hit!');
 

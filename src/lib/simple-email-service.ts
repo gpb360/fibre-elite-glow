@@ -148,11 +148,7 @@ class SimpleEmailService {
         return false;
       }
 
-      console.log(`📧 Sending email via Resend:`, {
-        to: emailData.to,
-        subject: emailData.subject,
-        from: emailData.from || 'La Belle Vie <noreply@lbve.ca>'
-      });
+      console.log('📧 Sending transactional email via Resend');
 
       const response = await fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -174,8 +170,8 @@ class SimpleEmailService {
         return false;
       }
 
-      const result = await response.json();
-      console.log('✅ Email sent successfully via Resend:', result);
+      await response.json();
+      console.log('✅ Transactional email accepted by Resend');
       return true;
     } catch (error) {
       console.error('❌ Error sending email:', error);

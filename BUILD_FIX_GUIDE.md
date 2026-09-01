@@ -1,89 +1,38 @@
-# 🔧 Build & Deployment Fix Guide
+# Vercel build and deployment guide
 
-## ✅ **Issues Fixed**
+This repository targets Vercel with Node.js 22 and pnpm. `pnpm-lock.yaml` is the authoritative lockfile.
 
-### Node.js Version Mismatch
-- **Problem**: `npm ERR! Cannot read properties of null (reading 'matches')`
-- **Solution**: Updated Node.js version to 20.18.0 with proper configuration
+## Local verification
 
-### Dependency Resolution
-- **Problem**: `ERR_PNPM_OUTDATED_LOCKFILE`
-- **Solution**: Removed outdated lockfiles and configured fresh installation
-
-## 🚀 **Updated Configuration**
-
-### ✅ **Files Updated**
-1. **`netlify.toml`**: Updated Node.js version and build command
-2. **`.nvmrc`**: Added for consistent Node.js version (20.18.0)
-3. **`package.json`**: Updated engine requirements and added postinstall script
-4. **Removed**: Outdated `pnpm-lock.yaml` and `bun.lockb` files
-
-### ✅ **Build Configuration**
-```toml
-[build]
-  command = "rm -rf .next && pnpm install --no-frozen-lockfile && pnpm build"
-  publish = ".next"
-
-[build.environment]
-  NODE_VERSION = "20.18.0"
-  PNPM_VERSION = "8.15.0"
+```powershell
+pnpm install --frozen-lockfile
+pnpm exec tsc --noEmit --pretty false
+pnpm run lint
+pnpm run build
 ```
 
-## 🎯 **What This Fixes**
+The production build must use matching Stripe key modes:
 
-### Before:
-- ❌ Node.js version mismatch between local and Netlify
-- ❌ Outdated lockfiles causing dependency conflicts
-- ❌ Build failures during npm package installation
+- `NEXT_PUBLIC_STRIPE_TEST_MODE=true` requires `pk_test_` and `sk_test_` keys.
+- Live keys require `NEXT_PUBLIC_STRIPE_TEST_MODE=false` and the private `ENABLE_LIVE_CHECKOUT=true` gate.
 
-### After:
-- ✅ Consistent Node.js 20.18.0 across all environments
-- ✅ Fresh dependency resolution with `--no-frozen-lockfile`
-- ✅ Proper Netlify Functions configuration for webhooks
-- ✅ Clean build process with error handling
+Keep `ENABLE_LIVE_CHECKOUT=false` until the client-owned Supabase project has the approved migrations, catalog and inventory data, working webhooks, Stripe Tax validation, and an agreed fulfillment/oversell policy. The checkout API fails closed when the payment schema is missing or this live-payment gate is closed.
 
-## 📦 **Next Deployment**
+## Required server-side configuration
 
-Your next Netlify deployment will:
-1. **Use Node.js 20.18.0** (eliminates version conflicts)
-2. **Install fresh dependencies** (resolves package conflicts)
-3. **Deploy admin email system** (webhook function ready)
-4. **Enable admin dashboard** (accessible at `/admin`)
+- `ADMIN_PASSWORD`
+- `ADMIN_SESSION_SECRET`
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `RESEND_API_KEY` when email delivery is enabled
 
-## 🧪 **Testing After Deployment**
+Never expose those values through `NEXT_PUBLIC_` variables or commit them to Git. Configure the corresponding public Stripe/Supabase variables in Vercel and keep testimonial submissions disabled until their database and moderation workflow are ready.
 
-1. **Check build success** in Netlify deploy logs
-2. **Verify function deployment**:
-   - Go to Netlify Dashboard → Functions
-   - Look for `stripe-webhook` function
-3. **Test admin dashboard**:
-   - Visit `https://lebve.netlify.app/admin`
-   - Use password: `lbve-admin-2024`
+## Post-deployment smoke checks
 
-## 🔗 **Setup Stripe Webhook**
-
-Once deployment succeeds, configure your Stripe webhook:
-- **URL**: `https://lebve.netlify.app/.netlify/functions/stripe-webhook`
-- **Events**: `checkout.session.completed`, `payment_intent.payment_failed`
-
-## 📧 **Environment Variables Needed**
-
-Add to Netlify after successful deployment:
-```
-STRIPE_SECRET_KEY=sk_live_...
-STRIPE_WEBHOOK_SECRET=whsec_...
-ADMIN_EMAIL=admin@lbve.ca
-EMAIL_PROVIDER=console
-```
-
-## 🎉 **Expected Results**
-
-After this fix:
-- ✅ Successful Netlify deployment
-- ✅ Admin email notifications working
-- ✅ Professional order emails with shipping details
-- ✅ Admin dashboard for order management
-
-The Node.js version mismatch was causing the build to fail during package installation. With the updated configuration, Netlify will use the same Node.js version (20.18.0) that works with all your dependencies and ensures consistent builds.
-
-Your admin email system is ready to go once this deployment completes! 🌿
+1. Confirm the exact deployment is Ready in Vercel.
+2. Open the homepage, products, ingredients, testimonials, cart, checkout, and admin login.
+3. Confirm image requests return successfully with exact filename casing.
+4. Confirm diagnostic routes are hidden and forged admin headers are rejected.
+5. Exercise checkout only in Stripe test mode against an isolated preview database before enabling real charges.

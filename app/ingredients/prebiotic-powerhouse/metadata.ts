@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description: 'Feed your beneficial gut bacteria and cultivate a thriving digestive ecosystem with our premium prebiotic oligosaccharides.',
     images: [
       {
-        url: '/lovable-uploads/prebiotics.jpg',
+        url: '/assets/webp/16x9_a_prebiotic-powerhouse.webp',
         width: 1200,
         height: 630,
         alt: 'Prebiotic Powerhouse',
@@ -21,6 +21,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Prebiotic Powerhouse | Fuel Your Good Bacteria',
     description: 'Feed your beneficial gut bacteria and cultivate a thriving digestive ecosystem with our premium prebiotic oligosaccharides.',
-    images: ['/lovable-uploads/prebiotics.jpg'],
+    images: ['/assets/webp/16x9_a_prebiotic-powerhouse.webp'],
   }
 }

@@ -51,7 +51,7 @@ const AcaiBerryHero = () => (
   <section className="relative overflow-hidden bg-white pt-20 pb-12 md:pt-32 md:pb-20">
     <div className="absolute inset-0 z-0 opacity-20">
       <Image
-        src="/assets/webp/16x9_A_cluster_of_acai_berries.webp"
+        src="/lovable-uploads/acai-closeup.jpg"
         alt="Fresh acai berries cluster on branch - superfruit antioxidant ingredient for Total Essential fiber supplement"
         fill
         className="object-cover"
@@ -123,7 +123,7 @@ const AcaiBerryHero = () => (
           transition={{ duration: 0.7 }}
         >
           <Image 
-            src="/assets/webp/16x9_A_cluster_of_acai_berries.webp"
+            src="/lovable-uploads/acai-closeup.jpg"
             alt="Acai Berry - Powerful antioxidant superfruit for energy and recovery" 
             className="rounded-lg shadow-xl"
             width={1280}

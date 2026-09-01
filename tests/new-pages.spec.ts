@@ -14,8 +14,8 @@ test.describe('New Pages Tests', () => {
     await expect(page.getByLabel('Message')).toBeVisible();
     
     // Check for contact information
-    await expect(page.getByText('support@lbve.ca')).toBeVisible();
-    await expect(page.getByText('1-800-555-FIBER')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'admin@lbve.ca' }).first()).toBeVisible();
+    await expect(page.getByText('604-961-6231')).toBeVisible();
   });
 
   test('About page should load and display company information', async ({ page }) => {
@@ -42,10 +42,10 @@ test.describe('New Pages Tests', () => {
     await expect(page.getByRole('heading', { name: 'Order & Payment' })).toBeVisible();
     
     // Check for shipping section
-    await expect(page.getByText('🚚 Shipping')).toBeVisible();
+    await expect(page.getByText('Shipping charges are added to each order')).toBeVisible();
     
     // Check for contact information
-    await expect(page.getByText('admin@lbve.ca')).toBeVisible();
+    await expect(page.getByRole('link', { name: 'admin@lbve.ca' }).first()).toBeVisible();
   });
 
   test('Privacy page should load and display privacy content', async ({ page }) => {
@@ -71,7 +71,7 @@ test.describe('New Pages Tests', () => {
     await expect(page.getByText('Celine C')).toBeVisible();
     
     // Check for star ratings (just check that star elements exist)
-    await expect(page.locator('svg[class*="h-4 w-4"]')).toBeVisible();
+    await expect(page.locator('.lucide-star').first()).toBeVisible();
   });
 
   test('Navigation includes new pages', async ({ page }) => {
@@ -84,7 +84,7 @@ test.describe('New Pages Tests', () => {
     // Check footer navigation
     await expect(page.getByRole('link', { name: 'About Us' })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Contact Us' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Privacy Policy' })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Terms & Conditions' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Privacy Policy' }).first()).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Terms & Conditions' }).first()).toBeVisible();
   });
 });

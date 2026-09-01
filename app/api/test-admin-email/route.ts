@@ -1,7 +1,16 @@
 import { NextResponse } from 'next/server';
+import { getDiagnosticAccessFailureStatus } from '@/lib/admin-auth';
 // import { SimpleEmailService } from '@/lib/simple-email-service';
 
-export async function GET() {
+export async function GET(request: Request) {
+  const accessFailure = getDiagnosticAccessFailureStatus(request);
+  if (accessFailure) {
+    return NextResponse.json(
+      { error: accessFailure === 404 ? 'Not found' : 'Unauthorized' },
+      { status: accessFailure }
+    );
+  }
+
   try {
     console.log('🧪 Testing admin email routing...');
 

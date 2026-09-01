@@ -1,5 +1,5 @@
 // Inventory management service for stock tracking and order processing
-import { supabaseAdmin } from '@/integrations/supabase/client';
+import { supabaseAdmin } from '@/integrations/supabase/admin';
 import { OrderItem } from '@/types/order';
 
 interface InventoryLevel {

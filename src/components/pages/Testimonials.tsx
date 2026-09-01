@@ -59,6 +59,9 @@ const FALLBACK_TESTIMONIALS: Testimonial[] = [
   }
 ];
 
+const testimonialSubmissionsEnabled =
+  process.env.NEXT_PUBLIC_ENABLE_TESTIMONIAL_SUBMISSIONS === 'true';
+
 const Testimonials = () => {
   const [testimonials, setTestimonials] = useState<Testimonial[]>(FALLBACK_TESTIMONIALS);
   const [loading, setLoading] = useState(true);
@@ -138,7 +141,7 @@ const Testimonials = () => {
         </section>
 
         {/* Discount Banner */}
-        <section className="bg-gradient-to-r from-purple-600 to-green-600 text-white py-6">
+        {testimonialSubmissionsEnabled && <section className="bg-gradient-to-r from-purple-600 to-green-600 text-white py-6">
           <div className="container px-4 md:px-6">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
@@ -154,7 +157,7 @@ const Testimonials = () => {
               <p className="text-sm mt-1 opacity-90">Valid only for verified customers • Honest reviews help us serve you better</p>
             </motion.div>
           </div>
-        </section>
+        </section>}
 
         {/* Written Testimonials */}
         <section className="py-16" aria-label="Customer reviews">
@@ -221,7 +224,7 @@ const Testimonials = () => {
         </section>
 
         {/* Review Form */}
-        <section className="py-16 bg-gradient-to-b from-green-50 to-white" aria-label="Submit a review">
+        {testimonialSubmissionsEnabled && <section className="py-16 bg-gradient-to-b from-green-50 to-white" aria-label="Submit a review">
           <div className="container px-4 md:px-6 max-w-2xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -238,7 +241,7 @@ const Testimonials = () => {
               <ReviewSubmissionForm />
             </motion.div>
           </div>
-        </section>
+        </section>}
 
         {/* Trust Section */}
         <section className="py-12 bg-gray-50" aria-label="Why we verify reviews">

@@ -1,7 +1,20 @@
 import { NextResponse } from 'next/server';
+import { getDiagnosticAccessFailureStatus } from '@/lib/admin-auth';
+
+function denyDiagnosticAccess(request: Request) {
+  const status = getDiagnosticAccessFailureStatus(request);
+  if (!status) return null;
+  return NextResponse.json(
+    { error: status === 404 ? 'Not found' : 'Unauthorized' },
+    { status }
+  );
+}
 
 // Diagnostic endpoint to test webhook configuration
 export async function POST(request: Request) {
+  const denied = denyDiagnosticAccess(request);
+  if (denied) return denied;
+
   try {
     console.log('=== WEBHOOK TEST DIAGNOSTIC ===');
 
@@ -93,7 +106,10 @@ export async function POST(request: Request) {
 }
 
 // Also support GET for basic connectivity test
-export async function GET() {
+export async function GET(request: Request) {
+  const denied = denyDiagnosticAccess(request);
+  if (denied) return denied;
+
   return NextResponse.json({
     status: 'Webhook test endpoint is active',
     timestamp: new Date().toISOString(),

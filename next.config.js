@@ -73,15 +73,6 @@ const nextConfig = {
         ]
       },
       {
-        source: '/api/(.*)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, s-maxage=60, stale-while-revalidate=300'
-          }
-        ]
-      },
-      {
         source: '/(.*).woff2',
         headers: [
           {
@@ -121,17 +112,15 @@ const nextConfig = {
   compress: true,
   generateEtags: true,
   eslint: {
-    // Temporarily ignore ESLint during build for production deadline
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,
   },
   typescript: {
-    // Temporarily ignore TypeScript errors to get builds working
-    // TODO: Fix TypeScript errors and re-enable strict checking
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
 
-  // Enhanced webpack configuration for aggressive bundle optimization
-  webpack: (config, { isServer, dev }) => {
+  // Preserve the server fallback and project alias without overriding Next.js'
+  // production chunking strategy.
+  webpack: (config, { isServer }) => {
     // Add polyfill for self in server-side rendering
     if (isServer) {
       config.resolve.fallback = {
@@ -146,64 +135,11 @@ const nextConfig = {
       '@': require('path').resolve(__dirname, 'src'),
     };
 
-    // Aggressive performance optimizations for production builds
-    if (!dev && !isServer) {
-      // Optimized chunk splitting to reduce HTTP requests
-      config.optimization.splitChunks = {
-        ...config.optimization.splitChunks,
-        chunks: 'all',
-        minSize: 30000,
-        maxSize: 300000, // Increased to reduce number of chunks
-        cacheGroups: {
-          default: {
-            minChunks: 3, // Increased to reduce chunks
-            priority: -20,
-            reuseExistingChunk: true,
-          },
-          // Combine more vendors together to reduce HTTP requests
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            priority: -10,
-            chunks: 'all',
-            enforce: true,
-          },
-          // Only split the heaviest libraries
-          framer: {
-            test: /[\\/]node_modules[\\/]framer-motion[\\/]/,
-            name: 'framer-motion',
-            priority: 30,
-            chunks: 'all',
-            enforce: true,
-          },
-          stripe: {
-            test: /[\\/]node_modules[\\/]@stripe[\\/]/,
-            name: 'stripe',
-            priority: 25,
-            chunks: 'all',
-            enforce: true,
-          },
-        },
-      };
-
-      // Optimize module concatenation
-      config.optimization.concatenateModules = true;
-    }
-
     // Optimize module resolution
     config.resolve.extensions = ['.tsx', '.ts', '.jsx', '.js', '.json'];
 
-    // Configure webpack for better performance
-    if (!dev) {
-      config.optimization.usedExports = true;
-      // sideEffects handled per-package in package.json — not globally
-    }
-
     return config;
   },
-
-  // Configure compression
-  compress: true,
 
   // Optimize output
   trailingSlash: false,

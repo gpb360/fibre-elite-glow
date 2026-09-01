@@ -4,9 +4,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import {
-  ShoppingCart, MessageSquare, Users, Shield, LogOut, Home, ExternalLink, Settings,
+  ShoppingCart, MessageSquare, Users, Shield, LogOut, Home, ExternalLink,
 } from 'lucide-react';
 import AdminOrdersPanel from '@/components/admin/AdminOrdersPanel';
 import AdminTestimonialsPanel from '@/components/admin/AdminTestimonialsPanel';
@@ -15,34 +14,80 @@ import AdminAffiliatesPanel from '@/components/admin/AdminAffiliatesPanel';
 export default function AdminDashboard() {
   const [password, setPassword] = useState('');
   const [authenticated, setAuthenticated] = useState(false);
+  const [checkingSession, setCheckingSession] = useState(true);
+  const [authenticating, setAuthenticating] = useState(false);
+  const [authError, setAuthError] = useState('');
   const [activeTab, setActiveTab] = useState('orders');
 
-  const handleAuth = () => {
-    if (
-      password === 'lbve-admin-2024' ||
-      password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD
-    ) {
-      setAuthenticated(true);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('admin-auth', 'true');
+  const handleAuth = async () => {
+    setAuthenticating(true);
+    setAuthError('');
+
+    try {
+      const response = await fetch('/api/admin/session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ password }),
+      });
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        setAuthError(
+          response.status === 503
+            ? 'Admin access has not been configured for this deployment.'
+            : body.error || 'Invalid password'
+        );
+        return;
       }
-    } else {
-      alert('Invalid password');
+
+      setPassword('');
+      setAuthenticated(true);
+    } catch {
+      setAuthError('Unable to verify admin access. Please try again.');
+    } finally {
+      setAuthenticating(false);
     }
   };
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && localStorage.getItem('admin-auth') === 'true') {
-      setAuthenticated(true);
-    }
+    let active = true;
+
+    fetch('/api/admin/session', { credentials: 'same-origin' })
+      .then(response => (response.ok ? response.json() : { authenticated: false }))
+      .then(body => {
+        if (active) setAuthenticated(body.authenticated === true);
+      })
+      .catch(() => {
+        if (active) setAuthenticated(false);
+      })
+      .finally(() => {
+        if (active) setCheckingSession(false);
+      });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
-  const logout = () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('admin-auth');
+  const logout = async () => {
+    try {
+      await fetch('/api/admin/session', {
+        method: 'DELETE',
+        credentials: 'same-origin',
+      });
+    } finally {
+      setAuthenticated(false);
     }
-    setAuthenticated(false);
   };
+
+  if (checkingSession) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <p className="text-sm text-gray-500">Verifying admin session…</p>
+      </div>
+    );
+  }
 
   /* ─── Login Gate ─── */
   if (!authenticated) {
@@ -54,21 +99,28 @@ export default function AdminDashboard() {
             <h2 className="text-2xl font-bold text-green-600">Admin Access</h2>
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Password:</label>
+            <label htmlFor="admin-password" className="block text-sm font-medium text-gray-700 mb-2">Password:</label>
             <input
+              id="admin-password"
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleAuth()}
+              onKeyDown={e => e.key === 'Enter' && void handleAuth()}
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               placeholder="Enter admin password"
             />
           </div>
+          {authError && (
+            <p role="alert" className="mb-4 text-sm text-red-600">
+              {authError}
+            </p>
+          )}
           <button
-            onClick={handleAuth}
-            className="w-full bg-green-600 text-white p-3 rounded-md hover:bg-green-700 transition duration-200"
+            onClick={() => void handleAuth()}
+            disabled={authenticating || password.length === 0}
+            className="w-full bg-green-600 text-white p-3 rounded-md hover:bg-green-700 transition duration-200 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Access Dashboard
+            {authenticating ? 'Verifying…' : 'Access Dashboard'}
           </button>
         </div>
       </div>
@@ -105,7 +157,7 @@ export default function AdminDashboard() {
                   <ExternalLink className="h-3 w-3 mr-1" /> Stripe
                 </Button>
               </a>
-              <Button variant="ghost" size="sm" onClick={logout} className="text-red-600 hover:text-red-700 hover:bg-red-50">
+              <Button variant="ghost" size="sm" onClick={() => void logout()} className="text-red-600 hover:text-red-700 hover:bg-red-50">
                 <LogOut className="h-4 w-4 mr-1" /> Logout
               </Button>
             </div>

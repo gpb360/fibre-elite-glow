@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { useCart } from '@/contexts/CartContext';
 import { Loader2, Check, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 interface EnhancedProductCardProps {
   className?: string;
@@ -46,6 +47,9 @@ export function EnhancedProductCard({
   const { addToCart, isLoading } = useCart();
   const [isAdding, setIsAdding] = React.useState(false);
   const [justAdded, setJustAdded] = React.useState(false);
+  const productSlug = productType === 'total_essential'
+    ? 'total-essential'
+    : 'total-essential-plus';
 
   const handleAddToCart = async () => {
     setIsAdding(true);
@@ -182,9 +186,9 @@ export function EnhancedProductCard({
             className="w-full text-xs"
             asChild
           >
-            <a href={`/products/${productType}`}>
+            <Link href={`/products/${productSlug}`}>
               View Details
-            </a>
+            </Link>
           </Button>
         </div>
       </div>

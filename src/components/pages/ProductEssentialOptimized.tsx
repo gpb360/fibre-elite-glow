@@ -1,18 +1,16 @@
 'use client';
 
 import React, { useState, Suspense, lazy, useMemo } from 'react';
-import { OptimizedMotion, fadeInUp, fadeIn, scaleIn } from '@/components/performance/OptimizedMotion';
+import { OptimizedMotion, fadeInUp, scaleIn } from '@/components/performance/OptimizedMotion';
 import { IntersectionLazy } from '@/components/performance/LazyComponent';
 import { Button } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
-import { SplitSection } from '@/components/ui/split-section';
 import { PackageSelector } from '@/components/ui/package-selector';
-import { Link } from 'next/link';
+import Link from 'next/link';
 import Image from 'next/image';
 import { ExternalLink, Loader2, Check } from 'lucide-react';
 import { usePackages, Package } from '@/hooks/usePackages';
 import { useCart } from '@/contexts/CartContext';
-import { Breadcrumb } from '@/components/ui/breadcrumb';
 
 // Lazy load heavy sections
 const LazyFaqSection = lazy(() => import('@/components/FaqSection'));
@@ -337,7 +335,7 @@ export function ProductEssentialOptimized() {
             />
 
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {benefitsData.map((benefit, index) => (
+              {benefitsData.map((benefit) => (
                 <OptimizedBenefitCard
                   key={benefit.title}
                   title={benefit.title}

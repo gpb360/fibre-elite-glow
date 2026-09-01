@@ -84,8 +84,9 @@ export function ReviewSubmissionForm() {
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="grid gap-4 md:grid-cols-2">
                             <div>
-                                <label className="block text-sm font-medium mb-1">Name</label>
+                                <label htmlFor="testimonial-name" className="block text-sm font-medium mb-1">Name</label>
                                 <Input
+                                    id="testimonial-name"
                                     name="name"
                                     value={formData.name}
                                     onChange={handleInputChange}
@@ -94,8 +95,9 @@ export function ReviewSubmissionForm() {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium mb-1">Email</label>
+                                <label htmlFor="testimonial-email" className="block text-sm font-medium mb-1">Email</label>
                                 <Input
+                                    id="testimonial-email"
                                     name="email"
                                     type="email"
                                     value={formData.email}
@@ -107,8 +109,9 @@ export function ReviewSubmissionForm() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium mb-1">Product Used</label>
+                            <label htmlFor="testimonial-product" className="block text-sm font-medium mb-1">Product Used</label>
                             <select
+                                id="testimonial-product"
                                 name="product"
                                 value={formData.product}
                                 onChange={handleInputChange}
@@ -129,6 +132,8 @@ export function ReviewSubmissionForm() {
                                     <button
                                         key={star}
                                         type="button"
+                                        aria-label={`${star} star${star === 1 ? '' : 's'}`}
+                                        aria-pressed={star === formData.rating}
                                         onClick={() => setFormData(prev => ({ ...prev, rating: star }))}
                                         className={`p-1 ${star <= formData.rating ? 'text-yellow-400' : 'text-gray-300'}`}
                                     >
@@ -139,8 +144,9 @@ export function ReviewSubmissionForm() {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium mb-1">Your Review</label>
+                            <label htmlFor="testimonial-review" className="block text-sm font-medium mb-1">Your Review</label>
                             <textarea
+                                id="testimonial-review"
                                 name="review"
                                 value={formData.review}
                                 onChange={handleInputChange}

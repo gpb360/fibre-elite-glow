@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description: 'Boost your vitality and support your gut health with our premium spinach powder, a superfood packed with essential vitamins, minerals, and antioxidants.',
     images: [
       {
-        url: '/lovable-uploads/spinach-powder-hero.jpg',
+        url: '/assets/webp/16x9_a_bowl_filled_with_green_spinach.webp',
         width: 1200,
         height: 630,
         alt: 'Fresh Spinach Powder',
@@ -21,6 +21,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Nutrient-Dense Spinach Powder | A Superfood for Vitality',
     description: 'Boost your vitality and support your gut health with our premium spinach powder, a superfood packed with essential vitamins, minerals, and antioxidants.',
-    images: ['/lovable-uploads/spinach-powder-hero.jpg'],
+    images: ['/assets/webp/16x9_a_bowl_filled_with_green_spinach.webp'],
   }
 }

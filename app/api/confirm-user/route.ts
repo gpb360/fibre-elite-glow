@@ -3,6 +3,7 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { GlobalErrorHandler, ErrorSanitizer } from '@/lib/error-handler'
 import { emailSchema } from '@/lib/validation'
+import { getDiagnosticAccessFailureStatus } from '@/lib/admin-auth'
 
 // Validation schema for confirm user request
 const confirmUserSchema = z.object({
@@ -11,23 +12,20 @@ const confirmUserSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
+  const accessFailure = getDiagnosticAccessFailureStatus(request);
+  if (accessFailure) {
+    return NextResponse.json(
+      { error: accessFailure === 404 ? 'Not found' : 'Unauthorized' },
+      { status: accessFailure }
+    );
+  }
+
   try {
     // Security headers
     const headers = new Headers();
     headers.set('X-Content-Type-Options', 'nosniff');
     headers.set('X-Frame-Options', 'DENY');
     
-    // Only allow in development environment
-    if (process.env.NODE_ENV !== 'development') {
-      return NextResponse.json(
-        { 
-          error: 'This endpoint is only available in development',
-          code: 'ENVIRONMENT_RESTRICTION'
-        },
-        { status: 403 }
-      );
-    }
-
     // Parse and validate request body
     let requestBody: any;
     try {

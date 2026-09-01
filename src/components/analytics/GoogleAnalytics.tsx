@@ -14,7 +14,7 @@ export default function GoogleAnalytics() {
     if (typeof window.gtag === 'function') {
       window.gtag('config', GA_MEASUREMENT_ID, {
         page_title: document.title,
-        page_location: window.location.href,
+        page_location: `${window.location.origin}${window.location.pathname}`,
       })
     }
   }, [pathname])
@@ -37,7 +37,7 @@ export default function GoogleAnalytics() {
             gtag('js', new Date());
             gtag('config', '${GA_MEASUREMENT_ID}', {
               page_title: document.title,
-              page_location: window.location.href,
+              page_location: window.location.origin + window.location.pathname,
             });
           `,
         }}

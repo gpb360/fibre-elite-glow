@@ -4,31 +4,20 @@ export const ADMIN_SESSION_COOKIE = 'lbve_admin_session';
 export const ADMIN_SESSION_MAX_AGE_SECONDS = 12 * 60 * 60;
 
 function getAdminPassword(): string | undefined {
-  const password = process.env.ADMIN_PASSWORD || process.env.ADMIN_DASHBOARD_PASSWORD;
-
-  if (password) return password;
-
-  if (process.env.NODE_ENV !== 'production') {
-    return process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'lbve-admin-2024';
-  }
-
-  return undefined;
+  return process.env.ADMIN_PASSWORD || process.env.ADMIN_DASHBOARD_PASSWORD;
 }
 
 function getSessionSecret(): string | undefined {
-  const secret =
+  if (process.env.NODE_ENV === 'production') {
+    return process.env.ADMIN_SESSION_SECRET;
+  }
+
+  return (
     process.env.ADMIN_SESSION_SECRET ||
     process.env.ADMIN_PASSWORD ||
     process.env.ADMIN_DASHBOARD_PASSWORD ||
-    process.env.ADMIN_API_KEY;
-
-  if (secret) return secret;
-
-  if (process.env.NODE_ENV !== 'production') {
-    return process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'lbve-admin-local-session';
-  }
-
-  return undefined;
+    process.env.ADMIN_API_KEY
+  );
 }
 
 function signSession(timestamp: string): string | undefined {
@@ -55,11 +44,21 @@ function getCookieValue(request: Request, name: string): string | null {
   const prefix = `${name}=`;
   const cookie = cookies.find(item => item.startsWith(prefix));
 
-  return cookie ? decodeURIComponent(cookie.slice(prefix.length)) : null;
+  if (!cookie) return null;
+
+  try {
+    return decodeURIComponent(cookie.slice(prefix.length));
+  } catch {
+    return null;
+  }
 }
 
 export function hasAdminPasswordConfigured(): boolean {
   return !!getAdminPassword();
+}
+
+export function hasAdminSessionSecretConfigured(): boolean {
+  return !!getSessionSecret();
 }
 
 export function verifyAdminPassword(password: string): boolean {
@@ -83,14 +82,20 @@ export function createAdminSessionValue(now = Date.now()): string {
 export function verifyAdminSessionValue(value: string | null): boolean {
   if (!value) return false;
 
-  const [timestamp, signature] = value.split('.');
+  const parts = value.split('.');
+  if (parts.length !== 2) return false;
+
+  const [timestamp, signature] = parts;
   if (!timestamp || !signature) return false;
 
   const issuedAt = Number(timestamp);
-  if (!Number.isFinite(issuedAt)) return false;
+  if (!Number.isSafeInteger(issuedAt) || issuedAt <= 0) return false;
+
+  const now = Date.now();
+  if (issuedAt > now + 60_000) return false;
 
   const expiresAt = issuedAt + ADMIN_SESSION_MAX_AGE_SECONDS * 1000;
-  if (Date.now() > expiresAt) return false;
+  if (now > expiresAt) return false;
 
   const expectedSignature = signSession(timestamp);
   if (!expectedSignature) return false;
@@ -100,4 +105,16 @@ export function verifyAdminSessionValue(value: string | null): boolean {
 
 export function verifyAdminRequest(request: Request): boolean {
   return verifyAdminSessionValue(getCookieValue(request, ADMIN_SESSION_COOKIE));
+}
+
+/**
+ * Development diagnostics are deliberately invisible in production and require
+ * the same signed admin session as the dashboard everywhere else.
+ */
+export function getDiagnosticAccessFailureStatus(
+  request: Request,
+  environment = process.env.NODE_ENV
+): 401 | 404 | null {
+  if (environment === 'production') return 404;
+  return verifyAdminRequest(request) ? null : 401;
 }

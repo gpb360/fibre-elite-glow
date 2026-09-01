@@ -42,9 +42,11 @@ export const initGA = () => {
 export const trackPageView = (url: string, title?: string) => {
   if (!GA_MEASUREMENT_ID || typeof window.gtag !== 'function') return
 
+  const parsedUrl = new URL(url, window.location.origin)
+
   window.gtag('config', GA_MEASUREMENT_ID, {
     page_title: title || document.title,
-    page_location: url,
+    page_location: `${parsedUrl.origin}${parsedUrl.pathname}`,
   })
 }
 

@@ -2,10 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { headers } from 'next/headers';
 import Stripe from 'stripe';
+import { getDiagnosticAccessFailureStatus } from '@/lib/admin-auth';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-06-30.basil',
-});
+function getStripeClient(): Stripe {
+  const secretKey = process.env.STRIPE_SECRET_KEY;
+  if (!secretKey) throw new Error('Stripe is not configured');
+  return new Stripe(secretKey, { apiVersion: '2025-08-27.basil' });
+}
 
 // Validation schema for transaction verification
 const verificationSchema = z.object({
@@ -45,6 +48,14 @@ function isRateLimited(clientId: string): boolean {
 }
 
 export async function POST(request: NextRequest) {
+  const accessFailure = getDiagnosticAccessFailureStatus(request);
+  if (accessFailure) {
+    return NextResponse.json(
+      { error: accessFailure === 404 ? 'Not found' : 'Unauthorized' },
+      { status: accessFailure }
+    );
+  }
+
   try {
     const headersList = await headers();
     const forwardedFor = headersList.get('x-forwarded-for');
@@ -98,7 +109,7 @@ export async function POST(request: NextRequest) {
     // Retrieve checkout session from Stripe
     let session;
     try {
-      session = await stripe.checkout.sessions.retrieve(sessionId, {
+      session = await getStripeClient().checkout.sessions.retrieve(sessionId, {
         expand: ['payment_intent', 'customer']
       });
       console.log('✅ Retrieved session:', { 

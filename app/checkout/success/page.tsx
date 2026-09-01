@@ -15,15 +15,24 @@ interface OrderDetails {
   id: string;
   orderNumber: string;
   amount: number;
+  amountSubtotal: number;
+  taxAmount: number;
+  shippingAmount: number;
+  discountAmount: number;
   currency: string;
+  paymentStatus: string;
+  automaticTaxStatus: string | null;
   status: string;
   customerEmail: string;
   items: Array<{
     name: string;
     quantity: number;
-    price: number;
+    unitAmount: number;
+    lineAmount: number;
   }>;
   createdAt: string;
+  invoiceUrl: string | null;
+  invoicePdfUrl: string | null;
 }
 
 function CheckoutSuccessContent() {
@@ -33,27 +42,35 @@ function CheckoutSuccessContent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
-  const [isValidatingOrder, setIsValidatingOrder] = useState(false);
-  const [isConfirming, setIsConfirming] = useState(false);
-  const [confirmationError, setConfirmationError] = useState<string | null>(null);
   
   
   useEffect(() => {
-    const sessionId = searchParams?.get('session_id');
+    const querySessionId = searchParams?.get('session_id');
+    const queryReceiptToken = searchParams?.get('receipt_token');
 
-    // Prevent multiple executions
-    if (!sessionId || typeof window === 'undefined') return;
+    if (typeof window === 'undefined') return;
 
-    // Check if we've already processed this session
-    const processedKey = `session_${sessionId}_processed`;
-    if (sessionStorage.getItem(processedKey)) {
+    if (querySessionId && queryReceiptToken) {
+      sessionStorage.setItem('checkout_receipt_session_id', querySessionId);
+      sessionStorage.setItem('checkout_receipt_token', queryReceiptToken);
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+
+    const sessionId = querySessionId || sessionStorage.getItem('checkout_receipt_session_id');
+    const receiptToken = queryReceiptToken || sessionStorage.getItem('checkout_receipt_token');
+
+    if (!sessionId || !receiptToken) {
+      setError('The secure receipt link is incomplete. Please use the link returned by Stripe.');
       setLoading(false);
       return;
     }
 
     const fetchOrderDetails = async () => {
       try {
-        const response = await fetch(`/api/checkout-session/${sessionId}`);
+        const response = await fetch(`/api/checkout-session/${encodeURIComponent(sessionId)}`, {
+          cache: 'no-store',
+          headers: { 'X-Receipt-Token': receiptToken },
+        });
 
         if (!response.ok) {
           const errorText = await response.text();
@@ -71,9 +88,6 @@ function CheckoutSuccessContent() {
         // Set order details
         setOrderDetails(data);
 
-        // Mark session as processed to prevent re-execution
-        sessionStorage.setItem(processedKey, 'true');
-
         // Set flag to prevent redirect loop when clearing cart
         sessionStorage.setItem('from_checkout_success', 'true');
 
@@ -88,7 +102,7 @@ function CheckoutSuccessContent() {
     };
 
     fetchOrderDetails();
-  }, [searchParams]); // Remove clearCart from dependencies
+  }, [searchParams]);
 
   // Separate effect for clearing cart with delay to prevent re-render loops
   useEffect(() => {
@@ -104,25 +118,16 @@ function CheckoutSuccessContent() {
 
       return () => clearTimeout(timer);
     }
-  }, [orderDetails?.id]); // Only depend on order ID to prevent re-renders
+  }, [clearCart, orderDetails]);
 
-  if (loading || isValidatingOrder || isConfirming) {
+  if (loading) {
     return (
       <div className="flex min-h-screen flex-col">
         <Header />
         <main className="flex-1 bg-gray-50 flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">
-              {isValidatingOrder ? 'Validating your order...' :
-               isConfirming ? 'Confirming order completion...' :
-               'Loading your order details...'}
-            </p>
-            {(isValidatingOrder || isConfirming) && (
-              <p className="text-sm text-gray-500 mt-2">
-                This may take a few moments for security verification.
-              </p>
-            )}
+            <p className="text-gray-600">Loading your order details...</p>
           </div>
         </main>
         <Footer />
@@ -130,9 +135,9 @@ function CheckoutSuccessContent() {
     );
   }
 
-  if (error || validationError || confirmationError || !orderDetails) {
+  if (error || validationError || !orderDetails) {
     const sessionId = searchParams?.get('session_id');
-    const displayError = validationError || confirmationError || error;
+    const displayError = validationError || error;
     
     return (
       <div className="flex min-h-screen flex-col">
@@ -146,7 +151,7 @@ function CheckoutSuccessContent() {
                 </svg>
               </div>
               <h2 className="text-xl font-semibold mb-2">
-                {validationError || confirmationError ? 'Order Validation Failed' : 'Order Not Found'}
+                {validationError ? 'Order Validation Failed' : 'Order Not Found'}
               </h2>
               <p className="text-gray-600 mb-4">
                 {displayError || 'We could not find your order details.'}
@@ -157,13 +162,13 @@ function CheckoutSuccessContent() {
                 </p>
               )}
               <div className="space-y-2">
-                {(validationError || confirmationError) && (
+                {validationError && (
                   <Link href="/contact">
                     <Button variant="default">Contact Support</Button>
                   </Link>
                 )}
                 <Link href="/">
-                  <Button variant={validationError || confirmationError ? "outline" : "default"}>
+                  <Button variant={validationError ? "outline" : "default"}>
                     Return to Home
                   </Button>
                 </Link>
@@ -174,7 +179,7 @@ function CheckoutSuccessContent() {
                   Try Again
                 </button>
               </div>
-              {(validationError || confirmationError) && (
+              {validationError && (
                 <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                   <p className="text-xs text-yellow-800">
                     <strong>Important:</strong> If your payment was processed, please contact our support team immediately.
@@ -255,6 +260,34 @@ function CheckoutSuccessContent() {
                 </div>
 
                 <div className="flex justify-between items-center">
+                  <span>Subtotal:</span>
+                  <span data-testid="order-subtotal">
+                    {formatCurrency(orderDetails.amountSubtotal, orderDetails.currency)}
+                  </span>
+                </div>
+
+                {orderDetails.discountAmount > 0 && (
+                  <div className="flex justify-between items-center text-green-700">
+                    <span>Discount:</span>
+                    <span>-{formatCurrency(orderDetails.discountAmount, orderDetails.currency)}</span>
+                  </div>
+                )}
+
+                <div className="flex justify-between items-center">
+                  <span>Shipping:</span>
+                  <span data-testid="order-shipping">
+                    {formatCurrency(orderDetails.shippingAmount, orderDetails.currency)}
+                  </span>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <span>Taxes:</span>
+                  <span data-testid="order-tax">
+                    {formatCurrency(orderDetails.taxAmount, orderDetails.currency)}
+                  </span>
+                </div>
+
+                <div className="flex justify-between items-center border-t pt-3">
                   <span className="font-medium">Total Amount:</span>
                   <span className="font-semibold text-lg" data-testid="order-total">
                     {formatCurrency(orderDetails.amount, orderDetails.currency)}
@@ -281,7 +314,7 @@ function CheckoutSuccessContent() {
                         <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
                       </div>
                       <span className="font-medium">
-                        {formatCurrency(item.price * item.quantity * 100, orderDetails.currency)}
+                        {formatCurrency(item.lineAmount, orderDetails.currency)}
                       </span>
                     </div>
                   ))}
@@ -348,10 +381,18 @@ function CheckoutSuccessContent() {
               </Link>
             </Button>
 
-            <Button variant="outline">
-              <Download className="mr-2 h-4 w-4" />
-              Download Receipt
-            </Button>
+            {(orderDetails.invoicePdfUrl || orderDetails.invoiceUrl) && (
+              <Button variant="outline" asChild>
+                <a
+                  href={orderDetails.invoicePdfUrl || orderDetails.invoiceUrl || '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Download className="mr-2 h-4 w-4" />
+                  Download Receipt
+                </a>
+              </Button>
+            )}
           </div>
         </div>
       </main>

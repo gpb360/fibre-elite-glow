@@ -3,14 +3,14 @@ import { test, expect } from '@playwright/test';
 test.describe('Basic Page Access Tests', () => {
   const pages = [
     { path: '/', title: 'La Belle Vie' },
-    { path: '/about', title: 'About La Belle Vie' },
+    { path: '/about', title: 'About Us' },
     { path: '/contact', title: 'Contact Us' },
-    { path: '/terms', title: 'Terms and Conditions' },
+    { path: '/terms', title: 'Terms & Conditions' },
     { path: '/privacy', title: 'Privacy Policy' },
     { path: '/products/total-essential', title: 'Total Essential' },
     { path: '/products/total-essential-plus', title: 'Total Essential Plus' },
     { path: '/faq', title: 'FAQ' },
-    { path: '/testimonials', title: 'Testimonials' },
+    { path: '/testimonials', title: 'Customer Reviews' },
     { path: '/benefits', title: 'Benefits' }
   ];
 

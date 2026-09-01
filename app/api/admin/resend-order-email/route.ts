@@ -4,7 +4,7 @@ import { verifyAdminRequest } from '@/lib/admin-auth';
 import { simpleEmailService } from '@/lib/simple-email-service';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2025-04-30.basil',
+  apiVersion: '2025-08-27.basil',
 });
 
 type OrderItem = {
@@ -45,9 +45,10 @@ function parseOrderItems(session: Stripe.Checkout.Session): OrderItem[] {
 
 function parseShippingAddress(session: Stripe.Checkout.Session) {
   const rawAddress = session.metadata?.shipping_address;
-  const customerName = session.metadata?.customer_name || session.customer_details?.name || '';
+  const shippingDetails = session.collected_information?.shipping_details;
+  const customerName = shippingDetails?.name || session.metadata?.customer_name || '';
   const [firstName = '', ...lastParts] = customerName.split(' ');
-  const stripeAddress = session.customer_details?.address;
+  const stripeAddress = shippingDetails?.address;
 
   if (stripeAddress) {
     return {
@@ -76,7 +77,7 @@ function parseShippingAddress(session: Stripe.Checkout.Session) {
         country: parsed.country || 'CA',
       };
     } catch {
-      // Fall through to Stripe customer details.
+      // Fall through to the empty address below.
     }
   }
 
@@ -96,9 +97,9 @@ function resolveTimeZone(session: Stripe.Checkout.Session): string {
   const metadataZone = session.metadata?.client_timezone;
   if (metadataZone) return metadataZone;
 
-  const address = session.customer_details?.address;
-  const country = address?.country || session.metadata?.shipping_country;
-  const state = address?.state || session.metadata?.shipping_state;
+  const address = parseShippingAddress(session);
+  const country = address.country;
+  const state = address.state;
 
   if (country === 'CA') {
     if (state === 'BC') return 'America/Vancouver';

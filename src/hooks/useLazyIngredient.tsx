@@ -2,7 +2,7 @@ import { lazy, Suspense } from 'react';
 import { LoadingFallback } from '@/components/performance/LazyComponent';
 
 // Map of ingredient names to their component paths
-const ingredientMap: Record<string, () => Promise<{ default: React.ComponentType<any> }>> = {
+const ingredientMap: Record<string, () => Promise<{ default: React.ComponentType<Record<string, never>> }>> = {
   'acai-berry': () => import('@/components/pages/ingredients/AcaiBerry'),
   'apple-fiber': () => import('@/components/pages/ingredients/AppleFiber'),
   'beta-glucan-oat-bran': () => import('@/components/pages/ingredients/BetaGlucanOatBran'),

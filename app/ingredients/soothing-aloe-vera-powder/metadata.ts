@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description: 'A gentle, powerful extract to soothe the digestive system, hydrate the body, and nourish the skin from within.',
     images: [
       {
-        url: '/lovable-uploads/aloe-vera-extract.jpg',
+        url: '/assets/webp/16x9_a_close_up_shot_of_aleo.webp',
         width: 1200,
         height: 630,
         alt: 'Soothing Aloe Vera Powder',
@@ -21,6 +21,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Soothing Aloe Vera | For Gut Comfort & Radiant Skin',
     description: 'A gentle, powerful extract to soothe the digestive system, hydrate the body, and nourish the skin from within.',
-    images: ['/lovable-uploads/aloe-vera-extract.jpg'],
+    images: ['/assets/webp/16x9_a_close_up_shot_of_aleo.webp'],
   }
 }

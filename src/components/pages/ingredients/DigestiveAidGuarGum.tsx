@@ -40,7 +40,7 @@ const DigestiveAidGuarGumHero = () => (
   <section className="relative overflow-hidden bg-white pt-20 pb-12 md:pt-32 md:pb-20">
     <div className="absolute inset-0 z-0 opacity-20">
       <Image
-        src="/assets/webp/16x9_A_close_up_shot_of_guar_gum.webp"
+        src="/lovable-uploads/guar-beans.jpg"
         alt="Natural guar gum powder - soluble fiber source for digestive regularity and gut health support"
         fill
         className="object-cover"
@@ -109,7 +109,7 @@ const DigestiveAidGuarGumHero = () => (
           transition={{ duration: 0.7 }}
         >
           <Image 
-            src="/assets/webp/16x9_A_close_up_shot_of_guar_gum.webp" 
+            src="/lovable-uploads/guar-beans.jpg"
             alt="Digestive-Aid Guar Gum - Natural thickener and prebiotic fiber for gut health" 
             className="rounded-lg shadow-xl"
             width={1280}

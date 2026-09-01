@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description: 'Harness the power of cranberries to support urinary tract health, fight oxidative stress, and boost your immune system. Our premium cranberry extract is rich in proanthocyanidins.',
     images: [
       {
-        url: '/lovable-uploads/cranberry.jpg',
+        url: '/assets/webp/16x9_a_close_up_shot_cranberry_.webp',
         width: 1200,
         height: 630,
         alt: 'Cranberry',
@@ -21,6 +21,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Cranberry | Your Ally for Urinary Tract Health & Antioxidant Defense',
     description: 'Our premium cranberry extract provides powerful support for urinary tract health and delivers a potent dose of antioxidants to protect your body.',
-    images: ['/lovable-uploads/cranberry-hero.jpg'],
+    images: ['/assets/webp/16x9_a_close_up_shot_cranberry_.webp'],
   }
 }

@@ -28,12 +28,12 @@ const getStripeSecretKey = (): string => {
     throw new Error(err);
   }
 
-  // Warn if we are in test mode but a live key is supplied
-  if (isTestMode && !keyFromEnv.startsWith('sk_test_')) {
-    // eslint-disable-next-line no-console
-    console.warn(
-      '⚠️  Using a LIVE Stripe secret key while test-mode is enabled. ' +
-        'Consider switching to a test key (sk_test_...).'
+  const isTestSecret = keyFromEnv.startsWith('sk_test_');
+  if (isTestSecret !== isTestMode) {
+    throw new Error(
+      isTestMode
+        ? 'Stripe test mode requires an sk_test_ secret key.'
+        : 'Stripe live mode requires an sk_live_ secret key.'
     );
   }
 
@@ -47,9 +47,13 @@ const getStripePublishableKey = () => {
     throw new Error('NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is not defined in environment variables');
   }
 
-  // Validate that we're using test keys in test mode
-  if (isTestMode && !key.startsWith('pk_test_')) {
-    console.warn('Warning: Using live Stripe key in test mode. Consider using test keys for testing.');
+  const isTestPublishable = key.startsWith('pk_test_');
+  if (isTestPublishable !== isTestMode) {
+    throw new Error(
+      isTestMode
+        ? 'Stripe test mode requires a pk_test_ publishable key.'
+        : 'Stripe live mode requires a pk_live_ publishable key.'
+    );
   }
 
   return key;
@@ -68,7 +72,7 @@ function getStripeInstance(): Stripe {
   try {
     const stripeInstance = new Stripe(secretKey, {
       // Use current stable API version
-      apiVersion: '2024-06-20',
+      apiVersion: '2025-08-27.basil',
       typescript: true,
     });
     _stripe = stripeInstance;

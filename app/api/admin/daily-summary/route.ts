@@ -1,14 +1,11 @@
 import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/integrations/supabase/client';
+import { supabaseAdmin } from '@/integrations/supabase/admin';
+import { verifyAdminRequest } from '@/lib/admin-auth';
 
-// API route for daily admin summary (can be triggered by cron)
+// Authenticated on-demand summary for the admin dashboard.
 export async function GET(request: Request) {
   try {
-    // Check for authorization (simple API key check)
-    const url = new URL(request.url);
-    const apiKey = url.searchParams.get('api_key');
-    
-    if (apiKey !== process.env.ADMIN_API_KEY) {
+    if (!verifyAdminRequest(request)) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -60,26 +57,10 @@ export async function GET(request: Request) {
       });
     }
 
-    // Transform orders for email notification
-    const adminNotificationData = orders.map(order => ({
-      orderNumber: order.order_number,
-      customerEmail: order.email,
-      customerName: `${order.billing_first_name} ${order.billing_last_name}`.trim(),
-      amount: order.total_amount,
-      currency: order.currency || 'USD',
-      items: (order.order_items || []).map((item: any) => ({
-        name: item.product_name,
-        quantity: item.quantity,
-        price: item.unit_price
-      })),
-      paymentStatus: order.payment_status || 'pending',
-      createdAt: order.created_at || new Date().toISOString(),
-    }));
+    const totalRevenue = orders.reduce((sum, order) => sum + order.total_amount, 0);
 
     // Daily summary email functionality removed for simplicity
     console.log(`📈 Daily summary: ${orders.length} orders, ${totalRevenue} ${orders[0]?.currency || 'USD'} revenue`);
-
-    const totalRevenue = orders.reduce((sum, order) => sum + order.total_amount, 0);
 
     return NextResponse.json({
       message: 'Daily summary retrieved successfully',
@@ -95,9 +76,4 @@ export async function GET(request: Request) {
       { status: 500 }
     );
   }
-}
-
-export async function POST(request: Request) {
-  // Also support POST for webhook-style triggers
-  return GET(request);
 }

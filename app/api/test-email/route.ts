@@ -1,7 +1,20 @@
 import { NextResponse } from 'next/server';
 import { simpleEmailService } from '@/lib/simple-email-service';
+import { getDiagnosticAccessFailureStatus } from '@/lib/admin-auth';
+
+function denyDiagnosticAccess(request: Request) {
+  const status = getDiagnosticAccessFailureStatus(request);
+  if (!status) return null;
+  return NextResponse.json(
+    { error: status === 404 ? 'Not found' : 'Unauthorized' },
+    { status }
+  );
+}
 
 export async function POST(request: Request) {
+  const denied = denyDiagnosticAccess(request);
+  if (denied) return denied;
+
   try {
     console.log('📧 Testing email configuration with simple email service...');
 
@@ -94,7 +107,10 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  const denied = denyDiagnosticAccess(request);
+  if (denied) return denied;
+
   return NextResponse.json({
     message: 'Email test endpoint using simple email service',
     usage: 'POST /api/test-email with { customerEmail, customerName }',

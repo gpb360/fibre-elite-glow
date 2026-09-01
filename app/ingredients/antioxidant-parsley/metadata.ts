@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description: 'A potent source of antioxidants and vitamins to protect your cells, support detoxification, and promote overall vitality.',
     images: [
       {
-        url: '/lovable-uploads/parsley-extract.jpg',
+        url: '/lovable-uploads/webp/antioxidant-parsley-fresh-herb.webp',
         width: 1200,
         height: 630,
         alt: 'Antioxidant Parsley',
@@ -21,6 +21,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Antioxidant Parsley | Natural Detox & Cell Protector',
     description: 'A potent source of antioxidants and vitamins to protect your cells, support detoxification, and promote overall vitality.',
-    images: ['/lovable-uploads/parsley-extract.jpg'],
+    images: ['/lovable-uploads/webp/antioxidant-parsley-fresh-herb.webp'],
   }
 }

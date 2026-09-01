@@ -1,6 +1,6 @@
 // Service Worker for La Belle Vie PWA
-const CACHE_NAME = 'la-belle-vie-v2';
-const RUNTIME_CACHE = 'la-belle-vie-runtime-v2';
+const CACHE_NAME = 'la-belle-vie-v3';
+const RUNTIME_CACHE = 'la-belle-vie-runtime-v3';
 
 // Assets to cache immediately for offline functionality (only files that actually exist)
 const STATIC_CACHE_ASSETS = [
@@ -164,6 +164,14 @@ function shouldCache(request) {
   // Don't cache external API calls
   if (url.hostname !== location.hostname) return false;
 
+  // Receipt bearer tokens and Stripe session identifiers must never be written
+  // to Cache Storage, where they can outlive the browser page that received them.
+  if (
+    url.pathname === '/checkout/success' ||
+    url.searchParams.has('receipt_token') ||
+    url.searchParams.has('session_id')
+  ) return false;
+
   // Cache static assets and pages
   if (
     request.destination === 'document' ||
@@ -196,6 +204,22 @@ self.addEventListener('fetch', (event) => {
 
   // Network-first strategy for API calls
   if (url.pathname.startsWith('/api/')) {
+    event.respondWith(networkFirst(request));
+    return;
+  }
+
+  if (
+    url.pathname === '/checkout/success' ||
+    url.searchParams.has('receipt_token') ||
+    url.searchParams.has('session_id')
+  ) {
+    event.respondWith(fetch(request));
+    return;
+  }
+
+  // Prefer current HTML over a stale deployment while retaining the existing
+  // offline fallback for ordinary public pages.
+  if (request.destination === 'document') {
     event.respondWith(networkFirst(request));
     return;
   }

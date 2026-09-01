@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description: 'A gentle yet effective source of both soluble and insoluble fiber that supports digestive regularity and helps maintain healthy cholesterol levels.',
     images: [
       {
-        url: '/lovable-uploads/apple-fiber.jpg',
+        url: '/assets/webp/16x9_apple_fibre.webp',
         width: 1200,
         height: 630,
         alt: 'Premium Apple Fiber',
@@ -21,6 +21,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Premium Apple Fiber | Natural Digestive & Heart Health Support',
     description: 'A gentle yet effective source of both soluble and insoluble fiber that supports digestive regularity and helps maintain healthy cholesterol levels.',
-    images: ['/lovable-uploads/apple-fiber.jpg'],
+    images: ['/assets/webp/16x9_apple_fibre.webp'],
   }
 }

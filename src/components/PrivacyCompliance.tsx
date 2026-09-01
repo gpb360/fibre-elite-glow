@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 
 export function PrivacyCompliance() {
-  const { user, profile } = useAuth();
+  const { user } = useAuth();
   const { toast } = useToast();
   const [isExporting, setIsExporting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -43,13 +43,7 @@ export function PrivacyCompliance() {
       const [profileData, addressesData, ordersData] = await Promise.all([
         supabase.from('customer_profiles').select('*').eq('user_id', user.id).single(),
         supabase.from('addresses').select('*').eq('user_id', user.id),
-        supabase.from('orders').select(`
-          *,
-          order_items (
-            *,
-            packages (*)
-          )
-        `).eq('user_id', user.id)
+        supabase.from('orders').select('*, order_items(*)').eq('email', user.email || '')
       ]);
 
       const userData = {
@@ -113,13 +107,13 @@ export function PrivacyCompliance() {
       // Delete user data in order (due to foreign key constraints)
       await Promise.all([
         supabase.from('order_items').delete().in('order_id', 
-          (await supabase.from('orders').select('id').eq('user_id', user.id)).data?.map(o => o.id) || []
+          (await supabase.from('orders').select('id').eq('email', user.email || '')).data?.map(o => o.id) || []
         ),
         supabase.from('addresses').delete().eq('user_id', user.id),
         supabase.from('customer_profiles').delete().eq('user_id', user.id),
       ]);
 
-      await supabase.from('orders').delete().eq('user_id', user.id);
+      await supabase.from('orders').delete().eq('email', user.email || '');
 
       // Note: In production, you'd typically mark the account for deletion
       // rather than immediately deleting the auth user, as this requires admin privileges

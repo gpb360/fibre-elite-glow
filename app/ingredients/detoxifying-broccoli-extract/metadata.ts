@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description: 'Support your body’s natural detoxification and promote excellent gut health with our potent, sulforaphane-rich broccoli extract.',
     images: [
       {
-        url: '/lovable-uploads/broccoli-extract.jpg',
+        url: '/assets/webp/16x9_broccoli_extract.webp',
         width: 1200,
         height: 630,
         alt: 'Detoxifying Broccoli Extract',
@@ -21,6 +21,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Detoxifying Broccoli Extract | Ultimate Sulforaphane Power',
     description: 'Support your body’s natural detoxification and promote excellent gut health with our potent, sulforaphane-rich broccoli extract.',
-    images: ['/lovable-uploads/broccoli-extract.jpg'],
+    images: ['/assets/webp/16x9_broccoli_extract.webp'],
   }
 }

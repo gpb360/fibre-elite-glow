@@ -4,12 +4,35 @@ import {
   formatAmountForStripe,
   STRIPE_CONFIG
 } from '@/lib/stripe';
-import { supabaseAdmin } from '@/integrations/supabase/client';
+import { supabaseAdmin } from '@/integrations/supabase/admin';
 import { enhancedCheckoutSchema, FormValidationUtils } from '@/lib/form-validation';
 import { GlobalErrorHandler, ErrorSanitizer } from '@/lib/error-handler';
 import { CSRFProtection } from '@/lib/csrf';
 import { PRODUCT_PACKAGES, ProductPackage } from '@/lib/package-catalog';
+import { getCheckoutBaseUrl } from '@/lib/base-url';
+import {
+  getStripeCheckoutIdempotencyKey,
+  hashCheckoutReceiptToken,
+  orderNumberForCheckoutRequest,
+} from '@/lib/payment-hardening';
 import { z } from 'zod';
+import type Stripe from 'stripe';
+import type { SupabaseClient } from '@supabase/supabase-js';
+
+const CHECKOUT_RATE_WINDOW_MS = 15 * 60 * 1000;
+const CHECKOUT_RATE_MAX_REQUESTS = 10;
+const checkoutRequests = new Map<string, { count: number; windowStartedAt: number }>();
+
+function isCheckoutRateLimited(clientId: string, now = Date.now()): boolean {
+  const attempt = checkoutRequests.get(clientId);
+  if (!attempt || now - attempt.windowStartedAt >= CHECKOUT_RATE_WINDOW_MS) {
+    checkoutRequests.set(clientId, { count: 1, windowStartedAt: now });
+    return false;
+  }
+
+  attempt.count += 1;
+  return attempt.count > CHECKOUT_RATE_MAX_REQUESTS;
+}
 
 // Enhanced server-side validation schema for checkout with CSRF protection
 const serverCheckoutSchema = z.object({
@@ -25,10 +48,13 @@ const serverCheckoutSchema = z.object({
   })).min(1, 'Cart cannot be empty').max(50, 'Too many items in cart'),
   customerInfo: enhancedCheckoutSchema,
   affiliateCode: z.string().max(50).optional(),
+  checkoutRequestId: z.string().uuid('Invalid checkout request ID'),
+  receiptAccessToken: z.string().regex(/^[A-Za-z0-9_-]{43}$/, 'Invalid receipt access token'),
+  checkoutRequestedAt: z.number().int().positive(),
   csrfToken: z.string().min(32, 'CSRF token required').max(128, 'CSRF token too long'),
   securityContext: z.object({
     userAgent: z.string().max(500, 'User agent too long'),
-    timestamp: z.number().min(Date.now() - 3600000, 'Request too old').max(Date.now() + 300000, 'Request from future'),
+    timestamp: z.number().int().positive(),
     formHash: z.string().min(1, 'Form hash required').max(1000, 'Form hash too long')
   }).optional()
 });
@@ -124,7 +150,7 @@ function calculateTotalBoxes(items: Array<{id?: string; quantity?: number; boxes
 }
 
 // Get shipping options based on box count tier
-function getShippingOptions(boxes: number) {
+function getShippingOptions(boxes: number): Stripe.Checkout.SessionCreateParams.ShippingOption[] {
   if (boxes <= 2) {
     // 1-2 boxes: $12
     return [
@@ -187,6 +213,19 @@ export async function POST(request: NextRequest) {
                      request.headers.get('x-real-ip') || 
                      request.headers.get('cf-connecting-ip') || 
                      'unknown';
+
+    if (isCheckoutRateLimited(clientIP.split(',')[0].trim())) {
+      return NextResponse.json(
+        { error: 'Too many checkout attempts. Please try again later.', code: 'RATE_LIMITED' },
+        {
+          status: 429,
+          headers: {
+            ...Object.fromEntries(headers.entries()),
+            'Retry-After': String(CHECKOUT_RATE_WINDOW_MS / 1000),
+          },
+        }
+      );
+    }
     
         
     // Temporarily disable bot detection for testing
@@ -207,78 +246,46 @@ export async function POST(request: NextRequest) {
     //   );
     // }
 
-    // Debug environment variables in production (only log presence, not values)
-    const debugInfo = {
-      hasStripeSecret: !!process.env.STRIPE_SECRET_KEY,
-      hasStripePublishable: !!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
-      hasWebhookSecret: !!process.env.STRIPE_WEBHOOK_SECRET,
-      hasSupabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
-      hasBaseUrl: !!process.env.NEXT_PUBLIC_BASE_URL,
-      nodeEnv: process.env.NODE_ENV,
-    };
-    
-        
     // Check for required Stripe configuration
     if (!process.env.STRIPE_SECRET_KEY) {
-            return NextResponse.json(
+      return NextResponse.json(
         {
-          error: 'Server configuration error: Stripe secret key not configured',
-          debug: debugInfo
+          error: 'Checkout is temporarily unavailable',
+          code: 'STRIPE_NOT_CONFIGURED',
         },
-        { status: 500 }
+        { status: 503, headers }
       );
     }
 
     if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
-            return NextResponse.json(
+      return NextResponse.json(
         {
-          error: 'Server configuration error: Stripe publishable key not configured',
-          debug: debugInfo
+          error: 'Checkout is temporarily unavailable',
+          code: 'STRIPE_NOT_CONFIGURED',
         },
-        { status: 500 }
+        { status: 503, headers }
       );
     }
 
-    // Get base URL with fallback for Netlify
-    // For local development, use localhost; for production, use environment variables or Netlify
-    const baseUrl = process.env.NODE_ENV === 'development'
-      ? process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3001' // Use the actual port the dev server is running on
-      : process.env.NEXT_PUBLIC_BASE_URL ||
-        process.env.NEXT_PUBLIC_APP_URL ||
-        process.env.URL ||
-        'https://lbve.venomappdevelopment.com'; // Fixed to match actual deployment URL
+    // Test payments are allowed for the isolated demo environment. Live charges
+    // require a separate, private enable switch after inventory and fulfillment
+    // policy have been approved and validated end to end.
+    if (!STRIPE_CONFIG.testMode && process.env.ENABLE_LIVE_CHECKOUT !== 'true') {
+      return NextResponse.json(
+        {
+          error: 'Checkout is temporarily unavailable',
+          code: 'LIVE_CHECKOUT_DISABLED',
+        },
+        { status: 503, headers }
+      );
+    }
 
-    // Log base URL for debugging
-    console.log('🔗 Base URL configuration:', {
-      NODE_ENV: process.env.NODE_ENV,
-      NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
-      NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
-      URL: process.env.URL,
-      finalBaseUrl: baseUrl
-    });
+    const baseUrl = getCheckoutBaseUrl(request.url);
     
     // Parse and validate request body with comprehensive Zod validation
     let rawBody: any;
     try {
       rawBody = await request.json();
-      // DEBUG: Log the received payload (remove sensitive data in production)
-      console.log('🔍 DEBUG: Received request payload:', {
-        itemsCount: rawBody.items?.length || 0,
-        customerFields: Object.keys(rawBody.customerInfo || {}),
-        hasCsrfToken: !!rawBody.csrfToken,
-        hasSecurityContext: !!rawBody.securityContext,
-        // Sanitize customer info for logging
-        customerInfo: rawBody.customerInfo ? {
-          email: rawBody.customerInfo.email,
-          firstName: rawBody.customerInfo.firstName,
-          lastName: rawBody.customerInfo.lastName,
-          address: rawBody.customerInfo.address,
-          city: rawBody.customerInfo.city,
-          state: rawBody.customerInfo.state,
-          zipCode: rawBody.customerInfo.zipCode,
-          country: rawBody.customerInfo.country,
-        } : null
-      });
     } catch (error) {
             return NextResponse.json(
         {
@@ -320,6 +327,25 @@ export async function POST(request: NextRequest) {
     }
 
     const body = validationResult.data;
+    const requestNow = Date.now();
+
+    if (
+      body.checkoutRequestedAt < requestNow - 3_600_000 ||
+      body.checkoutRequestedAt > requestNow + 300_000
+    ) {
+      return NextResponse.json(
+        { error: 'Checkout request expired. Please refresh and try again.', code: 'REQUEST_EXPIRED' },
+        { status: 400, headers }
+      );
+    }
+
+    const headerIdempotencyKey = request.headers.get('idempotency-key');
+    if (headerIdempotencyKey && headerIdempotencyKey !== body.checkoutRequestId) {
+      return NextResponse.json(
+        { error: 'Checkout request identity mismatch', code: 'IDEMPOTENCY_KEY_MISMATCH' },
+        { status: 400, headers }
+      );
+    }
 
     // Enhanced security validation for all text fields
     const customerInfo = body.customerInfo;
@@ -353,8 +379,8 @@ export async function POST(request: NextRequest) {
     
     // Validate timestamp if security context provided
     if (body.securityContext) {
-      const timeDiff = Date.now() - body.securityContext.timestamp;
-      if (timeDiff > 3600000) { // 1 hour
+      const timestamp = body.securityContext.timestamp;
+      if (timestamp < requestNow - 3_600_000 || timestamp > requestNow + 300_000) {
         return NextResponse.json(
           {
             error: 'Request expired. Please refresh and try again.',
@@ -371,7 +397,7 @@ export async function POST(request: NextRequest) {
     console.log('📦 Total boxes calculated:', totalBoxes);
 
     // Format line items for Stripe with enhanced product data
-    const lineItems = normalizedItems.map(item => ({
+    const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = normalizedItems.map(item => ({
       price_data: {
         currency: STRIPE_CONFIG.currency,
         tax_behavior: 'exclusive', // Add this for proper tax calculation
@@ -390,7 +416,7 @@ export async function POST(request: NextRequest) {
     }));
 
     // Generate order number
-    const orderNumber = `FEG-${Date.now()}-${Math.random().toString(36).substring(2, 11).toUpperCase()}`;
+    const orderNumber = orderNumberForCheckoutRequest(body.checkoutRequestId);
 
   // Create metadata for the order with enhanced security logging
     const metadata: Record<string, string> = {
@@ -398,6 +424,8 @@ export async function POST(request: NextRequest) {
       customer_name: `${body.customerInfo.firstName} ${body.customerInfo.lastName}`.substring(0, 500),
       customer_email: body.customerInfo.email,
     shipping_address: JSON.stringify({
+        first_name: body.customerInfo.firstName,
+        last_name: body.customerInfo.lastName,
         line1: body.customerInfo.address,
         city: body.customerInfo.city,
         state: body.customerInfo.state,
@@ -429,21 +457,17 @@ export async function POST(request: NextRequest) {
       user_agent: 'checkout-request' // Safe default since bot detection is disabled
     };
 
+    metadata.receipt_access_hash = hashCheckoutReceiptToken(body.receiptAccessToken);
+    metadata.checkout_request_id = body.checkoutRequestId;
+
     // Add affiliate code to metadata if provided
-    if ((rawBody as any).affiliateCode) {
-      metadata.affiliate_code = String((rawBody as any).affiliateCode).toUpperCase().trim();
+    if (body.affiliateCode) {
+      metadata.affiliate_code = body.affiliateCode.toUpperCase().trim();
     }
 
     // Create checkout session with comprehensive field collection
-    const successUrl = `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`;
+    const successUrl = `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}&receipt_token=${encodeURIComponent(body.receiptAccessToken)}`;
     const cancelUrl = `${baseUrl}/cart?cancelled=true`;
-
-    // Log URLs for debugging
-    console.log('🔗 Checkout URLs:', {
-      baseUrl,
-      successUrl,
-      cancelUrl
-    });
 
     // Validate that the success URL is properly formatted
     try {
@@ -452,10 +476,28 @@ export async function POST(request: NextRequest) {
         console.log('⚠️ Using localhost URL for Stripe - ensure Stripe accepts this domain');
       }
     } catch (error) {
-      console.error('❌ Invalid success URL:', successUrl, error);
+      console.error('❌ Invalid checkout return URL configuration:', ErrorSanitizer.sanitizeMessage(error));
       return NextResponse.json(
         { error: 'Invalid success URL configuration' },
         { status: 500 }
+      );
+    }
+
+    if (!supabaseAdmin) {
+      return NextResponse.json(
+        { error: 'Checkout is temporarily unavailable', code: 'ORDER_DATABASE_UNAVAILABLE' },
+        { status: 503, headers }
+      );
+    }
+
+    const paymentDatabase = supabaseAdmin as unknown as SupabaseClient;
+    const { data: paymentReady, error: paymentReadinessError } = await paymentDatabase.rpc(
+      'payment_checkout_ready'
+    );
+    if (paymentReadinessError || paymentReady !== true) {
+      return NextResponse.json(
+        { error: 'Checkout is temporarily unavailable', code: 'PAYMENT_SCHEMA_NOT_READY' },
+        { status: 503, headers }
       );
     }
 
@@ -523,7 +565,8 @@ export async function POST(request: NextRequest) {
       },
       
       // Session expiration (24 hours)
-      expires_at: Math.floor(Date.now() / 1000) + (24 * 60 * 60),
+      // Stable across network retries so Stripe receives identical idempotent parameters.
+      expires_at: Math.floor(body.checkoutRequestedAt / 1000) + (23 * 60 * 60),
 
       // Automatic tax calculation - Stripe Tax enabled
       automatic_tax: {
@@ -544,36 +587,37 @@ export async function POST(request: NextRequest) {
           message: 'Complete your order to start your gut health journey with La Belle Vie!',
         },
       },
+    }, {
+      idempotencyKey: getStripeCheckoutIdempotencyKey(body.checkoutRequestId),
     });
 
-    // Try to store checkout session info in Supabase if available
-    try {
-      if (supabaseAdmin) {
-        const { error } = await supabaseAdmin
-          .from('checkout_sessions')
-          .insert({
-            session_id: session.id,
-            customer_email: body.customerInfo.email,
-            amount_total: session.amount_total ? session.amount_total / 100 : 0, // Convert from cents
-            currency: session.currency || 'CAD',
-            payment_intent: session.payment_intent as string,
-            metadata: metadata,
-            status: session.status,
-            payment_status: 'pending',
-            test_mode: session.livemode === false,
-            expires_at: session.expires_at ? new Date(session.expires_at * 1000).toISOString() : null,
-            created_at: new Date().toISOString(),
-          });
-        
-        if (error) {
-                    // Continue with checkout even if storage fails
-        } else {
-                  }
-      } else {
-              }
-    } catch (dbError) {
-      // Log but don't fail the checkout if database storage fails
-          }
+    // Never send a customer to Stripe unless the order can be fulfilled after
+    // payment. A retry reuses the same Stripe session through the idempotency key.
+    const { error: checkoutPersistenceError } = await supabaseAdmin
+      .from('checkout_sessions')
+      .upsert({
+        session_id: session.id,
+        customer_email: body.customerInfo.email,
+        amount_total: session.amount_total ? session.amount_total / 100 : 0,
+        currency: session.currency || 'CAD',
+        payment_intent: session.payment_intent as string,
+        metadata,
+        status: session.status,
+        payment_status: 'pending',
+        test_mode: session.livemode === false,
+        expires_at: session.expires_at ? new Date(session.expires_at * 1000).toISOString() : null,
+        created_at: new Date().toISOString(),
+      }, { onConflict: 'session_id' });
+
+    if (checkoutPersistenceError) {
+      await stripe.checkout.sessions.expire(session.id).catch(expirationError => {
+        console.error(
+          'Unable to expire an unpersisted Stripe session:',
+          ErrorSanitizer.sanitizeMessage(expirationError)
+        );
+      });
+      throw new Error(`Unable to persist checkout session: ${checkoutPersistenceError.message}`);
+    }
 
     // Log successful session creation with enhanced details
     

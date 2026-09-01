@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('UI Verification Tests', () => {
   test('products dropdown functionality', async ({ page }) => {
-    await page.goto('http://localhost:3001');
+    await page.goto('/');
     
     // Wait for page to load
     await page.waitForLoadState('domcontentloaded');
@@ -19,8 +19,8 @@ test.describe('UI Verification Tests', () => {
     await expect(dropdownMenu).toBeVisible();
     
     // Check if dropdown items are visible and clickable
-    const totalEssentialLink = page.locator('text=Total Essential').first();
-    const totalEssentialPlusLink = page.locator('text=Total Essential Plus');
+    const totalEssentialLink = dropdownMenu.getByRole('menuitem', { name: 'Total Essential', exact: true });
+    const totalEssentialPlusLink = dropdownMenu.getByRole('menuitem', { name: 'Total Essential Plus', exact: true });
     
     await expect(totalEssentialLink).toBeVisible();
     await expect(totalEssentialPlusLink).toBeVisible();
@@ -31,7 +31,7 @@ test.describe('UI Verification Tests', () => {
   });
 
   test('hero content visibility and layout', async ({ page }) => {
-    await page.goto('http://localhost:3001');
+    await page.goto('/');
     
     // Wait for page to load
     await page.waitForLoadState('domcontentloaded');
@@ -63,7 +63,7 @@ test.describe('UI Verification Tests', () => {
   });
 
   test('header and navigation z-index hierarchy', async ({ page }) => {
-    await page.goto('http://localhost:3001');
+    await page.goto('/');
     
     // Wait for page to load
     await page.waitForLoadState('domcontentloaded');

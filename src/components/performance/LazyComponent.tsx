@@ -4,7 +4,7 @@ import React, { Suspense, lazy } from 'react';
 import { motion } from 'framer-motion';
 
 // Loading fallback component
-const LoadingFallback = () => (
+export const LoadingFallback = () => (
   <div className="animate-pulse">
     <div className="bg-gray-200 rounded-lg h-32 w-full mb-4"></div>
     <div className="bg-gray-200 rounded h-4 w-3/4 mb-2"></div>
@@ -13,13 +13,11 @@ const LoadingFallback = () => (
 );
 
 // Enhanced lazy loading component with intersection observer
-export function LazyComponent<T extends React.ComponentType<any>>({
+export function LazyComponent({
   loader,
   fallback = <LoadingFallback />,
-  rootMargin = '50px',
-  threshold = 0.1,
 }: {
-  loader: () => Promise<{ default: T }>;
+  loader: () => Promise<{ default: React.ComponentType<Record<string, never>> }>;
   fallback?: React.ReactNode;
   rootMargin?: string;
   threshold?: number;
@@ -85,11 +83,6 @@ export function IntersectionLazy({
 export const LazyBenefits = LazyComponent({
   loader: () => import('@/components/pages/Benefits'),
   rootMargin: '50px',
-});
-
-export const LazyTestimonials = LazyComponent({
-  loader: () => import('@/components/ui/product-testimonials'),
-  rootMargin: '100px',
 });
 
 // Ingredient pages lazy loader

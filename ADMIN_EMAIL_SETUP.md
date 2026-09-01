@@ -3,7 +3,7 @@
 ## 📦 What's Been Implemented
 
 ✅ **Netlify Webhook Function**: `netlify/functions/stripe-webhook.js`  
-✅ **Admin Dashboard**: Accessible at `/admin` (password: `lbve-admin-2024`)  
+✅ **Admin Dashboard**: Accessible at `/admin` through a signed, HttpOnly admin session
 ✅ **Dependencies Added**: SendGrid email support and Netlify Functions  
 ✅ **Beautiful Email Templates**: Professional HTML emails with order details  
 
@@ -60,7 +60,8 @@ EMAIL_PROVIDER=console                # Start with console for testing
 ```
 SUPPORT_EMAIL=support@lbve.ca
 FROM_EMAIL=noreply@lbve.ca
-NEXT_PUBLIC_ADMIN_PASSWORD=your-custom-admin-password
+ADMIN_PASSWORD=generate-a-unique-server-only-password
+ADMIN_SESSION_SECRET=generate-at-least-32-random-bytes
 ```
 
 ### 4. 🧪 Test the System
@@ -101,8 +102,8 @@ Your admin emails will include:
 
 ## 🖥️ Admin Dashboard
 
-Access your admin dashboard at: **`https://lebve.netlify.app/admin`**
-- **Password**: `lbve-admin-2024`
+Access the admin dashboard at `/admin` on the deployed application.
+- **Password**: the server-only `ADMIN_PASSWORD`; never expose it through a `NEXT_PUBLIC_` variable or commit it to the repository
 - **Features**: 
   - Order statistics
   - System status monitoring
@@ -131,7 +132,7 @@ Access your admin dashboard at: **`https://lebve.netlify.app/admin`**
 
 **Admin dashboard not accessible?**
 - Check if `/admin` page deployed successfully
-- Try password: `lbve-admin-2024`
+- Confirm `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET` exist in the deployment environment
 - Clear browser cache and try again
 
 ### 📊 Monitor Webhook Status

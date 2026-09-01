@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description: 'A natural, high-fiber prebiotic that promotes regularity, supports a healthy gut, and helps you feel full longer.',
     images: [
       {
-        url: '/lovable-uploads/guar-gum-extract.jpg',
+        url: '/lovable-uploads/guar-beans.jpg',
         width: 1200,
         height: 630,
         alt: 'Digestive-Aid Guar Gum',
@@ -21,6 +21,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Digestive-Aid Guar Gum | Natural Fiber for Gut Health',
     description: 'A natural, high-fiber prebiotic that promotes regularity, supports a healthy gut, and helps you feel full longer.',
-    images: ['/lovable-uploads/guar-gum-extract.jpg'],
+    images: ['/lovable-uploads/guar-beans.jpg'],
   }
 }

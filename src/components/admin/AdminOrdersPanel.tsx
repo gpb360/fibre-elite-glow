@@ -100,7 +100,7 @@ export default function AdminOrdersPanel() {
       if (search) params.set('search', search);
 
       const res = await fetch(`/api/admin/orders?${params}`, {
-        headers: { 'x-admin-auth': 'true' },
+        credentials: 'same-origin',
       });
       const data = await res.json();
 
@@ -135,7 +135,8 @@ export default function AdminOrdersPanel() {
     try {
       const res = await fetch('/api/admin/orders', {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'x-admin-auth': 'true' },
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
         body: JSON.stringify({
           orderId: selectedOrder.id,
           status: editStatus,

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { verifyAdminRequest } from '@/lib/admin-auth';
 
 function getAdminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -10,11 +11,6 @@ function getAdminClient() {
   });
 }
 
-function verifyAdmin(request: Request): boolean {
-  const authHeader = request.headers.get('x-admin-auth');
-  return authHeader === 'true';
-}
-
 function generateAffiliateCode(name: string): string {
   const clean = name.replace(/[^a-zA-Z]/g, '').toUpperCase().substring(0, 4);
   const random = Math.random().toString(36).substring(2, 6).toUpperCase();
@@ -23,7 +19,7 @@ function generateAffiliateCode(name: string): string {
 
 // GET /api/admin/affiliates — fetch all affiliates + their sales
 export async function GET(request: Request) {
-  if (!verifyAdmin(request)) {
+  if (!verifyAdminRequest(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -85,7 +81,7 @@ export async function GET(request: Request) {
 
 // POST /api/admin/affiliates — create affiliate
 export async function POST(request: Request) {
-  if (!verifyAdmin(request)) {
+  if (!verifyAdminRequest(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -145,7 +141,7 @@ export async function POST(request: Request) {
 
 // PATCH /api/admin/affiliates — update affiliate
 export async function PATCH(request: Request) {
-  if (!verifyAdmin(request)) {
+  if (!verifyAdminRequest(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -191,7 +187,7 @@ export async function PATCH(request: Request) {
 
 // DELETE /api/admin/affiliates — delete affiliate
 export async function DELETE(request: Request) {
-  if (!verifyAdmin(request)) {
+  if (!verifyAdminRequest(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

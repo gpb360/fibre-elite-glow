@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description: 'A refreshing source of hydration, electrolytes, and antioxidants to reduce inflammation and support overall wellness.',
     images: [
       {
-        url: '/lovable-uploads/celery-extract.jpg',
+        url: '/assets/webp/16x9_a_celery_plant_with_vibrant_gree.webp',
         width: 1200,
         height: 630,
         alt: 'Hydrating Celery',
@@ -21,6 +21,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Hydrating Celery | Natural Hydration & Inflammation Support',
     description: 'A refreshing source of hydration, electrolytes, and antioxidants to reduce inflammation and support overall wellness.',
-    images: ['/lovable-uploads/celery-extract.jpg'],
+    images: ['/assets/webp/16x9_a_celery_plant_with_vibrant_gree.webp'],
   }
 }

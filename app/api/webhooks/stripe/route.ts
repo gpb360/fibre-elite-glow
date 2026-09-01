@@ -1,13 +1,31 @@
 import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
-import { supabaseAdmin } from '@/integrations/supabase/client';
-import { inventoryService } from '@/lib/inventory-service';
+import { supabaseAdmin } from '@/integrations/supabase/admin';
 import { simpleEmailService } from '@/lib/simple-email-service';
 import { GlobalErrorHandler, ErrorSanitizer } from '@/lib/error-handler';
 import { emailSchema } from '@/lib/validation';
-import { getDeploymentBaseUrl } from '@/lib/base-url';
 import { z } from 'zod';
 import Stripe from 'stripe';
+import type { SupabaseClient } from '@supabase/supabase-js';
+
+function getPaymentDatabase(): SupabaseClient {
+  if (!supabaseAdmin) throw new Error('Supabase admin client is required for webhook processing');
+  return supabaseAdmin as unknown as SupabaseClient;
+}
+
+async function completeWebhookEvent(eventId: string): Promise<void> {
+  const { error } = await getPaymentDatabase()
+    .from('stripe_webhook_events')
+    .update({
+      status: 'completed',
+      completed_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      last_error: null,
+    })
+    .eq('event_id', eventId);
+
+  if (error) throw new Error(`Unable to complete webhook event: ${error.message}`);
+}
 
 // Order item schema for webhook validation
 const orderItemSchema = z.object({
@@ -23,12 +41,22 @@ const orderItemSchema = z.object({
 
 // Shipping address schema for webhook validation
 const shippingAddressSchema = z.object({
+  first_name: z.string().optional(),
+  last_name: z.string().optional(),
   line1: z.string(),
   city: z.string(),
   state: z.string(),
   postal_code: z.string(),
   country: z.string(),
 });
+
+function splitName(name?: string | null): { firstName: string; lastName: string } {
+  const parts = (name || '').trim().split(/\s+/).filter(Boolean);
+  return {
+    firstName: parts.shift() || '',
+    lastName: parts.join(' '),
+  };
+}
 
 // Helper to get Stripe webhook secret from Supabase secrets
 async function getWebhookSecret(): Promise<string> {
@@ -71,7 +99,7 @@ async function ensureCustomerExists(email: string, name?: string): Promise<strin
     // Validate and sanitize email
     const emailValidation = emailSchema.safeParse(email);
     if (!emailValidation.success) {
-      console.error('Invalid email provided to ensureCustomerExists:', email);
+      console.error('Invalid customer email provided to webhook processing');
       return null;
     }
     const validEmail = emailValidation.data;
@@ -492,6 +520,9 @@ function formatCurrency(amount: number, currency: string = 'CAD'): string {
 }
 
 export async function POST(request: Request) {
+  let claimedEventId: string | null = null;
+  let eventCompleted = false;
+
   try {
     // Security headers
     const headers = new Headers();
@@ -562,10 +593,57 @@ export async function POST(request: Request) {
       );
     }
 
+    if (!supabaseAdmin) {
+      return NextResponse.json(
+        { error: 'Webhook persistence is unavailable' },
+        { status: 503 }
+      );
+    }
+
+    const { data: eventClaimed, error: claimError } = await getPaymentDatabase().rpc(
+      'claim_stripe_webhook_event',
+      {
+        p_event_id: event.id,
+        p_event_type: event.type,
+        p_livemode: event.livemode,
+      }
+    );
+
+    if (claimError) {
+      console.error('Unable to claim Stripe webhook event:', claimError);
+      return NextResponse.json(
+        { error: 'Webhook idempotency storage is unavailable' },
+        { status: 503 }
+      );
+    }
+
+    if (!eventClaimed) {
+      return NextResponse.json({ received: true, duplicate: true });
+    }
+
+    claimedEventId = event.id;
+
     // Handle specific event types
     switch (event.type) {
-      case 'checkout.session.completed': {
+      case 'checkout.session.completed':
+      case 'checkout.session.async_payment_succeeded': {
         const session = event.data.object as Stripe.Checkout.Session;
+
+        if (!['paid', 'no_payment_required'].includes(session.payment_status)) {
+          const { error: pendingUpdateError } = await supabaseAdmin
+            .from('checkout_sessions')
+            .update({
+              status: session.status,
+              payment_status: session.payment_status,
+              updated_at: new Date().toISOString(),
+            })
+            .eq('session_id', session.id);
+
+          if (pendingUpdateError) {
+            throw new Error(`Error recording pending checkout: ${pendingUpdateError.message}`);
+          }
+          break;
+        }
         
         // Extract metadata and parse JSON fields safely with validation
         const metadata = session.metadata || {};
@@ -631,10 +709,14 @@ export async function POST(request: Request) {
           }
         }
 
-        const stripeShippingAddress = session.customer_details?.address;
+        const stripeShippingDetails = session.collected_information?.shipping_details;
+        const stripeShippingAddress = stripeShippingDetails?.address;
         if (stripeShippingAddress) {
+          const shippingName = splitName(stripeShippingDetails?.name);
           shippingAddress = {
             ...shippingAddress,
+            first_name: shippingName.firstName || shippingAddress.first_name,
+            last_name: shippingName.lastName || shippingAddress.last_name,
             line1: stripeShippingAddress.line1 || shippingAddress.line1,
             line2: stripeShippingAddress.line2 || shippingAddress.line2,
             city: stripeShippingAddress.city || shippingAddress.city,
@@ -644,13 +726,18 @@ export async function POST(request: Request) {
           };
         }
 
-        if (!supabaseAdmin) {
-          console.error('Supabase admin client not available - cannot process checkout session completion');
-          return NextResponse.json(
-            { error: 'Database unavailable' },
-            { status: 500 }
-          );
-        }
+        const billingName = splitName(session.customer_details?.name);
+        const stripeBillingAddress = session.customer_details?.address;
+        const billingAddress = {
+          first_name: billingName.firstName || shippingAddress.first_name || '',
+          last_name: billingName.lastName || shippingAddress.last_name || '',
+          line1: stripeBillingAddress?.line1 || '',
+          line2: stripeBillingAddress?.line2 || '',
+          city: stripeBillingAddress?.city || '',
+          state: stripeBillingAddress?.state || '',
+          postal_code: stripeBillingAddress?.postal_code || '',
+          country: stripeBillingAddress?.country || '',
+        };
 
         // Ensure customer exists in database
         const customerEmail = session.customer_details?.email || metadata.customer_email || '';
@@ -681,7 +768,7 @@ export async function POST(request: Request) {
           .maybeSingle();
 
         if (existingOrderResult.error) {
-          console.error('Error checking existing order:', existingOrderResult.error);
+          throw new Error(`Error checking existing order: ${existingOrderResult.error.message}`);
         }
 
         // Create comprehensive order record
@@ -709,15 +796,14 @@ export async function POST(request: Request) {
           shipping_postal_code: shippingAddress.postal_code || '',
           shipping_country: shippingAddress.country || 'US',
 
-          // Billing address (same as shipping for now)
-          billing_first_name: shippingAddress.first_name || '',
-          billing_last_name: shippingAddress.last_name || '',
-          billing_address_line_1: shippingAddress.line1 || '',
-          billing_address_line_2: shippingAddress.line2 || '',
-          billing_city: shippingAddress.city || '',
-          billing_state_province: shippingAddress.state || '',
-          billing_postal_code: shippingAddress.postal_code || '',
-          billing_country: shippingAddress.country || 'US',
+          billing_first_name: billingAddress.first_name,
+          billing_last_name: billingAddress.last_name,
+          billing_address_line_1: billingAddress.line1,
+          billing_address_line_2: billingAddress.line2,
+          billing_city: billingAddress.city,
+          billing_state_province: billingAddress.state,
+          billing_postal_code: billingAddress.postal_code,
+          billing_country: billingAddress.country || shippingAddress.country || 'US',
         };
 
         const orderMutation = existingOrderResult.data
@@ -736,11 +822,7 @@ export async function POST(request: Request) {
         const { data: order, error: orderError } = await orderMutation;
 
         if (orderError) {
-          console.error('Error creating order record:', orderError);
-          return NextResponse.json(
-            { error: 'Error creating order record' },
-            { status: 500 }
-          );
+          throw new Error(`Error creating order record: ${orderError.message}`);
         }
 
         // Create order items
@@ -752,7 +834,7 @@ export async function POST(request: Request) {
               .eq('order_id', order.id);
 
             if (deleteItemsError) {
-              console.error('Error replacing existing order items:', deleteItemsError);
+              throw new Error(`Error replacing existing order items: ${deleteItemsError.message}`);
             }
           }
 
@@ -770,68 +852,64 @@ export async function POST(request: Request) {
             .insert(orderItemsData);
 
           if (itemsError) {
-            console.error('Error creating order items:', itemsError);
+            throw new Error(`Error creating order items: ${itemsError.message}`);
           }
         }
 
         console.log(`Order created successfully: ${order?.id} (${order?.order_number})`);
 
-        // Track affiliate commission if an affiliate code was used
+        // Attribute commission only from this signature-verified, paid Stripe session.
         const affiliateCode = metadata.affiliate_code;
-        if (affiliateCode && order) {
-          try {
-            const baseUrl = getDeploymentBaseUrl(request.url);
-            const affiliateRes = await fetch(`${baseUrl}/api/affiliate/validate`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'x-internal-affiliate-secret': process.env.AFFILIATE_INTERNAL_SECRET || process.env.STRIPE_WEBHOOK_SECRET || '',
-              },
-              body: JSON.stringify({
-                affiliate_code: affiliateCode,
-                order_id: order.id,
-                order_number: order.order_number,
-                customer_email: customerEmail,
-                sale_amount: (session.amount_total || 0) / 100,
-              }),
-            });
-            if (affiliateRes.ok) {
-              const affData = await affiliateRes.json();
-              console.log(`✅ Affiliate commission recorded: ${affiliateCode} — $${affData.commission_amount}`);
-            } else {
-              console.warn(`⚠️ Affiliate commission tracking failed for code: ${affiliateCode}`);
+        if (affiliateCode && order && session.payment_status === 'paid') {
+          const { data: commissionAmount, error: affiliateError } = await getPaymentDatabase().rpc(
+            'record_verified_affiliate_sale',
+            {
+              p_affiliate_code: affiliateCode,
+              p_order_id: order.id,
+              p_order_number: order.order_number,
+              p_customer_email: customerEmail,
+              p_sale_amount: (session.amount_total || 0) / 100,
+              p_stripe_session_id: session.id,
             }
-          } catch (affiliateError) {
-            console.error('Error tracking affiliate commission:', affiliateError);
-            // Don't fail the webhook if affiliate tracking fails
+          );
+
+          if (affiliateError) {
+            throw new Error(`Affiliate attribution failed: ${affiliateError.message}`);
+          }
+
+          if (commissionAmount !== null) {
+            console.log(`Affiliate commission recorded for ${affiliateCode}`);
           }
         }
 
-        // Update inventory for order items
-        if (orderItems.length > 0) {
-          try {
-            // Convert orderItems to proper OrderItem format
-            const typedOrderItems = orderItems.map(item => ({
-              name: item.name,
-              quantity: item.quantity,
-              price: item.price,
-              product_type: (item.product_type === 'total_essential_plus' ? 'total_essential_plus' : 'total_essential') as 'total_essential' | 'total_essential_plus'
-            }));
-            
-            const inventoryUpdated = await inventoryService.updateInventoryForOrder(typedOrderItems);
-            if (inventoryUpdated) {
-              console.log('Inventory updated successfully for order:', order?.order_number);
-            } else {
-              console.warn('Some inventory updates may have failed for order:', order?.order_number);
-            }
-          } catch (inventoryError) {
-            console.error('Error updating inventory:', inventoryError);
-            // Don't fail the webhook if inventory update fails
+        // This RPC atomically records the Stripe effect and decrements inventory once.
+        if (orderItems.length > 0 && order) {
+          const { data: inventoryApplied, error: inventoryError } = await getPaymentDatabase().rpc(
+            'apply_paid_order_inventory',
+            { p_event_id: event.id, p_order_id: order.id }
+          );
+
+          if (inventoryError) {
+            throw new Error(`Inventory update failed: ${inventoryError.message}`);
           }
+
+          console.log(
+            inventoryApplied
+              ? `Inventory applied for order ${order.order_number}`
+              : `Inventory already applied for order ${order.order_number}`
+          );
         }
 
-        // Retrieve full session to get complete total_details with tax/shipping
-        const fullSession = await stripe.checkout.sessions.retrieve(session.id);
+        // The signed checkout event already carries final subtotal/tax/shipping
+        // totals. Avoid a second Stripe network call after durable effects: a
+        // transient retrieve failure must never strand notifications after the
+        // event has already been marked completed.
+        const fullSession = session;
+
+        // Database and stock effects are durable. Complete before non-critical
+        // emails so a process interruption cannot replay stock or affiliate effects.
+        await completeWebhookEvent(event.id);
+        eventCompleted = true;
         
         // Send order confirmation email via simple email service
         if (order && customerEmail) {
@@ -876,7 +954,7 @@ export async function POST(request: Request) {
             });
 
             if (orderConfirmationSent) {
-              console.log(`✅ Order confirmation email sent to: ${customerEmail}`);
+              console.log('✅ Order confirmation email sent');
             } else {
               console.error(`❌ Failed to send order confirmation to: ${customerEmail}`);
             }
@@ -1002,9 +1080,25 @@ export async function POST(request: Request) {
         console.log(`Unhandled event type: ${event.type}`);
     }
 
+    if (!eventCompleted) {
+      await completeWebhookEvent(event.id);
+      eventCompleted = true;
+    }
+
     // Return success response
     return NextResponse.json({ received: true });
   } catch (error) {
+    if (claimedEventId && !eventCompleted && supabaseAdmin) {
+      await getPaymentDatabase()
+        .from('stripe_webhook_events')
+        .update({
+          status: 'failed',
+          last_error: ErrorSanitizer.sanitizeMessage(error).slice(0, 1000),
+          updated_at: new Date().toISOString(),
+        })
+        .eq('event_id', claimedEventId);
+    }
+
     console.error('Webhook error:', ErrorSanitizer.sanitizeMessage(error));
     return GlobalErrorHandler.handleApiError(error);
   }

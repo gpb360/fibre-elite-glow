@@ -41,7 +41,7 @@ const StrawberryHero = () => (
   <section className="relative overflow-hidden bg-white pt-20 pb-12 md:pt-32 md:pb-20">
     <div className="absolute inset-0 z-0 opacity-20">
       <Image
-        src="/assets/webp/16x9_Three_ripe_strawberries_with_bri.webp"
+        src="/lovable-uploads/strawberry-closeup.jpg"
         alt="Fresh ripe strawberries - vitamin C rich superfruit for immune support and natural fiber supplementation"
         fill
         className="object-cover"
@@ -110,7 +110,7 @@ const StrawberryHero = () => (
           transition={{ duration: 0.7 }}
         >
           <Image 
-            src="/assets/webp/16x9_Three_ripe_strawberries_with_bri.webp" 
+            src="/lovable-uploads/strawberry-closeup.jpg"
             alt="Fresh Strawberry Extract - Antioxidant-rich ingredient for immune support"
             width={1280}
             height={720}

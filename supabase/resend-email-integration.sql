@@ -603,10 +603,11 @@ CREATE TRIGGER send_order_emails_on_insert
 ALTER TABLE email_logs ENABLE ROW LEVEL SECURITY;
 
 -- Only admins and service role can view email logs
+DROP POLICY IF EXISTS email_logs_admin_policy ON email_logs;
 CREATE POLICY email_logs_admin_policy ON email_logs
     FOR ALL
     USING (
-        EXISTS (SELECT 1 FROM user_roles WHERE user_id = auth.uid() AND role = 'admin')
+        public.has_user_role('admin')
         OR
         auth.role() = 'service_role'
     );

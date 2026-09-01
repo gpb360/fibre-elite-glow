@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description: 'Explore our carefully selected natural ingredients that power our effective fiber supplements for digestive health and wellness.',
     images: [
       {
-        url: '/lovable-uploads/ingredients-hero.jpg',
+        url: '/lovable-uploads/webp/digestive-health-benefits-fiber-supplement.webp',
         width: 1200,
         height: 630,
         alt: 'Premium Natural Ingredients',
@@ -21,6 +21,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Premium Natural Ingredients | Fiber Supplements',
     description: 'Explore our carefully selected natural ingredients that power our effective fiber supplements.',
-    images: ['/lovable-uploads/ingredients-hero.jpg'],
+    images: ['/lovable-uploads/webp/digestive-health-benefits-fiber-supplement.webp'],
   }
 }

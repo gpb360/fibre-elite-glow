@@ -1,27 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { OptimizedMotion, fadeInUp, fadeIn, scaleIn } from '@/components/performance/OptimizedMotion';
-
-// Client-side only component to prevent hydration mismatch
-function ClientSideOnly({ children }: { children: React.ReactNode }) {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  if (!isClient) {
-    // Return children without animation during SSR
-    return <>{children}</>;
-  }
-
-  return <>{children}</>;
-}
+import { OptimizedMotion, fadeInUp, scaleIn } from '@/components/performance/OptimizedMotion';
 
 export function Hero() {
   return (
